@@ -154,6 +154,78 @@ Supports Retrieval Augmented Generation (RAG) for AI models.
 
 Tracks interactions with language models and manages AI processing history.
 
+#### Version Control Management
+
+Manages entity versioning with features for:
+- Schema version tracking
+- Data and structure version management 
+- Version vector conflict detection
+- CAS (Compare-And-Swap) operations
+- History size configuration
+
+#### Access Control
+
+Provides access control functionality:
+- Public/private access settings
+- Access history tracking
+- Access counting
+- User-based permissions
+- Role-based controls
+
+## Core Concepts
+
+### Entity Identifiers
+
+- Uses `EntityId` value objects for type-safe identification
+- Supports hierarchical path-based addressing
+- Maintains materialized paths for efficient traversal
+- Validates path segments against defined constraints
+
+### Event Sourcing
+
+- Events are immutable records of entity changes
+- Supports event versioning and replay
+- Maintains event metadata and history
+- Provides event compression for storage optimization
+- Enables event-driven updates and projections
+
+### Validation System
+
+- Rule-based validation framework
+- Context-aware validation with depth control
+- Circular dependency detection
+- Caching support for validation results
+- Custom validation rules per entity type
+
+### AI/LLM Integration
+
+- Embedding storage for multiple AI models
+- Confidence score tracking
+- Model-specific metadata management
+- Annotation support
+- RAG (Retrieval Augmented Generation) capabilities
+- LLM interaction history
+
+## Configuration Options
+
+### History Management
+- Configurable history limits (default: 50, max: 100)
+- Separate tracking for modifications and access
+- Automatic history trimming
+- Event compression settings
+
+### Lock Management
+- Configurable lock timeouts (default: 15 minutes)
+- Lock extension periods (default: 5 minutes)
+- Minimum lock duration: 30 seconds
+- Maximum lock duration: 24 hours
+
+### Path Constraints
+- Maximum path length: 1024 characters
+- Maximum segment length: 255 characters
+- Invalid character filtering
+- Path normalization rules
+
 ## Constants
 
 ### EntityConstants
@@ -195,3 +267,39 @@ final params = EntityCreateParams<Owner>(
   additionalData: ownerData,
 );
 final ownerEntity = EntityFactory.createEntity(params);
+```
+
+### Entity Creation
+```dart
+// Create with hierarchy
+final params = EntityCreateParams<Site>(
+  name: 'New Site',
+  currentUser: authUser,
+  owner: userAction,
+  parentPath: 'owners/123',
+  additionalData: siteData,
+  hierarchyLevel: 'site'
+);
+
+// Create with AI integration
+final paramsWithAI = EntityCreateParams<Document>(
+  name: 'Document',
+  currentUser: authUser,
+  owner: userAction,
+  additionalData: docData,
+  aiEmbeddings: embeddings,
+  aiMetadata: metadata
+);
+```
+
+### Validation Implementation
+```dart
+class CustomValidator extends EntityValidator<T> {
+  Future<ValidationResult> validate(T entity, ValidationContext context) async {
+    if (!context.canContinueValidation) return ValidationResult.valid();
+    // Custom validation logic
+    return ValidationResult.merge(await super.validate(entity, context));
+  }
+}
+```
+````
