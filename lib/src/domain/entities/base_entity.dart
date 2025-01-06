@@ -45,6 +45,7 @@
 /// * Materialized paths for efficient traversal
 library;
 
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:data_manager/data_manager.dart';
@@ -1411,5 +1412,128 @@ extension LanguageModelIntegration<T extends Object> on BaseEntity<T> {
               'data': e.value,
             })
         .toList();
+  }
+}
+
+/// Cache-Augmented Generation Extension
+extension CacheAugmentedGeneration<T extends Object> on BaseEntity<T> {
+  static const cacheVersion = '1.0.0';
+
+  get sha256 => null;
+
+  // Add cache entry
+  BaseEntity<T> withCacheEntry(
+    String modelId,
+    String prompt,
+    dynamic output, {
+    required double confidence,
+    Map<String, dynamic>? metadata,
+  }) {
+    final cacheKey = _generateCacheKey(modelId, prompt);
+    final timestamp = DateTime.now().toIso8601String();
+
+    return copyWith(
+      aiMetadata: {
+        ...aiMetadata,
+        'cag_$cacheKey': {
+          'output': output,
+          'confidence': confidence,
+          'timestamp': timestamp,
+          'version': cacheVersion,
+          'metadata': metadata,
+          'hits': 0,
+        }.toString(),
+      },
+      lastAiProcessingTime: DateTime.now(),
+    );
+  }
+
+  // Get cache entry
+  Map<String, dynamic>? getCacheEntry(String modelId, String prompt) {
+    final cacheKey = _generateCacheKey(modelId, prompt);
+    final entry = aiMetadata['cag_$cacheKey'];
+    if (entry == null) return null;
+
+    try {
+      // Update cache hit count
+      final Map<String, dynamic> cacheData = Map<String, dynamic>.from(
+          Map<String, dynamic>.from(json.decode(entry.toString())));
+
+      cacheData['hits'] = (cacheData['hits'] as int) + 1;
+      aiMetadata['cag_$cacheKey'] = cacheData.toString();
+
+      return cacheData;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Invalidate cache entry
+  BaseEntity<T> invalidateCache(String modelId, [String? prompt]) {
+    final newMetadata = Map<String, String>.from(aiMetadata);
+    if (prompt != null) {
+      final cacheKey = _generateCacheKey(modelId, prompt);
+      newMetadata.remove('cag_$cacheKey');
+    } else {
+      newMetadata.removeWhere((key, _) => key.startsWith('cag_$modelId'));
+    }
+
+    return copyWith(
+      aiMetadata: newMetadata,
+      lastAiProcessingTime: DateTime.now(),
+    );
+  }
+
+  // Get cache statistics
+  Map<String, dynamic> getCacheStats(String modelId) {
+    final cacheEntries = aiMetadata.entries
+        .where((e) => e.key.startsWith('cag_$modelId'))
+        .map((e) => json.decode(e.value.toString()))
+        .toList();
+
+    return {
+      'total_entries': cacheEntries.length,
+      'total_hits':
+          cacheEntries.fold(0, (sum, entry) => sum + (entry['hits'] as int)),
+      'avg_confidence': cacheEntries.isEmpty
+          ? 0.0
+          : cacheEntries.fold(
+                  0.0, (sum, entry) => sum + (entry['confidence'] as double)) /
+              cacheEntries.length,
+      'oldest_entry': cacheEntries.isEmpty
+          ? null
+          : cacheEntries
+              .map((e) => e['timestamp'] as String)
+              .reduce((a, b) => a.compareTo(b) < 0 ? a : b),
+      'newest_entry': cacheEntries.isEmpty
+          ? null
+          : cacheEntries
+              .map((e) => e['timestamp'] as String)
+              .reduce((a, b) => a.compareTo(b) > 0 ? a : b),
+    };
+  }
+
+  // Cache optimization hints
+  Map<String, dynamic> getCacheOptimizationHints(String modelId) {
+    final stats = getCacheStats(modelId);
+    return {
+      'should_prune': (stats['total_entries'] as int) > 1000,
+      'low_confidence_entries': aiMetadata.entries
+          .where((e) => e.key.startsWith('cag_$modelId'))
+          .map((e) => json.decode(e.value.toString()))
+          .where((entry) => (entry['confidence'] as double) < 0.5)
+          .length,
+      'unused_entries': aiMetadata.entries
+          .where((e) => e.key.startsWith('cag_$modelId'))
+          .map((e) => json.decode(e.value.toString()))
+          .where((entry) => (entry['hits'] as int) == 0)
+          .length,
+    };
+  }
+
+  // Private helper methods
+  String _generateCacheKey(String modelId, String prompt) {
+    final hash = sha256.convert(utf8.encode(prompt)).toString();
+    return '$modelId:$hash';
   }
 }
