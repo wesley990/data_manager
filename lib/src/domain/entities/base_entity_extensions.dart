@@ -81,6 +81,28 @@ extension PathManagement<T extends Object> on BaseEntity<T> {
     return normalizePath(
         '$basePath${PathConstants.pathSeparator}$entitySegment');
   }
+
+  // Add new methods for path management
+  List<String> buildSearchablePaths() {
+    final paths = <String>[];
+    final segments = hierarchyPath?.split('/') ?? [];
+    String currentPath = '';
+
+    for (final segment in segments) {
+      currentPath = currentPath.isEmpty ? segment : '$currentPath/$segment';
+      paths.add(currentPath);
+    }
+
+    return paths;
+  }
+
+  Map<String, Object> buildQueryIndex() {
+    return {
+      'depth_name': '${hierarchyDepth}_${entityName.toLowerCase()}',
+      'parent_type': '${hierarchyParentId ?? ''}_${hierarchyLevel ?? ''}',
+      'ancestry': hierarchyAncestors.map((e) => e.value).join('|'),
+    };
+  }
 }
 
 ///  Concurrency Control Extension

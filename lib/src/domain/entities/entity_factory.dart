@@ -1,3 +1,4 @@
+import 'package:data_manager/src/domain/entities/base_entity_extensions.dart';
 import 'package:uuid/uuid.dart';
 import 'package:authentication/authentication.dart';
 import 'package:data_manager/data_manager.dart';
