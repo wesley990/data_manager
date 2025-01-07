@@ -104,86 +104,36 @@ Provides methods for creating and cloning entities with comprehensive parameter 
 - **Sync Metadata**: Builds initial synchronization metadata.
 - **Event Metadata**: Builds initial event metadata.
 
-### Extensions
+## Extensions
 
-#### Lock Management
+Consolidated extensions are organized into focused groups:
 
-Handles entity locking mechanisms to ensure data consistency.
+### PathManagement
+- Path normalization and validation
+- Path segment parsing and management
+- Hierarchical path operations
 
-#### Tracking Management
+### ConcurrencyControl
+- Version management and validation 
+- Conflict detection and resolution
+- Lock coordination and checking
 
-Tracks access and modifications to entities.
+### TrackingManagement
+- History tracking for access and modifications
+- Configurable history limits
+- History cleanup and compaction
 
-#### Entity Utilities
+### LockManagement
+- Entity locking and timeout handling
+- Distributed lock management
+- Lock metadata tracking
 
-Provides general utility operations for entities.
-
-#### Hierarchy Management
-
-Manages hierarchical relationships and materialized paths.
-
-#### Path Management
-
-Handles path normalization and validation.
-
-#### Materialized Path Management
-
-Manages materialized paths for hierarchical data.
-
-#### Concurrency Control
-
-Ensures data consistency during concurrent updates with conflict detection and resolution.
-
-#### Event Management
-
-Supports event sourcing and replay functionality.
-
-#### Graph Traversal
-
-Provides methods for traversing entity relationships.
-
-#### AI Integration
-
-Integrates AI-generated embeddings, metadata, and annotations.
-
-#### RAG Capabilities
-
-Supports Retrieval Augmented Generation (RAG) for AI models.
-
-#### Language Model Integration
-
-Tracks interactions with language models and manages AI processing history.
-
-#### Cache-Augmented Generation
-
-Supports Cache-Augmented Generation (CAG) for AI models with features for:
-- Cache storage and management for model outputs
-- Cache invalidation strategies
-- Cache hit/miss tracking
-- Cache confidence scoring
-- Cache reuse patterns
-- Distributed cache support
-- Cache entry versioning
-- Cache metadata management
-- Cache-based optimization hints
-
-#### Version Control Management
-
-Manages entity versioning with features for:
-- Schema version tracking
-- Data and structure version management 
-- Version vector conflict detection
-- CAS (Compare-And-Swap) operations
-- History size configuration
-
-#### Access Control
-
-Provides access control functionality:
-- Public/private access settings
-- Access history tracking
-- Access counting
-- User-based permissions
-- Role-based controls
+### AIIntegration
+- Combined AI/LLM processing capabilities
+- RAG (Retrieval Augmented Generation) support
+- CAG (Cache-Augmented Generation) management
+- Embedding and confidence tracking
+- Cache management and invalidation
 
 ## Core Concepts
 

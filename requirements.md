@@ -13,24 +13,31 @@ The Data Manager package provides a robust entity management system with advance
    - Entities must have unique identifiers and support hierarchical relationships.
    - The system must provide methods for validating entity paths and relationships.
 
-2. **Version Control**
+2. ** Extensions**
+   - Path Management must be consolidated into a single PathManagement extension
+   - Version and Lock Management must be  in ConcurrencyControl
+   - History Tracking must be consolidated in TrackingManagement
+   - Lock Management must be  in LockManagement
+   - AI/LLM/RAG/CAG capabilities must be consolidated in AIIntegration
+
+3. **Version Control**
    - The system must support version control for entities, including schema and data versions.
    - Entities must track changes and maintain a history of modifications.
 
-3. **Access Control and Tracking**
+4. **Access Control and Tracking**
    - The system must track access to entities, including who accessed them and when.
    - Entities must support locking mechanisms to prevent concurrent modifications.
    - The system must provide configurable access control, including public and private access settings.
 
-4. **Metadata Management**
+5. **Metadata Management**
    - Entities must support comprehensive metadata management, including custom attributes and tags.
    - The system must provide methods for managing and querying metadata.
 
-5. **Workflow and Priority Management**
+6. **Workflow and Priority Management**
    - Entities must support workflow stages and priority levels.
    - The system must provide methods for updating and querying workflow and priority information.
 
-6. **AI/LLM Integration**
+7. **AI/LLM Integration**
    - The system must support integration with AI models, including storing embeddings, scores, and metadata.
    - Entities must support AI-generated annotations and tags.
    - The system must provide methods for managing and querying AI-related data.
@@ -44,24 +51,24 @@ The Data Manager package provides a robust entity management system with advance
      - Cache versioning support
      - Cache metadata management
 
-7. **Event Handling**
+8. **Event Handling**
    - The system must support event sourcing and replay functionality.
    - Entities must track domain events and support event-driven updates.
 
-8. **Concurrency Control**
+9. **Concurrency Control**
    - The system must ensure data consistency during concurrent updates.
    - Entities must support conflict detection and resolution mechanisms.
 
-9. **Graph Traversal**
+10. **Graph Traversal**
    - The system must provide methods for traversing entity relationships.
    - Entities must support querying and updating relationships.
 
-10. **Path Management**
+11. **Path Management**
     - The system must enforce path constraints (max length: 1024 chars, segment length: 255 chars)
     - The system must provide path normalization and validation
     - The system must support materialized paths for efficient hierarchical traversal
 
-11. **RAG Integration**
+12. **RAG Integration**
     - The system must support Retrieval Augmented Generation capabilities
     - The system must track LLM interaction history
     - The system must maintain confidence scores for AI-generated content
@@ -212,6 +219,14 @@ The Data Manager package provides a robust entity management system with advance
       - The system allows configuration of history limits
       - The system performs automatic history cleanup
       - The system maintains essential history for auditing
+
+20. **As a developer, I want  extension APIs so that I can avoid duplicated functionality.**
+    - Acceptance Criteria:
+      - Path operations are available through a single PathManagement API
+      - Version and lock management are  in ConcurrencyControl
+      - History tracking is consolidated in TrackingManagement
+      - Lock management is  in LockManagement
+      - AI/LLM/RAG/CAG capabilities are available through a single AIIntegration API
 
 ## Conclusion
 
