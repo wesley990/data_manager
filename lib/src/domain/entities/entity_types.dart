@@ -54,9 +54,9 @@ class Owner with _$Owner {
   bool validatePath(String path) => _validatePathRules(path);
 
   bool _validatePathRules(String path) {
-    if (path.length > PathRules.maxLength) return false;
-    final segments = path.split(PathRules.separator);
-    return segments.every((s) => s.length <= PathRules.maxSegment);
+    if (path.length > SystemLimits.pathMaxLength) return false;
+    final segments = path.split(EntityDefaults.pathSeparator);
+    return segments.every((s) => s.length <= SystemLimits.pathMaxSegment);
   }
 
   // Event handling
@@ -117,10 +117,10 @@ class Site with _$Site {
   bool validatePath(String path) => _validatePathRules(path);
 
   bool _validatePathRules(String path) {
-    return path.length <= PathRules.maxLength &&
+    return path.length <= SystemLimits.pathMaxLength &&
         path
-            .split(PathRules.separator)
-            .every((s) => s.length <= PathRules.maxSegment);
+            .split(EntityDefaults.pathSeparator)
+            .every((s) => s.length <= SystemLimits.pathMaxSegment);
   }
 
   // Event handling
@@ -201,10 +201,10 @@ class Equipment with _$Equipment {
   bool validateHierarchyPath(String path) => _validatePathRules(path);
 
   bool _validatePathRules(String path) {
-    if (path.length > PathRules.maxLength) return false;
-    final segments = path.split(PathRules.separator);
-    if (segments.length > EntityLimits.hierarchyDepthMax) return false;
-    return segments.every((s) => s.length <= PathRules.maxSegment);
+    if (path.length > SystemLimits.pathMaxLength) return false;
+    final segments = path.split(EntityDefaults.pathSeparator);
+    if (segments.length > SystemLimits.hierarchyDepthMax) return false;
+    return segments.every((s) => s.length <= SystemLimits.pathMaxSegment);
   }
 
   // Event handling
@@ -259,10 +259,10 @@ class Vendor with _$Vendor {
   bool validateStaffPath(String path) => _validatePathRules(path);
 
   bool _validatePathRules(String path) {
-    return path.length <= PathRules.maxLength &&
+    return path.length <= SystemLimits.pathMaxLength &&
         path
-            .split(PathRules.separator)
-            .every((s) => s.length <= PathRules.maxSegment);
+            .split(EntityDefaults.pathSeparator)
+            .every((s) => s.length <= SystemLimits.pathMaxSegment);
   }
 
   // Event handling
