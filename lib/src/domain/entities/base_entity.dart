@@ -52,185 +52,153 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'base_entity.freezed.dart';
 part 'base_entity.g.dart';
 
-// Add type aliases at the top
-typedef VersionVector = Map<String, int>;
-typedef LockMetadata = Map<String, dynamic>;
-typedef EventMetadata = Map<String, Object>;
-typedef QueryIndex = Map<String, Object>;
+// Type aliases with consistent prefixes
+typedef EntityVersionVector = Map<String, int>;
+typedef EntityLockMetadata = Map<String, dynamic>;
+typedef EntityEventMeta = Map<String, Object>;
+typedef EntitySearchIndex = Map<String, Object>;
 
-// Group constants by category
-class EntityConstants {
-  // Status and workflow
-  static const defaultVersion = '1.0.0';
-  static const defaultStatus = EntityStatus.active;
-  static const defaultPriority = Priority.medium;
-  static const defaultWorkflowStage = WorkflowStage.draft;
-
-  // Access control
-  static const defaultIsPublic = true;
-  static const defaultAccessCount = 0;
-
-  // History limits
-  static const maxHistoryLength = 50;
-  static const defaultHistoryLimit = 50;
-  static const maxHistoryLimit = 100;
-  static const initialVersion = 1;
-
-  // Lock durations
-  static const defaultLockTimeout = Duration(minutes: 15);
-  static const defaultLockExtensionPeriod = Duration(minutes: 5);
-  static const minimumLockDuration = Duration(seconds: 30);
-  static const maximumLockDuration = Duration(hours: 24);
-
-  static const maximumHierarchyDepth = 10;
+// Constants with clear grouping
+class EntityLimits {
+  static const historyMax = 50;
+  static const historyDefault = 50;
+  static const hierarchyDepthMax = 10;
+  static const pathLengthMax = 1024;
+  static const pathSegmentMax = 255;
 }
 
-// Remove the PathManagement mixin and move its constants here
-class PathConstants {
-  static const pathSeparator = '/';
-  static const encodedPathSeparator = '%2F';
-  static const invalidPathChars = r'[<>:"|?*\x00-\x1F]';
-  static const maxPathLength = 1024;
-  static const maxSegmentLength = 255;
+class EntityDefaults {
+  static const version = '1.0.0';
+  static const status = EntityStatus.active;
+  static const priority = Priority.medium;
+  static const stage = WorkflowStage.draft;
+  static const isPublic = true;
+  static const accessCount = 0;
+}
+
+class LockDurations {
+  static const timeout = Duration(minutes: 15);
+  static const extension = Duration(minutes: 5);
+  static const min = Duration(seconds: 30);
+  static const max = Duration(hours: 24);
+}
+
+class PathRules {
+  static const separator = '/';
+  static const encodedSeparator = '%2F';
+  static const invalidChars = r'[<>:"|?*\x00-\x1F]';
+  static const maxLength = 1024;
+  static const maxSegment = 255;
 }
 
 @Freezed(genericArgumentFactories: true)
 class BaseEntity<T extends Object> with _$BaseEntity<T> {
   const BaseEntity._();
 
-  static Clock clock = SystemClock(); // Default implementation
+  static Clock clock = SystemClock();
 
   const factory BaseEntity({
-    // Update identifiers to use EntityId
-    required EntityId entityId, // renamed from uuid to id
-    required String entityName,
-    String? entityDescription,
+    // Core properties
+    required EntityId id,
+    required String name,
+    String? description,
 
     // Metadata
-    required DateTime metaCreatedAt,
-    required DateTime metaUpdatedAt,
-    @Default(EntityConstants.defaultVersion) String schemaVersion,
-    @Default(EntityConstants.defaultStatus) EntityStatus status,
-    @Default(<String, Object>{}) Map<String, Object> metaAttributes,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    @Default(EntityDefaults.version) String schemaVer,
+    @Default(EntityDefaults.status) EntityStatus status,
+    @Default({}) Map<String, Object> meta,
 
-    // Hierarchy and Relations (using Materialized Path)
-    String? hierarchyPath,
-    @Default(0) int hierarchyDepth,
-    @Default(<String, List<EntityId>>{}) Map<String, List<EntityId>> relations,
-    @Default(10)
-    int maxDepth, // Maximum allowed depth for hierarchical structures
+    // Hierarchy
+    String? treePath,
+    @Default(0) int treeDepth,
+    @Default({}) Map<String, List<EntityId>> refs,
+    @Default(EntityLimits.hierarchyDepthMax) int treeMaxDepth,
 
-    // Firestore Hierarchy Optimizations
-    @Default(<EntityId>[])
-    List<EntityId> hierarchyAncestors, // For ancestor queries
-    EntityId? hierarchyParentId, // Direct parent reference
-    @Default(<EntityId>[]) List<EntityId> childrenIds, // Direct children
+    // Tree optimization
+    @Default([]) List<EntityId> ancestors,
+    EntityId? parentId,
+    @Default([]) List<EntityId> childIds,
 
-    // Collection paths for nested data
-    @Default(<String, String>{})
-    Map<String, String>
-        subCollections, // e.g. {'documents': 'documents/', 'attachments': 'attachments/'}
+    // Collections
+    @Default({}) Map<String, String> subPaths,
 
-    // Denormalized data for quick access
-    @Default({})
-    Map<String, EntityMetadata> ancestorMetadata, // Contains name, type, etc
+    // Quick access data
+    @Default({}) Map<String, EntityMetadata> ancestorMeta,
     String? parentName,
 
-    // Indexed fields for querying
-    @Default([])
-    List<String> searchablePath, // ['dept-001', 'dept-001/dept-002']
-    String? hierarchyLevel, // Make nullable
+    // Search optimization
+    @Default([]) List<String> searchPaths,
+    String? treeLevel,
 
-    // Batch operation tracking
-    @Default(0) int hierarchyVersion, // For concurrent updates
-    DateTime? lastHierarchyUpdate,
+    // Sync state
+    @Default(0) int treeVersion,
+    DateTime? treeLastUpdate,
 
-    // User Management
-    required UserAction owner, // Replace ownerId
-    required UserAction createdBy,
-    required UserAction lastModifiedBy,
-    UserAction? accessLastBy,
+    // Access control
+    required UserAction owner,
+    required UserAction creator,
+    required UserAction modifier,
+    UserAction? lastAccessor,
 
     // Locking
-    UserAction? lockedBy, // Replace lockId with full user context
-    DateTime? lockExpiresAt,
+    UserAction? lockOwner,
+    DateTime? lockExpiry,
 
-    // Deletion tracking
-    UserAction? deletedBy, // Combines deletedAt + deletedBy
+    // Soft delete
+    UserAction? remover,
 
-    // Optional: Add modification history
-    @Default(<UserAction>[])
-    @Assert('modificationHistory.length <= EntityConstants.maxHistoryLimit')
-    List<UserAction> modificationHistory,
-
-    // Optional: Add access history
-    @Default(<UserAction>[])
-    @Assert('accessHistory.length <= EntityConstants.maxHistoryLimit')
-    List<UserAction> accessHistory,
-    @Default(EntityConstants.defaultIsPublic) bool accessIsPublic,
-
-    // Access Tracking
-    @Default(EntityConstants.defaultAccessCount) int accessCount,
+    // History tracking
+    @Default([]) List<UserAction> modHistory,
+    @Default([]) List<UserAction> accessLog,
+    @Default(EntityDefaults.isPublic) bool isPublic,
+    @Default(EntityDefaults.accessCount) int accessCount,
 
     // Classification
     @Default([]) List<String> tags,
     @Default({}) Map<String, String> labels,
 
-    // Workflow and Priority
-    @Default(EntityConstants.defaultPriority) Priority priority,
-    @Default(EntityConstants.defaultWorkflowStage) WorkflowStage workflowStage,
+    // Workflow
+    @Default(EntityDefaults.priority) Priority priority,
+    @Default(EntityDefaults.stage) WorkflowStage stage,
+    DateTime? expiryDate,
 
-    // Time-related
-    DateTime? expiresAt,
+    // Sync
+    @Default({}) Map<String, Object> syncMeta,
+    String? syncVer,
+    @Default({}) Map<String, Object> searchIndex,
 
-    // Sync and Lock Mechanisms
-    @Default({}) Map<String, Object> syncMetadata,
-    String? lastSyncedVersion,
+    // Extension
+    T? extraData,
 
-    // Firestore-specific indexing
-    @Default({})
-    Map<String, Object> queryIndex, // Custom indexes for complex queries
+    // Event sourcing
+    @Default(0) int eventVer,
+    @Default([]) List<String> pendingEvents,
+    @Default({}) Map<String, Object> eventMeta,
+    @Default(EntityLimits.historyDefault) int historyLimit,
 
-    // Extension point
-    T? additionalData,
+    // Versioning
+    @Default(1) int dataVer,
+    @Default(1) int structVer,
+    String? lastVer,
 
-    /// Event sourcing support
-    @Default(0) int eventVersion,
-    @Default(<String>[]) List<String> eventPending,
-    @Default(<String, Object>{}) Map<String, Object> eventMetadata,
+    // Distributed locking
+    String? distLockId,
+    DateTime? distLockExpiry,
+    String? distLockNode,
+    @Default({}) Map<String, dynamic> lockMeta,
+    @Default({}) Map<String, int> verVectors,
+    @Default(LockDurations.timeout) Duration lockTimeout,
 
-    // Add history size configuration
-    @Default(EntityConstants.defaultHistoryLimit) int historyLimit,
-
-    // Add version control fields
-    @Default(EntityConstants.initialVersion)
-    int entityVersion, // For data changes
-    @Default(EntityConstants.initialVersion)
-    int structureVersion, // For structure changes
-    String? lastKnownVersion, // For CAS operations
-
-    // Add distributed lock fields
-    String? distributedLockId,
-    DateTime? distributedLockExpiry,
-    String? distributedLockNode,
-    @Default({}) Map<String, dynamic> lockMetadata,
-
-    // Add version vectors for conflict resolution
-    @Default({}) Map<String, int> versionVectors,
-    @Default(EntityConstants.defaultLockTimeout) Duration lockTimeout,
-
-    // Add AI/LLM integration fields
-    @Default({})
-    Map<String, List<double>>
-        aiEmbeddings, // Store embeddings from different AI models
-    @Default({})
-    Map<String, double> aiScores, // Store relevance/confidence scores
-    @Default({})
-    Map<String, String> aiMetadata, // Store model-specific metadata
-    @Default([]) List<String> aiTags, // AI-generated tags
-    @Default({}) Map<String, Object> aiAnnotations, // AI-generated annotations
-    DateTime? lastAiProcessingTime,
-    String? aiProcessingVersion,
+    // AI features
+    @Default({}) Map<String, List<double>> aiVectors,
+    @Default({}) Map<String, double> aiScores,
+    @Default({}) Map<String, String> aiMeta,
+    @Default([]) List<String> aiTags,
+    @Default({}) Map<String, Object> aiNotes,
+    DateTime? aiLastRun,
+    String? aiVer,
   }) = _BaseEntity<T>;
 
   factory BaseEntity.fromJson(
@@ -240,25 +208,24 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
   // Core utility methods
 
   // Essential getters and operators
-  bool get isRoot => hierarchyPath == null || hierarchyPath == entityId.value;
-  bool get isLeaf => !relations.containsKey('children');
-  dynamic getAttribute(String key) => metaAttributes[key];
+  bool get isTreeRoot => treePath == null || treePath == id.value;
+  bool get isTreeLeaf => !refs.containsKey('children');
+  dynamic getMeta(String key) => meta[key];
   dynamic operator [](String key) {
     return switch (key) {
-      'entityId' => entityId,
-      'entityName' => entityName,
-      'entityDescription' => entityDescription,
+      'entityId' => id,
+      'entityName' => name,
+      'entityDescription' => description,
       'status' => status,
-      _ => metaAttributes[key],
+      _ => meta[key],
     };
   }
 
-  String get uuid => entityId.value;
-  String get entityType => T.toString();
+  String get uid => id.value;
+  String get type => T.toString();
 
-  // Keep only core ancestor name handling
-  Map<EntityId, String> get ancestorNamesTyped => Map.fromEntries(
-        ancestorMetadata.entries.map(
+  Map<EntityId, String> get ancestorNames => Map.fromEntries(
+        ancestorMeta.entries.map(
           (e) => MapEntry(EntityId(e.key), e.value.displayName),
         ),
       );

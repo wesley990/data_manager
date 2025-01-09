@@ -11,25 +11,23 @@ _$BaseEntityImpl<T> _$$BaseEntityImplFromJson<T extends Object>(
   T Function(Object? json) fromJsonT,
 ) =>
     _$BaseEntityImpl<T>(
-      entityId:
-          EntityId.fromJson((json['entityId'] as Map<String, dynamic>).map(
+      id: EntityId.fromJson((json['id'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, e as Object),
       )),
-      entityName: json['entityName'] as String,
-      entityDescription: json['entityDescription'] as String?,
-      metaCreatedAt: DateTime.parse(json['metaCreatedAt'] as String),
-      metaUpdatedAt: DateTime.parse(json['metaUpdatedAt'] as String),
-      schemaVersion:
-          json['schemaVersion'] as String? ?? EntityConstants.defaultVersion,
+      name: json['name'] as String,
+      description: json['description'] as String?,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      schemaVer: json['schemaVer'] as String? ?? EntityDefaults.version,
       status: $enumDecodeNullable(_$EntityStatusEnumMap, json['status']) ??
-          EntityConstants.defaultStatus,
-      metaAttributes: (json['metaAttributes'] as Map<String, dynamic>?)?.map(
+          EntityDefaults.status,
+      meta: (json['meta'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as Object),
           ) ??
-          const <String, Object>{},
-      hierarchyPath: json['hierarchyPath'] as String?,
-      hierarchyDepth: (json['hierarchyDepth'] as num?)?.toInt() ?? 0,
-      relations: (json['relations'] as Map<String, dynamic>?)?.map(
+          const {},
+      treePath: json['treePath'] as String?,
+      treeDepth: (json['treeDepth'] as num?)?.toInt() ?? 0,
+      refs: (json['refs'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(
                 k,
                 (e as List<dynamic>)
@@ -39,95 +37,93 @@ _$BaseEntityImpl<T> _$$BaseEntityImplFromJson<T extends Object>(
                         )))
                     .toList()),
           ) ??
-          const <String, List<EntityId>>{},
-      maxDepth: (json['maxDepth'] as num?)?.toInt() ?? 10,
-      hierarchyAncestors: (json['hierarchyAncestors'] as List<dynamic>?)
+          const {},
+      treeMaxDepth: (json['treeMaxDepth'] as num?)?.toInt() ??
+          EntityLimits.hierarchyDepthMax,
+      ancestors: (json['ancestors'] as List<dynamic>?)
               ?.map((e) => EntityId.fromJson((e as Map<String, dynamic>).map(
                     (k, e) => MapEntry(k, e as Object),
                   )))
               .toList() ??
-          const <EntityId>[],
-      hierarchyParentId: json['hierarchyParentId'] == null
+          const [],
+      parentId: json['parentId'] == null
           ? null
-          : EntityId.fromJson(
-              (json['hierarchyParentId'] as Map<String, dynamic>).map(
+          : EntityId.fromJson((json['parentId'] as Map<String, dynamic>).map(
               (k, e) => MapEntry(k, e as Object),
             )),
-      childrenIds: (json['childrenIds'] as List<dynamic>?)
+      childIds: (json['childIds'] as List<dynamic>?)
               ?.map((e) => EntityId.fromJson((e as Map<String, dynamic>).map(
                     (k, e) => MapEntry(k, e as Object),
                   )))
               .toList() ??
-          const <EntityId>[],
-      subCollections: (json['subCollections'] as Map<String, dynamic>?)?.map(
+          const [],
+      subPaths: (json['subPaths'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as String),
           ) ??
-          const <String, String>{},
-      ancestorMetadata:
-          (json['ancestorMetadata'] as Map<String, dynamic>?)?.map(
-                (k, e) => MapEntry(
-                    k,
-                    EntityMetadata.fromJson((e as Map<String, dynamic>).map(
-                      (k, e) => MapEntry(k, e as Object),
-                    ))),
-              ) ??
-              const {},
+          const {},
+      ancestorMeta: (json['ancestorMeta'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(
+                k,
+                EntityMetadata.fromJson((e as Map<String, dynamic>).map(
+                  (k, e) => MapEntry(k, e as Object),
+                ))),
+          ) ??
+          const {},
       parentName: json['parentName'] as String?,
-      searchablePath: (json['searchablePath'] as List<dynamic>?)
+      searchPaths: (json['searchPaths'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      hierarchyLevel: json['hierarchyLevel'] as String?,
-      hierarchyVersion: (json['hierarchyVersion'] as num?)?.toInt() ?? 0,
-      lastHierarchyUpdate: json['lastHierarchyUpdate'] == null
+      treeLevel: json['treeLevel'] as String?,
+      treeVersion: (json['treeVersion'] as num?)?.toInt() ?? 0,
+      treeLastUpdate: json['treeLastUpdate'] == null
           ? null
-          : DateTime.parse(json['lastHierarchyUpdate'] as String),
+          : DateTime.parse(json['treeLastUpdate'] as String),
       owner: UserAction.fromJson((json['owner'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, e as Object),
       )),
-      createdBy:
-          UserAction.fromJson((json['createdBy'] as Map<String, dynamic>).map(
+      creator:
+          UserAction.fromJson((json['creator'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, e as Object),
       )),
-      lastModifiedBy: UserAction.fromJson(
-          (json['lastModifiedBy'] as Map<String, dynamic>).map(
+      modifier:
+          UserAction.fromJson((json['modifier'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, e as Object),
       )),
-      accessLastBy: json['accessLastBy'] == null
+      lastAccessor: json['lastAccessor'] == null
           ? null
           : UserAction.fromJson(
-              (json['accessLastBy'] as Map<String, dynamic>).map(
+              (json['lastAccessor'] as Map<String, dynamic>).map(
               (k, e) => MapEntry(k, e as Object),
             )),
-      lockedBy: json['lockedBy'] == null
+      lockOwner: json['lockOwner'] == null
           ? null
-          : UserAction.fromJson((json['lockedBy'] as Map<String, dynamic>).map(
+          : UserAction.fromJson((json['lockOwner'] as Map<String, dynamic>).map(
               (k, e) => MapEntry(k, e as Object),
             )),
-      lockExpiresAt: json['lockExpiresAt'] == null
+      lockExpiry: json['lockExpiry'] == null
           ? null
-          : DateTime.parse(json['lockExpiresAt'] as String),
-      deletedBy: json['deletedBy'] == null
+          : DateTime.parse(json['lockExpiry'] as String),
+      remover: json['remover'] == null
           ? null
-          : UserAction.fromJson((json['deletedBy'] as Map<String, dynamic>).map(
+          : UserAction.fromJson((json['remover'] as Map<String, dynamic>).map(
               (k, e) => MapEntry(k, e as Object),
             )),
-      modificationHistory: (json['modificationHistory'] as List<dynamic>?)
+      modHistory: (json['modHistory'] as List<dynamic>?)
               ?.map((e) => UserAction.fromJson((e as Map<String, dynamic>).map(
                     (k, e) => MapEntry(k, e as Object),
                   )))
               .toList() ??
-          const <UserAction>[],
-      accessHistory: (json['accessHistory'] as List<dynamic>?)
+          const [],
+      accessLog: (json['accessLog'] as List<dynamic>?)
               ?.map((e) => UserAction.fromJson((e as Map<String, dynamic>).map(
                     (k, e) => MapEntry(k, e as Object),
                   )))
               .toList() ??
-          const <UserAction>[],
-      accessIsPublic:
-          json['accessIsPublic'] as bool? ?? EntityConstants.defaultIsPublic,
-      accessCount: (json['accessCount'] as num?)?.toInt() ??
-          EntityConstants.defaultAccessCount,
+          const [],
+      isPublic: json['isPublic'] as bool? ?? EntityDefaults.isPublic,
+      accessCount:
+          (json['accessCount'] as num?)?.toInt() ?? EntityDefaults.accessCount,
       tags:
           (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               const [],
@@ -136,54 +132,50 @@ _$BaseEntityImpl<T> _$$BaseEntityImplFromJson<T extends Object>(
           ) ??
           const {},
       priority: $enumDecodeNullable(_$PriorityEnumMap, json['priority']) ??
-          EntityConstants.defaultPriority,
-      workflowStage:
-          $enumDecodeNullable(_$WorkflowStageEnumMap, json['workflowStage']) ??
-              EntityConstants.defaultWorkflowStage,
-      expiresAt: json['expiresAt'] == null
+          EntityDefaults.priority,
+      stage: $enumDecodeNullable(_$WorkflowStageEnumMap, json['stage']) ??
+          EntityDefaults.stage,
+      expiryDate: json['expiryDate'] == null
           ? null
-          : DateTime.parse(json['expiresAt'] as String),
-      syncMetadata: (json['syncMetadata'] as Map<String, dynamic>?)?.map(
+          : DateTime.parse(json['expiryDate'] as String),
+      syncMeta: (json['syncMeta'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as Object),
           ) ??
           const {},
-      lastSyncedVersion: json['lastSyncedVersion'] as String?,
-      queryIndex: (json['queryIndex'] as Map<String, dynamic>?)?.map(
+      syncVer: json['syncVer'] as String?,
+      searchIndex: (json['searchIndex'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as Object),
           ) ??
           const {},
-      additionalData:
-          _$nullableGenericFromJson(json['additionalData'], fromJsonT),
-      eventVersion: (json['eventVersion'] as num?)?.toInt() ?? 0,
-      eventPending: (json['eventPending'] as List<dynamic>?)
+      extraData: _$nullableGenericFromJson(json['extraData'], fromJsonT),
+      eventVer: (json['eventVer'] as num?)?.toInt() ?? 0,
+      pendingEvents: (json['pendingEvents'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
-          const <String>[],
-      eventMetadata: (json['eventMetadata'] as Map<String, dynamic>?)?.map(
+          const [],
+      eventMeta: (json['eventMeta'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as Object),
           ) ??
-          const <String, Object>{},
+          const {},
       historyLimit: (json['historyLimit'] as num?)?.toInt() ??
-          EntityConstants.defaultHistoryLimit,
-      entityVersion: (json['entityVersion'] as num?)?.toInt() ??
-          EntityConstants.initialVersion,
-      structureVersion: (json['structureVersion'] as num?)?.toInt() ??
-          EntityConstants.initialVersion,
-      lastKnownVersion: json['lastKnownVersion'] as String?,
-      distributedLockId: json['distributedLockId'] as String?,
-      distributedLockExpiry: json['distributedLockExpiry'] == null
+          EntityLimits.historyDefault,
+      dataVer: (json['dataVer'] as num?)?.toInt() ?? 1,
+      structVer: (json['structVer'] as num?)?.toInt() ?? 1,
+      lastVer: json['lastVer'] as String?,
+      distLockId: json['distLockId'] as String?,
+      distLockExpiry: json['distLockExpiry'] == null
           ? null
-          : DateTime.parse(json['distributedLockExpiry'] as String),
-      distributedLockNode: json['distributedLockNode'] as String?,
-      lockMetadata: json['lockMetadata'] as Map<String, dynamic>? ?? const {},
-      versionVectors: (json['versionVectors'] as Map<String, dynamic>?)?.map(
+          : DateTime.parse(json['distLockExpiry'] as String),
+      distLockNode: json['distLockNode'] as String?,
+      lockMeta: json['lockMeta'] as Map<String, dynamic>? ?? const {},
+      verVectors: (json['verVectors'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, (e as num).toInt()),
           ) ??
           const {},
       lockTimeout: json['lockTimeout'] == null
-          ? EntityConstants.defaultLockTimeout
+          ? LockDurations.timeout
           : Duration(microseconds: (json['lockTimeout'] as num).toInt()),
-      aiEmbeddings: (json['aiEmbeddings'] as Map<String, dynamic>?)?.map(
+      aiVectors: (json['aiVectors'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(
                 k,
                 (e as List<dynamic>)
@@ -195,7 +187,7 @@ _$BaseEntityImpl<T> _$$BaseEntityImplFromJson<T extends Object>(
             (k, e) => MapEntry(k, (e as num).toDouble()),
           ) ??
           const {},
-      aiMetadata: (json['aiMetadata'] as Map<String, dynamic>?)?.map(
+      aiMeta: (json['aiMeta'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as String),
           ) ??
           const {},
@@ -203,14 +195,14 @@ _$BaseEntityImpl<T> _$$BaseEntityImplFromJson<T extends Object>(
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      aiAnnotations: (json['aiAnnotations'] as Map<String, dynamic>?)?.map(
+      aiNotes: (json['aiNotes'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as Object),
           ) ??
           const {},
-      lastAiProcessingTime: json['lastAiProcessingTime'] == null
+      aiLastRun: json['aiLastRun'] == null
           ? null
-          : DateTime.parse(json['lastAiProcessingTime'] as String),
-      aiProcessingVersion: json['aiProcessingVersion'] as String?,
+          : DateTime.parse(json['aiLastRun'] as String),
+      aiVer: json['aiVer'] as String?,
     );
 
 Map<String, dynamic> _$$BaseEntityImplToJson<T extends Object>(
@@ -218,70 +210,68 @@ Map<String, dynamic> _$$BaseEntityImplToJson<T extends Object>(
   Object? Function(T value) toJsonT,
 ) =>
     <String, dynamic>{
-      'entityId': instance.entityId,
-      'entityName': instance.entityName,
-      'entityDescription': instance.entityDescription,
-      'metaCreatedAt': instance.metaCreatedAt.toIso8601String(),
-      'metaUpdatedAt': instance.metaUpdatedAt.toIso8601String(),
-      'schemaVersion': instance.schemaVersion,
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+      'createdAt': instance.createdAt.toIso8601String(),
+      'updatedAt': instance.updatedAt.toIso8601String(),
+      'schemaVer': instance.schemaVer,
       'status': _$EntityStatusEnumMap[instance.status]!,
-      'metaAttributes': instance.metaAttributes,
-      'hierarchyPath': instance.hierarchyPath,
-      'hierarchyDepth': instance.hierarchyDepth,
-      'relations': instance.relations,
-      'maxDepth': instance.maxDepth,
-      'hierarchyAncestors': instance.hierarchyAncestors,
-      'hierarchyParentId': instance.hierarchyParentId,
-      'childrenIds': instance.childrenIds,
-      'subCollections': instance.subCollections,
-      'ancestorMetadata': instance.ancestorMetadata,
+      'meta': instance.meta,
+      'treePath': instance.treePath,
+      'treeDepth': instance.treeDepth,
+      'refs': instance.refs,
+      'treeMaxDepth': instance.treeMaxDepth,
+      'ancestors': instance.ancestors,
+      'parentId': instance.parentId,
+      'childIds': instance.childIds,
+      'subPaths': instance.subPaths,
+      'ancestorMeta': instance.ancestorMeta,
       'parentName': instance.parentName,
-      'searchablePath': instance.searchablePath,
-      'hierarchyLevel': instance.hierarchyLevel,
-      'hierarchyVersion': instance.hierarchyVersion,
-      'lastHierarchyUpdate': instance.lastHierarchyUpdate?.toIso8601String(),
+      'searchPaths': instance.searchPaths,
+      'treeLevel': instance.treeLevel,
+      'treeVersion': instance.treeVersion,
+      'treeLastUpdate': instance.treeLastUpdate?.toIso8601String(),
       'owner': instance.owner,
-      'createdBy': instance.createdBy,
-      'lastModifiedBy': instance.lastModifiedBy,
-      'accessLastBy': instance.accessLastBy,
-      'lockedBy': instance.lockedBy,
-      'lockExpiresAt': instance.lockExpiresAt?.toIso8601String(),
-      'deletedBy': instance.deletedBy,
-      'modificationHistory': instance.modificationHistory,
-      'accessHistory': instance.accessHistory,
-      'accessIsPublic': instance.accessIsPublic,
+      'creator': instance.creator,
+      'modifier': instance.modifier,
+      'lastAccessor': instance.lastAccessor,
+      'lockOwner': instance.lockOwner,
+      'lockExpiry': instance.lockExpiry?.toIso8601String(),
+      'remover': instance.remover,
+      'modHistory': instance.modHistory,
+      'accessLog': instance.accessLog,
+      'isPublic': instance.isPublic,
       'accessCount': instance.accessCount,
       'tags': instance.tags,
       'labels': instance.labels,
       'priority': _$PriorityEnumMap[instance.priority]!,
-      'workflowStage': _$WorkflowStageEnumMap[instance.workflowStage]!,
-      'expiresAt': instance.expiresAt?.toIso8601String(),
-      'syncMetadata': instance.syncMetadata,
-      'lastSyncedVersion': instance.lastSyncedVersion,
-      'queryIndex': instance.queryIndex,
-      'additionalData':
-          _$nullableGenericToJson(instance.additionalData, toJsonT),
-      'eventVersion': instance.eventVersion,
-      'eventPending': instance.eventPending,
-      'eventMetadata': instance.eventMetadata,
+      'stage': _$WorkflowStageEnumMap[instance.stage]!,
+      'expiryDate': instance.expiryDate?.toIso8601String(),
+      'syncMeta': instance.syncMeta,
+      'syncVer': instance.syncVer,
+      'searchIndex': instance.searchIndex,
+      'extraData': _$nullableGenericToJson(instance.extraData, toJsonT),
+      'eventVer': instance.eventVer,
+      'pendingEvents': instance.pendingEvents,
+      'eventMeta': instance.eventMeta,
       'historyLimit': instance.historyLimit,
-      'entityVersion': instance.entityVersion,
-      'structureVersion': instance.structureVersion,
-      'lastKnownVersion': instance.lastKnownVersion,
-      'distributedLockId': instance.distributedLockId,
-      'distributedLockExpiry':
-          instance.distributedLockExpiry?.toIso8601String(),
-      'distributedLockNode': instance.distributedLockNode,
-      'lockMetadata': instance.lockMetadata,
-      'versionVectors': instance.versionVectors,
+      'dataVer': instance.dataVer,
+      'structVer': instance.structVer,
+      'lastVer': instance.lastVer,
+      'distLockId': instance.distLockId,
+      'distLockExpiry': instance.distLockExpiry?.toIso8601String(),
+      'distLockNode': instance.distLockNode,
+      'lockMeta': instance.lockMeta,
+      'verVectors': instance.verVectors,
       'lockTimeout': instance.lockTimeout.inMicroseconds,
-      'aiEmbeddings': instance.aiEmbeddings,
+      'aiVectors': instance.aiVectors,
       'aiScores': instance.aiScores,
-      'aiMetadata': instance.aiMetadata,
+      'aiMeta': instance.aiMeta,
       'aiTags': instance.aiTags,
-      'aiAnnotations': instance.aiAnnotations,
-      'lastAiProcessingTime': instance.lastAiProcessingTime?.toIso8601String(),
-      'aiProcessingVersion': instance.aiProcessingVersion,
+      'aiNotes': instance.aiNotes,
+      'aiLastRun': instance.aiLastRun?.toIso8601String(),
+      'aiVer': instance.aiVer,
     };
 
 const _$EntityStatusEnumMap = {

@@ -21,117 +21,80 @@ BaseEntity<T> _$BaseEntityFromJson<T extends Object>(
 
 /// @nodoc
 mixin _$BaseEntity<T extends Object> {
-// Update identifiers to use EntityId
-  EntityId get entityId =>
-      throw _privateConstructorUsedError; // renamed from uuid to id
-  String get entityName => throw _privateConstructorUsedError;
-  String? get entityDescription =>
-      throw _privateConstructorUsedError; // Metadata
-  DateTime get metaCreatedAt => throw _privateConstructorUsedError;
-  DateTime get metaUpdatedAt => throw _privateConstructorUsedError;
-  String get schemaVersion => throw _privateConstructorUsedError;
+// Core properties
+  EntityId get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String? get description => throw _privateConstructorUsedError; // Metadata
+  DateTime get createdAt => throw _privateConstructorUsedError;
+  DateTime get updatedAt => throw _privateConstructorUsedError;
+  String get schemaVer => throw _privateConstructorUsedError;
   EntityStatus get status => throw _privateConstructorUsedError;
-  Map<String, Object> get metaAttributes =>
-      throw _privateConstructorUsedError; // Hierarchy and Relations (using Materialized Path)
-  String? get hierarchyPath => throw _privateConstructorUsedError;
-  int get hierarchyDepth => throw _privateConstructorUsedError;
-  Map<String, List<EntityId>> get relations =>
+  Map<String, Object> get meta =>
+      throw _privateConstructorUsedError; // Hierarchy
+  String? get treePath => throw _privateConstructorUsedError;
+  int get treeDepth => throw _privateConstructorUsedError;
+  Map<String, List<EntityId>> get refs => throw _privateConstructorUsedError;
+  int get treeMaxDepth =>
+      throw _privateConstructorUsedError; // Tree optimization
+  List<EntityId> get ancestors => throw _privateConstructorUsedError;
+  EntityId? get parentId => throw _privateConstructorUsedError;
+  List<EntityId> get childIds =>
+      throw _privateConstructorUsedError; // Collections
+  Map<String, String> get subPaths =>
+      throw _privateConstructorUsedError; // Quick access data
+  Map<String, EntityMetadata> get ancestorMeta =>
       throw _privateConstructorUsedError;
-  int get maxDepth =>
-      throw _privateConstructorUsedError; // Maximum allowed depth for hierarchical structures
-// Firestore Hierarchy Optimizations
-  List<EntityId> get hierarchyAncestors =>
-      throw _privateConstructorUsedError; // For ancestor queries
-  EntityId? get hierarchyParentId =>
-      throw _privateConstructorUsedError; // Direct parent reference
-  List<EntityId> get childrenIds =>
-      throw _privateConstructorUsedError; // Direct children
-// Collection paths for nested data
-  Map<String, String> get subCollections =>
-      throw _privateConstructorUsedError; // e.g. {'documents': 'documents/', 'attachments': 'attachments/'}
-// Denormalized data for quick access
-  Map<String, EntityMetadata> get ancestorMetadata =>
-      throw _privateConstructorUsedError; // Contains name, type, etc
   String? get parentName =>
-      throw _privateConstructorUsedError; // Indexed fields for querying
-  List<String> get searchablePath =>
-      throw _privateConstructorUsedError; // ['dept-001', 'dept-001/dept-002']
-  String? get hierarchyLevel =>
-      throw _privateConstructorUsedError; // Make nullable
-// Batch operation tracking
-  int get hierarchyVersion =>
-      throw _privateConstructorUsedError; // For concurrent updates
-  DateTime? get lastHierarchyUpdate =>
-      throw _privateConstructorUsedError; // User Management
-  UserAction get owner => throw _privateConstructorUsedError; // Replace ownerId
-  UserAction get createdBy => throw _privateConstructorUsedError;
-  UserAction get lastModifiedBy => throw _privateConstructorUsedError;
-  UserAction? get accessLastBy => throw _privateConstructorUsedError; // Locking
-  UserAction? get lockedBy =>
-      throw _privateConstructorUsedError; // Replace lockId with full user context
-  DateTime? get lockExpiresAt =>
-      throw _privateConstructorUsedError; // Deletion tracking
-  UserAction? get deletedBy =>
-      throw _privateConstructorUsedError; // Combines deletedAt + deletedBy
-// Optional: Add modification history
-  @Assert('modificationHistory.length <= EntityConstants.maxHistoryLimit')
-  List<UserAction> get modificationHistory =>
-      throw _privateConstructorUsedError; // Optional: Add access history
-  @Assert('accessHistory.length <= EntityConstants.maxHistoryLimit')
-  List<UserAction> get accessHistory => throw _privateConstructorUsedError;
-  bool get accessIsPublic =>
-      throw _privateConstructorUsedError; // Access Tracking
+      throw _privateConstructorUsedError; // Search optimization
+  List<String> get searchPaths => throw _privateConstructorUsedError;
+  String? get treeLevel => throw _privateConstructorUsedError; // Sync state
+  int get treeVersion => throw _privateConstructorUsedError;
+  DateTime? get treeLastUpdate =>
+      throw _privateConstructorUsedError; // Access control
+  UserAction get owner => throw _privateConstructorUsedError;
+  UserAction get creator => throw _privateConstructorUsedError;
+  UserAction get modifier => throw _privateConstructorUsedError;
+  UserAction? get lastAccessor => throw _privateConstructorUsedError; // Locking
+  UserAction? get lockOwner => throw _privateConstructorUsedError;
+  DateTime? get lockExpiry => throw _privateConstructorUsedError; // Soft delete
+  UserAction? get remover =>
+      throw _privateConstructorUsedError; // History tracking
+  List<UserAction> get modHistory => throw _privateConstructorUsedError;
+  List<UserAction> get accessLog => throw _privateConstructorUsedError;
+  bool get isPublic => throw _privateConstructorUsedError;
   int get accessCount => throw _privateConstructorUsedError; // Classification
   List<String> get tags => throw _privateConstructorUsedError;
   Map<String, String> get labels =>
-      throw _privateConstructorUsedError; // Workflow and Priority
+      throw _privateConstructorUsedError; // Workflow
   Priority get priority => throw _privateConstructorUsedError;
-  WorkflowStage get workflowStage =>
-      throw _privateConstructorUsedError; // Time-related
-  DateTime? get expiresAt =>
-      throw _privateConstructorUsedError; // Sync and Lock Mechanisms
-  Map<String, Object> get syncMetadata => throw _privateConstructorUsedError;
-  String? get lastSyncedVersion =>
-      throw _privateConstructorUsedError; // Firestore-specific indexing
-  Map<String, Object> get queryIndex =>
-      throw _privateConstructorUsedError; // Custom indexes for complex queries
-// Extension point
-  T? get additionalData => throw _privateConstructorUsedError;
-
-  /// Event sourcing support
-  int get eventVersion => throw _privateConstructorUsedError;
-  List<String> get eventPending => throw _privateConstructorUsedError;
-  Map<String, Object> get eventMetadata =>
-      throw _privateConstructorUsedError; // Add history size configuration
-  int get historyLimit =>
-      throw _privateConstructorUsedError; // Add version control fields
-  int get entityVersion =>
-      throw _privateConstructorUsedError; // For data changes
-  int get structureVersion =>
-      throw _privateConstructorUsedError; // For structure changes
-  String? get lastKnownVersion =>
-      throw _privateConstructorUsedError; // For CAS operations
-// Add distributed lock fields
-  String? get distributedLockId => throw _privateConstructorUsedError;
-  DateTime? get distributedLockExpiry => throw _privateConstructorUsedError;
-  String? get distributedLockNode => throw _privateConstructorUsedError;
-  Map<String, dynamic> get lockMetadata =>
-      throw _privateConstructorUsedError; // Add version vectors for conflict resolution
-  Map<String, int> get versionVectors => throw _privateConstructorUsedError;
-  Duration get lockTimeout =>
-      throw _privateConstructorUsedError; // Add AI/LLM integration fields
-  Map<String, List<double>> get aiEmbeddings =>
-      throw _privateConstructorUsedError; // Store embeddings from different AI models
-  Map<String, double> get aiScores =>
-      throw _privateConstructorUsedError; // Store relevance/confidence scores
-  Map<String, String> get aiMetadata =>
-      throw _privateConstructorUsedError; // Store model-specific metadata
-  List<String> get aiTags =>
-      throw _privateConstructorUsedError; // AI-generated tags
-  Map<String, Object> get aiAnnotations =>
-      throw _privateConstructorUsedError; // AI-generated annotations
-  DateTime? get lastAiProcessingTime => throw _privateConstructorUsedError;
-  String? get aiProcessingVersion => throw _privateConstructorUsedError;
+  WorkflowStage get stage => throw _privateConstructorUsedError;
+  DateTime? get expiryDate => throw _privateConstructorUsedError; // Sync
+  Map<String, Object> get syncMeta => throw _privateConstructorUsedError;
+  String? get syncVer => throw _privateConstructorUsedError;
+  Map<String, Object> get searchIndex =>
+      throw _privateConstructorUsedError; // Extension
+  T? get extraData => throw _privateConstructorUsedError; // Event sourcing
+  int get eventVer => throw _privateConstructorUsedError;
+  List<String> get pendingEvents => throw _privateConstructorUsedError;
+  Map<String, Object> get eventMeta => throw _privateConstructorUsedError;
+  int get historyLimit => throw _privateConstructorUsedError; // Versioning
+  int get dataVer => throw _privateConstructorUsedError;
+  int get structVer => throw _privateConstructorUsedError;
+  String? get lastVer =>
+      throw _privateConstructorUsedError; // Distributed locking
+  String? get distLockId => throw _privateConstructorUsedError;
+  DateTime? get distLockExpiry => throw _privateConstructorUsedError;
+  String? get distLockNode => throw _privateConstructorUsedError;
+  Map<String, dynamic> get lockMeta => throw _privateConstructorUsedError;
+  Map<String, int> get verVectors => throw _privateConstructorUsedError;
+  Duration get lockTimeout => throw _privateConstructorUsedError; // AI features
+  Map<String, List<double>> get aiVectors => throw _privateConstructorUsedError;
+  Map<String, double> get aiScores => throw _privateConstructorUsedError;
+  Map<String, String> get aiMeta => throw _privateConstructorUsedError;
+  List<String> get aiTags => throw _privateConstructorUsedError;
+  Map<String, Object> get aiNotes => throw _privateConstructorUsedError;
+  DateTime? get aiLastRun => throw _privateConstructorUsedError;
+  String? get aiVer => throw _privateConstructorUsedError;
 
   /// Serializes this BaseEntity to a JSON map.
   Map<String, dynamic> toJson(Object? Function(T) toJsonT) =>
@@ -151,79 +114,77 @@ abstract class $BaseEntityCopyWith<T extends Object, $Res> {
       _$BaseEntityCopyWithImpl<T, $Res, BaseEntity<T>>;
   @useResult
   $Res call(
-      {EntityId entityId,
-      String entityName,
-      String? entityDescription,
-      DateTime metaCreatedAt,
-      DateTime metaUpdatedAt,
-      String schemaVersion,
+      {EntityId id,
+      String name,
+      String? description,
+      DateTime createdAt,
+      DateTime updatedAt,
+      String schemaVer,
       EntityStatus status,
-      Map<String, Object> metaAttributes,
-      String? hierarchyPath,
-      int hierarchyDepth,
-      Map<String, List<EntityId>> relations,
-      int maxDepth,
-      List<EntityId> hierarchyAncestors,
-      EntityId? hierarchyParentId,
-      List<EntityId> childrenIds,
-      Map<String, String> subCollections,
-      Map<String, EntityMetadata> ancestorMetadata,
+      Map<String, Object> meta,
+      String? treePath,
+      int treeDepth,
+      Map<String, List<EntityId>> refs,
+      int treeMaxDepth,
+      List<EntityId> ancestors,
+      EntityId? parentId,
+      List<EntityId> childIds,
+      Map<String, String> subPaths,
+      Map<String, EntityMetadata> ancestorMeta,
       String? parentName,
-      List<String> searchablePath,
-      String? hierarchyLevel,
-      int hierarchyVersion,
-      DateTime? lastHierarchyUpdate,
+      List<String> searchPaths,
+      String? treeLevel,
+      int treeVersion,
+      DateTime? treeLastUpdate,
       UserAction owner,
-      UserAction createdBy,
-      UserAction lastModifiedBy,
-      UserAction? accessLastBy,
-      UserAction? lockedBy,
-      DateTime? lockExpiresAt,
-      UserAction? deletedBy,
-      @Assert('modificationHistory.length <= EntityConstants.maxHistoryLimit')
-      List<UserAction> modificationHistory,
-      @Assert('accessHistory.length <= EntityConstants.maxHistoryLimit')
-      List<UserAction> accessHistory,
-      bool accessIsPublic,
+      UserAction creator,
+      UserAction modifier,
+      UserAction? lastAccessor,
+      UserAction? lockOwner,
+      DateTime? lockExpiry,
+      UserAction? remover,
+      List<UserAction> modHistory,
+      List<UserAction> accessLog,
+      bool isPublic,
       int accessCount,
       List<String> tags,
       Map<String, String> labels,
       Priority priority,
-      WorkflowStage workflowStage,
-      DateTime? expiresAt,
-      Map<String, Object> syncMetadata,
-      String? lastSyncedVersion,
-      Map<String, Object> queryIndex,
-      T? additionalData,
-      int eventVersion,
-      List<String> eventPending,
-      Map<String, Object> eventMetadata,
+      WorkflowStage stage,
+      DateTime? expiryDate,
+      Map<String, Object> syncMeta,
+      String? syncVer,
+      Map<String, Object> searchIndex,
+      T? extraData,
+      int eventVer,
+      List<String> pendingEvents,
+      Map<String, Object> eventMeta,
       int historyLimit,
-      int entityVersion,
-      int structureVersion,
-      String? lastKnownVersion,
-      String? distributedLockId,
-      DateTime? distributedLockExpiry,
-      String? distributedLockNode,
-      Map<String, dynamic> lockMetadata,
-      Map<String, int> versionVectors,
+      int dataVer,
+      int structVer,
+      String? lastVer,
+      String? distLockId,
+      DateTime? distLockExpiry,
+      String? distLockNode,
+      Map<String, dynamic> lockMeta,
+      Map<String, int> verVectors,
       Duration lockTimeout,
-      Map<String, List<double>> aiEmbeddings,
+      Map<String, List<double>> aiVectors,
       Map<String, double> aiScores,
-      Map<String, String> aiMetadata,
+      Map<String, String> aiMeta,
       List<String> aiTags,
-      Map<String, Object> aiAnnotations,
-      DateTime? lastAiProcessingTime,
-      String? aiProcessingVersion});
+      Map<String, Object> aiNotes,
+      DateTime? aiLastRun,
+      String? aiVer});
 
-  $EntityIdCopyWith<$Res> get entityId;
-  $EntityIdCopyWith<$Res>? get hierarchyParentId;
+  $EntityIdCopyWith<$Res> get id;
+  $EntityIdCopyWith<$Res>? get parentId;
   $UserActionCopyWith<$Res> get owner;
-  $UserActionCopyWith<$Res> get createdBy;
-  $UserActionCopyWith<$Res> get lastModifiedBy;
-  $UserActionCopyWith<$Res>? get accessLastBy;
-  $UserActionCopyWith<$Res>? get lockedBy;
-  $UserActionCopyWith<$Res>? get deletedBy;
+  $UserActionCopyWith<$Res> get creator;
+  $UserActionCopyWith<$Res> get modifier;
+  $UserActionCopyWith<$Res>? get lastAccessor;
+  $UserActionCopyWith<$Res>? get lockOwner;
+  $UserActionCopyWith<$Res>? get remover;
 }
 
 /// @nodoc
@@ -241,197 +202,197 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? entityId = null,
-    Object? entityName = null,
-    Object? entityDescription = freezed,
-    Object? metaCreatedAt = null,
-    Object? metaUpdatedAt = null,
-    Object? schemaVersion = null,
+    Object? id = null,
+    Object? name = null,
+    Object? description = freezed,
+    Object? createdAt = null,
+    Object? updatedAt = null,
+    Object? schemaVer = null,
     Object? status = null,
-    Object? metaAttributes = null,
-    Object? hierarchyPath = freezed,
-    Object? hierarchyDepth = null,
-    Object? relations = null,
-    Object? maxDepth = null,
-    Object? hierarchyAncestors = null,
-    Object? hierarchyParentId = freezed,
-    Object? childrenIds = null,
-    Object? subCollections = null,
-    Object? ancestorMetadata = null,
+    Object? meta = null,
+    Object? treePath = freezed,
+    Object? treeDepth = null,
+    Object? refs = null,
+    Object? treeMaxDepth = null,
+    Object? ancestors = null,
+    Object? parentId = freezed,
+    Object? childIds = null,
+    Object? subPaths = null,
+    Object? ancestorMeta = null,
     Object? parentName = freezed,
-    Object? searchablePath = null,
-    Object? hierarchyLevel = freezed,
-    Object? hierarchyVersion = null,
-    Object? lastHierarchyUpdate = freezed,
+    Object? searchPaths = null,
+    Object? treeLevel = freezed,
+    Object? treeVersion = null,
+    Object? treeLastUpdate = freezed,
     Object? owner = null,
-    Object? createdBy = null,
-    Object? lastModifiedBy = null,
-    Object? accessLastBy = freezed,
-    Object? lockedBy = freezed,
-    Object? lockExpiresAt = freezed,
-    Object? deletedBy = freezed,
-    Object? modificationHistory = null,
-    Object? accessHistory = null,
-    Object? accessIsPublic = null,
+    Object? creator = null,
+    Object? modifier = null,
+    Object? lastAccessor = freezed,
+    Object? lockOwner = freezed,
+    Object? lockExpiry = freezed,
+    Object? remover = freezed,
+    Object? modHistory = null,
+    Object? accessLog = null,
+    Object? isPublic = null,
     Object? accessCount = null,
     Object? tags = null,
     Object? labels = null,
     Object? priority = null,
-    Object? workflowStage = null,
-    Object? expiresAt = freezed,
-    Object? syncMetadata = null,
-    Object? lastSyncedVersion = freezed,
-    Object? queryIndex = null,
-    Object? additionalData = freezed,
-    Object? eventVersion = null,
-    Object? eventPending = null,
-    Object? eventMetadata = null,
+    Object? stage = null,
+    Object? expiryDate = freezed,
+    Object? syncMeta = null,
+    Object? syncVer = freezed,
+    Object? searchIndex = null,
+    Object? extraData = freezed,
+    Object? eventVer = null,
+    Object? pendingEvents = null,
+    Object? eventMeta = null,
     Object? historyLimit = null,
-    Object? entityVersion = null,
-    Object? structureVersion = null,
-    Object? lastKnownVersion = freezed,
-    Object? distributedLockId = freezed,
-    Object? distributedLockExpiry = freezed,
-    Object? distributedLockNode = freezed,
-    Object? lockMetadata = null,
-    Object? versionVectors = null,
+    Object? dataVer = null,
+    Object? structVer = null,
+    Object? lastVer = freezed,
+    Object? distLockId = freezed,
+    Object? distLockExpiry = freezed,
+    Object? distLockNode = freezed,
+    Object? lockMeta = null,
+    Object? verVectors = null,
     Object? lockTimeout = null,
-    Object? aiEmbeddings = null,
+    Object? aiVectors = null,
     Object? aiScores = null,
-    Object? aiMetadata = null,
+    Object? aiMeta = null,
     Object? aiTags = null,
-    Object? aiAnnotations = null,
-    Object? lastAiProcessingTime = freezed,
-    Object? aiProcessingVersion = freezed,
+    Object? aiNotes = null,
+    Object? aiLastRun = freezed,
+    Object? aiVer = freezed,
   }) {
     return _then(_value.copyWith(
-      entityId: null == entityId
-          ? _value.entityId
-          : entityId // ignore: cast_nullable_to_non_nullable
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
               as EntityId,
-      entityName: null == entityName
-          ? _value.entityName
-          : entityName // ignore: cast_nullable_to_non_nullable
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
-      entityDescription: freezed == entityDescription
-          ? _value.entityDescription
-          : entityDescription // ignore: cast_nullable_to_non_nullable
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
               as String?,
-      metaCreatedAt: null == metaCreatedAt
-          ? _value.metaCreatedAt
-          : metaCreatedAt // ignore: cast_nullable_to_non_nullable
+      createdAt: null == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      metaUpdatedAt: null == metaUpdatedAt
-          ? _value.metaUpdatedAt
-          : metaUpdatedAt // ignore: cast_nullable_to_non_nullable
+      updatedAt: null == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      schemaVersion: null == schemaVersion
-          ? _value.schemaVersion
-          : schemaVersion // ignore: cast_nullable_to_non_nullable
+      schemaVer: null == schemaVer
+          ? _value.schemaVer
+          : schemaVer // ignore: cast_nullable_to_non_nullable
               as String,
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as EntityStatus,
-      metaAttributes: null == metaAttributes
-          ? _value.metaAttributes
-          : metaAttributes // ignore: cast_nullable_to_non_nullable
+      meta: null == meta
+          ? _value.meta
+          : meta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      hierarchyPath: freezed == hierarchyPath
-          ? _value.hierarchyPath
-          : hierarchyPath // ignore: cast_nullable_to_non_nullable
+      treePath: freezed == treePath
+          ? _value.treePath
+          : treePath // ignore: cast_nullable_to_non_nullable
               as String?,
-      hierarchyDepth: null == hierarchyDepth
-          ? _value.hierarchyDepth
-          : hierarchyDepth // ignore: cast_nullable_to_non_nullable
+      treeDepth: null == treeDepth
+          ? _value.treeDepth
+          : treeDepth // ignore: cast_nullable_to_non_nullable
               as int,
-      relations: null == relations
-          ? _value.relations
-          : relations // ignore: cast_nullable_to_non_nullable
+      refs: null == refs
+          ? _value.refs
+          : refs // ignore: cast_nullable_to_non_nullable
               as Map<String, List<EntityId>>,
-      maxDepth: null == maxDepth
-          ? _value.maxDepth
-          : maxDepth // ignore: cast_nullable_to_non_nullable
+      treeMaxDepth: null == treeMaxDepth
+          ? _value.treeMaxDepth
+          : treeMaxDepth // ignore: cast_nullable_to_non_nullable
               as int,
-      hierarchyAncestors: null == hierarchyAncestors
-          ? _value.hierarchyAncestors
-          : hierarchyAncestors // ignore: cast_nullable_to_non_nullable
+      ancestors: null == ancestors
+          ? _value.ancestors
+          : ancestors // ignore: cast_nullable_to_non_nullable
               as List<EntityId>,
-      hierarchyParentId: freezed == hierarchyParentId
-          ? _value.hierarchyParentId
-          : hierarchyParentId // ignore: cast_nullable_to_non_nullable
+      parentId: freezed == parentId
+          ? _value.parentId
+          : parentId // ignore: cast_nullable_to_non_nullable
               as EntityId?,
-      childrenIds: null == childrenIds
-          ? _value.childrenIds
-          : childrenIds // ignore: cast_nullable_to_non_nullable
+      childIds: null == childIds
+          ? _value.childIds
+          : childIds // ignore: cast_nullable_to_non_nullable
               as List<EntityId>,
-      subCollections: null == subCollections
-          ? _value.subCollections
-          : subCollections // ignore: cast_nullable_to_non_nullable
+      subPaths: null == subPaths
+          ? _value.subPaths
+          : subPaths // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
-      ancestorMetadata: null == ancestorMetadata
-          ? _value.ancestorMetadata
-          : ancestorMetadata // ignore: cast_nullable_to_non_nullable
+      ancestorMeta: null == ancestorMeta
+          ? _value.ancestorMeta
+          : ancestorMeta // ignore: cast_nullable_to_non_nullable
               as Map<String, EntityMetadata>,
       parentName: freezed == parentName
           ? _value.parentName
           : parentName // ignore: cast_nullable_to_non_nullable
               as String?,
-      searchablePath: null == searchablePath
-          ? _value.searchablePath
-          : searchablePath // ignore: cast_nullable_to_non_nullable
+      searchPaths: null == searchPaths
+          ? _value.searchPaths
+          : searchPaths // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      hierarchyLevel: freezed == hierarchyLevel
-          ? _value.hierarchyLevel
-          : hierarchyLevel // ignore: cast_nullable_to_non_nullable
+      treeLevel: freezed == treeLevel
+          ? _value.treeLevel
+          : treeLevel // ignore: cast_nullable_to_non_nullable
               as String?,
-      hierarchyVersion: null == hierarchyVersion
-          ? _value.hierarchyVersion
-          : hierarchyVersion // ignore: cast_nullable_to_non_nullable
+      treeVersion: null == treeVersion
+          ? _value.treeVersion
+          : treeVersion // ignore: cast_nullable_to_non_nullable
               as int,
-      lastHierarchyUpdate: freezed == lastHierarchyUpdate
-          ? _value.lastHierarchyUpdate
-          : lastHierarchyUpdate // ignore: cast_nullable_to_non_nullable
+      treeLastUpdate: freezed == treeLastUpdate
+          ? _value.treeLastUpdate
+          : treeLastUpdate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       owner: null == owner
           ? _value.owner
           : owner // ignore: cast_nullable_to_non_nullable
               as UserAction,
-      createdBy: null == createdBy
-          ? _value.createdBy
-          : createdBy // ignore: cast_nullable_to_non_nullable
+      creator: null == creator
+          ? _value.creator
+          : creator // ignore: cast_nullable_to_non_nullable
               as UserAction,
-      lastModifiedBy: null == lastModifiedBy
-          ? _value.lastModifiedBy
-          : lastModifiedBy // ignore: cast_nullable_to_non_nullable
+      modifier: null == modifier
+          ? _value.modifier
+          : modifier // ignore: cast_nullable_to_non_nullable
               as UserAction,
-      accessLastBy: freezed == accessLastBy
-          ? _value.accessLastBy
-          : accessLastBy // ignore: cast_nullable_to_non_nullable
+      lastAccessor: freezed == lastAccessor
+          ? _value.lastAccessor
+          : lastAccessor // ignore: cast_nullable_to_non_nullable
               as UserAction?,
-      lockedBy: freezed == lockedBy
-          ? _value.lockedBy
-          : lockedBy // ignore: cast_nullable_to_non_nullable
+      lockOwner: freezed == lockOwner
+          ? _value.lockOwner
+          : lockOwner // ignore: cast_nullable_to_non_nullable
               as UserAction?,
-      lockExpiresAt: freezed == lockExpiresAt
-          ? _value.lockExpiresAt
-          : lockExpiresAt // ignore: cast_nullable_to_non_nullable
+      lockExpiry: freezed == lockExpiry
+          ? _value.lockExpiry
+          : lockExpiry // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      deletedBy: freezed == deletedBy
-          ? _value.deletedBy
-          : deletedBy // ignore: cast_nullable_to_non_nullable
+      remover: freezed == remover
+          ? _value.remover
+          : remover // ignore: cast_nullable_to_non_nullable
               as UserAction?,
-      modificationHistory: null == modificationHistory
-          ? _value.modificationHistory
-          : modificationHistory // ignore: cast_nullable_to_non_nullable
+      modHistory: null == modHistory
+          ? _value.modHistory
+          : modHistory // ignore: cast_nullable_to_non_nullable
               as List<UserAction>,
-      accessHistory: null == accessHistory
-          ? _value.accessHistory
-          : accessHistory // ignore: cast_nullable_to_non_nullable
+      accessLog: null == accessLog
+          ? _value.accessLog
+          : accessLog // ignore: cast_nullable_to_non_nullable
               as List<UserAction>,
-      accessIsPublic: null == accessIsPublic
-          ? _value.accessIsPublic
-          : accessIsPublic // ignore: cast_nullable_to_non_nullable
+      isPublic: null == isPublic
+          ? _value.isPublic
+          : isPublic // ignore: cast_nullable_to_non_nullable
               as bool,
       accessCount: null == accessCount
           ? _value.accessCount
@@ -449,109 +410,109 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
           ? _value.priority
           : priority // ignore: cast_nullable_to_non_nullable
               as Priority,
-      workflowStage: null == workflowStage
-          ? _value.workflowStage
-          : workflowStage // ignore: cast_nullable_to_non_nullable
+      stage: null == stage
+          ? _value.stage
+          : stage // ignore: cast_nullable_to_non_nullable
               as WorkflowStage,
-      expiresAt: freezed == expiresAt
-          ? _value.expiresAt
-          : expiresAt // ignore: cast_nullable_to_non_nullable
+      expiryDate: freezed == expiryDate
+          ? _value.expiryDate
+          : expiryDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      syncMetadata: null == syncMetadata
-          ? _value.syncMetadata
-          : syncMetadata // ignore: cast_nullable_to_non_nullable
+      syncMeta: null == syncMeta
+          ? _value.syncMeta
+          : syncMeta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      lastSyncedVersion: freezed == lastSyncedVersion
-          ? _value.lastSyncedVersion
-          : lastSyncedVersion // ignore: cast_nullable_to_non_nullable
+      syncVer: freezed == syncVer
+          ? _value.syncVer
+          : syncVer // ignore: cast_nullable_to_non_nullable
               as String?,
-      queryIndex: null == queryIndex
-          ? _value.queryIndex
-          : queryIndex // ignore: cast_nullable_to_non_nullable
+      searchIndex: null == searchIndex
+          ? _value.searchIndex
+          : searchIndex // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      additionalData: freezed == additionalData
-          ? _value.additionalData
-          : additionalData // ignore: cast_nullable_to_non_nullable
+      extraData: freezed == extraData
+          ? _value.extraData
+          : extraData // ignore: cast_nullable_to_non_nullable
               as T?,
-      eventVersion: null == eventVersion
-          ? _value.eventVersion
-          : eventVersion // ignore: cast_nullable_to_non_nullable
+      eventVer: null == eventVer
+          ? _value.eventVer
+          : eventVer // ignore: cast_nullable_to_non_nullable
               as int,
-      eventPending: null == eventPending
-          ? _value.eventPending
-          : eventPending // ignore: cast_nullable_to_non_nullable
+      pendingEvents: null == pendingEvents
+          ? _value.pendingEvents
+          : pendingEvents // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      eventMetadata: null == eventMetadata
-          ? _value.eventMetadata
-          : eventMetadata // ignore: cast_nullable_to_non_nullable
+      eventMeta: null == eventMeta
+          ? _value.eventMeta
+          : eventMeta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
       historyLimit: null == historyLimit
           ? _value.historyLimit
           : historyLimit // ignore: cast_nullable_to_non_nullable
               as int,
-      entityVersion: null == entityVersion
-          ? _value.entityVersion
-          : entityVersion // ignore: cast_nullable_to_non_nullable
+      dataVer: null == dataVer
+          ? _value.dataVer
+          : dataVer // ignore: cast_nullable_to_non_nullable
               as int,
-      structureVersion: null == structureVersion
-          ? _value.structureVersion
-          : structureVersion // ignore: cast_nullable_to_non_nullable
+      structVer: null == structVer
+          ? _value.structVer
+          : structVer // ignore: cast_nullable_to_non_nullable
               as int,
-      lastKnownVersion: freezed == lastKnownVersion
-          ? _value.lastKnownVersion
-          : lastKnownVersion // ignore: cast_nullable_to_non_nullable
+      lastVer: freezed == lastVer
+          ? _value.lastVer
+          : lastVer // ignore: cast_nullable_to_non_nullable
               as String?,
-      distributedLockId: freezed == distributedLockId
-          ? _value.distributedLockId
-          : distributedLockId // ignore: cast_nullable_to_non_nullable
+      distLockId: freezed == distLockId
+          ? _value.distLockId
+          : distLockId // ignore: cast_nullable_to_non_nullable
               as String?,
-      distributedLockExpiry: freezed == distributedLockExpiry
-          ? _value.distributedLockExpiry
-          : distributedLockExpiry // ignore: cast_nullable_to_non_nullable
+      distLockExpiry: freezed == distLockExpiry
+          ? _value.distLockExpiry
+          : distLockExpiry // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      distributedLockNode: freezed == distributedLockNode
-          ? _value.distributedLockNode
-          : distributedLockNode // ignore: cast_nullable_to_non_nullable
+      distLockNode: freezed == distLockNode
+          ? _value.distLockNode
+          : distLockNode // ignore: cast_nullable_to_non_nullable
               as String?,
-      lockMetadata: null == lockMetadata
-          ? _value.lockMetadata
-          : lockMetadata // ignore: cast_nullable_to_non_nullable
+      lockMeta: null == lockMeta
+          ? _value.lockMeta
+          : lockMeta // ignore: cast_nullable_to_non_nullable
               as Map<String, dynamic>,
-      versionVectors: null == versionVectors
-          ? _value.versionVectors
-          : versionVectors // ignore: cast_nullable_to_non_nullable
+      verVectors: null == verVectors
+          ? _value.verVectors
+          : verVectors // ignore: cast_nullable_to_non_nullable
               as Map<String, int>,
       lockTimeout: null == lockTimeout
           ? _value.lockTimeout
           : lockTimeout // ignore: cast_nullable_to_non_nullable
               as Duration,
-      aiEmbeddings: null == aiEmbeddings
-          ? _value.aiEmbeddings
-          : aiEmbeddings // ignore: cast_nullable_to_non_nullable
+      aiVectors: null == aiVectors
+          ? _value.aiVectors
+          : aiVectors // ignore: cast_nullable_to_non_nullable
               as Map<String, List<double>>,
       aiScores: null == aiScores
           ? _value.aiScores
           : aiScores // ignore: cast_nullable_to_non_nullable
               as Map<String, double>,
-      aiMetadata: null == aiMetadata
-          ? _value.aiMetadata
-          : aiMetadata // ignore: cast_nullable_to_non_nullable
+      aiMeta: null == aiMeta
+          ? _value.aiMeta
+          : aiMeta // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
       aiTags: null == aiTags
           ? _value.aiTags
           : aiTags // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      aiAnnotations: null == aiAnnotations
-          ? _value.aiAnnotations
-          : aiAnnotations // ignore: cast_nullable_to_non_nullable
+      aiNotes: null == aiNotes
+          ? _value.aiNotes
+          : aiNotes // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      lastAiProcessingTime: freezed == lastAiProcessingTime
-          ? _value.lastAiProcessingTime
-          : lastAiProcessingTime // ignore: cast_nullable_to_non_nullable
+      aiLastRun: freezed == aiLastRun
+          ? _value.aiLastRun
+          : aiLastRun // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      aiProcessingVersion: freezed == aiProcessingVersion
-          ? _value.aiProcessingVersion
-          : aiProcessingVersion // ignore: cast_nullable_to_non_nullable
+      aiVer: freezed == aiVer
+          ? _value.aiVer
+          : aiVer // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
   }
@@ -560,9 +521,9 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $EntityIdCopyWith<$Res> get entityId {
-    return $EntityIdCopyWith<$Res>(_value.entityId, (value) {
-      return _then(_value.copyWith(entityId: value) as $Val);
+  $EntityIdCopyWith<$Res> get id {
+    return $EntityIdCopyWith<$Res>(_value.id, (value) {
+      return _then(_value.copyWith(id: value) as $Val);
     });
   }
 
@@ -570,13 +531,13 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $EntityIdCopyWith<$Res>? get hierarchyParentId {
-    if (_value.hierarchyParentId == null) {
+  $EntityIdCopyWith<$Res>? get parentId {
+    if (_value.parentId == null) {
       return null;
     }
 
-    return $EntityIdCopyWith<$Res>(_value.hierarchyParentId!, (value) {
-      return _then(_value.copyWith(hierarchyParentId: value) as $Val);
+    return $EntityIdCopyWith<$Res>(_value.parentId!, (value) {
+      return _then(_value.copyWith(parentId: value) as $Val);
     });
   }
 
@@ -594,9 +555,9 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserActionCopyWith<$Res> get createdBy {
-    return $UserActionCopyWith<$Res>(_value.createdBy, (value) {
-      return _then(_value.copyWith(createdBy: value) as $Val);
+  $UserActionCopyWith<$Res> get creator {
+    return $UserActionCopyWith<$Res>(_value.creator, (value) {
+      return _then(_value.copyWith(creator: value) as $Val);
     });
   }
 
@@ -604,9 +565,9 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserActionCopyWith<$Res> get lastModifiedBy {
-    return $UserActionCopyWith<$Res>(_value.lastModifiedBy, (value) {
-      return _then(_value.copyWith(lastModifiedBy: value) as $Val);
+  $UserActionCopyWith<$Res> get modifier {
+    return $UserActionCopyWith<$Res>(_value.modifier, (value) {
+      return _then(_value.copyWith(modifier: value) as $Val);
     });
   }
 
@@ -614,13 +575,13 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserActionCopyWith<$Res>? get accessLastBy {
-    if (_value.accessLastBy == null) {
+  $UserActionCopyWith<$Res>? get lastAccessor {
+    if (_value.lastAccessor == null) {
       return null;
     }
 
-    return $UserActionCopyWith<$Res>(_value.accessLastBy!, (value) {
-      return _then(_value.copyWith(accessLastBy: value) as $Val);
+    return $UserActionCopyWith<$Res>(_value.lastAccessor!, (value) {
+      return _then(_value.copyWith(lastAccessor: value) as $Val);
     });
   }
 
@@ -628,13 +589,13 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserActionCopyWith<$Res>? get lockedBy {
-    if (_value.lockedBy == null) {
+  $UserActionCopyWith<$Res>? get lockOwner {
+    if (_value.lockOwner == null) {
       return null;
     }
 
-    return $UserActionCopyWith<$Res>(_value.lockedBy!, (value) {
-      return _then(_value.copyWith(lockedBy: value) as $Val);
+    return $UserActionCopyWith<$Res>(_value.lockOwner!, (value) {
+      return _then(_value.copyWith(lockOwner: value) as $Val);
     });
   }
 
@@ -642,13 +603,13 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserActionCopyWith<$Res>? get deletedBy {
-    if (_value.deletedBy == null) {
+  $UserActionCopyWith<$Res>? get remover {
+    if (_value.remover == null) {
       return null;
     }
 
-    return $UserActionCopyWith<$Res>(_value.deletedBy!, (value) {
-      return _then(_value.copyWith(deletedBy: value) as $Val);
+    return $UserActionCopyWith<$Res>(_value.remover!, (value) {
+      return _then(_value.copyWith(remover: value) as $Val);
     });
   }
 }
@@ -662,87 +623,85 @@ abstract class _$$BaseEntityImplCopyWith<T extends Object, $Res>
   @override
   @useResult
   $Res call(
-      {EntityId entityId,
-      String entityName,
-      String? entityDescription,
-      DateTime metaCreatedAt,
-      DateTime metaUpdatedAt,
-      String schemaVersion,
+      {EntityId id,
+      String name,
+      String? description,
+      DateTime createdAt,
+      DateTime updatedAt,
+      String schemaVer,
       EntityStatus status,
-      Map<String, Object> metaAttributes,
-      String? hierarchyPath,
-      int hierarchyDepth,
-      Map<String, List<EntityId>> relations,
-      int maxDepth,
-      List<EntityId> hierarchyAncestors,
-      EntityId? hierarchyParentId,
-      List<EntityId> childrenIds,
-      Map<String, String> subCollections,
-      Map<String, EntityMetadata> ancestorMetadata,
+      Map<String, Object> meta,
+      String? treePath,
+      int treeDepth,
+      Map<String, List<EntityId>> refs,
+      int treeMaxDepth,
+      List<EntityId> ancestors,
+      EntityId? parentId,
+      List<EntityId> childIds,
+      Map<String, String> subPaths,
+      Map<String, EntityMetadata> ancestorMeta,
       String? parentName,
-      List<String> searchablePath,
-      String? hierarchyLevel,
-      int hierarchyVersion,
-      DateTime? lastHierarchyUpdate,
+      List<String> searchPaths,
+      String? treeLevel,
+      int treeVersion,
+      DateTime? treeLastUpdate,
       UserAction owner,
-      UserAction createdBy,
-      UserAction lastModifiedBy,
-      UserAction? accessLastBy,
-      UserAction? lockedBy,
-      DateTime? lockExpiresAt,
-      UserAction? deletedBy,
-      @Assert('modificationHistory.length <= EntityConstants.maxHistoryLimit')
-      List<UserAction> modificationHistory,
-      @Assert('accessHistory.length <= EntityConstants.maxHistoryLimit')
-      List<UserAction> accessHistory,
-      bool accessIsPublic,
+      UserAction creator,
+      UserAction modifier,
+      UserAction? lastAccessor,
+      UserAction? lockOwner,
+      DateTime? lockExpiry,
+      UserAction? remover,
+      List<UserAction> modHistory,
+      List<UserAction> accessLog,
+      bool isPublic,
       int accessCount,
       List<String> tags,
       Map<String, String> labels,
       Priority priority,
-      WorkflowStage workflowStage,
-      DateTime? expiresAt,
-      Map<String, Object> syncMetadata,
-      String? lastSyncedVersion,
-      Map<String, Object> queryIndex,
-      T? additionalData,
-      int eventVersion,
-      List<String> eventPending,
-      Map<String, Object> eventMetadata,
+      WorkflowStage stage,
+      DateTime? expiryDate,
+      Map<String, Object> syncMeta,
+      String? syncVer,
+      Map<String, Object> searchIndex,
+      T? extraData,
+      int eventVer,
+      List<String> pendingEvents,
+      Map<String, Object> eventMeta,
       int historyLimit,
-      int entityVersion,
-      int structureVersion,
-      String? lastKnownVersion,
-      String? distributedLockId,
-      DateTime? distributedLockExpiry,
-      String? distributedLockNode,
-      Map<String, dynamic> lockMetadata,
-      Map<String, int> versionVectors,
+      int dataVer,
+      int structVer,
+      String? lastVer,
+      String? distLockId,
+      DateTime? distLockExpiry,
+      String? distLockNode,
+      Map<String, dynamic> lockMeta,
+      Map<String, int> verVectors,
       Duration lockTimeout,
-      Map<String, List<double>> aiEmbeddings,
+      Map<String, List<double>> aiVectors,
       Map<String, double> aiScores,
-      Map<String, String> aiMetadata,
+      Map<String, String> aiMeta,
       List<String> aiTags,
-      Map<String, Object> aiAnnotations,
-      DateTime? lastAiProcessingTime,
-      String? aiProcessingVersion});
+      Map<String, Object> aiNotes,
+      DateTime? aiLastRun,
+      String? aiVer});
 
   @override
-  $EntityIdCopyWith<$Res> get entityId;
+  $EntityIdCopyWith<$Res> get id;
   @override
-  $EntityIdCopyWith<$Res>? get hierarchyParentId;
+  $EntityIdCopyWith<$Res>? get parentId;
   @override
   $UserActionCopyWith<$Res> get owner;
   @override
-  $UserActionCopyWith<$Res> get createdBy;
+  $UserActionCopyWith<$Res> get creator;
   @override
-  $UserActionCopyWith<$Res> get lastModifiedBy;
+  $UserActionCopyWith<$Res> get modifier;
   @override
-  $UserActionCopyWith<$Res>? get accessLastBy;
+  $UserActionCopyWith<$Res>? get lastAccessor;
   @override
-  $UserActionCopyWith<$Res>? get lockedBy;
+  $UserActionCopyWith<$Res>? get lockOwner;
   @override
-  $UserActionCopyWith<$Res>? get deletedBy;
+  $UserActionCopyWith<$Res>? get remover;
 }
 
 /// @nodoc
@@ -758,197 +717,197 @@ class __$$BaseEntityImplCopyWithImpl<T extends Object, $Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? entityId = null,
-    Object? entityName = null,
-    Object? entityDescription = freezed,
-    Object? metaCreatedAt = null,
-    Object? metaUpdatedAt = null,
-    Object? schemaVersion = null,
+    Object? id = null,
+    Object? name = null,
+    Object? description = freezed,
+    Object? createdAt = null,
+    Object? updatedAt = null,
+    Object? schemaVer = null,
     Object? status = null,
-    Object? metaAttributes = null,
-    Object? hierarchyPath = freezed,
-    Object? hierarchyDepth = null,
-    Object? relations = null,
-    Object? maxDepth = null,
-    Object? hierarchyAncestors = null,
-    Object? hierarchyParentId = freezed,
-    Object? childrenIds = null,
-    Object? subCollections = null,
-    Object? ancestorMetadata = null,
+    Object? meta = null,
+    Object? treePath = freezed,
+    Object? treeDepth = null,
+    Object? refs = null,
+    Object? treeMaxDepth = null,
+    Object? ancestors = null,
+    Object? parentId = freezed,
+    Object? childIds = null,
+    Object? subPaths = null,
+    Object? ancestorMeta = null,
     Object? parentName = freezed,
-    Object? searchablePath = null,
-    Object? hierarchyLevel = freezed,
-    Object? hierarchyVersion = null,
-    Object? lastHierarchyUpdate = freezed,
+    Object? searchPaths = null,
+    Object? treeLevel = freezed,
+    Object? treeVersion = null,
+    Object? treeLastUpdate = freezed,
     Object? owner = null,
-    Object? createdBy = null,
-    Object? lastModifiedBy = null,
-    Object? accessLastBy = freezed,
-    Object? lockedBy = freezed,
-    Object? lockExpiresAt = freezed,
-    Object? deletedBy = freezed,
-    Object? modificationHistory = null,
-    Object? accessHistory = null,
-    Object? accessIsPublic = null,
+    Object? creator = null,
+    Object? modifier = null,
+    Object? lastAccessor = freezed,
+    Object? lockOwner = freezed,
+    Object? lockExpiry = freezed,
+    Object? remover = freezed,
+    Object? modHistory = null,
+    Object? accessLog = null,
+    Object? isPublic = null,
     Object? accessCount = null,
     Object? tags = null,
     Object? labels = null,
     Object? priority = null,
-    Object? workflowStage = null,
-    Object? expiresAt = freezed,
-    Object? syncMetadata = null,
-    Object? lastSyncedVersion = freezed,
-    Object? queryIndex = null,
-    Object? additionalData = freezed,
-    Object? eventVersion = null,
-    Object? eventPending = null,
-    Object? eventMetadata = null,
+    Object? stage = null,
+    Object? expiryDate = freezed,
+    Object? syncMeta = null,
+    Object? syncVer = freezed,
+    Object? searchIndex = null,
+    Object? extraData = freezed,
+    Object? eventVer = null,
+    Object? pendingEvents = null,
+    Object? eventMeta = null,
     Object? historyLimit = null,
-    Object? entityVersion = null,
-    Object? structureVersion = null,
-    Object? lastKnownVersion = freezed,
-    Object? distributedLockId = freezed,
-    Object? distributedLockExpiry = freezed,
-    Object? distributedLockNode = freezed,
-    Object? lockMetadata = null,
-    Object? versionVectors = null,
+    Object? dataVer = null,
+    Object? structVer = null,
+    Object? lastVer = freezed,
+    Object? distLockId = freezed,
+    Object? distLockExpiry = freezed,
+    Object? distLockNode = freezed,
+    Object? lockMeta = null,
+    Object? verVectors = null,
     Object? lockTimeout = null,
-    Object? aiEmbeddings = null,
+    Object? aiVectors = null,
     Object? aiScores = null,
-    Object? aiMetadata = null,
+    Object? aiMeta = null,
     Object? aiTags = null,
-    Object? aiAnnotations = null,
-    Object? lastAiProcessingTime = freezed,
-    Object? aiProcessingVersion = freezed,
+    Object? aiNotes = null,
+    Object? aiLastRun = freezed,
+    Object? aiVer = freezed,
   }) {
     return _then(_$BaseEntityImpl<T>(
-      entityId: null == entityId
-          ? _value.entityId
-          : entityId // ignore: cast_nullable_to_non_nullable
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
               as EntityId,
-      entityName: null == entityName
-          ? _value.entityName
-          : entityName // ignore: cast_nullable_to_non_nullable
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
-      entityDescription: freezed == entityDescription
-          ? _value.entityDescription
-          : entityDescription // ignore: cast_nullable_to_non_nullable
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
               as String?,
-      metaCreatedAt: null == metaCreatedAt
-          ? _value.metaCreatedAt
-          : metaCreatedAt // ignore: cast_nullable_to_non_nullable
+      createdAt: null == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      metaUpdatedAt: null == metaUpdatedAt
-          ? _value.metaUpdatedAt
-          : metaUpdatedAt // ignore: cast_nullable_to_non_nullable
+      updatedAt: null == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      schemaVersion: null == schemaVersion
-          ? _value.schemaVersion
-          : schemaVersion // ignore: cast_nullable_to_non_nullable
+      schemaVer: null == schemaVer
+          ? _value.schemaVer
+          : schemaVer // ignore: cast_nullable_to_non_nullable
               as String,
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as EntityStatus,
-      metaAttributes: null == metaAttributes
-          ? _value._metaAttributes
-          : metaAttributes // ignore: cast_nullable_to_non_nullable
+      meta: null == meta
+          ? _value._meta
+          : meta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      hierarchyPath: freezed == hierarchyPath
-          ? _value.hierarchyPath
-          : hierarchyPath // ignore: cast_nullable_to_non_nullable
+      treePath: freezed == treePath
+          ? _value.treePath
+          : treePath // ignore: cast_nullable_to_non_nullable
               as String?,
-      hierarchyDepth: null == hierarchyDepth
-          ? _value.hierarchyDepth
-          : hierarchyDepth // ignore: cast_nullable_to_non_nullable
+      treeDepth: null == treeDepth
+          ? _value.treeDepth
+          : treeDepth // ignore: cast_nullable_to_non_nullable
               as int,
-      relations: null == relations
-          ? _value._relations
-          : relations // ignore: cast_nullable_to_non_nullable
+      refs: null == refs
+          ? _value._refs
+          : refs // ignore: cast_nullable_to_non_nullable
               as Map<String, List<EntityId>>,
-      maxDepth: null == maxDepth
-          ? _value.maxDepth
-          : maxDepth // ignore: cast_nullable_to_non_nullable
+      treeMaxDepth: null == treeMaxDepth
+          ? _value.treeMaxDepth
+          : treeMaxDepth // ignore: cast_nullable_to_non_nullable
               as int,
-      hierarchyAncestors: null == hierarchyAncestors
-          ? _value._hierarchyAncestors
-          : hierarchyAncestors // ignore: cast_nullable_to_non_nullable
+      ancestors: null == ancestors
+          ? _value._ancestors
+          : ancestors // ignore: cast_nullable_to_non_nullable
               as List<EntityId>,
-      hierarchyParentId: freezed == hierarchyParentId
-          ? _value.hierarchyParentId
-          : hierarchyParentId // ignore: cast_nullable_to_non_nullable
+      parentId: freezed == parentId
+          ? _value.parentId
+          : parentId // ignore: cast_nullable_to_non_nullable
               as EntityId?,
-      childrenIds: null == childrenIds
-          ? _value._childrenIds
-          : childrenIds // ignore: cast_nullable_to_non_nullable
+      childIds: null == childIds
+          ? _value._childIds
+          : childIds // ignore: cast_nullable_to_non_nullable
               as List<EntityId>,
-      subCollections: null == subCollections
-          ? _value._subCollections
-          : subCollections // ignore: cast_nullable_to_non_nullable
+      subPaths: null == subPaths
+          ? _value._subPaths
+          : subPaths // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
-      ancestorMetadata: null == ancestorMetadata
-          ? _value._ancestorMetadata
-          : ancestorMetadata // ignore: cast_nullable_to_non_nullable
+      ancestorMeta: null == ancestorMeta
+          ? _value._ancestorMeta
+          : ancestorMeta // ignore: cast_nullable_to_non_nullable
               as Map<String, EntityMetadata>,
       parentName: freezed == parentName
           ? _value.parentName
           : parentName // ignore: cast_nullable_to_non_nullable
               as String?,
-      searchablePath: null == searchablePath
-          ? _value._searchablePath
-          : searchablePath // ignore: cast_nullable_to_non_nullable
+      searchPaths: null == searchPaths
+          ? _value._searchPaths
+          : searchPaths // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      hierarchyLevel: freezed == hierarchyLevel
-          ? _value.hierarchyLevel
-          : hierarchyLevel // ignore: cast_nullable_to_non_nullable
+      treeLevel: freezed == treeLevel
+          ? _value.treeLevel
+          : treeLevel // ignore: cast_nullable_to_non_nullable
               as String?,
-      hierarchyVersion: null == hierarchyVersion
-          ? _value.hierarchyVersion
-          : hierarchyVersion // ignore: cast_nullable_to_non_nullable
+      treeVersion: null == treeVersion
+          ? _value.treeVersion
+          : treeVersion // ignore: cast_nullable_to_non_nullable
               as int,
-      lastHierarchyUpdate: freezed == lastHierarchyUpdate
-          ? _value.lastHierarchyUpdate
-          : lastHierarchyUpdate // ignore: cast_nullable_to_non_nullable
+      treeLastUpdate: freezed == treeLastUpdate
+          ? _value.treeLastUpdate
+          : treeLastUpdate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       owner: null == owner
           ? _value.owner
           : owner // ignore: cast_nullable_to_non_nullable
               as UserAction,
-      createdBy: null == createdBy
-          ? _value.createdBy
-          : createdBy // ignore: cast_nullable_to_non_nullable
+      creator: null == creator
+          ? _value.creator
+          : creator // ignore: cast_nullable_to_non_nullable
               as UserAction,
-      lastModifiedBy: null == lastModifiedBy
-          ? _value.lastModifiedBy
-          : lastModifiedBy // ignore: cast_nullable_to_non_nullable
+      modifier: null == modifier
+          ? _value.modifier
+          : modifier // ignore: cast_nullable_to_non_nullable
               as UserAction,
-      accessLastBy: freezed == accessLastBy
-          ? _value.accessLastBy
-          : accessLastBy // ignore: cast_nullable_to_non_nullable
+      lastAccessor: freezed == lastAccessor
+          ? _value.lastAccessor
+          : lastAccessor // ignore: cast_nullable_to_non_nullable
               as UserAction?,
-      lockedBy: freezed == lockedBy
-          ? _value.lockedBy
-          : lockedBy // ignore: cast_nullable_to_non_nullable
+      lockOwner: freezed == lockOwner
+          ? _value.lockOwner
+          : lockOwner // ignore: cast_nullable_to_non_nullable
               as UserAction?,
-      lockExpiresAt: freezed == lockExpiresAt
-          ? _value.lockExpiresAt
-          : lockExpiresAt // ignore: cast_nullable_to_non_nullable
+      lockExpiry: freezed == lockExpiry
+          ? _value.lockExpiry
+          : lockExpiry // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      deletedBy: freezed == deletedBy
-          ? _value.deletedBy
-          : deletedBy // ignore: cast_nullable_to_non_nullable
+      remover: freezed == remover
+          ? _value.remover
+          : remover // ignore: cast_nullable_to_non_nullable
               as UserAction?,
-      modificationHistory: null == modificationHistory
-          ? _value._modificationHistory
-          : modificationHistory // ignore: cast_nullable_to_non_nullable
+      modHistory: null == modHistory
+          ? _value._modHistory
+          : modHistory // ignore: cast_nullable_to_non_nullable
               as List<UserAction>,
-      accessHistory: null == accessHistory
-          ? _value._accessHistory
-          : accessHistory // ignore: cast_nullable_to_non_nullable
+      accessLog: null == accessLog
+          ? _value._accessLog
+          : accessLog // ignore: cast_nullable_to_non_nullable
               as List<UserAction>,
-      accessIsPublic: null == accessIsPublic
-          ? _value.accessIsPublic
-          : accessIsPublic // ignore: cast_nullable_to_non_nullable
+      isPublic: null == isPublic
+          ? _value.isPublic
+          : isPublic // ignore: cast_nullable_to_non_nullable
               as bool,
       accessCount: null == accessCount
           ? _value.accessCount
@@ -966,109 +925,109 @@ class __$$BaseEntityImplCopyWithImpl<T extends Object, $Res>
           ? _value.priority
           : priority // ignore: cast_nullable_to_non_nullable
               as Priority,
-      workflowStage: null == workflowStage
-          ? _value.workflowStage
-          : workflowStage // ignore: cast_nullable_to_non_nullable
+      stage: null == stage
+          ? _value.stage
+          : stage // ignore: cast_nullable_to_non_nullable
               as WorkflowStage,
-      expiresAt: freezed == expiresAt
-          ? _value.expiresAt
-          : expiresAt // ignore: cast_nullable_to_non_nullable
+      expiryDate: freezed == expiryDate
+          ? _value.expiryDate
+          : expiryDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      syncMetadata: null == syncMetadata
-          ? _value._syncMetadata
-          : syncMetadata // ignore: cast_nullable_to_non_nullable
+      syncMeta: null == syncMeta
+          ? _value._syncMeta
+          : syncMeta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      lastSyncedVersion: freezed == lastSyncedVersion
-          ? _value.lastSyncedVersion
-          : lastSyncedVersion // ignore: cast_nullable_to_non_nullable
+      syncVer: freezed == syncVer
+          ? _value.syncVer
+          : syncVer // ignore: cast_nullable_to_non_nullable
               as String?,
-      queryIndex: null == queryIndex
-          ? _value._queryIndex
-          : queryIndex // ignore: cast_nullable_to_non_nullable
+      searchIndex: null == searchIndex
+          ? _value._searchIndex
+          : searchIndex // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      additionalData: freezed == additionalData
-          ? _value.additionalData
-          : additionalData // ignore: cast_nullable_to_non_nullable
+      extraData: freezed == extraData
+          ? _value.extraData
+          : extraData // ignore: cast_nullable_to_non_nullable
               as T?,
-      eventVersion: null == eventVersion
-          ? _value.eventVersion
-          : eventVersion // ignore: cast_nullable_to_non_nullable
+      eventVer: null == eventVer
+          ? _value.eventVer
+          : eventVer // ignore: cast_nullable_to_non_nullable
               as int,
-      eventPending: null == eventPending
-          ? _value._eventPending
-          : eventPending // ignore: cast_nullable_to_non_nullable
+      pendingEvents: null == pendingEvents
+          ? _value._pendingEvents
+          : pendingEvents // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      eventMetadata: null == eventMetadata
-          ? _value._eventMetadata
-          : eventMetadata // ignore: cast_nullable_to_non_nullable
+      eventMeta: null == eventMeta
+          ? _value._eventMeta
+          : eventMeta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
       historyLimit: null == historyLimit
           ? _value.historyLimit
           : historyLimit // ignore: cast_nullable_to_non_nullable
               as int,
-      entityVersion: null == entityVersion
-          ? _value.entityVersion
-          : entityVersion // ignore: cast_nullable_to_non_nullable
+      dataVer: null == dataVer
+          ? _value.dataVer
+          : dataVer // ignore: cast_nullable_to_non_nullable
               as int,
-      structureVersion: null == structureVersion
-          ? _value.structureVersion
-          : structureVersion // ignore: cast_nullable_to_non_nullable
+      structVer: null == structVer
+          ? _value.structVer
+          : structVer // ignore: cast_nullable_to_non_nullable
               as int,
-      lastKnownVersion: freezed == lastKnownVersion
-          ? _value.lastKnownVersion
-          : lastKnownVersion // ignore: cast_nullable_to_non_nullable
+      lastVer: freezed == lastVer
+          ? _value.lastVer
+          : lastVer // ignore: cast_nullable_to_non_nullable
               as String?,
-      distributedLockId: freezed == distributedLockId
-          ? _value.distributedLockId
-          : distributedLockId // ignore: cast_nullable_to_non_nullable
+      distLockId: freezed == distLockId
+          ? _value.distLockId
+          : distLockId // ignore: cast_nullable_to_non_nullable
               as String?,
-      distributedLockExpiry: freezed == distributedLockExpiry
-          ? _value.distributedLockExpiry
-          : distributedLockExpiry // ignore: cast_nullable_to_non_nullable
+      distLockExpiry: freezed == distLockExpiry
+          ? _value.distLockExpiry
+          : distLockExpiry // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      distributedLockNode: freezed == distributedLockNode
-          ? _value.distributedLockNode
-          : distributedLockNode // ignore: cast_nullable_to_non_nullable
+      distLockNode: freezed == distLockNode
+          ? _value.distLockNode
+          : distLockNode // ignore: cast_nullable_to_non_nullable
               as String?,
-      lockMetadata: null == lockMetadata
-          ? _value._lockMetadata
-          : lockMetadata // ignore: cast_nullable_to_non_nullable
+      lockMeta: null == lockMeta
+          ? _value._lockMeta
+          : lockMeta // ignore: cast_nullable_to_non_nullable
               as Map<String, dynamic>,
-      versionVectors: null == versionVectors
-          ? _value._versionVectors
-          : versionVectors // ignore: cast_nullable_to_non_nullable
+      verVectors: null == verVectors
+          ? _value._verVectors
+          : verVectors // ignore: cast_nullable_to_non_nullable
               as Map<String, int>,
       lockTimeout: null == lockTimeout
           ? _value.lockTimeout
           : lockTimeout // ignore: cast_nullable_to_non_nullable
               as Duration,
-      aiEmbeddings: null == aiEmbeddings
-          ? _value._aiEmbeddings
-          : aiEmbeddings // ignore: cast_nullable_to_non_nullable
+      aiVectors: null == aiVectors
+          ? _value._aiVectors
+          : aiVectors // ignore: cast_nullable_to_non_nullable
               as Map<String, List<double>>,
       aiScores: null == aiScores
           ? _value._aiScores
           : aiScores // ignore: cast_nullable_to_non_nullable
               as Map<String, double>,
-      aiMetadata: null == aiMetadata
-          ? _value._aiMetadata
-          : aiMetadata // ignore: cast_nullable_to_non_nullable
+      aiMeta: null == aiMeta
+          ? _value._aiMeta
+          : aiMeta // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
       aiTags: null == aiTags
           ? _value._aiTags
           : aiTags // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      aiAnnotations: null == aiAnnotations
-          ? _value._aiAnnotations
-          : aiAnnotations // ignore: cast_nullable_to_non_nullable
+      aiNotes: null == aiNotes
+          ? _value._aiNotes
+          : aiNotes // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      lastAiProcessingTime: freezed == lastAiProcessingTime
-          ? _value.lastAiProcessingTime
-          : lastAiProcessingTime // ignore: cast_nullable_to_non_nullable
+      aiLastRun: freezed == aiLastRun
+          ? _value.aiLastRun
+          : aiLastRun // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      aiProcessingVersion: freezed == aiProcessingVersion
-          ? _value.aiProcessingVersion
-          : aiProcessingVersion // ignore: cast_nullable_to_non_nullable
+      aiVer: freezed == aiVer
+          ? _value.aiVer
+          : aiVer // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -1078,274 +1037,246 @@ class __$$BaseEntityImplCopyWithImpl<T extends Object, $Res>
 @JsonSerializable(genericArgumentFactories: true)
 class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
   const _$BaseEntityImpl(
-      {required this.entityId,
-      required this.entityName,
-      this.entityDescription,
-      required this.metaCreatedAt,
-      required this.metaUpdatedAt,
-      this.schemaVersion = EntityConstants.defaultVersion,
-      this.status = EntityConstants.defaultStatus,
-      final Map<String, Object> metaAttributes = const <String, Object>{},
-      this.hierarchyPath,
-      this.hierarchyDepth = 0,
-      final Map<String, List<EntityId>> relations =
-          const <String, List<EntityId>>{},
-      this.maxDepth = 10,
-      final List<EntityId> hierarchyAncestors = const <EntityId>[],
-      this.hierarchyParentId,
-      final List<EntityId> childrenIds = const <EntityId>[],
-      final Map<String, String> subCollections = const <String, String>{},
-      final Map<String, EntityMetadata> ancestorMetadata = const {},
+      {required this.id,
+      required this.name,
+      this.description,
+      required this.createdAt,
+      required this.updatedAt,
+      this.schemaVer = EntityDefaults.version,
+      this.status = EntityDefaults.status,
+      final Map<String, Object> meta = const {},
+      this.treePath,
+      this.treeDepth = 0,
+      final Map<String, List<EntityId>> refs = const {},
+      this.treeMaxDepth = EntityLimits.hierarchyDepthMax,
+      final List<EntityId> ancestors = const [],
+      this.parentId,
+      final List<EntityId> childIds = const [],
+      final Map<String, String> subPaths = const {},
+      final Map<String, EntityMetadata> ancestorMeta = const {},
       this.parentName,
-      final List<String> searchablePath = const [],
-      this.hierarchyLevel,
-      this.hierarchyVersion = 0,
-      this.lastHierarchyUpdate,
+      final List<String> searchPaths = const [],
+      this.treeLevel,
+      this.treeVersion = 0,
+      this.treeLastUpdate,
       required this.owner,
-      required this.createdBy,
-      required this.lastModifiedBy,
-      this.accessLastBy,
-      this.lockedBy,
-      this.lockExpiresAt,
-      this.deletedBy,
-      @Assert('modificationHistory.length <= EntityConstants.maxHistoryLimit')
-      final List<UserAction> modificationHistory = const <UserAction>[],
-      @Assert('accessHistory.length <= EntityConstants.maxHistoryLimit')
-      final List<UserAction> accessHistory = const <UserAction>[],
-      this.accessIsPublic = EntityConstants.defaultIsPublic,
-      this.accessCount = EntityConstants.defaultAccessCount,
+      required this.creator,
+      required this.modifier,
+      this.lastAccessor,
+      this.lockOwner,
+      this.lockExpiry,
+      this.remover,
+      final List<UserAction> modHistory = const [],
+      final List<UserAction> accessLog = const [],
+      this.isPublic = EntityDefaults.isPublic,
+      this.accessCount = EntityDefaults.accessCount,
       final List<String> tags = const [],
       final Map<String, String> labels = const {},
-      this.priority = EntityConstants.defaultPriority,
-      this.workflowStage = EntityConstants.defaultWorkflowStage,
-      this.expiresAt,
-      final Map<String, Object> syncMetadata = const {},
-      this.lastSyncedVersion,
-      final Map<String, Object> queryIndex = const {},
-      this.additionalData,
-      this.eventVersion = 0,
-      final List<String> eventPending = const <String>[],
-      final Map<String, Object> eventMetadata = const <String, Object>{},
-      this.historyLimit = EntityConstants.defaultHistoryLimit,
-      this.entityVersion = EntityConstants.initialVersion,
-      this.structureVersion = EntityConstants.initialVersion,
-      this.lastKnownVersion,
-      this.distributedLockId,
-      this.distributedLockExpiry,
-      this.distributedLockNode,
-      final Map<String, dynamic> lockMetadata = const {},
-      final Map<String, int> versionVectors = const {},
-      this.lockTimeout = EntityConstants.defaultLockTimeout,
-      final Map<String, List<double>> aiEmbeddings = const {},
+      this.priority = EntityDefaults.priority,
+      this.stage = EntityDefaults.stage,
+      this.expiryDate,
+      final Map<String, Object> syncMeta = const {},
+      this.syncVer,
+      final Map<String, Object> searchIndex = const {},
+      this.extraData,
+      this.eventVer = 0,
+      final List<String> pendingEvents = const [],
+      final Map<String, Object> eventMeta = const {},
+      this.historyLimit = EntityLimits.historyDefault,
+      this.dataVer = 1,
+      this.structVer = 1,
+      this.lastVer,
+      this.distLockId,
+      this.distLockExpiry,
+      this.distLockNode,
+      final Map<String, dynamic> lockMeta = const {},
+      final Map<String, int> verVectors = const {},
+      this.lockTimeout = LockDurations.timeout,
+      final Map<String, List<double>> aiVectors = const {},
       final Map<String, double> aiScores = const {},
-      final Map<String, String> aiMetadata = const {},
+      final Map<String, String> aiMeta = const {},
       final List<String> aiTags = const [],
-      final Map<String, Object> aiAnnotations = const {},
-      this.lastAiProcessingTime,
-      this.aiProcessingVersion})
-      : _metaAttributes = metaAttributes,
-        _relations = relations,
-        _hierarchyAncestors = hierarchyAncestors,
-        _childrenIds = childrenIds,
-        _subCollections = subCollections,
-        _ancestorMetadata = ancestorMetadata,
-        _searchablePath = searchablePath,
-        _modificationHistory = modificationHistory,
-        _accessHistory = accessHistory,
+      final Map<String, Object> aiNotes = const {},
+      this.aiLastRun,
+      this.aiVer})
+      : _meta = meta,
+        _refs = refs,
+        _ancestors = ancestors,
+        _childIds = childIds,
+        _subPaths = subPaths,
+        _ancestorMeta = ancestorMeta,
+        _searchPaths = searchPaths,
+        _modHistory = modHistory,
+        _accessLog = accessLog,
         _tags = tags,
         _labels = labels,
-        _syncMetadata = syncMetadata,
-        _queryIndex = queryIndex,
-        _eventPending = eventPending,
-        _eventMetadata = eventMetadata,
-        _lockMetadata = lockMetadata,
-        _versionVectors = versionVectors,
-        _aiEmbeddings = aiEmbeddings,
+        _syncMeta = syncMeta,
+        _searchIndex = searchIndex,
+        _pendingEvents = pendingEvents,
+        _eventMeta = eventMeta,
+        _lockMeta = lockMeta,
+        _verVectors = verVectors,
+        _aiVectors = aiVectors,
         _aiScores = aiScores,
-        _aiMetadata = aiMetadata,
+        _aiMeta = aiMeta,
         _aiTags = aiTags,
-        _aiAnnotations = aiAnnotations,
+        _aiNotes = aiNotes,
         super._();
 
   factory _$BaseEntityImpl.fromJson(
           Map<String, dynamic> json, T Function(Object?) fromJsonT) =>
       _$$BaseEntityImplFromJson(json, fromJsonT);
 
-// Update identifiers to use EntityId
+// Core properties
   @override
-  final EntityId entityId;
-// renamed from uuid to id
+  final EntityId id;
   @override
-  final String entityName;
+  final String name;
   @override
-  final String? entityDescription;
+  final String? description;
 // Metadata
   @override
-  final DateTime metaCreatedAt;
+  final DateTime createdAt;
   @override
-  final DateTime metaUpdatedAt;
+  final DateTime updatedAt;
   @override
   @JsonKey()
-  final String schemaVersion;
+  final String schemaVer;
   @override
   @JsonKey()
   final EntityStatus status;
-  final Map<String, Object> _metaAttributes;
+  final Map<String, Object> _meta;
   @override
   @JsonKey()
-  Map<String, Object> get metaAttributes {
-    if (_metaAttributes is EqualUnmodifiableMapView) return _metaAttributes;
+  Map<String, Object> get meta {
+    if (_meta is EqualUnmodifiableMapView) return _meta;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_metaAttributes);
+    return EqualUnmodifiableMapView(_meta);
   }
 
-// Hierarchy and Relations (using Materialized Path)
+// Hierarchy
   @override
-  final String? hierarchyPath;
-  @override
-  @JsonKey()
-  final int hierarchyDepth;
-  final Map<String, List<EntityId>> _relations;
+  final String? treePath;
   @override
   @JsonKey()
-  Map<String, List<EntityId>> get relations {
-    if (_relations is EqualUnmodifiableMapView) return _relations;
+  final int treeDepth;
+  final Map<String, List<EntityId>> _refs;
+  @override
+  @JsonKey()
+  Map<String, List<EntityId>> get refs {
+    if (_refs is EqualUnmodifiableMapView) return _refs;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_relations);
+    return EqualUnmodifiableMapView(_refs);
   }
 
   @override
   @JsonKey()
-  final int maxDepth;
-// Maximum allowed depth for hierarchical structures
-// Firestore Hierarchy Optimizations
-  final List<EntityId> _hierarchyAncestors;
-// Maximum allowed depth for hierarchical structures
-// Firestore Hierarchy Optimizations
+  final int treeMaxDepth;
+// Tree optimization
+  final List<EntityId> _ancestors;
+// Tree optimization
   @override
   @JsonKey()
-  List<EntityId> get hierarchyAncestors {
-    if (_hierarchyAncestors is EqualUnmodifiableListView)
-      return _hierarchyAncestors;
+  List<EntityId> get ancestors {
+    if (_ancestors is EqualUnmodifiableListView) return _ancestors;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_hierarchyAncestors);
+    return EqualUnmodifiableListView(_ancestors);
   }
 
-// For ancestor queries
   @override
-  final EntityId? hierarchyParentId;
-// Direct parent reference
-  final List<EntityId> _childrenIds;
-// Direct parent reference
+  final EntityId? parentId;
+  final List<EntityId> _childIds;
   @override
   @JsonKey()
-  List<EntityId> get childrenIds {
-    if (_childrenIds is EqualUnmodifiableListView) return _childrenIds;
+  List<EntityId> get childIds {
+    if (_childIds is EqualUnmodifiableListView) return _childIds;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_childrenIds);
+    return EqualUnmodifiableListView(_childIds);
   }
 
-// Direct children
-// Collection paths for nested data
-  final Map<String, String> _subCollections;
-// Direct children
-// Collection paths for nested data
+// Collections
+  final Map<String, String> _subPaths;
+// Collections
   @override
   @JsonKey()
-  Map<String, String> get subCollections {
-    if (_subCollections is EqualUnmodifiableMapView) return _subCollections;
+  Map<String, String> get subPaths {
+    if (_subPaths is EqualUnmodifiableMapView) return _subPaths;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_subCollections);
+    return EqualUnmodifiableMapView(_subPaths);
   }
 
-// e.g. {'documents': 'documents/', 'attachments': 'attachments/'}
-// Denormalized data for quick access
-  final Map<String, EntityMetadata> _ancestorMetadata;
-// e.g. {'documents': 'documents/', 'attachments': 'attachments/'}
-// Denormalized data for quick access
+// Quick access data
+  final Map<String, EntityMetadata> _ancestorMeta;
+// Quick access data
   @override
   @JsonKey()
-  Map<String, EntityMetadata> get ancestorMetadata {
-    if (_ancestorMetadata is EqualUnmodifiableMapView) return _ancestorMetadata;
+  Map<String, EntityMetadata> get ancestorMeta {
+    if (_ancestorMeta is EqualUnmodifiableMapView) return _ancestorMeta;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_ancestorMetadata);
+    return EqualUnmodifiableMapView(_ancestorMeta);
   }
 
-// Contains name, type, etc
   @override
   final String? parentName;
-// Indexed fields for querying
-  final List<String> _searchablePath;
-// Indexed fields for querying
+// Search optimization
+  final List<String> _searchPaths;
+// Search optimization
   @override
   @JsonKey()
-  List<String> get searchablePath {
-    if (_searchablePath is EqualUnmodifiableListView) return _searchablePath;
+  List<String> get searchPaths {
+    if (_searchPaths is EqualUnmodifiableListView) return _searchPaths;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_searchablePath);
+    return EqualUnmodifiableListView(_searchPaths);
   }
 
-// ['dept-001', 'dept-001/dept-002']
   @override
-  final String? hierarchyLevel;
-// Make nullable
-// Batch operation tracking
+  final String? treeLevel;
+// Sync state
   @override
   @JsonKey()
-  final int hierarchyVersion;
-// For concurrent updates
+  final int treeVersion;
   @override
-  final DateTime? lastHierarchyUpdate;
-// User Management
+  final DateTime? treeLastUpdate;
+// Access control
   @override
   final UserAction owner;
-// Replace ownerId
   @override
-  final UserAction createdBy;
+  final UserAction creator;
   @override
-  final UserAction lastModifiedBy;
+  final UserAction modifier;
   @override
-  final UserAction? accessLastBy;
+  final UserAction? lastAccessor;
 // Locking
   @override
-  final UserAction? lockedBy;
-// Replace lockId with full user context
+  final UserAction? lockOwner;
   @override
-  final DateTime? lockExpiresAt;
-// Deletion tracking
+  final DateTime? lockExpiry;
+// Soft delete
   @override
-  final UserAction? deletedBy;
-// Combines deletedAt + deletedBy
-// Optional: Add modification history
-  final List<UserAction> _modificationHistory;
-// Combines deletedAt + deletedBy
-// Optional: Add modification history
+  final UserAction? remover;
+// History tracking
+  final List<UserAction> _modHistory;
+// History tracking
   @override
   @JsonKey()
-  @Assert('modificationHistory.length <= EntityConstants.maxHistoryLimit')
-  List<UserAction> get modificationHistory {
-    if (_modificationHistory is EqualUnmodifiableListView)
-      return _modificationHistory;
+  List<UserAction> get modHistory {
+    if (_modHistory is EqualUnmodifiableListView) return _modHistory;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_modificationHistory);
+    return EqualUnmodifiableListView(_modHistory);
   }
 
-// Optional: Add access history
-  final List<UserAction> _accessHistory;
-// Optional: Add access history
+  final List<UserAction> _accessLog;
   @override
   @JsonKey()
-  @Assert('accessHistory.length <= EntityConstants.maxHistoryLimit')
-  List<UserAction> get accessHistory {
-    if (_accessHistory is EqualUnmodifiableListView) return _accessHistory;
+  List<UserAction> get accessLog {
+    if (_accessLog is EqualUnmodifiableListView) return _accessLog;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_accessHistory);
+    return EqualUnmodifiableListView(_accessLog);
   }
 
   @override
   @JsonKey()
-  final bool accessIsPublic;
-// Access Tracking
+  final bool isPublic;
   @override
   @JsonKey()
   final int accessCount;
@@ -1369,127 +1300,114 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
     return EqualUnmodifiableMapView(_labels);
   }
 
-// Workflow and Priority
+// Workflow
   @override
   @JsonKey()
   final Priority priority;
   @override
   @JsonKey()
-  final WorkflowStage workflowStage;
-// Time-related
+  final WorkflowStage stage;
   @override
-  final DateTime? expiresAt;
-// Sync and Lock Mechanisms
-  final Map<String, Object> _syncMetadata;
-// Sync and Lock Mechanisms
+  final DateTime? expiryDate;
+// Sync
+  final Map<String, Object> _syncMeta;
+// Sync
   @override
   @JsonKey()
-  Map<String, Object> get syncMetadata {
-    if (_syncMetadata is EqualUnmodifiableMapView) return _syncMetadata;
+  Map<String, Object> get syncMeta {
+    if (_syncMeta is EqualUnmodifiableMapView) return _syncMeta;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_syncMetadata);
+    return EqualUnmodifiableMapView(_syncMeta);
   }
 
   @override
-  final String? lastSyncedVersion;
-// Firestore-specific indexing
-  final Map<String, Object> _queryIndex;
-// Firestore-specific indexing
+  final String? syncVer;
+  final Map<String, Object> _searchIndex;
   @override
   @JsonKey()
-  Map<String, Object> get queryIndex {
-    if (_queryIndex is EqualUnmodifiableMapView) return _queryIndex;
+  Map<String, Object> get searchIndex {
+    if (_searchIndex is EqualUnmodifiableMapView) return _searchIndex;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_queryIndex);
+    return EqualUnmodifiableMapView(_searchIndex);
   }
 
-// Custom indexes for complex queries
-// Extension point
+// Extension
   @override
-  final T? additionalData;
-
-  /// Event sourcing support
+  final T? extraData;
+// Event sourcing
   @override
   @JsonKey()
-  final int eventVersion;
-  final List<String> _eventPending;
+  final int eventVer;
+  final List<String> _pendingEvents;
   @override
   @JsonKey()
-  List<String> get eventPending {
-    if (_eventPending is EqualUnmodifiableListView) return _eventPending;
+  List<String> get pendingEvents {
+    if (_pendingEvents is EqualUnmodifiableListView) return _pendingEvents;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_eventPending);
+    return EqualUnmodifiableListView(_pendingEvents);
   }
 
-  final Map<String, Object> _eventMetadata;
+  final Map<String, Object> _eventMeta;
   @override
   @JsonKey()
-  Map<String, Object> get eventMetadata {
-    if (_eventMetadata is EqualUnmodifiableMapView) return _eventMetadata;
+  Map<String, Object> get eventMeta {
+    if (_eventMeta is EqualUnmodifiableMapView) return _eventMeta;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_eventMetadata);
+    return EqualUnmodifiableMapView(_eventMeta);
   }
 
-// Add history size configuration
   @override
   @JsonKey()
   final int historyLimit;
-// Add version control fields
+// Versioning
   @override
   @JsonKey()
-  final int entityVersion;
-// For data changes
+  final int dataVer;
   @override
   @JsonKey()
-  final int structureVersion;
-// For structure changes
+  final int structVer;
   @override
-  final String? lastKnownVersion;
-// For CAS operations
-// Add distributed lock fields
+  final String? lastVer;
+// Distributed locking
   @override
-  final String? distributedLockId;
+  final String? distLockId;
   @override
-  final DateTime? distributedLockExpiry;
+  final DateTime? distLockExpiry;
   @override
-  final String? distributedLockNode;
-  final Map<String, dynamic> _lockMetadata;
+  final String? distLockNode;
+  final Map<String, dynamic> _lockMeta;
   @override
   @JsonKey()
-  Map<String, dynamic> get lockMetadata {
-    if (_lockMetadata is EqualUnmodifiableMapView) return _lockMetadata;
+  Map<String, dynamic> get lockMeta {
+    if (_lockMeta is EqualUnmodifiableMapView) return _lockMeta;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_lockMetadata);
+    return EqualUnmodifiableMapView(_lockMeta);
   }
 
-// Add version vectors for conflict resolution
-  final Map<String, int> _versionVectors;
-// Add version vectors for conflict resolution
+  final Map<String, int> _verVectors;
   @override
   @JsonKey()
-  Map<String, int> get versionVectors {
-    if (_versionVectors is EqualUnmodifiableMapView) return _versionVectors;
+  Map<String, int> get verVectors {
+    if (_verVectors is EqualUnmodifiableMapView) return _verVectors;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_versionVectors);
+    return EqualUnmodifiableMapView(_verVectors);
   }
 
   @override
   @JsonKey()
   final Duration lockTimeout;
-// Add AI/LLM integration fields
-  final Map<String, List<double>> _aiEmbeddings;
-// Add AI/LLM integration fields
+// AI features
+  final Map<String, List<double>> _aiVectors;
+// AI features
   @override
   @JsonKey()
-  Map<String, List<double>> get aiEmbeddings {
-    if (_aiEmbeddings is EqualUnmodifiableMapView) return _aiEmbeddings;
+  Map<String, List<double>> get aiVectors {
+    if (_aiVectors is EqualUnmodifiableMapView) return _aiVectors;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_aiEmbeddings);
+    return EqualUnmodifiableMapView(_aiVectors);
   }
 
-// Store embeddings from different AI models
   final Map<String, double> _aiScores;
-// Store embeddings from different AI models
   @override
   @JsonKey()
   Map<String, double> get aiScores {
@@ -1498,20 +1416,16 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
     return EqualUnmodifiableMapView(_aiScores);
   }
 
-// Store relevance/confidence scores
-  final Map<String, String> _aiMetadata;
-// Store relevance/confidence scores
+  final Map<String, String> _aiMeta;
   @override
   @JsonKey()
-  Map<String, String> get aiMetadata {
-    if (_aiMetadata is EqualUnmodifiableMapView) return _aiMetadata;
+  Map<String, String> get aiMeta {
+    if (_aiMeta is EqualUnmodifiableMapView) return _aiMeta;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_aiMetadata);
+    return EqualUnmodifiableMapView(_aiMeta);
   }
 
-// Store model-specific metadata
   final List<String> _aiTags;
-// Store model-specific metadata
   @override
   @JsonKey()
   List<String> get aiTags {
@@ -1520,26 +1434,23 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
     return EqualUnmodifiableListView(_aiTags);
   }
 
-// AI-generated tags
-  final Map<String, Object> _aiAnnotations;
-// AI-generated tags
+  final Map<String, Object> _aiNotes;
   @override
   @JsonKey()
-  Map<String, Object> get aiAnnotations {
-    if (_aiAnnotations is EqualUnmodifiableMapView) return _aiAnnotations;
+  Map<String, Object> get aiNotes {
+    if (_aiNotes is EqualUnmodifiableMapView) return _aiNotes;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_aiAnnotations);
+    return EqualUnmodifiableMapView(_aiNotes);
   }
 
-// AI-generated annotations
   @override
-  final DateTime? lastAiProcessingTime;
+  final DateTime? aiLastRun;
   @override
-  final String? aiProcessingVersion;
+  final String? aiVer;
 
   @override
   String toString() {
-    return 'BaseEntity<$T>(entityId: $entityId, entityName: $entityName, entityDescription: $entityDescription, metaCreatedAt: $metaCreatedAt, metaUpdatedAt: $metaUpdatedAt, schemaVersion: $schemaVersion, status: $status, metaAttributes: $metaAttributes, hierarchyPath: $hierarchyPath, hierarchyDepth: $hierarchyDepth, relations: $relations, maxDepth: $maxDepth, hierarchyAncestors: $hierarchyAncestors, hierarchyParentId: $hierarchyParentId, childrenIds: $childrenIds, subCollections: $subCollections, ancestorMetadata: $ancestorMetadata, parentName: $parentName, searchablePath: $searchablePath, hierarchyLevel: $hierarchyLevel, hierarchyVersion: $hierarchyVersion, lastHierarchyUpdate: $lastHierarchyUpdate, owner: $owner, createdBy: $createdBy, lastModifiedBy: $lastModifiedBy, accessLastBy: $accessLastBy, lockedBy: $lockedBy, lockExpiresAt: $lockExpiresAt, deletedBy: $deletedBy, modificationHistory: $modificationHistory, accessHistory: $accessHistory, accessIsPublic: $accessIsPublic, accessCount: $accessCount, tags: $tags, labels: $labels, priority: $priority, workflowStage: $workflowStage, expiresAt: $expiresAt, syncMetadata: $syncMetadata, lastSyncedVersion: $lastSyncedVersion, queryIndex: $queryIndex, additionalData: $additionalData, eventVersion: $eventVersion, eventPending: $eventPending, eventMetadata: $eventMetadata, historyLimit: $historyLimit, entityVersion: $entityVersion, structureVersion: $structureVersion, lastKnownVersion: $lastKnownVersion, distributedLockId: $distributedLockId, distributedLockExpiry: $distributedLockExpiry, distributedLockNode: $distributedLockNode, lockMetadata: $lockMetadata, versionVectors: $versionVectors, lockTimeout: $lockTimeout, aiEmbeddings: $aiEmbeddings, aiScores: $aiScores, aiMetadata: $aiMetadata, aiTags: $aiTags, aiAnnotations: $aiAnnotations, lastAiProcessingTime: $lastAiProcessingTime, aiProcessingVersion: $aiProcessingVersion)';
+    return 'BaseEntity<$T>(id: $id, name: $name, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, schemaVer: $schemaVer, status: $status, meta: $meta, treePath: $treePath, treeDepth: $treeDepth, refs: $refs, treeMaxDepth: $treeMaxDepth, ancestors: $ancestors, parentId: $parentId, childIds: $childIds, subPaths: $subPaths, ancestorMeta: $ancestorMeta, parentName: $parentName, searchPaths: $searchPaths, treeLevel: $treeLevel, treeVersion: $treeVersion, treeLastUpdate: $treeLastUpdate, owner: $owner, creator: $creator, modifier: $modifier, lastAccessor: $lastAccessor, lockOwner: $lockOwner, lockExpiry: $lockExpiry, remover: $remover, modHistory: $modHistory, accessLog: $accessLog, isPublic: $isPublic, accessCount: $accessCount, tags: $tags, labels: $labels, priority: $priority, stage: $stage, expiryDate: $expiryDate, syncMeta: $syncMeta, syncVer: $syncVer, searchIndex: $searchIndex, extraData: $extraData, eventVer: $eventVer, pendingEvents: $pendingEvents, eventMeta: $eventMeta, historyLimit: $historyLimit, dataVer: $dataVer, structVer: $structVer, lastVer: $lastVer, distLockId: $distLockId, distLockExpiry: $distLockExpiry, distLockNode: $distLockNode, lockMeta: $lockMeta, verVectors: $verVectors, lockTimeout: $lockTimeout, aiVectors: $aiVectors, aiScores: $aiScores, aiMeta: $aiMeta, aiTags: $aiTags, aiNotes: $aiNotes, aiLastRun: $aiLastRun, aiVer: $aiVer)';
   }
 
   @override
@@ -1547,178 +1458,174 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$BaseEntityImpl<T> &&
-            (identical(other.entityId, entityId) ||
-                other.entityId == entityId) &&
-            (identical(other.entityName, entityName) ||
-                other.entityName == entityName) &&
-            (identical(other.entityDescription, entityDescription) ||
-                other.entityDescription == entityDescription) &&
-            (identical(other.metaCreatedAt, metaCreatedAt) ||
-                other.metaCreatedAt == metaCreatedAt) &&
-            (identical(other.metaUpdatedAt, metaUpdatedAt) ||
-                other.metaUpdatedAt == metaUpdatedAt) &&
-            (identical(other.schemaVersion, schemaVersion) ||
-                other.schemaVersion == schemaVersion) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt) &&
+            (identical(other.schemaVer, schemaVer) ||
+                other.schemaVer == schemaVer) &&
             (identical(other.status, status) || other.status == status) &&
+            const DeepCollectionEquality().equals(other._meta, _meta) &&
+            (identical(other.treePath, treePath) ||
+                other.treePath == treePath) &&
+            (identical(other.treeDepth, treeDepth) ||
+                other.treeDepth == treeDepth) &&
+            const DeepCollectionEquality().equals(other._refs, _refs) &&
+            (identical(other.treeMaxDepth, treeMaxDepth) ||
+                other.treeMaxDepth == treeMaxDepth) &&
             const DeepCollectionEquality()
-                .equals(other._metaAttributes, _metaAttributes) &&
-            (identical(other.hierarchyPath, hierarchyPath) ||
-                other.hierarchyPath == hierarchyPath) &&
-            (identical(other.hierarchyDepth, hierarchyDepth) ||
-                other.hierarchyDepth == hierarchyDepth) &&
+                .equals(other._ancestors, _ancestors) &&
+            (identical(other.parentId, parentId) ||
+                other.parentId == parentId) &&
+            const DeepCollectionEquality().equals(other._childIds, _childIds) &&
+            const DeepCollectionEquality().equals(other._subPaths, _subPaths) &&
             const DeepCollectionEquality()
-                .equals(other._relations, _relations) &&
-            (identical(other.maxDepth, maxDepth) ||
-                other.maxDepth == maxDepth) &&
-            const DeepCollectionEquality()
-                .equals(other._hierarchyAncestors, _hierarchyAncestors) &&
-            (identical(other.hierarchyParentId, hierarchyParentId) ||
-                other.hierarchyParentId == hierarchyParentId) &&
-            const DeepCollectionEquality()
-                .equals(other._childrenIds, _childrenIds) &&
-            const DeepCollectionEquality()
-                .equals(other._subCollections, _subCollections) &&
-            const DeepCollectionEquality()
-                .equals(other._ancestorMetadata, _ancestorMetadata) &&
+                .equals(other._ancestorMeta, _ancestorMeta) &&
             (identical(other.parentName, parentName) ||
                 other.parentName == parentName) &&
             const DeepCollectionEquality()
-                .equals(other._searchablePath, _searchablePath) &&
-            (identical(other.hierarchyLevel, hierarchyLevel) ||
-                other.hierarchyLevel == hierarchyLevel) &&
-            (identical(other.hierarchyVersion, hierarchyVersion) ||
-                other.hierarchyVersion == hierarchyVersion) &&
-            (identical(other.lastHierarchyUpdate, lastHierarchyUpdate) ||
-                other.lastHierarchyUpdate == lastHierarchyUpdate) &&
+                .equals(other._searchPaths, _searchPaths) &&
+            (identical(other.treeLevel, treeLevel) ||
+                other.treeLevel == treeLevel) &&
+            (identical(other.treeVersion, treeVersion) ||
+                other.treeVersion == treeVersion) &&
+            (identical(other.treeLastUpdate, treeLastUpdate) ||
+                other.treeLastUpdate == treeLastUpdate) &&
             (identical(other.owner, owner) || other.owner == owner) &&
-            (identical(other.createdBy, createdBy) ||
-                other.createdBy == createdBy) &&
-            (identical(other.lastModifiedBy, lastModifiedBy) ||
-                other.lastModifiedBy == lastModifiedBy) &&
-            (identical(other.accessLastBy, accessLastBy) ||
-                other.accessLastBy == accessLastBy) &&
-            (identical(other.lockedBy, lockedBy) ||
-                other.lockedBy == lockedBy) &&
-            (identical(other.lockExpiresAt, lockExpiresAt) ||
-                other.lockExpiresAt == lockExpiresAt) &&
-            (identical(other.deletedBy, deletedBy) ||
-                other.deletedBy == deletedBy) &&
+            (identical(other.creator, creator) || other.creator == creator) &&
+            (identical(other.modifier, modifier) ||
+                other.modifier == modifier) &&
+            (identical(other.lastAccessor, lastAccessor) ||
+                other.lastAccessor == lastAccessor) &&
+            (identical(other.lockOwner, lockOwner) ||
+                other.lockOwner == lockOwner) &&
+            (identical(other.lockExpiry, lockExpiry) ||
+                other.lockExpiry == lockExpiry) &&
+            (identical(other.remover, remover) || other.remover == remover) &&
             const DeepCollectionEquality()
-                .equals(other._modificationHistory, _modificationHistory) &&
+                .equals(other._modHistory, _modHistory) &&
             const DeepCollectionEquality()
-                .equals(other._accessHistory, _accessHistory) &&
-            (identical(other.accessIsPublic, accessIsPublic) ||
-                other.accessIsPublic == accessIsPublic) &&
+                .equals(other._accessLog, _accessLog) &&
+            (identical(other.isPublic, isPublic) ||
+                other.isPublic == isPublic) &&
             (identical(other.accessCount, accessCount) ||
                 other.accessCount == accessCount) &&
             const DeepCollectionEquality().equals(other._tags, _tags) &&
             const DeepCollectionEquality().equals(other._labels, _labels) &&
             (identical(other.priority, priority) ||
                 other.priority == priority) &&
-            (identical(other.workflowStage, workflowStage) ||
-                other.workflowStage == workflowStage) &&
-            (identical(other.expiresAt, expiresAt) ||
-                other.expiresAt == expiresAt) &&
+            (identical(other.stage, stage) || other.stage == stage) &&
+            (identical(other.expiryDate, expiryDate) ||
+                other.expiryDate == expiryDate) &&
+            const DeepCollectionEquality().equals(other._syncMeta, _syncMeta) &&
+            (identical(other.syncVer, syncVer) || other.syncVer == syncVer) &&
             const DeepCollectionEquality()
-                .equals(other._syncMetadata, _syncMetadata) &&
-            (identical(other.lastSyncedVersion, lastSyncedVersion) ||
-                other.lastSyncedVersion == lastSyncedVersion) &&
+                .equals(other._searchIndex, _searchIndex) &&
+            const DeepCollectionEquality().equals(other.extraData, extraData) &&
+            (identical(other.eventVer, eventVer) ||
+                other.eventVer == eventVer) &&
             const DeepCollectionEquality()
-                .equals(other._queryIndex, _queryIndex) &&
+                .equals(other._pendingEvents, _pendingEvents) &&
             const DeepCollectionEquality()
-                .equals(other.additionalData, additionalData) &&
-            (identical(other.eventVersion, eventVersion) ||
-                other.eventVersion == eventVersion) &&
-            const DeepCollectionEquality()
-                .equals(other._eventPending, _eventPending) &&
-            const DeepCollectionEquality()
-                .equals(other._eventMetadata, _eventMetadata) &&
+                .equals(other._eventMeta, _eventMeta) &&
             (identical(other.historyLimit, historyLimit) ||
                 other.historyLimit == historyLimit) &&
-            (identical(other.entityVersion, entityVersion) || other.entityVersion == entityVersion) &&
-            (identical(other.structureVersion, structureVersion) || other.structureVersion == structureVersion) &&
-            (identical(other.lastKnownVersion, lastKnownVersion) || other.lastKnownVersion == lastKnownVersion) &&
-            (identical(other.distributedLockId, distributedLockId) || other.distributedLockId == distributedLockId) &&
-            (identical(other.distributedLockExpiry, distributedLockExpiry) || other.distributedLockExpiry == distributedLockExpiry) &&
-            (identical(other.distributedLockNode, distributedLockNode) || other.distributedLockNode == distributedLockNode) &&
-            const DeepCollectionEquality().equals(other._lockMetadata, _lockMetadata) &&
-            const DeepCollectionEquality().equals(other._versionVectors, _versionVectors) &&
-            (identical(other.lockTimeout, lockTimeout) || other.lockTimeout == lockTimeout) &&
-            const DeepCollectionEquality().equals(other._aiEmbeddings, _aiEmbeddings) &&
+            (identical(other.dataVer, dataVer) || other.dataVer == dataVer) &&
+            (identical(other.structVer, structVer) ||
+                other.structVer == structVer) &&
+            (identical(other.lastVer, lastVer) || other.lastVer == lastVer) &&
+            (identical(other.distLockId, distLockId) ||
+                other.distLockId == distLockId) &&
+            (identical(other.distLockExpiry, distLockExpiry) ||
+                other.distLockExpiry == distLockExpiry) &&
+            (identical(other.distLockNode, distLockNode) ||
+                other.distLockNode == distLockNode) &&
+            const DeepCollectionEquality().equals(other._lockMeta, _lockMeta) &&
+            const DeepCollectionEquality()
+                .equals(other._verVectors, _verVectors) &&
+            (identical(other.lockTimeout, lockTimeout) ||
+                other.lockTimeout == lockTimeout) &&
+            const DeepCollectionEquality()
+                .equals(other._aiVectors, _aiVectors) &&
             const DeepCollectionEquality().equals(other._aiScores, _aiScores) &&
-            const DeepCollectionEquality().equals(other._aiMetadata, _aiMetadata) &&
+            const DeepCollectionEquality().equals(other._aiMeta, _aiMeta) &&
             const DeepCollectionEquality().equals(other._aiTags, _aiTags) &&
-            const DeepCollectionEquality().equals(other._aiAnnotations, _aiAnnotations) &&
-            (identical(other.lastAiProcessingTime, lastAiProcessingTime) || other.lastAiProcessingTime == lastAiProcessingTime) &&
-            (identical(other.aiProcessingVersion, aiProcessingVersion) || other.aiProcessingVersion == aiProcessingVersion));
+            const DeepCollectionEquality().equals(other._aiNotes, _aiNotes) &&
+            (identical(other.aiLastRun, aiLastRun) ||
+                other.aiLastRun == aiLastRun) &&
+            (identical(other.aiVer, aiVer) || other.aiVer == aiVer));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
-        entityId,
-        entityName,
-        entityDescription,
-        metaCreatedAt,
-        metaUpdatedAt,
-        schemaVersion,
+        id,
+        name,
+        description,
+        createdAt,
+        updatedAt,
+        schemaVer,
         status,
-        const DeepCollectionEquality().hash(_metaAttributes),
-        hierarchyPath,
-        hierarchyDepth,
-        const DeepCollectionEquality().hash(_relations),
-        maxDepth,
-        const DeepCollectionEquality().hash(_hierarchyAncestors),
-        hierarchyParentId,
-        const DeepCollectionEquality().hash(_childrenIds),
-        const DeepCollectionEquality().hash(_subCollections),
-        const DeepCollectionEquality().hash(_ancestorMetadata),
+        const DeepCollectionEquality().hash(_meta),
+        treePath,
+        treeDepth,
+        const DeepCollectionEquality().hash(_refs),
+        treeMaxDepth,
+        const DeepCollectionEquality().hash(_ancestors),
+        parentId,
+        const DeepCollectionEquality().hash(_childIds),
+        const DeepCollectionEquality().hash(_subPaths),
+        const DeepCollectionEquality().hash(_ancestorMeta),
         parentName,
-        const DeepCollectionEquality().hash(_searchablePath),
-        hierarchyLevel,
-        hierarchyVersion,
-        lastHierarchyUpdate,
+        const DeepCollectionEquality().hash(_searchPaths),
+        treeLevel,
+        treeVersion,
+        treeLastUpdate,
         owner,
-        createdBy,
-        lastModifiedBy,
-        accessLastBy,
-        lockedBy,
-        lockExpiresAt,
-        deletedBy,
-        const DeepCollectionEquality().hash(_modificationHistory),
-        const DeepCollectionEquality().hash(_accessHistory),
-        accessIsPublic,
+        creator,
+        modifier,
+        lastAccessor,
+        lockOwner,
+        lockExpiry,
+        remover,
+        const DeepCollectionEquality().hash(_modHistory),
+        const DeepCollectionEquality().hash(_accessLog),
+        isPublic,
         accessCount,
         const DeepCollectionEquality().hash(_tags),
         const DeepCollectionEquality().hash(_labels),
         priority,
-        workflowStage,
-        expiresAt,
-        const DeepCollectionEquality().hash(_syncMetadata),
-        lastSyncedVersion,
-        const DeepCollectionEquality().hash(_queryIndex),
-        const DeepCollectionEquality().hash(additionalData),
-        eventVersion,
-        const DeepCollectionEquality().hash(_eventPending),
-        const DeepCollectionEquality().hash(_eventMetadata),
+        stage,
+        expiryDate,
+        const DeepCollectionEquality().hash(_syncMeta),
+        syncVer,
+        const DeepCollectionEquality().hash(_searchIndex),
+        const DeepCollectionEquality().hash(extraData),
+        eventVer,
+        const DeepCollectionEquality().hash(_pendingEvents),
+        const DeepCollectionEquality().hash(_eventMeta),
         historyLimit,
-        entityVersion,
-        structureVersion,
-        lastKnownVersion,
-        distributedLockId,
-        distributedLockExpiry,
-        distributedLockNode,
-        const DeepCollectionEquality().hash(_lockMetadata),
-        const DeepCollectionEquality().hash(_versionVectors),
+        dataVer,
+        structVer,
+        lastVer,
+        distLockId,
+        distLockExpiry,
+        distLockNode,
+        const DeepCollectionEquality().hash(_lockMeta),
+        const DeepCollectionEquality().hash(_verVectors),
         lockTimeout,
-        const DeepCollectionEquality().hash(_aiEmbeddings),
+        const DeepCollectionEquality().hash(_aiVectors),
         const DeepCollectionEquality().hash(_aiScores),
-        const DeepCollectionEquality().hash(_aiMetadata),
+        const DeepCollectionEquality().hash(_aiMeta),
         const DeepCollectionEquality().hash(_aiTags),
-        const DeepCollectionEquality().hash(_aiAnnotations),
-        lastAiProcessingTime,
-        aiProcessingVersion
+        const DeepCollectionEquality().hash(_aiNotes),
+        aiLastRun,
+        aiVer
       ]);
 
   /// Create a copy of BaseEntity
@@ -1737,216 +1644,199 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
 
 abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
   const factory _BaseEntity(
-      {required final EntityId entityId,
-      required final String entityName,
-      final String? entityDescription,
-      required final DateTime metaCreatedAt,
-      required final DateTime metaUpdatedAt,
-      final String schemaVersion,
+      {required final EntityId id,
+      required final String name,
+      final String? description,
+      required final DateTime createdAt,
+      required final DateTime updatedAt,
+      final String schemaVer,
       final EntityStatus status,
-      final Map<String, Object> metaAttributes,
-      final String? hierarchyPath,
-      final int hierarchyDepth,
-      final Map<String, List<EntityId>> relations,
-      final int maxDepth,
-      final List<EntityId> hierarchyAncestors,
-      final EntityId? hierarchyParentId,
-      final List<EntityId> childrenIds,
-      final Map<String, String> subCollections,
-      final Map<String, EntityMetadata> ancestorMetadata,
+      final Map<String, Object> meta,
+      final String? treePath,
+      final int treeDepth,
+      final Map<String, List<EntityId>> refs,
+      final int treeMaxDepth,
+      final List<EntityId> ancestors,
+      final EntityId? parentId,
+      final List<EntityId> childIds,
+      final Map<String, String> subPaths,
+      final Map<String, EntityMetadata> ancestorMeta,
       final String? parentName,
-      final List<String> searchablePath,
-      final String? hierarchyLevel,
-      final int hierarchyVersion,
-      final DateTime? lastHierarchyUpdate,
+      final List<String> searchPaths,
+      final String? treeLevel,
+      final int treeVersion,
+      final DateTime? treeLastUpdate,
       required final UserAction owner,
-      required final UserAction createdBy,
-      required final UserAction lastModifiedBy,
-      final UserAction? accessLastBy,
-      final UserAction? lockedBy,
-      final DateTime? lockExpiresAt,
-      final UserAction? deletedBy,
-      @Assert('modificationHistory.length <= EntityConstants.maxHistoryLimit')
-      final List<UserAction> modificationHistory,
-      @Assert('accessHistory.length <= EntityConstants.maxHistoryLimit')
-      final List<UserAction> accessHistory,
-      final bool accessIsPublic,
+      required final UserAction creator,
+      required final UserAction modifier,
+      final UserAction? lastAccessor,
+      final UserAction? lockOwner,
+      final DateTime? lockExpiry,
+      final UserAction? remover,
+      final List<UserAction> modHistory,
+      final List<UserAction> accessLog,
+      final bool isPublic,
       final int accessCount,
       final List<String> tags,
       final Map<String, String> labels,
       final Priority priority,
-      final WorkflowStage workflowStage,
-      final DateTime? expiresAt,
-      final Map<String, Object> syncMetadata,
-      final String? lastSyncedVersion,
-      final Map<String, Object> queryIndex,
-      final T? additionalData,
-      final int eventVersion,
-      final List<String> eventPending,
-      final Map<String, Object> eventMetadata,
+      final WorkflowStage stage,
+      final DateTime? expiryDate,
+      final Map<String, Object> syncMeta,
+      final String? syncVer,
+      final Map<String, Object> searchIndex,
+      final T? extraData,
+      final int eventVer,
+      final List<String> pendingEvents,
+      final Map<String, Object> eventMeta,
       final int historyLimit,
-      final int entityVersion,
-      final int structureVersion,
-      final String? lastKnownVersion,
-      final String? distributedLockId,
-      final DateTime? distributedLockExpiry,
-      final String? distributedLockNode,
-      final Map<String, dynamic> lockMetadata,
-      final Map<String, int> versionVectors,
+      final int dataVer,
+      final int structVer,
+      final String? lastVer,
+      final String? distLockId,
+      final DateTime? distLockExpiry,
+      final String? distLockNode,
+      final Map<String, dynamic> lockMeta,
+      final Map<String, int> verVectors,
       final Duration lockTimeout,
-      final Map<String, List<double>> aiEmbeddings,
+      final Map<String, List<double>> aiVectors,
       final Map<String, double> aiScores,
-      final Map<String, String> aiMetadata,
+      final Map<String, String> aiMeta,
       final List<String> aiTags,
-      final Map<String, Object> aiAnnotations,
-      final DateTime? lastAiProcessingTime,
-      final String? aiProcessingVersion}) = _$BaseEntityImpl<T>;
+      final Map<String, Object> aiNotes,
+      final DateTime? aiLastRun,
+      final String? aiVer}) = _$BaseEntityImpl<T>;
   const _BaseEntity._() : super._();
 
   factory _BaseEntity.fromJson(
           Map<String, dynamic> json, T Function(Object?) fromJsonT) =
       _$BaseEntityImpl<T>.fromJson;
 
-// Update identifiers to use EntityId
+// Core properties
   @override
-  EntityId get entityId; // renamed from uuid to id
+  EntityId get id;
   @override
-  String get entityName;
+  String get name;
   @override
-  String? get entityDescription; // Metadata
+  String? get description; // Metadata
   @override
-  DateTime get metaCreatedAt;
+  DateTime get createdAt;
   @override
-  DateTime get metaUpdatedAt;
+  DateTime get updatedAt;
   @override
-  String get schemaVersion;
+  String get schemaVer;
   @override
   EntityStatus get status;
   @override
-  Map<String, Object>
-      get metaAttributes; // Hierarchy and Relations (using Materialized Path)
+  Map<String, Object> get meta; // Hierarchy
   @override
-  String? get hierarchyPath;
+  String? get treePath;
   @override
-  int get hierarchyDepth;
+  int get treeDepth;
   @override
-  Map<String, List<EntityId>> get relations;
+  Map<String, List<EntityId>> get refs;
   @override
-  int get maxDepth; // Maximum allowed depth for hierarchical structures
-// Firestore Hierarchy Optimizations
+  int get treeMaxDepth; // Tree optimization
   @override
-  List<EntityId> get hierarchyAncestors; // For ancestor queries
+  List<EntityId> get ancestors;
   @override
-  EntityId? get hierarchyParentId; // Direct parent reference
+  EntityId? get parentId;
   @override
-  List<EntityId> get childrenIds; // Direct children
-// Collection paths for nested data
+  List<EntityId> get childIds; // Collections
   @override
-  Map<String, String>
-      get subCollections; // e.g. {'documents': 'documents/', 'attachments': 'attachments/'}
-// Denormalized data for quick access
+  Map<String, String> get subPaths; // Quick access data
   @override
-  Map<String, EntityMetadata> get ancestorMetadata; // Contains name, type, etc
+  Map<String, EntityMetadata> get ancestorMeta;
   @override
-  String? get parentName; // Indexed fields for querying
+  String? get parentName; // Search optimization
   @override
-  List<String> get searchablePath; // ['dept-001', 'dept-001/dept-002']
+  List<String> get searchPaths;
   @override
-  String? get hierarchyLevel; // Make nullable
-// Batch operation tracking
+  String? get treeLevel; // Sync state
   @override
-  int get hierarchyVersion; // For concurrent updates
+  int get treeVersion;
   @override
-  DateTime? get lastHierarchyUpdate; // User Management
+  DateTime? get treeLastUpdate; // Access control
   @override
-  UserAction get owner; // Replace ownerId
+  UserAction get owner;
   @override
-  UserAction get createdBy;
+  UserAction get creator;
   @override
-  UserAction get lastModifiedBy;
+  UserAction get modifier;
   @override
-  UserAction? get accessLastBy; // Locking
+  UserAction? get lastAccessor; // Locking
   @override
-  UserAction? get lockedBy; // Replace lockId with full user context
+  UserAction? get lockOwner;
   @override
-  DateTime? get lockExpiresAt; // Deletion tracking
+  DateTime? get lockExpiry; // Soft delete
   @override
-  UserAction? get deletedBy; // Combines deletedAt + deletedBy
-// Optional: Add modification history
+  UserAction? get remover; // History tracking
   @override
-  @Assert('modificationHistory.length <= EntityConstants.maxHistoryLimit')
-  List<UserAction> get modificationHistory; // Optional: Add access history
+  List<UserAction> get modHistory;
   @override
-  @Assert('accessHistory.length <= EntityConstants.maxHistoryLimit')
-  List<UserAction> get accessHistory;
+  List<UserAction> get accessLog;
   @override
-  bool get accessIsPublic; // Access Tracking
+  bool get isPublic;
   @override
   int get accessCount; // Classification
   @override
   List<String> get tags;
   @override
-  Map<String, String> get labels; // Workflow and Priority
+  Map<String, String> get labels; // Workflow
   @override
   Priority get priority;
   @override
-  WorkflowStage get workflowStage; // Time-related
+  WorkflowStage get stage;
   @override
-  DateTime? get expiresAt; // Sync and Lock Mechanisms
+  DateTime? get expiryDate; // Sync
   @override
-  Map<String, Object> get syncMetadata;
+  Map<String, Object> get syncMeta;
   @override
-  String? get lastSyncedVersion; // Firestore-specific indexing
+  String? get syncVer;
   @override
-  Map<String, Object> get queryIndex; // Custom indexes for complex queries
-// Extension point
+  Map<String, Object> get searchIndex; // Extension
   @override
-  T? get additionalData;
-
-  /// Event sourcing support
+  T? get extraData; // Event sourcing
   @override
-  int get eventVersion;
+  int get eventVer;
   @override
-  List<String> get eventPending;
+  List<String> get pendingEvents;
   @override
-  Map<String, Object> get eventMetadata; // Add history size configuration
+  Map<String, Object> get eventMeta;
   @override
-  int get historyLimit; // Add version control fields
+  int get historyLimit; // Versioning
   @override
-  int get entityVersion; // For data changes
+  int get dataVer;
   @override
-  int get structureVersion; // For structure changes
+  int get structVer;
   @override
-  String? get lastKnownVersion; // For CAS operations
-// Add distributed lock fields
+  String? get lastVer; // Distributed locking
   @override
-  String? get distributedLockId;
+  String? get distLockId;
   @override
-  DateTime? get distributedLockExpiry;
+  DateTime? get distLockExpiry;
   @override
-  String? get distributedLockNode;
+  String? get distLockNode;
   @override
-  Map<String, dynamic>
-      get lockMetadata; // Add version vectors for conflict resolution
+  Map<String, dynamic> get lockMeta;
   @override
-  Map<String, int> get versionVectors;
+  Map<String, int> get verVectors;
   @override
-  Duration get lockTimeout; // Add AI/LLM integration fields
+  Duration get lockTimeout; // AI features
   @override
-  Map<String, List<double>>
-      get aiEmbeddings; // Store embeddings from different AI models
+  Map<String, List<double>> get aiVectors;
   @override
-  Map<String, double> get aiScores; // Store relevance/confidence scores
+  Map<String, double> get aiScores;
   @override
-  Map<String, String> get aiMetadata; // Store model-specific metadata
+  Map<String, String> get aiMeta;
   @override
-  List<String> get aiTags; // AI-generated tags
+  List<String> get aiTags;
   @override
-  Map<String, Object> get aiAnnotations; // AI-generated annotations
+  Map<String, Object> get aiNotes;
   @override
-  DateTime? get lastAiProcessingTime;
+  DateTime? get aiLastRun;
   @override
-  String? get aiProcessingVersion;
+  String? get aiVer;
 
   /// Create a copy of BaseEntity
   /// with the given fields replaced by the non-null parameter values.
