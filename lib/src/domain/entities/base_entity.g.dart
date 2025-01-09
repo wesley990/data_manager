@@ -39,7 +39,7 @@ _$BaseEntityImpl<T> _$$BaseEntityImplFromJson<T extends Object>(
           ) ??
           const {},
       treeMaxDepth: (json['treeMaxDepth'] as num?)?.toInt() ??
-          EntityLimits.hierarchyDepthMax,
+          SystemLimits.hierarchyDepthMax,
       ancestors: (json['ancestors'] as List<dynamic>?)
               ?.map((e) => EntityId.fromJson((e as Map<String, dynamic>).map(
                     (k, e) => MapEntry(k, e as Object),
@@ -158,7 +158,7 @@ _$BaseEntityImpl<T> _$$BaseEntityImplFromJson<T extends Object>(
           ) ??
           const {},
       historyLimit: (json['historyLimit'] as num?)?.toInt() ??
-          EntityLimits.historyDefault,
+          SystemLimits.historyDefault,
       dataVer: (json['dataVer'] as num?)?.toInt() ?? 1,
       structVer: (json['structVer'] as num?)?.toInt() ?? 1,
       lastVer: json['lastVer'] as String?,
@@ -173,7 +173,7 @@ _$BaseEntityImpl<T> _$$BaseEntityImplFromJson<T extends Object>(
           ) ??
           const {},
       lockTimeout: json['lockTimeout'] == null
-          ? LockDurations.timeout
+          ? LockConfig.defaultTimeout
           : Duration(microseconds: (json['lockTimeout'] as num).toInt()),
       aiVectors: (json['aiVectors'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(

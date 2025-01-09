@@ -21,73 +21,69 @@ BaseEntity<T> _$BaseEntityFromJson<T extends Object>(
 
 /// @nodoc
 mixin _$BaseEntity<T extends Object> {
-// Core properties
+// Identity & Core Data
   EntityId get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  String? get description => throw _privateConstructorUsedError; // Metadata
+  String? get description => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime get updatedAt => throw _privateConstructorUsedError;
   String get schemaVer => throw _privateConstructorUsedError;
   EntityStatus get status => throw _privateConstructorUsedError;
   Map<String, Object> get meta =>
-      throw _privateConstructorUsedError; // Hierarchy
+      throw _privateConstructorUsedError; // Hierarchical Structure
   String? get treePath => throw _privateConstructorUsedError;
   int get treeDepth => throw _privateConstructorUsedError;
   Map<String, List<EntityId>> get refs => throw _privateConstructorUsedError;
-  int get treeMaxDepth =>
-      throw _privateConstructorUsedError; // Tree optimization
+  int get treeMaxDepth => throw _privateConstructorUsedError;
   List<EntityId> get ancestors => throw _privateConstructorUsedError;
   EntityId? get parentId => throw _privateConstructorUsedError;
-  List<EntityId> get childIds =>
-      throw _privateConstructorUsedError; // Collections
-  Map<String, String> get subPaths =>
-      throw _privateConstructorUsedError; // Quick access data
+  List<EntityId> get childIds => throw _privateConstructorUsedError;
+  Map<String, String> get subPaths => throw _privateConstructorUsedError;
   Map<String, EntityMetadata> get ancestorMeta =>
       throw _privateConstructorUsedError;
-  String? get parentName =>
-      throw _privateConstructorUsedError; // Search optimization
+  String? get parentName => throw _privateConstructorUsedError;
   List<String> get searchPaths => throw _privateConstructorUsedError;
-  String? get treeLevel => throw _privateConstructorUsedError; // Sync state
+  String? get treeLevel => throw _privateConstructorUsedError;
   int get treeVersion => throw _privateConstructorUsedError;
   DateTime? get treeLastUpdate =>
-      throw _privateConstructorUsedError; // Access control
+      throw _privateConstructorUsedError; // Access Control & Security
   UserAction get owner => throw _privateConstructorUsedError;
   UserAction get creator => throw _privateConstructorUsedError;
   UserAction get modifier => throw _privateConstructorUsedError;
-  UserAction? get lastAccessor => throw _privateConstructorUsedError; // Locking
+  UserAction? get lastAccessor => throw _privateConstructorUsedError;
   UserAction? get lockOwner => throw _privateConstructorUsedError;
-  DateTime? get lockExpiry => throw _privateConstructorUsedError; // Soft delete
-  UserAction? get remover =>
-      throw _privateConstructorUsedError; // History tracking
+  DateTime? get lockExpiry => throw _privateConstructorUsedError;
+  UserAction? get remover => throw _privateConstructorUsedError;
   List<UserAction> get modHistory => throw _privateConstructorUsedError;
   List<UserAction> get accessLog => throw _privateConstructorUsedError;
   bool get isPublic => throw _privateConstructorUsedError;
-  int get accessCount => throw _privateConstructorUsedError; // Classification
+  int get accessCount =>
+      throw _privateConstructorUsedError; // Classification & Metadata
   List<String> get tags => throw _privateConstructorUsedError;
-  Map<String, String> get labels =>
-      throw _privateConstructorUsedError; // Workflow
+  Map<String, String> get labels => throw _privateConstructorUsedError;
   Priority get priority => throw _privateConstructorUsedError;
   WorkflowStage get stage => throw _privateConstructorUsedError;
-  DateTime? get expiryDate => throw _privateConstructorUsedError; // Sync
+  DateTime? get expiryDate =>
+      throw _privateConstructorUsedError; // Synchronization & Versioning
   Map<String, Object> get syncMeta => throw _privateConstructorUsedError;
   String? get syncVer => throw _privateConstructorUsedError;
-  Map<String, Object> get searchIndex =>
-      throw _privateConstructorUsedError; // Extension
-  T? get extraData => throw _privateConstructorUsedError; // Event sourcing
+  Map<String, Object> get searchIndex => throw _privateConstructorUsedError;
+  T? get extraData => throw _privateConstructorUsedError;
   int get eventVer => throw _privateConstructorUsedError;
   List<String> get pendingEvents => throw _privateConstructorUsedError;
   Map<String, Object> get eventMeta => throw _privateConstructorUsedError;
-  int get historyLimit => throw _privateConstructorUsedError; // Versioning
+  int get historyLimit => throw _privateConstructorUsedError;
   int get dataVer => throw _privateConstructorUsedError;
   int get structVer => throw _privateConstructorUsedError;
   String? get lastVer =>
-      throw _privateConstructorUsedError; // Distributed locking
+      throw _privateConstructorUsedError; // Distributed Systems
   String? get distLockId => throw _privateConstructorUsedError;
   DateTime? get distLockExpiry => throw _privateConstructorUsedError;
   String? get distLockNode => throw _privateConstructorUsedError;
   Map<String, dynamic> get lockMeta => throw _privateConstructorUsedError;
   Map<String, int> get verVectors => throw _privateConstructorUsedError;
-  Duration get lockTimeout => throw _privateConstructorUsedError; // AI features
+  Duration get lockTimeout =>
+      throw _privateConstructorUsedError; // AI & Machine Learning
   Map<String, List<double>> get aiVectors => throw _privateConstructorUsedError;
   Map<String, double> get aiScores => throw _privateConstructorUsedError;
   Map<String, String> get aiMeta => throw _privateConstructorUsedError;
@@ -1048,7 +1044,7 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
       this.treePath,
       this.treeDepth = 0,
       final Map<String, List<EntityId>> refs = const {},
-      this.treeMaxDepth = EntityLimits.hierarchyDepthMax,
+      this.treeMaxDepth = SystemLimits.hierarchyDepthMax,
       final List<EntityId> ancestors = const [],
       this.parentId,
       final List<EntityId> childIds = const [],
@@ -1082,7 +1078,7 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
       this.eventVer = 0,
       final List<String> pendingEvents = const [],
       final Map<String, Object> eventMeta = const {},
-      this.historyLimit = EntityLimits.historyDefault,
+      this.historyLimit = SystemLimits.historyDefault,
       this.dataVer = 1,
       this.structVer = 1,
       this.lastVer,
@@ -1091,7 +1087,7 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
       this.distLockNode,
       final Map<String, dynamic> lockMeta = const {},
       final Map<String, int> verVectors = const {},
-      this.lockTimeout = LockDurations.timeout,
+      this.lockTimeout = LockConfig.defaultTimeout,
       final Map<String, List<double>> aiVectors = const {},
       final Map<String, double> aiScores = const {},
       final Map<String, String> aiMeta = const {},
@@ -1127,14 +1123,13 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
           Map<String, dynamic> json, T Function(Object?) fromJsonT) =>
       _$$BaseEntityImplFromJson(json, fromJsonT);
 
-// Core properties
+// Identity & Core Data
   @override
   final EntityId id;
   @override
   final String name;
   @override
   final String? description;
-// Metadata
   @override
   final DateTime createdAt;
   @override
@@ -1154,7 +1149,7 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
     return EqualUnmodifiableMapView(_meta);
   }
 
-// Hierarchy
+// Hierarchical Structure
   @override
   final String? treePath;
   @override
@@ -1172,9 +1167,7 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
   @override
   @JsonKey()
   final int treeMaxDepth;
-// Tree optimization
   final List<EntityId> _ancestors;
-// Tree optimization
   @override
   @JsonKey()
   List<EntityId> get ancestors {
@@ -1194,9 +1187,7 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
     return EqualUnmodifiableListView(_childIds);
   }
 
-// Collections
   final Map<String, String> _subPaths;
-// Collections
   @override
   @JsonKey()
   Map<String, String> get subPaths {
@@ -1205,9 +1196,7 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
     return EqualUnmodifiableMapView(_subPaths);
   }
 
-// Quick access data
   final Map<String, EntityMetadata> _ancestorMeta;
-// Quick access data
   @override
   @JsonKey()
   Map<String, EntityMetadata> get ancestorMeta {
@@ -1218,9 +1207,7 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
 
   @override
   final String? parentName;
-// Search optimization
   final List<String> _searchPaths;
-// Search optimization
   @override
   @JsonKey()
   List<String> get searchPaths {
@@ -1231,13 +1218,12 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
 
   @override
   final String? treeLevel;
-// Sync state
   @override
   @JsonKey()
   final int treeVersion;
   @override
   final DateTime? treeLastUpdate;
-// Access control
+// Access Control & Security
   @override
   final UserAction owner;
   @override
@@ -1246,17 +1232,13 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
   final UserAction modifier;
   @override
   final UserAction? lastAccessor;
-// Locking
   @override
   final UserAction? lockOwner;
   @override
   final DateTime? lockExpiry;
-// Soft delete
   @override
   final UserAction? remover;
-// History tracking
   final List<UserAction> _modHistory;
-// History tracking
   @override
   @JsonKey()
   List<UserAction> get modHistory {
@@ -1280,9 +1262,9 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
   @override
   @JsonKey()
   final int accessCount;
-// Classification
+// Classification & Metadata
   final List<String> _tags;
-// Classification
+// Classification & Metadata
   @override
   @JsonKey()
   List<String> get tags {
@@ -1300,7 +1282,6 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
     return EqualUnmodifiableMapView(_labels);
   }
 
-// Workflow
   @override
   @JsonKey()
   final Priority priority;
@@ -1309,9 +1290,9 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
   final WorkflowStage stage;
   @override
   final DateTime? expiryDate;
-// Sync
+// Synchronization & Versioning
   final Map<String, Object> _syncMeta;
-// Sync
+// Synchronization & Versioning
   @override
   @JsonKey()
   Map<String, Object> get syncMeta {
@@ -1331,10 +1312,8 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
     return EqualUnmodifiableMapView(_searchIndex);
   }
 
-// Extension
   @override
   final T? extraData;
-// Event sourcing
   @override
   @JsonKey()
   final int eventVer;
@@ -1359,7 +1338,6 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
   @override
   @JsonKey()
   final int historyLimit;
-// Versioning
   @override
   @JsonKey()
   final int dataVer;
@@ -1368,7 +1346,7 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
   final int structVer;
   @override
   final String? lastVer;
-// Distributed locking
+// Distributed Systems
   @override
   final String? distLockId;
   @override
@@ -1396,9 +1374,9 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
   @override
   @JsonKey()
   final Duration lockTimeout;
-// AI features
+// AI & Machine Learning
   final Map<String, List<double>> _aiVectors;
-// AI features
+// AI & Machine Learning
   @override
   @JsonKey()
   Map<String, List<double>> get aiVectors {
@@ -1712,13 +1690,13 @@ abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
           Map<String, dynamic> json, T Function(Object?) fromJsonT) =
       _$BaseEntityImpl<T>.fromJson;
 
-// Core properties
+// Identity & Core Data
   @override
   EntityId get id;
   @override
   String get name;
   @override
-  String? get description; // Metadata
+  String? get description;
   @override
   DateTime get createdAt;
   @override
@@ -1728,7 +1706,7 @@ abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
   @override
   EntityStatus get status;
   @override
-  Map<String, Object> get meta; // Hierarchy
+  Map<String, Object> get meta; // Hierarchical Structure
   @override
   String? get treePath;
   @override
@@ -1736,27 +1714,27 @@ abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
   @override
   Map<String, List<EntityId>> get refs;
   @override
-  int get treeMaxDepth; // Tree optimization
+  int get treeMaxDepth;
   @override
   List<EntityId> get ancestors;
   @override
   EntityId? get parentId;
   @override
-  List<EntityId> get childIds; // Collections
+  List<EntityId> get childIds;
   @override
-  Map<String, String> get subPaths; // Quick access data
+  Map<String, String> get subPaths;
   @override
   Map<String, EntityMetadata> get ancestorMeta;
   @override
-  String? get parentName; // Search optimization
+  String? get parentName;
   @override
   List<String> get searchPaths;
   @override
-  String? get treeLevel; // Sync state
+  String? get treeLevel;
   @override
   int get treeVersion;
   @override
-  DateTime? get treeLastUpdate; // Access control
+  DateTime? get treeLastUpdate; // Access Control & Security
   @override
   UserAction get owner;
   @override
@@ -1764,13 +1742,13 @@ abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
   @override
   UserAction get modifier;
   @override
-  UserAction? get lastAccessor; // Locking
+  UserAction? get lastAccessor;
   @override
   UserAction? get lockOwner;
   @override
-  DateTime? get lockExpiry; // Soft delete
+  DateTime? get lockExpiry;
   @override
-  UserAction? get remover; // History tracking
+  UserAction? get remover;
   @override
   List<UserAction> get modHistory;
   @override
@@ -1778,25 +1756,25 @@ abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
   @override
   bool get isPublic;
   @override
-  int get accessCount; // Classification
+  int get accessCount; // Classification & Metadata
   @override
   List<String> get tags;
   @override
-  Map<String, String> get labels; // Workflow
+  Map<String, String> get labels;
   @override
   Priority get priority;
   @override
   WorkflowStage get stage;
   @override
-  DateTime? get expiryDate; // Sync
+  DateTime? get expiryDate; // Synchronization & Versioning
   @override
   Map<String, Object> get syncMeta;
   @override
   String? get syncVer;
   @override
-  Map<String, Object> get searchIndex; // Extension
+  Map<String, Object> get searchIndex;
   @override
-  T? get extraData; // Event sourcing
+  T? get extraData;
   @override
   int get eventVer;
   @override
@@ -1804,13 +1782,13 @@ abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
   @override
   Map<String, Object> get eventMeta;
   @override
-  int get historyLimit; // Versioning
+  int get historyLimit;
   @override
   int get dataVer;
   @override
   int get structVer;
   @override
-  String? get lastVer; // Distributed locking
+  String? get lastVer; // Distributed Systems
   @override
   String? get distLockId;
   @override
@@ -1822,7 +1800,7 @@ abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
   @override
   Map<String, int> get verVectors;
   @override
-  Duration get lockTimeout; // AI features
+  Duration get lockTimeout; // AI & Machine Learning
   @override
   Map<String, List<double>> get aiVectors;
   @override
