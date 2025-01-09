@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
-
 import 'package:data_manager/data_manager.dart';
 import 'package:data_manager/src/domain/value_objects/user_action.dart';
 
@@ -12,34 +11,34 @@ extension TreePathExtension<T extends Object> on BaseEntity<T> {
     try {
       final decodedPath = Uri.decodeFull(rawPath);
 
-      if (decodedPath.length > PathRules.maxLength) {
+      if (decodedPath.length > SystemLimits.pathMaxLength) {
         throw ValidationException('Path exceeds maximum length');
       }
 
       final segments = decodedPath
-          .split(PathRules.separator)
+          .split(EntityDefaults.pathSeparator)
           .where((s) => s.isNotEmpty)
           .map(_sanitizePathSegment)
           .where((s) => s.isNotEmpty)
           .toList();
 
-      if (segments.any((s) => s.length > PathRules.maxSegment)) {
+      if (segments.any((s) => s.length > SystemLimits.pathMaxSegment)) {
         throw ValidationException('Path segment exceeds maximum length');
       }
 
       return segments.isEmpty
           ? ''
-          : '${PathRules.separator}${segments.join(PathRules.separator)}${PathRules.separator}';
+          : '${EntityDefaults.pathSeparator}${segments.join(EntityDefaults.pathSeparator)}${EntityDefaults.pathSeparator}';
     } catch (e) {
       throw PathValidationException('Invalid path format: ${e.toString()}');
     }
   }
 
   String _sanitizePathSegment(String segment) {
-    final cleaned = segment.replaceAll(RegExp(PathRules.invalidChars), '');
+    final cleaned = segment.replaceAll(RegExp(EntityDefaults.invalidPathChars), '');
     final trimmed = cleaned.trim().replaceAll(RegExp(r'^\.+|\.+$'), '');
     return Uri.encodeComponent(trimmed)
-        .replaceAll(PathRules.encodedSeparator, PathRules.separator);
+        .replaceAll(EntityDefaults.encodedPathSeparator, EntityDefaults.pathSeparator);
   }
 
   bool isPathValid(String? path) {
@@ -53,28 +52,28 @@ extension TreePathExtension<T extends Object> on BaseEntity<T> {
 
   List<String> splitPath(String? path) {
     return sanitizePath(path)
-        .split(PathRules.separator)
+        .split(EntityDefaults.pathSeparator)
         .where((s) => s.isNotEmpty)
         .toList();
   }
 
   String get canonicalPath => treePath?.toLowerCase() ?? id.value;
-  List<String> get pathParts => treePath?.split(PathRules.separator) ?? [id.value];
+  List<String> get pathParts => treePath?.split(EntityDefaults.pathSeparator) ?? [id.value];
   List<String> get ancestorPaths => splitPath(treePath);
 
   String get absolutePath {
     final basePath = treePath ?? '';
     final entityPart = id.value;
-    return sanitizePath('$basePath${PathRules.separator}$entityPart');
+    return sanitizePath('$basePath${EntityDefaults.pathSeparator}$entityPart');
   }
 
   List<String> buildTreePaths() {
     final paths = <String>[];
-    final parts = treePath?.split(PathRules.separator) ?? [];
+    final parts = treePath?.split(EntityDefaults.pathSeparator) ?? [];
     String currentPath = '';
 
     for (final part in parts) {
-      currentPath = currentPath.isEmpty ? part : '$currentPath${PathRules.separator}$part';
+      currentPath = currentPath.isEmpty ? part : '$currentPath${EntityDefaults.pathSeparator}$part';
       paths.add(currentPath);
     }
 
@@ -90,87 +89,9 @@ extension TreePathExtension<T extends Object> on BaseEntity<T> {
   }
 }
 
-/// Version Control Extension
-extension VersionControlExtension<T extends Object> on BaseEntity<T> {
-  // Combine version management and locking
-  bool hasValidVersion() {
-    try {
-      final parts = schemaVer.split('.');
-      return parts.length == 3 && parts.every((p) => int.tryParse(p) != null);
-    } catch (_) {
-      return false;
-    }
-  }
-
-  BaseEntity<T> incrementVersion({
-    bool isStructural = false,
-    String? nodeId,
-  }) {
-    return copyWith(
-      dataVer: isStructural ? dataVer : dataVer + 1,
-      structVer: isStructural ? structVer + 1 : structVer,
-      verVectors: {
-        ...verVectors,
-        'node-${nodeId ?? "local"}': dataVer + 1,
-      },
-    );
-  }
-
-  bool hasLockConflict(BaseEntity<T> other) {
-    return distLockId != null &&
-        other.distLockId != null &&
-        distLockId != other.distLockId;
-  }
-
-  bool hasConflict(BaseEntity<T> other) =>
-      structVer != other.structVer ||
-      dataVer != other.dataVer ||
-      _hasVersionVectorConflict(other) ||
-      hasLockConflict(other);
-
-  bool _hasVersionVectorConflict(BaseEntity<T> other) =>
-      verVectors.entries.any((entry) =>
-          other.verVectors[entry.key] != null &&
-          entry.value > other.verVectors[entry.key]!);
-
-  int _compareVersions(String v1, String v2) {
-    final v1Parts = v1.split('.').map(int.parse).toList();
-    final v2Parts = v2.split('.').map(int.parse).toList();
-    for (var i = 0; i < 3; i++) {
-      if (v1Parts[i] != v2Parts[i]) {
-        return v1Parts[i].compareTo(v2Parts[i]);
-      }
-    }
-    return 0;
-  }
-
-  BaseEntity<T> updateWithConflictResolution(BaseEntity<T> serverVersion) {
-    final comparison =
-        _compareVersions(schemaVer, serverVersion.schemaVer);
-    if (comparison > 0) {
-      return copyWith(
-        syncMeta: {
-          ...syncMeta,
-          'conflictResolved': 'localWins',
-          'serverVersion': serverVersion.schemaVer,
-        },
-      );
-    } else if (comparison < 0) {
-      return serverVersion.copyWith(
-        syncMeta: {
-          ...serverVersion.syncMeta,
-          'conflictResolved': 'serverWins',
-          'localVersion': schemaVer,
-        },
-      );
-    }
-    return this;
-  }
-}
-
 /// History Management Extension
 extension HistoryExtension<T extends Object> on BaseEntity<T> {
-  static const _historyMaxSize = EntityLimits.historyMax;
+  static const _historyMaxSize = 50;
 
   BaseEntity<T> recordAction(UserAction action, {bool isAccessAction = false}) {
     final history = isAccessAction ? accessLog : modHistory;
@@ -190,15 +111,89 @@ extension HistoryExtension<T extends Object> on BaseEntity<T> {
   }
 }
 
+/// Version Control Extension
+extension VersionControlExtension<T extends Object> on BaseEntity<T> {
+  // Combine version management and locking
+  bool hasValidVersion() {
+    try {
+      final parts = schemaVer.split('.');
+      return parts.length == 3 && parts.every((p) => int.tryParse(p) != null);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  BaseEntity<T> incrementVersion({bool isStructural = false, String? nodeId}) {
+    return copyWith(
+      dataVer: isStructural ? dataVer : dataVer + 1,
+      structVer: isStructural ? structVer + 1 : structVer,
+      verVectors: {
+        ...verVectors,
+        'node-${nodeId ?? "local"}': dataVer + 1,
+      },
+    );
+  }
+
+  bool hasConflict(BaseEntity<T> other) =>
+      structVer != other.structVer ||
+      dataVer != other.dataVer ||
+      _hasVersionVectorConflict(other) ||
+      hasLockConflict(other);
+
+  bool _hasVersionVectorConflict(BaseEntity<T> other) =>
+      verVectors.entries.any((entry) =>
+          other.verVectors[entry.key] != null &&
+          entry.value > other.verVectors[entry.key]!);
+
+  BaseEntity<T> updateWithConflictResolution(BaseEntity<T> serverVersion) {
+    final comparison = _compareVersions(schemaVer, serverVersion.schemaVer);
+    if (comparison > 0) {
+      return copyWith(
+        syncMeta: {
+          ...syncMeta,
+          'conflictResolved': 'localWins',
+          'serverVersion': serverVersion.schemaVer,
+        },
+      );
+    } else if (comparison < 0) {
+      return serverVersion.copyWith(
+        syncMeta: {
+          ...serverVersion.syncMeta,
+          'conflictResolved': 'serverWins',
+          'localVersion': schemaVer,
+        },
+      );
+    }
+    return this;
+  }
+
+  int _compareVersions(String v1, String v2) {
+    final v1Parts = v1.split('.').map(int.parse).toList();
+    final v2Parts = v2.split('.').map(int.parse).toList();
+    for (var i = 0; i < 3; i++) {
+      if (v1Parts[i] != v2Parts[i]) {
+        return v1Parts[i].compareTo(v2Parts[i]);
+      }
+    }
+    return 0;
+  }
+}
+
 /// Lock Management Extension
 extension LockExtension<T extends Object> on BaseEntity<T> {
   bool get isLockActive =>
       lockOwner != null && (lockExpiry?.isAfter(DateTime.now()) ?? false);
 
   Duration _normalizeLockDuration(Duration duration) {
-    if (duration < LockDurations.min) return LockDurations.min;
-    if (duration > LockDurations.max) return LockDurations.max;
+    if (duration < LockConfig.minimumDuration) return LockConfig.minimumDuration;
+    if (duration > LockConfig.maximumDuration) return LockConfig.maximumDuration;
     return duration;
+  }
+
+  bool hasLockConflict(BaseEntity<T> other) {
+    return distLockId != null &&
+        other.distLockId != null &&
+        distLockId != other.distLockId;
   }
 
   BaseEntity<T> setLock(
@@ -208,7 +203,7 @@ extension LockExtension<T extends Object> on BaseEntity<T> {
     String? nodeId,
   }) {
     final lockDuration =
-        _normalizeLockDuration(duration ?? LockDurations.timeout);
+        _normalizeLockDuration(duration ?? LockConfig.defaultTimeout);
 
     return copyWith(
       lockOwner: user,
