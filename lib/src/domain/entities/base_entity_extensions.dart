@@ -4,113 +4,98 @@ import 'package:crypto/crypto.dart';
 import 'package:data_manager/data_manager.dart';
 import 'package:data_manager/src/domain/value_objects/user_action.dart';
 
-///  Path Management Extension
-extension PathManagement<T extends Object> on BaseEntity<T> {
-  // Core path operations
-  String normalizePath(String? rawPath) {
+/// Tree Path Management Extension
+extension TreePathExtension<T extends Object> on BaseEntity<T> {
+  String sanitizePath(String? rawPath) {
     if (rawPath == null || rawPath.isEmpty) return '';
 
     try {
-      // Decode URI encoded path
       final decodedPath = Uri.decodeFull(rawPath);
 
-      // Validate path length
-      if (decodedPath.length > PathConstants.maxPathLength) {
+      if (decodedPath.length > PathRules.maxLength) {
         throw ValidationException('Path exceeds maximum length');
       }
 
-      // Split and clean path segments
       final segments = decodedPath
-          .split(PathConstants.pathSeparator)
+          .split(PathRules.separator)
           .where((s) => s.isNotEmpty)
-          .map(_normalizePathSegment)
+          .map(_sanitizePathSegment)
           .where((s) => s.isNotEmpty)
           .toList();
 
-      // Validate segments
-      if (segments.any((s) => s.length > PathConstants.maxSegmentLength)) {
+      if (segments.any((s) => s.length > PathRules.maxSegment)) {
         throw ValidationException('Path segment exceeds maximum length');
       }
 
       return segments.isEmpty
           ? ''
-          : '${PathConstants.pathSeparator}${segments.join(PathConstants.pathSeparator)}${PathConstants.pathSeparator}';
+          : '${PathRules.separator}${segments.join(PathRules.separator)}${PathRules.separator}';
     } catch (e) {
       throw PathValidationException('Invalid path format: ${e.toString()}');
     }
   }
 
-  String _normalizePathSegment(String segment) {
-    // Remove invalid characters
-    final cleaned =
-        segment.replaceAll(RegExp(PathConstants.invalidPathChars), '');
-
-    // Trim whitespace and dots
+  String _sanitizePathSegment(String segment) {
+    final cleaned = segment.replaceAll(RegExp(PathRules.invalidChars), '');
     final trimmed = cleaned.trim().replaceAll(RegExp(r'^\.+|\.+$'), '');
-
-    // URI encode the segment (preserve path separator)
-    return Uri.encodeComponent(trimmed).replaceAll(
-        PathConstants.encodedPathSeparator, PathConstants.pathSeparator);
+    return Uri.encodeComponent(trimmed)
+        .replaceAll(PathRules.encodedSeparator, PathRules.separator);
   }
 
-  bool isValidPath(String? path) {
+  bool isPathValid(String? path) {
     if (path == null) return true;
     try {
-      return normalizePath(path) == path;
+      return sanitizePath(path) == path;
     } catch (_) {
       return false;
     }
   }
 
-  List<String> parsePathSegments(String? path) {
-    return normalizePath(path)
-        .split(PathConstants.pathSeparator)
+  List<String> splitPath(String? path) {
+    return sanitizePath(path)
+        .split(PathRules.separator)
         .where((s) => s.isNotEmpty)
         .toList();
   }
 
-  String get normalizedPath => hierarchyPath?.toLowerCase() ?? entityId.value;
-  List<String> get pathSegments =>
-      hierarchyPath?.split('/') ?? [entityId.value];
+  String get canonicalPath => treePath?.toLowerCase() ?? id.value;
+  List<String> get pathParts => treePath?.split(PathRules.separator) ?? [id.value];
+  List<String> get ancestorPaths => splitPath(treePath);
 
-  List<String> getAncestors() => parsePathSegments(hierarchyPath);
-
-  String get fullPath {
-    final basePath = hierarchyPath ?? '';
-    final entitySegment = entityId.value;
-    return normalizePath(
-        '$basePath${PathConstants.pathSeparator}$entitySegment');
+  String get absolutePath {
+    final basePath = treePath ?? '';
+    final entityPart = id.value;
+    return sanitizePath('$basePath${PathRules.separator}$entityPart');
   }
 
-  // Add new methods for path management
-  List<String> buildSearchablePaths() {
+  List<String> buildTreePaths() {
     final paths = <String>[];
-    final segments = hierarchyPath?.split('/') ?? [];
+    final parts = treePath?.split(PathRules.separator) ?? [];
     String currentPath = '';
 
-    for (final segment in segments) {
-      currentPath = currentPath.isEmpty ? segment : '$currentPath/$segment';
+    for (final part in parts) {
+      currentPath = currentPath.isEmpty ? part : '$currentPath${PathRules.separator}$part';
       paths.add(currentPath);
     }
 
     return paths;
   }
 
-  Map<String, Object> buildQueryIndex() {
+  Map<String, Object> buildTreeIndex() {
     return {
-      'depth_name': '${hierarchyDepth}_${entityName.toLowerCase()}',
-      'parent_type': '${hierarchyParentId ?? ''}_${hierarchyLevel ?? ''}',
-      'ancestry': hierarchyAncestors.map((e) => e.value).join('|'),
+      'depth_name': '${treeDepth}_${name.toLowerCase()}',
+      'parent_type': '${parentId ?? ''}_${treeLevel ?? ''}',
+      'ancestry': ancestors.map((e) => e.value).join('|'),
     };
   }
 }
 
-///  Concurrency Control Extension
-extension ConcurrencyControl<T extends Object> on BaseEntity<T> {
+/// Version Control Extension
+extension VersionControlExtension<T extends Object> on BaseEntity<T> {
   // Combine version management and locking
   bool hasValidVersion() {
     try {
-      final parts = schemaVersion.split('.');
+      final parts = schemaVer.split('.');
       return parts.length == 3 && parts.every((p) => int.tryParse(p) != null);
     } catch (_) {
       return false;
@@ -122,31 +107,31 @@ extension ConcurrencyControl<T extends Object> on BaseEntity<T> {
     String? nodeId,
   }) {
     return copyWith(
-      entityVersion: isStructural ? entityVersion : entityVersion + 1,
-      structureVersion: isStructural ? structureVersion + 1 : structureVersion,
-      versionVectors: {
-        ...versionVectors,
-        'node-${nodeId ?? "local"}': entityVersion + 1,
+      dataVer: isStructural ? dataVer : dataVer + 1,
+      structVer: isStructural ? structVer + 1 : structVer,
+      verVectors: {
+        ...verVectors,
+        'node-${nodeId ?? "local"}': dataVer + 1,
       },
     );
   }
 
   bool hasLockConflict(BaseEntity<T> other) {
-    return distributedLockId != null &&
-        other.distributedLockId != null &&
-        distributedLockId != other.distributedLockId;
+    return distLockId != null &&
+        other.distLockId != null &&
+        distLockId != other.distLockId;
   }
 
   bool hasConflict(BaseEntity<T> other) =>
-      structureVersion != other.structureVersion ||
-      entityVersion != other.entityVersion ||
+      structVer != other.structVer ||
+      dataVer != other.dataVer ||
       _hasVersionVectorConflict(other) ||
       hasLockConflict(other);
 
   bool _hasVersionVectorConflict(BaseEntity<T> other) =>
-      versionVectors.entries.any((entry) =>
-          other.versionVectors[entry.key] != null &&
-          entry.value > other.versionVectors[entry.key]!);
+      verVectors.entries.any((entry) =>
+          other.verVectors[entry.key] != null &&
+          entry.value > other.verVectors[entry.key]!);
 
   int _compareVersions(String v1, String v2) {
     final v1Parts = v1.split('.').map(int.parse).toList();
@@ -161,21 +146,21 @@ extension ConcurrencyControl<T extends Object> on BaseEntity<T> {
 
   BaseEntity<T> updateWithConflictResolution(BaseEntity<T> serverVersion) {
     final comparison =
-        _compareVersions(schemaVersion, serverVersion.schemaVersion);
+        _compareVersions(schemaVer, serverVersion.schemaVer);
     if (comparison > 0) {
       return copyWith(
-        syncMetadata: {
-          ...syncMetadata,
+        syncMeta: {
+          ...syncMeta,
           'conflictResolved': 'localWins',
-          'serverVersion': serverVersion.schemaVersion,
+          'serverVersion': serverVersion.schemaVer,
         },
       );
     } else if (comparison < 0) {
       return serverVersion.copyWith(
-        syncMetadata: {
-          ...serverVersion.syncMetadata,
+        syncMeta: {
+          ...serverVersion.syncMeta,
           'conflictResolved': 'serverWins',
-          'localVersion': schemaVersion,
+          'localVersion': schemaVer,
         },
       );
     }
@@ -183,65 +168,61 @@ extension ConcurrencyControl<T extends Object> on BaseEntity<T> {
   }
 }
 
-///  History Tracking Extension
-extension TrackingManagement<T extends Object> on BaseEntity<T> {
-  static const _maxHistorySize = EntityConstants.maxHistoryLength;
+/// History Management Extension
+extension HistoryExtension<T extends Object> on BaseEntity<T> {
+  static const _historyMaxSize = EntityLimits.historyMax;
 
-  BaseEntity<T> addToHistory(UserAction action, {bool isAccess = false}) {
-    final history = isAccess ? accessHistory : modificationHistory;
-    final newHistory = [action, ...history.take(_maxHistorySize - 1)];
+  BaseEntity<T> recordAction(UserAction action, {bool isAccessAction = false}) {
+    final history = isAccessAction ? accessLog : modHistory;
+    final updatedHistory = [action, ...history.take(_historyMaxSize - 1)];
 
     return copyWith(
-      accessHistory: isAccess ? newHistory : accessHistory,
-      modificationHistory: isAccess ? modificationHistory : newHistory,
+      accessLog: isAccessAction ? updatedHistory : accessLog,
+      modHistory: isAccessAction ? modHistory : updatedHistory,
     );
   }
 
-  BaseEntity<T> trimHistory() {
+  BaseEntity<T> pruneHistory() {
     return copyWith(
-      accessHistory: accessHistory.take(_maxHistorySize).toList(),
-      modificationHistory: modificationHistory.take(_maxHistorySize).toList(),
+      accessLog: accessLog.take(_historyMaxSize).toList(),
+      modHistory: modHistory.take(_historyMaxSize).toList(),
     );
   }
 }
 
-///  Lock Management Extension
-extension LockManagement<T extends Object> on BaseEntity<T> {
-  bool get isLocked =>
-      lockedBy != null && (lockExpiresAt?.isAfter(DateTime.now()) ?? false);
+/// Lock Management Extension
+extension LockExtension<T extends Object> on BaseEntity<T> {
+  bool get isLockActive =>
+      lockOwner != null && (lockExpiry?.isAfter(DateTime.now()) ?? false);
 
-  Duration _validateLockDuration(Duration duration) {
-    if (duration < EntityConstants.minimumLockDuration) {
-      return EntityConstants.minimumLockDuration;
-    }
-    if (duration > EntityConstants.maximumLockDuration) {
-      return EntityConstants.maximumLockDuration;
-    }
+  Duration _normalizeLockDuration(Duration duration) {
+    if (duration < LockDurations.min) return LockDurations.min;
+    if (duration > LockDurations.max) return LockDurations.max;
     return duration;
   }
 
-  BaseEntity<T> acquireLock(
+  BaseEntity<T> setLock(
     UserAction user, {
-    Duration? timeout,
-    bool distributed = false,
+    Duration? duration,
+    bool isDistributed = false,
     String? nodeId,
   }) {
-    final duration =
-        _validateLockDuration(timeout ?? EntityConstants.defaultLockTimeout);
+    final lockDuration =
+        _normalizeLockDuration(duration ?? LockDurations.timeout);
 
     return copyWith(
-      lockedBy: user,
-      lockExpiresAt: DateTime.now().add(duration),
-      distributedLockId: distributed
-          ? '${entityId.value}-$nodeId-${DateTime.now().millisecondsSinceEpoch}'
+      lockOwner: user,
+      lockExpiry: DateTime.now().add(lockDuration),
+      distLockId: isDistributed
+          ? '${id.value}-$nodeId-${DateTime.now().millisecondsSinceEpoch}'
           : null,
-      distributedLockNode: distributed ? nodeId : null,
+      distLockNode: isDistributed ? nodeId : null,
     );
   }
 }
 
-///  AI Integration Extension
-extension AIIntegration<T extends Object> on BaseEntity<T> {
+/// AI Processing Extension
+extension AIExtension<T extends Object> on BaseEntity<T> {
   // Combine AI/LLM/RAG/CAG capabilities
   BaseEntity<T> processWithAI({
     required String modelId,
@@ -255,14 +236,14 @@ extension AIIntegration<T extends Object> on BaseEntity<T> {
 
     // Handle embeddings
     final newEmbeddings = embeddings != null
-        ? {...aiEmbeddings, modelId: embeddings}
-        : aiEmbeddings;
+        ? {...aiVectors, modelId: embeddings}
+        : aiVectors;
 
     // Handle cache
     final cacheKey =
         useCache ? _generateCacheKey(modelId, input.toString()) : null;
-    final newMetadata = {
-      ...aiMetadata,
+    final newMeta = {
+      ...aiMeta,
       if (cacheKey != null)
         'cache_$cacheKey': {
           'output': output,
@@ -272,17 +253,17 @@ extension AIIntegration<T extends Object> on BaseEntity<T> {
     };
 
     return copyWith(
-      aiEmbeddings: newEmbeddings,
-      aiMetadata: newMetadata,
+      aiVectors: newEmbeddings,
+      aiMeta: newMeta,
       aiScores: {...aiScores, if (confidence != null) modelId: confidence},
-      lastAiProcessingTime: timestamp,
+      aiLastRun: timestamp,
     );
   }
 
   Map<String, dynamic>? getCachedResult(
       String modelId, Map<String, dynamic> input) {
     final cacheKey = _generateCacheKey(modelId, input.toString());
-    final cached = aiMetadata['cache_$cacheKey'];
+    final cached = aiMeta['cache_$cacheKey'];
     return cached != null ? json.decode(cached) : null;
   }
 
