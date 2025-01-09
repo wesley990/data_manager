@@ -1,6 +1,7 @@
 library;
 
 export 'src/domain/entities/base_entity.dart';
+export 'src/domain/entities/base_entity_extensions.dart';
 export 'src/domain/entities/entity_factory.dart';
 export 'src/domain/entities/entity_types.dart';
 export 'src/domain/validation/validation_core.dart';

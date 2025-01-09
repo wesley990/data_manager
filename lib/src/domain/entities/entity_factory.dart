@@ -1,106 +1,110 @@
-import 'package:data_manager/src/domain/entities/base_entity_extensions.dart';
 import 'package:uuid/uuid.dart';
 import 'package:authentication/authentication.dart';
 import 'package:data_manager/data_manager.dart';
 
-// Add EntityId type import
-
 import '../value_objects/user_action.dart';
 
-class EntityCreateParams<T> {
+class EntityCreateConfig<T> {
+  // Core info
   final String name;
-  final AuthUser currentUser;
-  final T additionalData;
-  final UserAction owner; // Change from optional to required
+  final AuthUser user;
+  final T data;
+  final UserAction owner;
   final String? description;
-  final Map<String, Object>? attributes;
+
+  // Metadata
+  final Map<String, Object>? meta;
+
+  // Hierarchy
   final String? parentPath;
+  final EntityId? parentId;
+  final List<EntityId>? ancestors;
+  final Map<String, String>? ancestorNames;
+  final String? treeLevel;
+  final List<EntityId>? childIds;
+  final String? parentName;
+
+  // Relations
+  final Map<String, List<String>>? refs;
+  final Map<String, String>? subPaths;
+
+  // Classification
   final List<String>? tags;
   final Map<String, String>? labels;
-  final DateTime? expiresAt;
+  final DateTime? expiryDate;
   final Priority? priority;
-  final WorkflowStage? workflowStage;
-  final EntityId? parentId;
-  final List<EntityId>? ancestorIds;
-  final Map<String, String>? ancestorNames;
-  final String? hierarchyLevel;
-  final Map<String, List<String>>? relations;
-  final Map<String, String>? subCollections;
-  final List<EntityId>? childrenIds;
-  final String? parentName;
+  final WorkflowStage? stage;
   final bool? isPublic;
 
-  // Add AI/LLM fields
-  final Map<String, List<double>>? aiEmbeddings;
+  // AI features
+  final Map<String, List<double>>? aiVectors;
   final Map<String, double>? aiScores;
-  final Map<String, String>? aiMetadata;
+  final Map<String, String>? aiMeta;
   final List<String>? aiTags;
-  final Map<String, Object>? aiAnnotations;
-  final String? aiProcessingVersion;
+  final Map<String, Object>? aiNotes;
+  final String? aiVersion;
 
-  EntityCreateParams({
+  EntityCreateConfig({
     required this.name,
-    required this.currentUser,
-    required this.owner, // Make owner required
-    required this.additionalData,
+    required this.user,
+    required this.owner,
+    required this.data,
     this.description,
-    this.attributes,
+    this.meta,
     this.parentPath,
     this.parentId,
-    this.ancestorIds,
+    this.ancestors,
     this.ancestorNames,
-    this.hierarchyLevel,
-    this.relations,
-    this.subCollections,
+    this.treeLevel,
+    this.refs,
+    this.subPaths,
     this.tags,
     this.labels,
-    this.expiresAt,
+    this.expiryDate,
     this.priority,
-    this.workflowStage,
-    this.childrenIds,
+    this.stage,
+    this.childIds,
     this.parentName,
     this.isPublic,
-    
-    // Add AI parameters
-    this.aiEmbeddings,
+    this.aiVectors,
     this.aiScores,
-    this.aiMetadata,
+    this.aiMeta,
     this.aiTags,
-    this.aiAnnotations,
-    this.aiProcessingVersion,
+    this.aiNotes,
+    this.aiVersion,
   });
 }
 
-class EntityCloneParams<T extends Object> {
+class EntityCloneConfig<T extends Object> {
   final BaseEntity<T> source;
-  final AuthUser currentUser;
+  final AuthUser user;
   final String? newName;
-  final String? newParentPath;
-  final Map<String, Object>? newAttributes;
+  final String? newPath;
+  final Map<String, Object>? newMeta;
   final Map<String, String>? newLabels;
   final List<String>? newTags;
 
-  EntityCloneParams({
+  EntityCloneConfig({
     required this.source,
-    required this.currentUser,
+    required this.user,
     this.newName,
-    this.newParentPath,
-    this.newAttributes,
+    this.newPath,
+    this.newMeta,
     this.newLabels,
     this.newTags,
   });
 }
 
 class EntityFactory {
-  // Update constants to match BaseEntity
+  // Default values
   static const Priority defaultPriority = Priority.medium;
-  static const WorkflowStage defaultWorkflowStage = WorkflowStage.draft;
-  static const String defaultVersion = '1.0.0';
+  static const WorkflowStage defaultStage = WorkflowStage.draft;
+  static const String defaultSchemaVer = '1.0.0';
   static const EntityStatus defaultStatus = EntityStatus.active;
-  static const int defaultMaxDepth = 10;
+  static const int defaultTreeDepth = 10;
   static const bool defaultIsPublic = false;
 
-  static final _validEntityTypes = <Type>{
+  static final _validTypes = <Type>{
     Owner,
     Site,
     Equipment,
@@ -108,224 +112,197 @@ class EntityFactory {
     Personnel,
   };
 
-  static BaseEntity<T> createEntity<T extends Object>(
-      EntityCreateParams<T> params) {
-    if (!_validEntityTypes.contains(T)) {
-      throw ArgumentError('Invalid entity type: ${T.toString()}');
+  static BaseEntity<T> create<T extends Object>(EntityCreateConfig<T> config) {
+    if (!_validTypes.contains(T)) {
+      throw ArgumentError('Invalid type: ${T.toString()}');
     }
 
     final now = DateTime.now();
-    final userAction = UserAction.fromAuthUser(params.currentUser);
+    final userAction = UserAction.fromAuthUser(config.user);
     final id = EntityId(const Uuid().v4());
 
-    // Enhanced path handling with validation
-    final path = _buildEntityPath(params.parentPath, id.value);
-    if (!_isValidPath(path)) {
-      throw PathValidationException('Invalid entity path: $path');
+    final treePath = _buildTreePath(config.parentPath, id.value);
+    if (!_isValidPath(treePath)) {
+      throw PathValidationException('Invalid path: $treePath');
     }
 
-    final ancestorIds = _buildAncestorIds(params.parentPath);
-    final depth = ancestorIds.length + 1;
+    final ancestors = _buildAncestorList(config.parentPath);
+    final treeDepth = ancestors.length + 1;
 
-    // Enhanced ancestor metadata
-    final ancestorMetadata =
-        _convertAncestorNamesToMetadata(params.ancestorNames ?? {}, now);
+    final ancestorMeta = _buildAncestorMeta(config.ancestorNames ?? {}, now);
 
     final entity = BaseEntity<T>(
-      // Core fields
-      entityId: id,
-      entityName: params.name,
-      entityDescription: params.description,
-      metaCreatedAt: now,
-      metaUpdatedAt: now,
-      metaAttributes: params.attributes ?? {},
+      // Core
+      id: id,
+      name: config.name,
+      description: config.description,
+      createdAt: now,
+      updatedAt: now,
+      meta: config.meta ?? {},
 
-      // Hierarchy info with validation
-      hierarchyPath: path,
-      hierarchyDepth: depth,
-      hierarchyParentId: params.parentId,
-      hierarchyAncestors: params.ancestorIds ?? ancestorIds,
-      hierarchyLevel: params.hierarchyLevel,
+      // Tree
+      treePath: treePath,
+      treeDepth: treeDepth,
+      treeMaxDepth: defaultTreeDepth,
+      parentId: config.parentId,
+      ancestors: config.ancestors ?? ancestors,
+      treeLevel: config.treeLevel,
 
-      // User info with full action context
-      owner: params.owner,
-      createdBy: userAction,
-      lastModifiedBy: userAction,
-      accessLastBy: userAction,
+      // Users
+      owner: config.owner,
+      creator: userAction,
+      modifier: userAction,
+      lastAccessor: userAction,
 
-      // Relations and collections with type safety
-      relations: _convertRelationsToEntityIds(params.relations ?? {}),
-      subCollections: params.subCollections ?? {},
-      childrenIds: params.childrenIds ?? [],
+      // Relations
+      refs: _convertToEntityIdRefs(config.refs ?? {}),
+      subPaths: config.subPaths ?? {},
+      childIds: config.childIds ?? [],
 
-      // Enhanced metadata
-      ancestorMetadata: ancestorMetadata,
-      parentName: params.parentName,
-      tags: params.tags ?? [],
-      labels: params.labels ?? {},
-      priority: params.priority ?? defaultPriority,
-      workflowStage: params.workflowStage ?? defaultWorkflowStage,
-      accessIsPublic: params.isPublic ?? defaultIsPublic,
-      expiresAt: params.expiresAt,
+      // Metadata
+      ancestorMeta: ancestorMeta,
+      parentName: config.parentName,
+      tags: config.tags ?? [],
+      labels: config.labels ?? {},
+      priority: config.priority ?? defaultPriority,
+      stage: config.stage ?? defaultStage,
+      isPublic: config.isPublic ?? defaultIsPublic,
+      expiryDate: config.expiryDate,
 
-      // History tracking
-      modificationHistory: [userAction],
-      accessHistory: [userAction],
+      // History
+      modHistory: [userAction],
+      accessLog: [userAction],
 
-      // Event sourcing support
-      eventVersion: 0,
-      eventPending: [],
-      eventMetadata: _buildInitialEventMetadata(now, userAction, T.toString()),
-
-      // Version control
-      entityVersion: 1,
-      structureVersion: 1,
-      lastKnownVersion: '1-1',
-      versionVectors: {'initial': 1},
-
-      // Additional data
-      additionalData: params.additionalData,
-
-      // New fields with defaults
-      syncMetadata: _buildInitialSyncMetadata(now),
-      lastSyncedVersion: '1',
+      // System
       status: defaultStatus,
-      schemaVersion: defaultVersion,
-      maxDepth: defaultMaxDepth,
-      historyLimit: EntityConstants.defaultHistoryLimit,
-      lockTimeout: EntityConstants.defaultLockTimeout,
+      schemaVer: defaultSchemaVer,
 
-      // Add AI/LLM fields
-      aiEmbeddings: params.aiEmbeddings ?? {},
-      aiScores: params.aiScores ?? {},
-      aiMetadata: params.aiMetadata ?? {},
-      aiTags: params.aiTags ?? [],
-      aiAnnotations: params.aiAnnotations ?? {},
-      aiProcessingVersion: params.aiProcessingVersion,
-      lastAiProcessingTime: now,
+      // Data
+      extraData: config.data,
+
+      // AI
+      aiVectors: config.aiVectors ?? {},
+      aiScores: config.aiScores ?? {},
+      aiMeta: config.aiMeta ?? {},
+      aiTags: config.aiTags ?? [],
+      aiNotes: config.aiNotes ?? {},
+      aiVer: config.aiVersion,
+      aiLastRun: now,
     );
 
+    // Use the extension methods through TreePathExtension
     return entity.copyWith(
-      searchablePath: entity.buildSearchablePaths(),
-      queryIndex: entity.buildQueryIndex(),
+      searchPaths: TreePathExtension(entity).buildTreePaths(),
+      searchIndex: TreePathExtension(entity).buildTreeIndex(),
     );
   }
 
-  // Remove _createEntity method as it's now merged into createEntity
-
-  static BaseEntity<T> cloneEntity<T extends Object>(
-      EntityCloneParams<T> params) {
+  static BaseEntity<T> clone<T extends Object>(EntityCloneConfig<T> config) {
     final now = DateTime.now();
-    final userAction = UserAction.fromAuthUser(params.currentUser);
+    final userAction = UserAction.fromAuthUser(config.user);
     final id = EntityId(const Uuid().v4());
 
-    final path = _buildEntityPath(params.newParentPath, id.value);
-    final ancestorIds = _buildAncestorIds(params.newParentPath);
-    final depth = ancestorIds.length + 1;
+    final path = _buildTreePath(config.newPath, id.value);
+    final ancestors = _buildAncestorList(config.newPath);
+    final depth = ancestors.length + 1;
 
-    final ancestorMetadata = _convertAncestorNamesToMetadata(
-        params.source.ancestorMetadata
+    final ancestorMeta = _buildAncestorMeta(
+        config.source.ancestorMeta
             .map((key, value) => MapEntry(key, value.displayName)),
         now);
 
     final entity = BaseEntity<T>(
-      entityId: id,
-      entityName: params.newName ?? '${params.source.entityName} (Copy)',
-      entityDescription: params.source.entityDescription,
-      metaCreatedAt: now,
-      metaUpdatedAt: now,
-      metaAttributes: params.newAttributes ??
-          Map<String, Object>.from(params.source.metaAttributes),
-      hierarchyPath: path,
-      hierarchyDepth: depth,
-      hierarchyParentId: _deriveParentId(params.newParentPath),
-      hierarchyAncestors: ancestorIds,
-      hierarchyLevel: params.source.hierarchyLevel,
+      id: id,
+      name: config.newName ?? '${config.source.name} (Copy)',
+      description: config.source.description,
+      createdAt: now,
+      updatedAt: now,
+      meta: config.newMeta ?? Map<String, Object>.from(config.source.meta),
+      treePath: path,
+      treeDepth: depth,
+      treeMaxDepth: defaultTreeDepth,
+      parentId: _deriveParentId(config.newPath),
+      ancestors: ancestors,
+      treeLevel: config.source.treeLevel,
       owner: userAction,
-      createdBy: userAction,
-      lastModifiedBy: userAction,
-      accessLastBy: userAction,
-      relations: Map<String, List<EntityId>>.from(params.source.relations),
-      subCollections: Map<String, String>.from(params.source.subCollections),
-      childrenIds: [],
-      ancestorMetadata: ancestorMetadata,
-      parentName: params.source.parentName,
-      tags: params.newTags ?? List<String>.from(params.source.tags),
+      creator: userAction,
+      modifier: userAction,
+      lastAccessor: userAction,
+      refs: Map<String, List<EntityId>>.from(config.source.refs),
+      subPaths: Map<String, String>.from(config.source.subPaths),
+      childIds: [],
+      ancestorMeta: ancestorMeta,
+      parentName: config.source.parentName,
+      tags: config.newTags ?? List<String>.from(config.source.tags),
       labels:
-          params.newLabels ?? Map<String, String>.from(params.source.labels),
-      priority: params.source.priority,
-      workflowStage: params.source.workflowStage,
-      accessIsPublic: params.source.accessIsPublic,
-      expiresAt: params.source.expiresAt,
-      additionalData: params.source.additionalData,
-      modificationHistory: [userAction],
-      accessHistory: [userAction],
-      syncMetadata: _buildCloneSyncMetadata(now, params.source),
-      lastSyncedVersion: '1',
-      eventMetadata: _buildCloneEventMetadata(now, params.source, T.toString()),
-      eventVersion: 0,
-      eventPending: [],
-
-      // Add missing default fields
+          config.newLabels ?? Map<String, String>.from(config.source.labels),
+      priority: config.source.priority,
+      stage: config.source.stage,
+      isPublic: config.source.isPublic,
+      expiryDate: config.source.expiryDate,
+      extraData: config.source.extraData,
+      modHistory: [userAction],
+      accessLog: [userAction],
       status: defaultStatus,
-      schemaVersion: defaultVersion,
-      maxDepth: defaultMaxDepth,
-
-      // Clone AI/LLM data
-      aiEmbeddings: Map<String, List<double>>.from(params.source.aiEmbeddings),
-      aiScores: Map<String, double>.from(params.source.aiScores),
-      aiMetadata: Map<String, String>.from(params.source.aiMetadata),
-      aiTags: List<String>.from(params.source.aiTags),
-      aiAnnotations: Map<String, Object>.from(params.source.aiAnnotations),
-      aiProcessingVersion: params.source.aiProcessingVersion,
-      lastAiProcessingTime: now,
+      schemaVer: defaultSchemaVer,
+      aiVectors: Map<String, List<double>>.from(config.source.aiVectors),
+      aiScores: Map<String, double>.from(config.source.aiScores),
+      aiMeta: Map<String, String>.from(config.source.aiMeta),
+      aiTags: List<String>.from(config.source.aiTags),
+      aiNotes: Map<String, Object>.from(config.source.aiNotes),
+      aiVer: config.source.aiVer,
+      aiLastRun: now,
     );
 
+    // Use the extension methods through TreePathExtension
     return entity.copyWith(
-      searchablePath: entity.buildSearchablePaths(),
-      queryIndex: entity.buildQueryIndex(),
+      searchPaths: TreePathExtension(entity).buildTreePaths(),
+      searchIndex: TreePathExtension(entity).buildTreeIndex(),
     );
   }
 
-  // Updated helper methods
+  // Helper methods
   static bool _isValidPath(String path) {
-    if (path.length > PathConstants.maxPathLength) return false;
-    final segments = path.split(PathConstants.pathSeparator);
-    return segments.every((s) => s.length <= PathConstants.maxSegmentLength);
+    return path.length <= PathRules.maxLength &&
+        path
+            .split(PathRules.separator)
+            .every((s) => s.length <= PathRules.maxSegment);
   }
 
-  static String _buildEntityPath(String? parentPath, String id) {
+  static String _buildTreePath(String? parentPath, String id) {
     if (parentPath == null || parentPath.isEmpty) return id;
-    return parentPath.endsWith(PathConstants.pathSeparator)
+    return parentPath.endsWith(PathRules.separator)
         ? '$parentPath$id'
-        : '$parentPath${PathConstants.pathSeparator}$id';
+        : '$parentPath${PathRules.separator}$id';
   }
 
-  static List<EntityId> _buildAncestorIds(String? parentPath) {
+  static List<EntityId> _buildAncestorList(String? parentPath) {
     if (parentPath == null || parentPath.isEmpty) return [];
     return parentPath
-        .split(PathConstants.pathSeparator)
+        .split(PathRules.separator)
         .where((p) => p.isNotEmpty)
         .map((p) => EntityId(p))
         .toList();
   }
 
-  static Map<String, EntityMetadata> _convertAncestorNamesToMetadata(
-      Map<String, String> names, DateTime timestamp) {
-    return names.map((key, value) => MapEntry(
+  static Map<String, EntityMetadata> _buildAncestorMeta(
+    Map<String, String> names,
+    DateTime timestamp,
+  ) {
+    return names.map((key, name) => MapEntry(
           key,
           EntityMetadata(
-            displayName: value,
+            displayName: name,
             entityType: 'ancestor',
             lastNameUpdate: timestamp,
           ),
         ));
   }
 
-  // Update helper method signatures to use EntityId
-  static Map<String, List<EntityId>> _convertRelationsToEntityIds(
-      Map<String, List<String>> relations) {
-    return relations.map(
+  static Map<String, List<EntityId>> _convertToEntityIdRefs(
+    Map<String, List<String>> refs,
+  ) {
+    return refs.map(
       (key, value) => MapEntry(
         key,
         value.map((id) => EntityId(id)).toList(),
@@ -333,46 +310,9 @@ class EntityFactory {
     );
   }
 
-  // Update sync metadata to use Object instead of String
-  static Map<String, Object> _buildInitialSyncMetadata(DateTime now) => {
-        'initialSync': now.toIso8601String(),
-        'status': 'pending',
-        'version': 1,
-      };
-
-  static Map<String, Object> _buildInitialEventMetadata(
-          DateTime now, UserAction creator, String entityType) =>
-      {
-        'createdAt': now.toIso8601String(),
-        'creator': creator.uid,
-        'entityType': entityType,
-        'operation': 'create',
-        'version': 1,
-      };
-
-  static Map<String, Object> _buildCloneSyncMetadata(
-          DateTime now, BaseEntity source) =>
-      {
-        'clonedFrom': source.entityId.value,
-        'clonedAt': now.toIso8601String(),
-        'originalCreatedAt': source.metaCreatedAt.toIso8601String(),
-        'status': 'pending',
-        'version': 1,
-      };
-
-  static Map<String, String> _buildCloneEventMetadata(
-          DateTime now, BaseEntity source, String entityType) =>
-      {
-        'clonedFrom': source.entityId.value,
-        'clonedAt': now.toIso8601String(),
-        'originalEventVersion': source.eventVersion.toString(),
-        'entityType': entityType,
-        'operation': 'clone'
-      };
-
   static EntityId? _deriveParentId(String? parentPath) {
     if (parentPath == null || parentPath.isEmpty) return null;
-    final segments = parentPath.split(PathConstants.pathSeparator);
+    final segments = parentPath.split(PathRules.separator);
     final lastSegment =
         segments.lastWhere((s) => s.isNotEmpty, orElse: () => '');
     return lastSegment.isEmpty ? null : EntityId(lastSegment);
