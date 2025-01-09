@@ -263,23 +263,23 @@ class EntityFactory {
 
   // Helper methods
   static bool _isValidPath(String path) {
-    return path.length <= PathRules.maxLength &&
+    return path.length <= SystemLimits.pathMaxLength &&
         path
-            .split(PathRules.separator)
-            .every((s) => s.length <= PathRules.maxSegment);
+            .split(EntityDefaults.pathSeparator)
+            .every((s) => s.length <= SystemLimits.pathMaxSegment);
   }
 
   static String _buildTreePath(String? parentPath, String id) {
     if (parentPath == null || parentPath.isEmpty) return id;
-    return parentPath.endsWith(PathRules.separator)
+    return parentPath.endsWith(EntityDefaults.pathSeparator)
         ? '$parentPath$id'
-        : '$parentPath${PathRules.separator}$id';
+        : '$parentPath${EntityDefaults.pathSeparator}$id';
   }
 
   static List<EntityId> _buildAncestorList(String? parentPath) {
     if (parentPath == null || parentPath.isEmpty) return [];
     return parentPath
-        .split(PathRules.separator)
+        .split(EntityDefaults.pathSeparator)
         .where((p) => p.isNotEmpty)
         .map((p) => EntityId(p))
         .toList();
@@ -312,7 +312,7 @@ class EntityFactory {
 
   static EntityId? _deriveParentId(String? parentPath) {
     if (parentPath == null || parentPath.isEmpty) return null;
-    final segments = parentPath.split(PathRules.separator);
+    final segments = parentPath.split(EntityDefaults.pathSeparator);
     final lastSegment =
         segments.lastWhere((s) => s.isNotEmpty, orElse: () => '');
     return lastSegment.isEmpty ? null : EntityId(lastSegment);
