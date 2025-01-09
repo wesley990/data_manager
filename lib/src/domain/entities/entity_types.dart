@@ -10,32 +10,36 @@ class Owner with _$Owner {
   const Owner._(); // Add private constructor for methods
 
   const factory Owner({
+    // Core info
     required ContactInfo contact,
-    @Default([]) List<EntityId> siteIds, // Updated to EntityId
-    Map<String, Object>? additionalInfo,
-    @Default({}) Map<String, Object> metadata, // Added standardized metadata
+    @Default([]) List<EntityId> siteIds,
+
+    // Metadata
+    @Default({}) Map<String, Object> meta,
+    Map<String, Object>? customData,
   }) = _Owner;
 
   factory Owner.fromJson(Map<String, Object> json) => _$OwnerFromJson(json);
 
-  // Useful computed properties
+  // Computed properties
+  bool get hasSites => siteIds.isNotEmpty;
   bool get hasMultipleSites => siteIds.length > 1;
-  bool get hasValidContact => contact.hasValidContact;
+  bool get hasValidContact => contact.email != null || contact.phone != null;
   String get displayName => contact.displayName;
 
-  // New validation methods
+  // Validation methods
   ValidationResult validate() {
     final issues = <ValidationIssue>[];
 
     if (!hasValidContact) {
       issues.add(ValidationIssue(
-        message: 'At least one contact method (email or phone) is required',
+        message: 'Contact validation failed: requires email or phone',
       ));
     }
 
     if (siteIds.length < 2) {
       issues.add(ValidationIssue(
-        message: 'Owner must have at least 2 sites',
+        message: 'Site validation failed: minimum 2 sites required',
       ));
     }
 
@@ -44,17 +48,18 @@ class Owner with _$Owner {
         : ValidationResult.invalid(issues);
   }
 
-  // Helper method for quick validation check
   bool get isValid => validate().isValid;
 
-  // Add validation against PathConstants
-  bool validateSitePath(String path) {
-    if (path.length > PathConstants.maxPathLength) return false;
-    final segments = path.split(PathConstants.pathSeparator);
-    return segments.every((s) => s.length <= PathConstants.maxSegmentLength);
+  // Path validation
+  bool validatePath(String path) => _validatePathRules(path);
+
+  bool _validatePathRules(String path) {
+    if (path.length > PathRules.maxLength) return false;
+    final segments = path.split(PathRules.separator);
+    return segments.every((s) => s.length <= PathRules.maxSegment);
   }
 
-  // Add event handling support
+  // Event handling
   Owner applyEvent(DomainEvent event) {
     return switch (event.eventType) {
       'SITE_ADDED' => copyWith(
@@ -66,10 +71,7 @@ class Owner with _$Owner {
               .toList(),
         ),
       'METADATA_UPDATED' => copyWith(
-          metadata: {
-            ...metadata,
-            ...event.changes['metadata'] as Map<String, Object>
-          },
+          meta: {...meta, ...event.changes['metadata'] as Map<String, Object>},
         ),
       _ => this,
     };
@@ -81,42 +83,47 @@ class Site with _$Site {
   const Site._();
 
   const factory Site({
+    // Core info
     required String name,
-    required EntityId ownerId, // Updated to EntityId
+    required EntityId ownerId,
 
-    // Location Information
+    // Location
     String? address,
     double? latitude,
     double? longitude,
 
-    // Relationships
-    @Default([]) List<EntityId> equipmentIds, // Updated to EntityId
+    // Equipment
+    @Default([]) List<EntityId> equipmentIds,
 
-    // Site Details
-    @Default({}) Map<String, Object> siteDetails,
+    // Details
+    @Default({}) Map<String, Object> siteInfo,
 
-    // Additional Data
-    Map<String, Object>? additionalInfo,
-    @Default({}) Map<String, Object> metadata, // Added standardized metadata
-    @Default({}) Map<String, String> contacts, // Added standardized contacts
+    // Metadata
+    Map<String, Object>? customData,
+    @Default({}) Map<String, Object> meta,
+    @Default({}) Map<String, String> contactInfo,
   }) = _Site;
 
   factory Site.fromJson(Map<String, Object> json) => _$SiteFromJson(json);
 
-  // Add coordinates handling
+  // Location methods
   bool get hasLocation => latitude != null && longitude != null;
-  String get coordinates => hasLocation ? '$latitude,$longitude' : '';
+  String get locationCoords => hasLocation ? '$latitude,$longitude' : '';
+
+  // Equipment methods
   bool get hasEquipment => equipmentIds.isNotEmpty;
 
-  // Add path validation
-  bool validateEquipmentPath(String path) {
-    return path.length <= PathConstants.maxPathLength &&
+  // Path validation
+  bool validatePath(String path) => _validatePathRules(path);
+
+  bool _validatePathRules(String path) {
+    return path.length <= PathRules.maxLength &&
         path
-            .split(PathConstants.pathSeparator)
-            .every((s) => s.length <= PathConstants.maxSegmentLength);
+            .split(PathRules.separator)
+            .every((s) => s.length <= PathRules.maxSegment);
   }
 
-  // Add event handling support
+  // Event handling
   Site applyEvent(DomainEvent event) {
     return switch (event.eventType) {
       'EQUIPMENT_ADDED' => copyWith(
@@ -144,82 +151,78 @@ class Equipment with _$Equipment {
   const Equipment._();
 
   const factory Equipment({
-    // Core Information
+    // Core info
     required String name,
-    required EntityId siteId, // Updated to EntityId
+    required EntityId siteId,
     required EquipmentType type,
 
-    // Technical Details
-    String? serialNumber,
-    String? model,
+    // Technical info
+    String? serialNum,
+    String? modelId,
     String? manufacturer,
 
-    // Specifications
-    @Default({}) Map<String, Object> specifications,
+    // Specs
+    @Default({}) Map<String, Object> specs,
 
     // Dates
-    DateTime? installationDate,
-    DateTime? lastMaintenanceDate,
+    DateTime? installDate,
+    DateTime? lastMaintDate,
 
     // Hierarchy
-    EntityId? parentEquipmentId, // Updated to EntityId
-    @Default([]) List<EntityId> childEquipmentIds, // Updated to EntityId
+    EntityId? parentId,
+    @Default([]) List<EntityId> childIds,
 
-    // Additional Data
-    Map<String, Object>? additionalInfo,
-    @Default({}) Map<String, Object> metadata, // Added standardized metadata
-    @Default({})
-    Map<String, String> maintenanceContacts, // Added maintenance contacts
+    // Metadata
+    Map<String, Object>? customData,
+    @Default({}) Map<String, Object> meta,
+    @Default({}) Map<String, String> maintContacts,
   }) = _Equipment;
 
   factory Equipment.fromJson(Map<String, Object> json) =>
       _$EquipmentFromJson(json);
 
-  // Add maintenance helpers
+  // Maintenance methods
   bool get needsMaintenance =>
-      lastMaintenanceDate
+      lastMaintDate
           ?.isBefore(DateTime.now().subtract(const Duration(days: 180))) ??
       true;
 
-  bool get isNewInstallation =>
-      installationDate
-          ?.isAfter(DateTime.now().subtract(const Duration(days: 30))) ??
+  bool get isNewInstall =>
+      installDate?.isAfter(DateTime.now().subtract(const Duration(days: 30))) ??
       false;
 
-  bool get hasChildren => childEquipmentIds.isNotEmpty;
-  bool get isChild => parentEquipmentId != null;
+  // Hierarchy methods
+  bool get hasChildren => childIds.isNotEmpty;
+  bool get isChild => parentId != null;
+  bool get isRoot => parentId == null;
+  bool get hasSubComponents => childIds.isNotEmpty;
 
-  // Added helper methods
-  bool get isMainComponent => parentEquipmentId == null;
-  bool get hasSubComponents => childEquipmentIds.isNotEmpty;
+  // Path validation
+  bool validateHierarchyPath(String path) => _validatePathRules(path);
 
-  // Add hierarchy validation
-  bool validateHierarchyPath(String path) {
-    if (path.length > PathConstants.maxPathLength) return false;
-    final segments = path.split(PathConstants.pathSeparator);
-    if (segments.length > EntityConstants.maximumHierarchyDepth) return false;
-    return segments.every((s) => s.length <= PathConstants.maxSegmentLength);
+  bool _validatePathRules(String path) {
+    if (path.length > PathRules.maxLength) return false;
+    final segments = path.split(PathRules.separator);
+    if (segments.length > EntityLimits.hierarchyDepthMax) return false;
+    return segments.every((s) => s.length <= PathRules.maxSegment);
   }
 
-  // Add event handling support
+  // Event handling
   Equipment applyEvent(DomainEvent event) {
     return switch (event.eventType) {
       'MAINTENANCE_PERFORMED' => copyWith(
-          lastMaintenanceDate: event.timestamp,
-          metadata: {
-            ...metadata,
+          lastMaintDate: event.timestamp,
+          meta: {
+            ...meta,
             'lastMaintenanceBy': event.changes['performedBy'] ?? 'unknown',
             'maintenanceNotes': event.changes['notes'] ?? '',
           },
         ),
       'CHILD_ADDED' => copyWith(
-          childEquipmentIds: [
-            ...childEquipmentIds,
-            event.changes['childId'] as EntityId
-          ],
+          childIds: [...childIds, event.changes['childId'] as EntityId],
         ),
       'CHILD_REMOVED' => copyWith(
-          childEquipmentIds: childEquipmentIds
+          childIds: childIds
               .where((id) => id != event.changes['childId'] as EntityId)
               .toList(),
         ),
@@ -233,49 +236,48 @@ class Vendor with _$Vendor {
   const Vendor._();
 
   const factory Vendor({
+    // Core info
     required ContactInfo contact,
-    @Default([]) List<EntityId> personnelIds, // Updated to EntityId
-    @Default([]) List<String> serviceCategories,
-    @Default({}) Map<String, Object> metadata, // Added standardized metadata
-    Map<String, Object>? additionalInfo,
-    @Default({}) Map<String, Object> qualifications, // Added qualifications
+    @Default([]) List<EntityId> staffIds,
+    @Default([]) List<String> services,
+
+    // Metadata
+    @Default({}) Map<String, Object> meta,
+    Map<String, Object>? customData,
+    @Default({}) Map<String, Object> certifications,
   }) = _Vendor;
 
   factory Vendor.fromJson(Map<String, Object> json) => _$VendorFromJson(json);
 
-  // Add business helpers
-  bool get hasPersonnel => personnelIds.isNotEmpty;
-  bool get providesServices => serviceCategories.isNotEmpty;
+  // Business methods
+  bool get hasStaff => staffIds.isNotEmpty;
+  bool get hasServices => services.isNotEmpty;
   String get displayName => contact.displayName;
-  bool get hasValidContact => contact.hasValidContact;
+  bool get hasValidContact => contact.email != null || contact.phone != null;
 
-  // Add validation methods
-  bool validatePersonnelPath(String path) {
-    return path.length <= PathConstants.maxPathLength &&
+  // Path validation
+  bool validateStaffPath(String path) => _validatePathRules(path);
+
+  bool _validatePathRules(String path) {
+    return path.length <= PathRules.maxLength &&
         path
-            .split(PathConstants.pathSeparator)
-            .every((s) => s.length <= PathConstants.maxSegmentLength);
+            .split(PathRules.separator)
+            .every((s) => s.length <= PathRules.maxSegment);
   }
 
-  // Add event handling support
+  // Event handling
   Vendor applyEvent(DomainEvent event) {
     return switch (event.eventType) {
       'PERSONNEL_ADDED' => copyWith(
-          personnelIds: [
-            ...personnelIds,
-            event.changes['personnelId'] as EntityId
-          ],
+          staffIds: [...staffIds, event.changes['personnelId'] as EntityId],
         ),
       'PERSONNEL_REMOVED' => copyWith(
-          personnelIds: personnelIds
+          staffIds: staffIds
               .where((id) => id != event.changes['personnelId'] as EntityId)
               .toList(),
         ),
       'SERVICE_CATEGORY_ADDED' => copyWith(
-          serviceCategories: [
-            ...serviceCategories,
-            event.changes['category'] as String
-          ],
+          services: [...services, event.changes['category'] as String],
         ),
       _ => this,
     };
@@ -287,70 +289,60 @@ class Personnel with _$Personnel {
   const Personnel._();
 
   const factory Personnel({
-    // Core Information
+    // Core info
     required String name,
-    required EntityId vendorId, // Updated to EntityId
-    required int skillLevel, // Made required
+    required EntityId vendorId,
+    required int skillLevel,
 
-    // Professional Details
-    String? position,
-    @Default([]) List<String> certifications,
-    @Default([]) List<String> specializations,
+    // Professional info
+    String? role,
+    @Default([]) List<String> certs,
+    @Default([]) List<String> specs,
 
-    // Contact Information
-    String? contactNumber,
+    // Contact info
+    String? phone,
     String? email,
 
-    // Additional Data
-    Map<String, Object>? additionalInfo,
-    @Default({}) Map<String, Object> metadata, // Added standardized metadata
-    @Default({}) Map<String, Object> schedule, // Added schedule tracking
-    @Default({})
-    Map<String, DateTime> certificationDates, // Added certification dates
+    // Metadata
+    Map<String, Object>? customData,
+    @Default({}) Map<String, Object> meta,
+    @Default({}) Map<String, Object> schedule,
+    @Default({}) Map<String, DateTime> certDates,
   }) = _Personnel;
 
   factory Personnel.fromJson(Map<String, Object> json) =>
       _$PersonnelFromJson(json);
 
-  // Add qualification helpers
-  bool get isCertified => certifications.isNotEmpty;
-  bool get isSpecialized => specializations.isNotEmpty;
-  bool get hasValidContact => email != null || contactNumber != null;
+  // Qualification methods
+  bool get isCertified => certs.isNotEmpty;
+  bool get isSpecialized => specs.isNotEmpty;
+  bool get hasValidContact => email != null || phone != null;
+  String? get primaryCert => certs.isNotEmpty ? certs.first : null;
+  bool get hasValidCerts => certs.isNotEmpty && certDates.isNotEmpty;
 
-  // Get primary certification
-  String? get primaryCertification =>
-      certifications.isNotEmpty ? certifications.first : null;
+  DateTime? getCertExpiry(String cert) => certDates[cert];
 
-  // Added helper methods
-  bool get hasValidCertifications =>
-      certifications.isNotEmpty && certificationDates.isNotEmpty;
-
-  DateTime? getCertificationExpiry(String certification) =>
-      certificationDates[certification];
-
-  // Add certification validation
-  bool validateCertification(String certification) {
-    final expiry = certificationDates[certification];
-    if (expiry == null) return false;
-    return expiry.isAfter(DateTime.now());
+  // Certification methods
+  bool validateCert(String cert) {
+    final expiry = certDates[cert];
+    return expiry != null && expiry.isAfter(DateTime.now());
   }
 
-  // Add event handling support
+  // Event handling
   Personnel applyEvent(DomainEvent event) {
     return switch (event.eventType) {
       'CERTIFICATION_ADDED' => copyWith(
-          certifications: [...certifications, event.changes['cert'] as String],
-          certificationDates: {
-            ...certificationDates,
+          certs: [...certs, event.changes['cert'] as String],
+          certDates: {
+            ...certDates,
             event.changes['cert'] as String:
                 event.changes['expiry'] as DateTime,
           },
         ),
       'CERTIFICATION_EXPIRED' => copyWith(
-          certifications: certifications
-              .where((c) => c != event.changes['cert'] as String)
-              .toList(),
-          certificationDates: Map.from(certificationDates)
+          certs:
+              certs.where((c) => c != event.changes['cert'] as String).toList(),
+          certDates: Map.from(certDates)
             ..remove(event.changes['cert'] as String),
         ),
       _ => this,

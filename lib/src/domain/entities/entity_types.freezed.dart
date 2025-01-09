@@ -20,11 +20,11 @@ Owner _$OwnerFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Owner {
+// Core info
   ContactInfo get contact => throw _privateConstructorUsedError;
-  List<EntityId> get siteIds =>
-      throw _privateConstructorUsedError; // Updated to EntityId
-  Map<String, Object>? get additionalInfo => throw _privateConstructorUsedError;
-  Map<String, Object> get metadata => throw _privateConstructorUsedError;
+  List<EntityId> get siteIds => throw _privateConstructorUsedError; // Metadata
+  Map<String, Object> get meta => throw _privateConstructorUsedError;
+  Map<String, Object>? get customData => throw _privateConstructorUsedError;
 
   /// Serializes this Owner to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -43,8 +43,8 @@ abstract class $OwnerCopyWith<$Res> {
   $Res call(
       {ContactInfo contact,
       List<EntityId> siteIds,
-      Map<String, Object>? additionalInfo,
-      Map<String, Object> metadata});
+      Map<String, Object> meta,
+      Map<String, Object>? customData});
 
   $ContactInfoCopyWith<$Res> get contact;
 }
@@ -66,8 +66,8 @@ class _$OwnerCopyWithImpl<$Res, $Val extends Owner>
   $Res call({
     Object? contact = null,
     Object? siteIds = null,
-    Object? additionalInfo = freezed,
-    Object? metadata = null,
+    Object? meta = null,
+    Object? customData = freezed,
   }) {
     return _then(_value.copyWith(
       contact: null == contact
@@ -78,14 +78,14 @@ class _$OwnerCopyWithImpl<$Res, $Val extends Owner>
           ? _value.siteIds
           : siteIds // ignore: cast_nullable_to_non_nullable
               as List<EntityId>,
-      additionalInfo: freezed == additionalInfo
-          ? _value.additionalInfo
-          : additionalInfo // ignore: cast_nullable_to_non_nullable
-              as Map<String, Object>?,
-      metadata: null == metadata
-          ? _value.metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
+      meta: null == meta
+          ? _value.meta
+          : meta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
+      customData: freezed == customData
+          ? _value.customData
+          : customData // ignore: cast_nullable_to_non_nullable
+              as Map<String, Object>?,
     ) as $Val);
   }
 
@@ -110,8 +110,8 @@ abstract class _$$OwnerImplCopyWith<$Res> implements $OwnerCopyWith<$Res> {
   $Res call(
       {ContactInfo contact,
       List<EntityId> siteIds,
-      Map<String, Object>? additionalInfo,
-      Map<String, Object> metadata});
+      Map<String, Object> meta,
+      Map<String, Object>? customData});
 
   @override
   $ContactInfoCopyWith<$Res> get contact;
@@ -132,8 +132,8 @@ class __$$OwnerImplCopyWithImpl<$Res>
   $Res call({
     Object? contact = null,
     Object? siteIds = null,
-    Object? additionalInfo = freezed,
-    Object? metadata = null,
+    Object? meta = null,
+    Object? customData = freezed,
   }) {
     return _then(_$OwnerImpl(
       contact: null == contact
@@ -144,14 +144,14 @@ class __$$OwnerImplCopyWithImpl<$Res>
           ? _value._siteIds
           : siteIds // ignore: cast_nullable_to_non_nullable
               as List<EntityId>,
-      additionalInfo: freezed == additionalInfo
-          ? _value._additionalInfo
-          : additionalInfo // ignore: cast_nullable_to_non_nullable
-              as Map<String, Object>?,
-      metadata: null == metadata
-          ? _value._metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
+      meta: null == meta
+          ? _value._meta
+          : meta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
+      customData: freezed == customData
+          ? _value._customData
+          : customData // ignore: cast_nullable_to_non_nullable
+              as Map<String, Object>?,
     ));
   }
 }
@@ -162,16 +162,17 @@ class _$OwnerImpl extends _Owner {
   const _$OwnerImpl(
       {required this.contact,
       final List<EntityId> siteIds = const [],
-      final Map<String, Object>? additionalInfo,
-      final Map<String, Object> metadata = const {}})
+      final Map<String, Object> meta = const {},
+      final Map<String, Object>? customData})
       : _siteIds = siteIds,
-        _additionalInfo = additionalInfo,
-        _metadata = metadata,
+        _meta = meta,
+        _customData = customData,
         super._();
 
   factory _$OwnerImpl.fromJson(Map<String, dynamic> json) =>
       _$$OwnerImplFromJson(json);
 
+// Core info
   @override
   final ContactInfo contact;
   final List<EntityId> _siteIds;
@@ -183,30 +184,30 @@ class _$OwnerImpl extends _Owner {
     return EqualUnmodifiableListView(_siteIds);
   }
 
-// Updated to EntityId
-  final Map<String, Object>? _additionalInfo;
-// Updated to EntityId
+// Metadata
+  final Map<String, Object> _meta;
+// Metadata
   @override
-  Map<String, Object>? get additionalInfo {
-    final value = _additionalInfo;
+  @JsonKey()
+  Map<String, Object> get meta {
+    if (_meta is EqualUnmodifiableMapView) return _meta;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_meta);
+  }
+
+  final Map<String, Object>? _customData;
+  @override
+  Map<String, Object>? get customData {
+    final value = _customData;
     if (value == null) return null;
-    if (_additionalInfo is EqualUnmodifiableMapView) return _additionalInfo;
+    if (_customData is EqualUnmodifiableMapView) return _customData;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(value);
   }
 
-  final Map<String, Object> _metadata;
-  @override
-  @JsonKey()
-  Map<String, Object> get metadata {
-    if (_metadata is EqualUnmodifiableMapView) return _metadata;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_metadata);
-  }
-
   @override
   String toString() {
-    return 'Owner(contact: $contact, siteIds: $siteIds, additionalInfo: $additionalInfo, metadata: $metadata)';
+    return 'Owner(contact: $contact, siteIds: $siteIds, meta: $meta, customData: $customData)';
   }
 
   @override
@@ -216,9 +217,9 @@ class _$OwnerImpl extends _Owner {
             other is _$OwnerImpl &&
             (identical(other.contact, contact) || other.contact == contact) &&
             const DeepCollectionEquality().equals(other._siteIds, _siteIds) &&
+            const DeepCollectionEquality().equals(other._meta, _meta) &&
             const DeepCollectionEquality()
-                .equals(other._additionalInfo, _additionalInfo) &&
-            const DeepCollectionEquality().equals(other._metadata, _metadata));
+                .equals(other._customData, _customData));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -227,8 +228,8 @@ class _$OwnerImpl extends _Owner {
       runtimeType,
       contact,
       const DeepCollectionEquality().hash(_siteIds),
-      const DeepCollectionEquality().hash(_additionalInfo),
-      const DeepCollectionEquality().hash(_metadata));
+      const DeepCollectionEquality().hash(_meta),
+      const DeepCollectionEquality().hash(_customData));
 
   /// Create a copy of Owner
   /// with the given fields replaced by the non-null parameter values.
@@ -250,20 +251,21 @@ abstract class _Owner extends Owner {
   const factory _Owner(
       {required final ContactInfo contact,
       final List<EntityId> siteIds,
-      final Map<String, Object>? additionalInfo,
-      final Map<String, Object> metadata}) = _$OwnerImpl;
+      final Map<String, Object> meta,
+      final Map<String, Object>? customData}) = _$OwnerImpl;
   const _Owner._() : super._();
 
   factory _Owner.fromJson(Map<String, dynamic> json) = _$OwnerImpl.fromJson;
 
+// Core info
   @override
   ContactInfo get contact;
   @override
-  List<EntityId> get siteIds; // Updated to EntityId
+  List<EntityId> get siteIds; // Metadata
   @override
-  Map<String, Object>? get additionalInfo;
+  Map<String, Object> get meta;
   @override
-  Map<String, Object> get metadata;
+  Map<String, Object>? get customData;
 
   /// Create a copy of Owner
   /// with the given fields replaced by the non-null parameter values.
@@ -279,22 +281,19 @@ Site _$SiteFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Site {
+// Core info
   String get name => throw _privateConstructorUsedError;
-  EntityId get ownerId =>
-      throw _privateConstructorUsedError; // Updated to EntityId
-// Location Information
+  EntityId get ownerId => throw _privateConstructorUsedError; // Location
   String? get address => throw _privateConstructorUsedError;
   double? get latitude => throw _privateConstructorUsedError;
-  double? get longitude => throw _privateConstructorUsedError; // Relationships
+  double? get longitude => throw _privateConstructorUsedError; // Equipment
   List<EntityId> get equipmentIds =>
-      throw _privateConstructorUsedError; // Updated to EntityId
-// Site Details
-  Map<String, Object> get siteDetails =>
-      throw _privateConstructorUsedError; // Additional Data
-  Map<String, Object>? get additionalInfo => throw _privateConstructorUsedError;
-  Map<String, Object> get metadata =>
-      throw _privateConstructorUsedError; // Added standardized metadata
-  Map<String, String> get contacts => throw _privateConstructorUsedError;
+      throw _privateConstructorUsedError; // Details
+  Map<String, Object> get siteInfo =>
+      throw _privateConstructorUsedError; // Metadata
+  Map<String, Object>? get customData => throw _privateConstructorUsedError;
+  Map<String, Object> get meta => throw _privateConstructorUsedError;
+  Map<String, String> get contactInfo => throw _privateConstructorUsedError;
 
   /// Serializes this Site to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -317,10 +316,10 @@ abstract class $SiteCopyWith<$Res> {
       double? latitude,
       double? longitude,
       List<EntityId> equipmentIds,
-      Map<String, Object> siteDetails,
-      Map<String, Object>? additionalInfo,
-      Map<String, Object> metadata,
-      Map<String, String> contacts});
+      Map<String, Object> siteInfo,
+      Map<String, Object>? customData,
+      Map<String, Object> meta,
+      Map<String, String> contactInfo});
 
   $EntityIdCopyWith<$Res> get ownerId;
 }
@@ -346,10 +345,10 @@ class _$SiteCopyWithImpl<$Res, $Val extends Site>
     Object? latitude = freezed,
     Object? longitude = freezed,
     Object? equipmentIds = null,
-    Object? siteDetails = null,
-    Object? additionalInfo = freezed,
-    Object? metadata = null,
-    Object? contacts = null,
+    Object? siteInfo = null,
+    Object? customData = freezed,
+    Object? meta = null,
+    Object? contactInfo = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -376,21 +375,21 @@ class _$SiteCopyWithImpl<$Res, $Val extends Site>
           ? _value.equipmentIds
           : equipmentIds // ignore: cast_nullable_to_non_nullable
               as List<EntityId>,
-      siteDetails: null == siteDetails
-          ? _value.siteDetails
-          : siteDetails // ignore: cast_nullable_to_non_nullable
+      siteInfo: null == siteInfo
+          ? _value.siteInfo
+          : siteInfo // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      additionalInfo: freezed == additionalInfo
-          ? _value.additionalInfo
-          : additionalInfo // ignore: cast_nullable_to_non_nullable
+      customData: freezed == customData
+          ? _value.customData
+          : customData // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>?,
-      metadata: null == metadata
-          ? _value.metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
+      meta: null == meta
+          ? _value.meta
+          : meta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      contacts: null == contacts
-          ? _value.contacts
-          : contacts // ignore: cast_nullable_to_non_nullable
+      contactInfo: null == contactInfo
+          ? _value.contactInfo
+          : contactInfo // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
     ) as $Val);
   }
@@ -420,10 +419,10 @@ abstract class _$$SiteImplCopyWith<$Res> implements $SiteCopyWith<$Res> {
       double? latitude,
       double? longitude,
       List<EntityId> equipmentIds,
-      Map<String, Object> siteDetails,
-      Map<String, Object>? additionalInfo,
-      Map<String, Object> metadata,
-      Map<String, String> contacts});
+      Map<String, Object> siteInfo,
+      Map<String, Object>? customData,
+      Map<String, Object> meta,
+      Map<String, String> contactInfo});
 
   @override
   $EntityIdCopyWith<$Res> get ownerId;
@@ -447,10 +446,10 @@ class __$$SiteImplCopyWithImpl<$Res>
     Object? latitude = freezed,
     Object? longitude = freezed,
     Object? equipmentIds = null,
-    Object? siteDetails = null,
-    Object? additionalInfo = freezed,
-    Object? metadata = null,
-    Object? contacts = null,
+    Object? siteInfo = null,
+    Object? customData = freezed,
+    Object? meta = null,
+    Object? contactInfo = null,
   }) {
     return _then(_$SiteImpl(
       name: null == name
@@ -477,21 +476,21 @@ class __$$SiteImplCopyWithImpl<$Res>
           ? _value._equipmentIds
           : equipmentIds // ignore: cast_nullable_to_non_nullable
               as List<EntityId>,
-      siteDetails: null == siteDetails
-          ? _value._siteDetails
-          : siteDetails // ignore: cast_nullable_to_non_nullable
+      siteInfo: null == siteInfo
+          ? _value._siteInfo
+          : siteInfo // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      additionalInfo: freezed == additionalInfo
-          ? _value._additionalInfo
-          : additionalInfo // ignore: cast_nullable_to_non_nullable
+      customData: freezed == customData
+          ? _value._customData
+          : customData // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>?,
-      metadata: null == metadata
-          ? _value._metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
+      meta: null == meta
+          ? _value._meta
+          : meta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      contacts: null == contacts
-          ? _value._contacts
-          : contacts // ignore: cast_nullable_to_non_nullable
+      contactInfo: null == contactInfo
+          ? _value._contactInfo
+          : contactInfo // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
     ));
   }
@@ -507,35 +506,35 @@ class _$SiteImpl extends _Site {
       this.latitude,
       this.longitude,
       final List<EntityId> equipmentIds = const [],
-      final Map<String, Object> siteDetails = const {},
-      final Map<String, Object>? additionalInfo,
-      final Map<String, Object> metadata = const {},
-      final Map<String, String> contacts = const {}})
+      final Map<String, Object> siteInfo = const {},
+      final Map<String, Object>? customData,
+      final Map<String, Object> meta = const {},
+      final Map<String, String> contactInfo = const {}})
       : _equipmentIds = equipmentIds,
-        _siteDetails = siteDetails,
-        _additionalInfo = additionalInfo,
-        _metadata = metadata,
-        _contacts = contacts,
+        _siteInfo = siteInfo,
+        _customData = customData,
+        _meta = meta,
+        _contactInfo = contactInfo,
         super._();
 
   factory _$SiteImpl.fromJson(Map<String, dynamic> json) =>
       _$$SiteImplFromJson(json);
 
+// Core info
   @override
   final String name;
   @override
   final EntityId ownerId;
-// Updated to EntityId
-// Location Information
+// Location
   @override
   final String? address;
   @override
   final double? latitude;
   @override
   final double? longitude;
-// Relationships
+// Equipment
   final List<EntityId> _equipmentIds;
-// Relationships
+// Equipment
   @override
   @JsonKey()
   List<EntityId> get equipmentIds {
@@ -544,54 +543,50 @@ class _$SiteImpl extends _Site {
     return EqualUnmodifiableListView(_equipmentIds);
   }
 
-// Updated to EntityId
-// Site Details
-  final Map<String, Object> _siteDetails;
-// Updated to EntityId
-// Site Details
+// Details
+  final Map<String, Object> _siteInfo;
+// Details
   @override
   @JsonKey()
-  Map<String, Object> get siteDetails {
-    if (_siteDetails is EqualUnmodifiableMapView) return _siteDetails;
+  Map<String, Object> get siteInfo {
+    if (_siteInfo is EqualUnmodifiableMapView) return _siteInfo;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_siteDetails);
+    return EqualUnmodifiableMapView(_siteInfo);
   }
 
-// Additional Data
-  final Map<String, Object>? _additionalInfo;
-// Additional Data
+// Metadata
+  final Map<String, Object>? _customData;
+// Metadata
   @override
-  Map<String, Object>? get additionalInfo {
-    final value = _additionalInfo;
+  Map<String, Object>? get customData {
+    final value = _customData;
     if (value == null) return null;
-    if (_additionalInfo is EqualUnmodifiableMapView) return _additionalInfo;
+    if (_customData is EqualUnmodifiableMapView) return _customData;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(value);
   }
 
-  final Map<String, Object> _metadata;
+  final Map<String, Object> _meta;
   @override
   @JsonKey()
-  Map<String, Object> get metadata {
-    if (_metadata is EqualUnmodifiableMapView) return _metadata;
+  Map<String, Object> get meta {
+    if (_meta is EqualUnmodifiableMapView) return _meta;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_metadata);
+    return EqualUnmodifiableMapView(_meta);
   }
 
-// Added standardized metadata
-  final Map<String, String> _contacts;
-// Added standardized metadata
+  final Map<String, String> _contactInfo;
   @override
   @JsonKey()
-  Map<String, String> get contacts {
-    if (_contacts is EqualUnmodifiableMapView) return _contacts;
+  Map<String, String> get contactInfo {
+    if (_contactInfo is EqualUnmodifiableMapView) return _contactInfo;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_contacts);
+    return EqualUnmodifiableMapView(_contactInfo);
   }
 
   @override
   String toString() {
-    return 'Site(name: $name, ownerId: $ownerId, address: $address, latitude: $latitude, longitude: $longitude, equipmentIds: $equipmentIds, siteDetails: $siteDetails, additionalInfo: $additionalInfo, metadata: $metadata, contacts: $contacts)';
+    return 'Site(name: $name, ownerId: $ownerId, address: $address, latitude: $latitude, longitude: $longitude, equipmentIds: $equipmentIds, siteInfo: $siteInfo, customData: $customData, meta: $meta, contactInfo: $contactInfo)';
   }
 
   @override
@@ -608,12 +603,12 @@ class _$SiteImpl extends _Site {
                 other.longitude == longitude) &&
             const DeepCollectionEquality()
                 .equals(other._equipmentIds, _equipmentIds) &&
+            const DeepCollectionEquality().equals(other._siteInfo, _siteInfo) &&
             const DeepCollectionEquality()
-                .equals(other._siteDetails, _siteDetails) &&
+                .equals(other._customData, _customData) &&
+            const DeepCollectionEquality().equals(other._meta, _meta) &&
             const DeepCollectionEquality()
-                .equals(other._additionalInfo, _additionalInfo) &&
-            const DeepCollectionEquality().equals(other._metadata, _metadata) &&
-            const DeepCollectionEquality().equals(other._contacts, _contacts));
+                .equals(other._contactInfo, _contactInfo));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -626,10 +621,10 @@ class _$SiteImpl extends _Site {
       latitude,
       longitude,
       const DeepCollectionEquality().hash(_equipmentIds),
-      const DeepCollectionEquality().hash(_siteDetails),
-      const DeepCollectionEquality().hash(_additionalInfo),
-      const DeepCollectionEquality().hash(_metadata),
-      const DeepCollectionEquality().hash(_contacts));
+      const DeepCollectionEquality().hash(_siteInfo),
+      const DeepCollectionEquality().hash(_customData),
+      const DeepCollectionEquality().hash(_meta),
+      const DeepCollectionEquality().hash(_contactInfo));
 
   /// Create a copy of Site
   /// with the given fields replaced by the non-null parameter values.
@@ -655,36 +650,35 @@ abstract class _Site extends Site {
       final double? latitude,
       final double? longitude,
       final List<EntityId> equipmentIds,
-      final Map<String, Object> siteDetails,
-      final Map<String, Object>? additionalInfo,
-      final Map<String, Object> metadata,
-      final Map<String, String> contacts}) = _$SiteImpl;
+      final Map<String, Object> siteInfo,
+      final Map<String, Object>? customData,
+      final Map<String, Object> meta,
+      final Map<String, String> contactInfo}) = _$SiteImpl;
   const _Site._() : super._();
 
   factory _Site.fromJson(Map<String, dynamic> json) = _$SiteImpl.fromJson;
 
+// Core info
   @override
   String get name;
   @override
-  EntityId get ownerId; // Updated to EntityId
-// Location Information
+  EntityId get ownerId; // Location
   @override
   String? get address;
   @override
   double? get latitude;
   @override
-  double? get longitude; // Relationships
+  double? get longitude; // Equipment
   @override
-  List<EntityId> get equipmentIds; // Updated to EntityId
-// Site Details
+  List<EntityId> get equipmentIds; // Details
   @override
-  Map<String, Object> get siteDetails; // Additional Data
+  Map<String, Object> get siteInfo; // Metadata
   @override
-  Map<String, Object>? get additionalInfo;
+  Map<String, Object>? get customData;
   @override
-  Map<String, Object> get metadata; // Added standardized metadata
+  Map<String, Object> get meta;
   @override
-  Map<String, String> get contacts;
+  Map<String, String> get contactInfo;
 
   /// Create a copy of Site
   /// with the given fields replaced by the non-null parameter values.
@@ -700,31 +694,23 @@ Equipment _$EquipmentFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Equipment {
-// Core Information
+// Core info
   String get name => throw _privateConstructorUsedError;
-  EntityId get siteId =>
-      throw _privateConstructorUsedError; // Updated to EntityId
+  EntityId get siteId => throw _privateConstructorUsedError;
   EquipmentType get type =>
-      throw _privateConstructorUsedError; // Technical Details
-  String? get serialNumber => throw _privateConstructorUsedError;
-  String? get model => throw _privateConstructorUsedError;
-  String? get manufacturer =>
-      throw _privateConstructorUsedError; // Specifications
-  Map<String, Object> get specifications =>
-      throw _privateConstructorUsedError; // Dates
-  DateTime? get installationDate => throw _privateConstructorUsedError;
-  DateTime? get lastMaintenanceDate =>
+      throw _privateConstructorUsedError; // Technical info
+  String? get serialNum => throw _privateConstructorUsedError;
+  String? get modelId => throw _privateConstructorUsedError;
+  String? get manufacturer => throw _privateConstructorUsedError; // Specs
+  Map<String, Object> get specs => throw _privateConstructorUsedError; // Dates
+  DateTime? get installDate => throw _privateConstructorUsedError;
+  DateTime? get lastMaintDate =>
       throw _privateConstructorUsedError; // Hierarchy
-  EntityId? get parentEquipmentId =>
-      throw _privateConstructorUsedError; // Updated to EntityId
-  List<EntityId> get childEquipmentIds =>
-      throw _privateConstructorUsedError; // Updated to EntityId
-// Additional Data
-  Map<String, Object>? get additionalInfo => throw _privateConstructorUsedError;
-  Map<String, Object> get metadata =>
-      throw _privateConstructorUsedError; // Added standardized metadata
-  Map<String, String> get maintenanceContacts =>
-      throw _privateConstructorUsedError;
+  EntityId? get parentId => throw _privateConstructorUsedError;
+  List<EntityId> get childIds => throw _privateConstructorUsedError; // Metadata
+  Map<String, Object>? get customData => throw _privateConstructorUsedError;
+  Map<String, Object> get meta => throw _privateConstructorUsedError;
+  Map<String, String> get maintContacts => throw _privateConstructorUsedError;
 
   /// Serializes this Equipment to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -745,20 +731,20 @@ abstract class $EquipmentCopyWith<$Res> {
       {String name,
       EntityId siteId,
       EquipmentType type,
-      String? serialNumber,
-      String? model,
+      String? serialNum,
+      String? modelId,
       String? manufacturer,
-      Map<String, Object> specifications,
-      DateTime? installationDate,
-      DateTime? lastMaintenanceDate,
-      EntityId? parentEquipmentId,
-      List<EntityId> childEquipmentIds,
-      Map<String, Object>? additionalInfo,
-      Map<String, Object> metadata,
-      Map<String, String> maintenanceContacts});
+      Map<String, Object> specs,
+      DateTime? installDate,
+      DateTime? lastMaintDate,
+      EntityId? parentId,
+      List<EntityId> childIds,
+      Map<String, Object>? customData,
+      Map<String, Object> meta,
+      Map<String, String> maintContacts});
 
   $EntityIdCopyWith<$Res> get siteId;
-  $EntityIdCopyWith<$Res>? get parentEquipmentId;
+  $EntityIdCopyWith<$Res>? get parentId;
 }
 
 /// @nodoc
@@ -779,17 +765,17 @@ class _$EquipmentCopyWithImpl<$Res, $Val extends Equipment>
     Object? name = null,
     Object? siteId = null,
     Object? type = null,
-    Object? serialNumber = freezed,
-    Object? model = freezed,
+    Object? serialNum = freezed,
+    Object? modelId = freezed,
     Object? manufacturer = freezed,
-    Object? specifications = null,
-    Object? installationDate = freezed,
-    Object? lastMaintenanceDate = freezed,
-    Object? parentEquipmentId = freezed,
-    Object? childEquipmentIds = null,
-    Object? additionalInfo = freezed,
-    Object? metadata = null,
-    Object? maintenanceContacts = null,
+    Object? specs = null,
+    Object? installDate = freezed,
+    Object? lastMaintDate = freezed,
+    Object? parentId = freezed,
+    Object? childIds = null,
+    Object? customData = freezed,
+    Object? meta = null,
+    Object? maintContacts = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -804,49 +790,49 @@ class _$EquipmentCopyWithImpl<$Res, $Val extends Equipment>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as EquipmentType,
-      serialNumber: freezed == serialNumber
-          ? _value.serialNumber
-          : serialNumber // ignore: cast_nullable_to_non_nullable
+      serialNum: freezed == serialNum
+          ? _value.serialNum
+          : serialNum // ignore: cast_nullable_to_non_nullable
               as String?,
-      model: freezed == model
-          ? _value.model
-          : model // ignore: cast_nullable_to_non_nullable
+      modelId: freezed == modelId
+          ? _value.modelId
+          : modelId // ignore: cast_nullable_to_non_nullable
               as String?,
       manufacturer: freezed == manufacturer
           ? _value.manufacturer
           : manufacturer // ignore: cast_nullable_to_non_nullable
               as String?,
-      specifications: null == specifications
-          ? _value.specifications
-          : specifications // ignore: cast_nullable_to_non_nullable
+      specs: null == specs
+          ? _value.specs
+          : specs // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      installationDate: freezed == installationDate
-          ? _value.installationDate
-          : installationDate // ignore: cast_nullable_to_non_nullable
+      installDate: freezed == installDate
+          ? _value.installDate
+          : installDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      lastMaintenanceDate: freezed == lastMaintenanceDate
-          ? _value.lastMaintenanceDate
-          : lastMaintenanceDate // ignore: cast_nullable_to_non_nullable
+      lastMaintDate: freezed == lastMaintDate
+          ? _value.lastMaintDate
+          : lastMaintDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      parentEquipmentId: freezed == parentEquipmentId
-          ? _value.parentEquipmentId
-          : parentEquipmentId // ignore: cast_nullable_to_non_nullable
+      parentId: freezed == parentId
+          ? _value.parentId
+          : parentId // ignore: cast_nullable_to_non_nullable
               as EntityId?,
-      childEquipmentIds: null == childEquipmentIds
-          ? _value.childEquipmentIds
-          : childEquipmentIds // ignore: cast_nullable_to_non_nullable
+      childIds: null == childIds
+          ? _value.childIds
+          : childIds // ignore: cast_nullable_to_non_nullable
               as List<EntityId>,
-      additionalInfo: freezed == additionalInfo
-          ? _value.additionalInfo
-          : additionalInfo // ignore: cast_nullable_to_non_nullable
+      customData: freezed == customData
+          ? _value.customData
+          : customData // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>?,
-      metadata: null == metadata
-          ? _value.metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
+      meta: null == meta
+          ? _value.meta
+          : meta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      maintenanceContacts: null == maintenanceContacts
-          ? _value.maintenanceContacts
-          : maintenanceContacts // ignore: cast_nullable_to_non_nullable
+      maintContacts: null == maintContacts
+          ? _value.maintContacts
+          : maintContacts // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
     ) as $Val);
   }
@@ -865,13 +851,13 @@ class _$EquipmentCopyWithImpl<$Res, $Val extends Equipment>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $EntityIdCopyWith<$Res>? get parentEquipmentId {
-    if (_value.parentEquipmentId == null) {
+  $EntityIdCopyWith<$Res>? get parentId {
+    if (_value.parentId == null) {
       return null;
     }
 
-    return $EntityIdCopyWith<$Res>(_value.parentEquipmentId!, (value) {
-      return _then(_value.copyWith(parentEquipmentId: value) as $Val);
+    return $EntityIdCopyWith<$Res>(_value.parentId!, (value) {
+      return _then(_value.copyWith(parentId: value) as $Val);
     });
   }
 }
@@ -888,22 +874,22 @@ abstract class _$$EquipmentImplCopyWith<$Res>
       {String name,
       EntityId siteId,
       EquipmentType type,
-      String? serialNumber,
-      String? model,
+      String? serialNum,
+      String? modelId,
       String? manufacturer,
-      Map<String, Object> specifications,
-      DateTime? installationDate,
-      DateTime? lastMaintenanceDate,
-      EntityId? parentEquipmentId,
-      List<EntityId> childEquipmentIds,
-      Map<String, Object>? additionalInfo,
-      Map<String, Object> metadata,
-      Map<String, String> maintenanceContacts});
+      Map<String, Object> specs,
+      DateTime? installDate,
+      DateTime? lastMaintDate,
+      EntityId? parentId,
+      List<EntityId> childIds,
+      Map<String, Object>? customData,
+      Map<String, Object> meta,
+      Map<String, String> maintContacts});
 
   @override
   $EntityIdCopyWith<$Res> get siteId;
   @override
-  $EntityIdCopyWith<$Res>? get parentEquipmentId;
+  $EntityIdCopyWith<$Res>? get parentId;
 }
 
 /// @nodoc
@@ -922,17 +908,17 @@ class __$$EquipmentImplCopyWithImpl<$Res>
     Object? name = null,
     Object? siteId = null,
     Object? type = null,
-    Object? serialNumber = freezed,
-    Object? model = freezed,
+    Object? serialNum = freezed,
+    Object? modelId = freezed,
     Object? manufacturer = freezed,
-    Object? specifications = null,
-    Object? installationDate = freezed,
-    Object? lastMaintenanceDate = freezed,
-    Object? parentEquipmentId = freezed,
-    Object? childEquipmentIds = null,
-    Object? additionalInfo = freezed,
-    Object? metadata = null,
-    Object? maintenanceContacts = null,
+    Object? specs = null,
+    Object? installDate = freezed,
+    Object? lastMaintDate = freezed,
+    Object? parentId = freezed,
+    Object? childIds = null,
+    Object? customData = freezed,
+    Object? meta = null,
+    Object? maintContacts = null,
   }) {
     return _then(_$EquipmentImpl(
       name: null == name
@@ -947,49 +933,49 @@ class __$$EquipmentImplCopyWithImpl<$Res>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as EquipmentType,
-      serialNumber: freezed == serialNumber
-          ? _value.serialNumber
-          : serialNumber // ignore: cast_nullable_to_non_nullable
+      serialNum: freezed == serialNum
+          ? _value.serialNum
+          : serialNum // ignore: cast_nullable_to_non_nullable
               as String?,
-      model: freezed == model
-          ? _value.model
-          : model // ignore: cast_nullable_to_non_nullable
+      modelId: freezed == modelId
+          ? _value.modelId
+          : modelId // ignore: cast_nullable_to_non_nullable
               as String?,
       manufacturer: freezed == manufacturer
           ? _value.manufacturer
           : manufacturer // ignore: cast_nullable_to_non_nullable
               as String?,
-      specifications: null == specifications
-          ? _value._specifications
-          : specifications // ignore: cast_nullable_to_non_nullable
+      specs: null == specs
+          ? _value._specs
+          : specs // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      installationDate: freezed == installationDate
-          ? _value.installationDate
-          : installationDate // ignore: cast_nullable_to_non_nullable
+      installDate: freezed == installDate
+          ? _value.installDate
+          : installDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      lastMaintenanceDate: freezed == lastMaintenanceDate
-          ? _value.lastMaintenanceDate
-          : lastMaintenanceDate // ignore: cast_nullable_to_non_nullable
+      lastMaintDate: freezed == lastMaintDate
+          ? _value.lastMaintDate
+          : lastMaintDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      parentEquipmentId: freezed == parentEquipmentId
-          ? _value.parentEquipmentId
-          : parentEquipmentId // ignore: cast_nullable_to_non_nullable
+      parentId: freezed == parentId
+          ? _value.parentId
+          : parentId // ignore: cast_nullable_to_non_nullable
               as EntityId?,
-      childEquipmentIds: null == childEquipmentIds
-          ? _value._childEquipmentIds
-          : childEquipmentIds // ignore: cast_nullable_to_non_nullable
+      childIds: null == childIds
+          ? _value._childIds
+          : childIds // ignore: cast_nullable_to_non_nullable
               as List<EntityId>,
-      additionalInfo: freezed == additionalInfo
-          ? _value._additionalInfo
-          : additionalInfo // ignore: cast_nullable_to_non_nullable
+      customData: freezed == customData
+          ? _value._customData
+          : customData // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>?,
-      metadata: null == metadata
-          ? _value._metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
+      meta: null == meta
+          ? _value._meta
+          : meta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      maintenanceContacts: null == maintenanceContacts
-          ? _value._maintenanceContacts
-          : maintenanceContacts // ignore: cast_nullable_to_non_nullable
+      maintContacts: null == maintContacts
+          ? _value._maintContacts
+          : maintContacts // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
     ));
   }
@@ -1002,111 +988,102 @@ class _$EquipmentImpl extends _Equipment {
       {required this.name,
       required this.siteId,
       required this.type,
-      this.serialNumber,
-      this.model,
+      this.serialNum,
+      this.modelId,
       this.manufacturer,
-      final Map<String, Object> specifications = const {},
-      this.installationDate,
-      this.lastMaintenanceDate,
-      this.parentEquipmentId,
-      final List<EntityId> childEquipmentIds = const [],
-      final Map<String, Object>? additionalInfo,
-      final Map<String, Object> metadata = const {},
-      final Map<String, String> maintenanceContacts = const {}})
-      : _specifications = specifications,
-        _childEquipmentIds = childEquipmentIds,
-        _additionalInfo = additionalInfo,
-        _metadata = metadata,
-        _maintenanceContacts = maintenanceContacts,
+      final Map<String, Object> specs = const {},
+      this.installDate,
+      this.lastMaintDate,
+      this.parentId,
+      final List<EntityId> childIds = const [],
+      final Map<String, Object>? customData,
+      final Map<String, Object> meta = const {},
+      final Map<String, String> maintContacts = const {}})
+      : _specs = specs,
+        _childIds = childIds,
+        _customData = customData,
+        _meta = meta,
+        _maintContacts = maintContacts,
         super._();
 
   factory _$EquipmentImpl.fromJson(Map<String, dynamic> json) =>
       _$$EquipmentImplFromJson(json);
 
-// Core Information
+// Core info
   @override
   final String name;
   @override
   final EntityId siteId;
-// Updated to EntityId
   @override
   final EquipmentType type;
-// Technical Details
+// Technical info
   @override
-  final String? serialNumber;
+  final String? serialNum;
   @override
-  final String? model;
+  final String? modelId;
   @override
   final String? manufacturer;
-// Specifications
-  final Map<String, Object> _specifications;
-// Specifications
+// Specs
+  final Map<String, Object> _specs;
+// Specs
   @override
   @JsonKey()
-  Map<String, Object> get specifications {
-    if (_specifications is EqualUnmodifiableMapView) return _specifications;
+  Map<String, Object> get specs {
+    if (_specs is EqualUnmodifiableMapView) return _specs;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_specifications);
+    return EqualUnmodifiableMapView(_specs);
   }
 
 // Dates
   @override
-  final DateTime? installationDate;
+  final DateTime? installDate;
   @override
-  final DateTime? lastMaintenanceDate;
+  final DateTime? lastMaintDate;
 // Hierarchy
   @override
-  final EntityId? parentEquipmentId;
-// Updated to EntityId
-  final List<EntityId> _childEquipmentIds;
-// Updated to EntityId
+  final EntityId? parentId;
+  final List<EntityId> _childIds;
   @override
   @JsonKey()
-  List<EntityId> get childEquipmentIds {
-    if (_childEquipmentIds is EqualUnmodifiableListView)
-      return _childEquipmentIds;
+  List<EntityId> get childIds {
+    if (_childIds is EqualUnmodifiableListView) return _childIds;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_childEquipmentIds);
+    return EqualUnmodifiableListView(_childIds);
   }
 
-// Updated to EntityId
-// Additional Data
-  final Map<String, Object>? _additionalInfo;
-// Updated to EntityId
-// Additional Data
+// Metadata
+  final Map<String, Object>? _customData;
+// Metadata
   @override
-  Map<String, Object>? get additionalInfo {
-    final value = _additionalInfo;
+  Map<String, Object>? get customData {
+    final value = _customData;
     if (value == null) return null;
-    if (_additionalInfo is EqualUnmodifiableMapView) return _additionalInfo;
+    if (_customData is EqualUnmodifiableMapView) return _customData;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(value);
   }
 
-  final Map<String, Object> _metadata;
+  final Map<String, Object> _meta;
   @override
   @JsonKey()
-  Map<String, Object> get metadata {
-    if (_metadata is EqualUnmodifiableMapView) return _metadata;
+  Map<String, Object> get meta {
+    if (_meta is EqualUnmodifiableMapView) return _meta;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_metadata);
+    return EqualUnmodifiableMapView(_meta);
   }
 
-// Added standardized metadata
-  final Map<String, String> _maintenanceContacts;
-// Added standardized metadata
+  final Map<String, String> _maintContacts;
   @override
   @JsonKey()
-  Map<String, String> get maintenanceContacts {
-    if (_maintenanceContacts is EqualUnmodifiableMapView)
-      return _maintenanceContacts;
+  Map<String, String> get maintContacts {
+    if (_maintContacts is EqualUnmodifiableMapView) return _maintContacts;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_maintenanceContacts);
+    return EqualUnmodifiableMapView(_maintContacts);
   }
 
   @override
   String toString() {
-    return 'Equipment(name: $name, siteId: $siteId, type: $type, serialNumber: $serialNumber, model: $model, manufacturer: $manufacturer, specifications: $specifications, installationDate: $installationDate, lastMaintenanceDate: $lastMaintenanceDate, parentEquipmentId: $parentEquipmentId, childEquipmentIds: $childEquipmentIds, additionalInfo: $additionalInfo, metadata: $metadata, maintenanceContacts: $maintenanceContacts)';
+    return 'Equipment(name: $name, siteId: $siteId, type: $type, serialNum: $serialNum, modelId: $modelId, manufacturer: $manufacturer, specs: $specs, installDate: $installDate, lastMaintDate: $lastMaintDate, parentId: $parentId, childIds: $childIds, customData: $customData, meta: $meta, maintContacts: $maintContacts)';
   }
 
   @override
@@ -1117,26 +1094,24 @@ class _$EquipmentImpl extends _Equipment {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.siteId, siteId) || other.siteId == siteId) &&
             (identical(other.type, type) || other.type == type) &&
-            (identical(other.serialNumber, serialNumber) ||
-                other.serialNumber == serialNumber) &&
-            (identical(other.model, model) || other.model == model) &&
+            (identical(other.serialNum, serialNum) ||
+                other.serialNum == serialNum) &&
+            (identical(other.modelId, modelId) || other.modelId == modelId) &&
             (identical(other.manufacturer, manufacturer) ||
                 other.manufacturer == manufacturer) &&
+            const DeepCollectionEquality().equals(other._specs, _specs) &&
+            (identical(other.installDate, installDate) ||
+                other.installDate == installDate) &&
+            (identical(other.lastMaintDate, lastMaintDate) ||
+                other.lastMaintDate == lastMaintDate) &&
+            (identical(other.parentId, parentId) ||
+                other.parentId == parentId) &&
+            const DeepCollectionEquality().equals(other._childIds, _childIds) &&
             const DeepCollectionEquality()
-                .equals(other._specifications, _specifications) &&
-            (identical(other.installationDate, installationDate) ||
-                other.installationDate == installationDate) &&
-            (identical(other.lastMaintenanceDate, lastMaintenanceDate) ||
-                other.lastMaintenanceDate == lastMaintenanceDate) &&
-            (identical(other.parentEquipmentId, parentEquipmentId) ||
-                other.parentEquipmentId == parentEquipmentId) &&
+                .equals(other._customData, _customData) &&
+            const DeepCollectionEquality().equals(other._meta, _meta) &&
             const DeepCollectionEquality()
-                .equals(other._childEquipmentIds, _childEquipmentIds) &&
-            const DeepCollectionEquality()
-                .equals(other._additionalInfo, _additionalInfo) &&
-            const DeepCollectionEquality().equals(other._metadata, _metadata) &&
-            const DeepCollectionEquality()
-                .equals(other._maintenanceContacts, _maintenanceContacts));
+                .equals(other._maintContacts, _maintContacts));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1146,17 +1121,17 @@ class _$EquipmentImpl extends _Equipment {
       name,
       siteId,
       type,
-      serialNumber,
-      model,
+      serialNum,
+      modelId,
       manufacturer,
-      const DeepCollectionEquality().hash(_specifications),
-      installationDate,
-      lastMaintenanceDate,
-      parentEquipmentId,
-      const DeepCollectionEquality().hash(_childEquipmentIds),
-      const DeepCollectionEquality().hash(_additionalInfo),
-      const DeepCollectionEquality().hash(_metadata),
-      const DeepCollectionEquality().hash(_maintenanceContacts));
+      const DeepCollectionEquality().hash(_specs),
+      installDate,
+      lastMaintDate,
+      parentId,
+      const DeepCollectionEquality().hash(_childIds),
+      const DeepCollectionEquality().hash(_customData),
+      const DeepCollectionEquality().hash(_meta),
+      const DeepCollectionEquality().hash(_maintContacts));
 
   /// Create a copy of Equipment
   /// with the given fields replaced by the non-null parameter values.
@@ -1179,52 +1154,51 @@ abstract class _Equipment extends Equipment {
       {required final String name,
       required final EntityId siteId,
       required final EquipmentType type,
-      final String? serialNumber,
-      final String? model,
+      final String? serialNum,
+      final String? modelId,
       final String? manufacturer,
-      final Map<String, Object> specifications,
-      final DateTime? installationDate,
-      final DateTime? lastMaintenanceDate,
-      final EntityId? parentEquipmentId,
-      final List<EntityId> childEquipmentIds,
-      final Map<String, Object>? additionalInfo,
-      final Map<String, Object> metadata,
-      final Map<String, String> maintenanceContacts}) = _$EquipmentImpl;
+      final Map<String, Object> specs,
+      final DateTime? installDate,
+      final DateTime? lastMaintDate,
+      final EntityId? parentId,
+      final List<EntityId> childIds,
+      final Map<String, Object>? customData,
+      final Map<String, Object> meta,
+      final Map<String, String> maintContacts}) = _$EquipmentImpl;
   const _Equipment._() : super._();
 
   factory _Equipment.fromJson(Map<String, dynamic> json) =
       _$EquipmentImpl.fromJson;
 
-// Core Information
+// Core info
   @override
   String get name;
   @override
-  EntityId get siteId; // Updated to EntityId
+  EntityId get siteId;
   @override
-  EquipmentType get type; // Technical Details
+  EquipmentType get type; // Technical info
   @override
-  String? get serialNumber;
+  String? get serialNum;
   @override
-  String? get model;
+  String? get modelId;
   @override
-  String? get manufacturer; // Specifications
+  String? get manufacturer; // Specs
   @override
-  Map<String, Object> get specifications; // Dates
+  Map<String, Object> get specs; // Dates
   @override
-  DateTime? get installationDate;
+  DateTime? get installDate;
   @override
-  DateTime? get lastMaintenanceDate; // Hierarchy
+  DateTime? get lastMaintDate; // Hierarchy
   @override
-  EntityId? get parentEquipmentId; // Updated to EntityId
+  EntityId? get parentId;
   @override
-  List<EntityId> get childEquipmentIds; // Updated to EntityId
-// Additional Data
+  List<EntityId> get childIds; // Metadata
   @override
-  Map<String, Object>? get additionalInfo;
+  Map<String, Object>? get customData;
   @override
-  Map<String, Object> get metadata; // Added standardized metadata
+  Map<String, Object> get meta;
   @override
-  Map<String, String> get maintenanceContacts;
+  Map<String, String> get maintContacts;
 
   /// Create a copy of Equipment
   /// with the given fields replaced by the non-null parameter values.
@@ -1240,14 +1214,13 @@ Vendor _$VendorFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Vendor {
+// Core info
   ContactInfo get contact => throw _privateConstructorUsedError;
-  List<EntityId> get personnelIds =>
-      throw _privateConstructorUsedError; // Updated to EntityId
-  List<String> get serviceCategories => throw _privateConstructorUsedError;
-  Map<String, Object> get metadata =>
-      throw _privateConstructorUsedError; // Added standardized metadata
-  Map<String, Object>? get additionalInfo => throw _privateConstructorUsedError;
-  Map<String, Object> get qualifications => throw _privateConstructorUsedError;
+  List<EntityId> get staffIds => throw _privateConstructorUsedError;
+  List<String> get services => throw _privateConstructorUsedError; // Metadata
+  Map<String, Object> get meta => throw _privateConstructorUsedError;
+  Map<String, Object>? get customData => throw _privateConstructorUsedError;
+  Map<String, Object> get certifications => throw _privateConstructorUsedError;
 
   /// Serializes this Vendor to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -1265,11 +1238,11 @@ abstract class $VendorCopyWith<$Res> {
   @useResult
   $Res call(
       {ContactInfo contact,
-      List<EntityId> personnelIds,
-      List<String> serviceCategories,
-      Map<String, Object> metadata,
-      Map<String, Object>? additionalInfo,
-      Map<String, Object> qualifications});
+      List<EntityId> staffIds,
+      List<String> services,
+      Map<String, Object> meta,
+      Map<String, Object>? customData,
+      Map<String, Object> certifications});
 
   $ContactInfoCopyWith<$Res> get contact;
 }
@@ -1290,36 +1263,36 @@ class _$VendorCopyWithImpl<$Res, $Val extends Vendor>
   @override
   $Res call({
     Object? contact = null,
-    Object? personnelIds = null,
-    Object? serviceCategories = null,
-    Object? metadata = null,
-    Object? additionalInfo = freezed,
-    Object? qualifications = null,
+    Object? staffIds = null,
+    Object? services = null,
+    Object? meta = null,
+    Object? customData = freezed,
+    Object? certifications = null,
   }) {
     return _then(_value.copyWith(
       contact: null == contact
           ? _value.contact
           : contact // ignore: cast_nullable_to_non_nullable
               as ContactInfo,
-      personnelIds: null == personnelIds
-          ? _value.personnelIds
-          : personnelIds // ignore: cast_nullable_to_non_nullable
+      staffIds: null == staffIds
+          ? _value.staffIds
+          : staffIds // ignore: cast_nullable_to_non_nullable
               as List<EntityId>,
-      serviceCategories: null == serviceCategories
-          ? _value.serviceCategories
-          : serviceCategories // ignore: cast_nullable_to_non_nullable
+      services: null == services
+          ? _value.services
+          : services // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      metadata: null == metadata
-          ? _value.metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
+      meta: null == meta
+          ? _value.meta
+          : meta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      additionalInfo: freezed == additionalInfo
-          ? _value.additionalInfo
-          : additionalInfo // ignore: cast_nullable_to_non_nullable
+      customData: freezed == customData
+          ? _value.customData
+          : customData // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>?,
-      qualifications: null == qualifications
-          ? _value.qualifications
-          : qualifications // ignore: cast_nullable_to_non_nullable
+      certifications: null == certifications
+          ? _value.certifications
+          : certifications // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
     ) as $Val);
   }
@@ -1344,11 +1317,11 @@ abstract class _$$VendorImplCopyWith<$Res> implements $VendorCopyWith<$Res> {
   @useResult
   $Res call(
       {ContactInfo contact,
-      List<EntityId> personnelIds,
-      List<String> serviceCategories,
-      Map<String, Object> metadata,
-      Map<String, Object>? additionalInfo,
-      Map<String, Object> qualifications});
+      List<EntityId> staffIds,
+      List<String> services,
+      Map<String, Object> meta,
+      Map<String, Object>? customData,
+      Map<String, Object> certifications});
 
   @override
   $ContactInfoCopyWith<$Res> get contact;
@@ -1368,36 +1341,36 @@ class __$$VendorImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? contact = null,
-    Object? personnelIds = null,
-    Object? serviceCategories = null,
-    Object? metadata = null,
-    Object? additionalInfo = freezed,
-    Object? qualifications = null,
+    Object? staffIds = null,
+    Object? services = null,
+    Object? meta = null,
+    Object? customData = freezed,
+    Object? certifications = null,
   }) {
     return _then(_$VendorImpl(
       contact: null == contact
           ? _value.contact
           : contact // ignore: cast_nullable_to_non_nullable
               as ContactInfo,
-      personnelIds: null == personnelIds
-          ? _value._personnelIds
-          : personnelIds // ignore: cast_nullable_to_non_nullable
+      staffIds: null == staffIds
+          ? _value._staffIds
+          : staffIds // ignore: cast_nullable_to_non_nullable
               as List<EntityId>,
-      serviceCategories: null == serviceCategories
-          ? _value._serviceCategories
-          : serviceCategories // ignore: cast_nullable_to_non_nullable
+      services: null == services
+          ? _value._services
+          : services // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      metadata: null == metadata
-          ? _value._metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
+      meta: null == meta
+          ? _value._meta
+          : meta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      additionalInfo: freezed == additionalInfo
-          ? _value._additionalInfo
-          : additionalInfo // ignore: cast_nullable_to_non_nullable
+      customData: freezed == customData
+          ? _value._customData
+          : customData // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>?,
-      qualifications: null == qualifications
-          ? _value._qualifications
-          : qualifications // ignore: cast_nullable_to_non_nullable
+      certifications: null == certifications
+          ? _value._certifications
+          : certifications // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
     ));
   }
@@ -1408,77 +1381,75 @@ class __$$VendorImplCopyWithImpl<$Res>
 class _$VendorImpl extends _Vendor {
   const _$VendorImpl(
       {required this.contact,
-      final List<EntityId> personnelIds = const [],
-      final List<String> serviceCategories = const [],
-      final Map<String, Object> metadata = const {},
-      final Map<String, Object>? additionalInfo,
-      final Map<String, Object> qualifications = const {}})
-      : _personnelIds = personnelIds,
-        _serviceCategories = serviceCategories,
-        _metadata = metadata,
-        _additionalInfo = additionalInfo,
-        _qualifications = qualifications,
+      final List<EntityId> staffIds = const [],
+      final List<String> services = const [],
+      final Map<String, Object> meta = const {},
+      final Map<String, Object>? customData,
+      final Map<String, Object> certifications = const {}})
+      : _staffIds = staffIds,
+        _services = services,
+        _meta = meta,
+        _customData = customData,
+        _certifications = certifications,
         super._();
 
   factory _$VendorImpl.fromJson(Map<String, dynamic> json) =>
       _$$VendorImplFromJson(json);
 
+// Core info
   @override
   final ContactInfo contact;
-  final List<EntityId> _personnelIds;
+  final List<EntityId> _staffIds;
   @override
   @JsonKey()
-  List<EntityId> get personnelIds {
-    if (_personnelIds is EqualUnmodifiableListView) return _personnelIds;
+  List<EntityId> get staffIds {
+    if (_staffIds is EqualUnmodifiableListView) return _staffIds;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_personnelIds);
+    return EqualUnmodifiableListView(_staffIds);
   }
 
-// Updated to EntityId
-  final List<String> _serviceCategories;
-// Updated to EntityId
+  final List<String> _services;
   @override
   @JsonKey()
-  List<String> get serviceCategories {
-    if (_serviceCategories is EqualUnmodifiableListView)
-      return _serviceCategories;
+  List<String> get services {
+    if (_services is EqualUnmodifiableListView) return _services;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_serviceCategories);
+    return EqualUnmodifiableListView(_services);
   }
 
-  final Map<String, Object> _metadata;
+// Metadata
+  final Map<String, Object> _meta;
+// Metadata
   @override
   @JsonKey()
-  Map<String, Object> get metadata {
-    if (_metadata is EqualUnmodifiableMapView) return _metadata;
+  Map<String, Object> get meta {
+    if (_meta is EqualUnmodifiableMapView) return _meta;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_metadata);
+    return EqualUnmodifiableMapView(_meta);
   }
 
-// Added standardized metadata
-  final Map<String, Object>? _additionalInfo;
-// Added standardized metadata
+  final Map<String, Object>? _customData;
   @override
-  Map<String, Object>? get additionalInfo {
-    final value = _additionalInfo;
+  Map<String, Object>? get customData {
+    final value = _customData;
     if (value == null) return null;
-    if (_additionalInfo is EqualUnmodifiableMapView) return _additionalInfo;
+    if (_customData is EqualUnmodifiableMapView) return _customData;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(value);
   }
 
-  final Map<String, Object> _qualifications;
+  final Map<String, Object> _certifications;
   @override
   @JsonKey()
-  Map<String, Object> get qualifications {
-    if (_qualifications is EqualUnmodifiableMapView) return _qualifications;
+  Map<String, Object> get certifications {
+    if (_certifications is EqualUnmodifiableMapView) return _certifications;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_qualifications);
+    return EqualUnmodifiableMapView(_certifications);
   }
 
   @override
   String toString() {
-    return 'Vendor(contact: $contact, personnelIds: $personnelIds, serviceCategories: $serviceCategories, metadata: $metadata, additionalInfo: $additionalInfo, qualifications: $qualifications)';
+    return 'Vendor(contact: $contact, staffIds: $staffIds, services: $services, meta: $meta, customData: $customData, certifications: $certifications)';
   }
 
   @override
@@ -1487,15 +1458,13 @@ class _$VendorImpl extends _Vendor {
         (other.runtimeType == runtimeType &&
             other is _$VendorImpl &&
             (identical(other.contact, contact) || other.contact == contact) &&
+            const DeepCollectionEquality().equals(other._staffIds, _staffIds) &&
+            const DeepCollectionEquality().equals(other._services, _services) &&
+            const DeepCollectionEquality().equals(other._meta, _meta) &&
             const DeepCollectionEquality()
-                .equals(other._personnelIds, _personnelIds) &&
+                .equals(other._customData, _customData) &&
             const DeepCollectionEquality()
-                .equals(other._serviceCategories, _serviceCategories) &&
-            const DeepCollectionEquality().equals(other._metadata, _metadata) &&
-            const DeepCollectionEquality()
-                .equals(other._additionalInfo, _additionalInfo) &&
-            const DeepCollectionEquality()
-                .equals(other._qualifications, _qualifications));
+                .equals(other._certifications, _certifications));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1503,11 +1472,11 @@ class _$VendorImpl extends _Vendor {
   int get hashCode => Object.hash(
       runtimeType,
       contact,
-      const DeepCollectionEquality().hash(_personnelIds),
-      const DeepCollectionEquality().hash(_serviceCategories),
-      const DeepCollectionEquality().hash(_metadata),
-      const DeepCollectionEquality().hash(_additionalInfo),
-      const DeepCollectionEquality().hash(_qualifications));
+      const DeepCollectionEquality().hash(_staffIds),
+      const DeepCollectionEquality().hash(_services),
+      const DeepCollectionEquality().hash(_meta),
+      const DeepCollectionEquality().hash(_customData),
+      const DeepCollectionEquality().hash(_certifications));
 
   /// Create a copy of Vendor
   /// with the given fields replaced by the non-null parameter values.
@@ -1528,27 +1497,28 @@ class _$VendorImpl extends _Vendor {
 abstract class _Vendor extends Vendor {
   const factory _Vendor(
       {required final ContactInfo contact,
-      final List<EntityId> personnelIds,
-      final List<String> serviceCategories,
-      final Map<String, Object> metadata,
-      final Map<String, Object>? additionalInfo,
-      final Map<String, Object> qualifications}) = _$VendorImpl;
+      final List<EntityId> staffIds,
+      final List<String> services,
+      final Map<String, Object> meta,
+      final Map<String, Object>? customData,
+      final Map<String, Object> certifications}) = _$VendorImpl;
   const _Vendor._() : super._();
 
   factory _Vendor.fromJson(Map<String, dynamic> json) = _$VendorImpl.fromJson;
 
+// Core info
   @override
   ContactInfo get contact;
   @override
-  List<EntityId> get personnelIds; // Updated to EntityId
+  List<EntityId> get staffIds;
   @override
-  List<String> get serviceCategories;
+  List<String> get services; // Metadata
   @override
-  Map<String, Object> get metadata; // Added standardized metadata
+  Map<String, Object> get meta;
   @override
-  Map<String, Object>? get additionalInfo;
+  Map<String, Object>? get customData;
   @override
-  Map<String, Object> get qualifications;
+  Map<String, Object> get certifications;
 
   /// Create a copy of Vendor
   /// with the given fields replaced by the non-null parameter values.
@@ -1564,25 +1534,19 @@ Personnel _$PersonnelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Personnel {
-// Core Information
+// Core info
   String get name => throw _privateConstructorUsedError;
-  EntityId get vendorId =>
-      throw _privateConstructorUsedError; // Updated to EntityId
-  int get skillLevel => throw _privateConstructorUsedError; // Made required
-// Professional Details
-  String? get position => throw _privateConstructorUsedError;
-  List<String> get certifications => throw _privateConstructorUsedError;
-  List<String> get specializations =>
-      throw _privateConstructorUsedError; // Contact Information
-  String? get contactNumber => throw _privateConstructorUsedError;
-  String? get email => throw _privateConstructorUsedError; // Additional Data
-  Map<String, Object>? get additionalInfo => throw _privateConstructorUsedError;
-  Map<String, Object> get metadata =>
-      throw _privateConstructorUsedError; // Added standardized metadata
-  Map<String, Object> get schedule =>
-      throw _privateConstructorUsedError; // Added schedule tracking
-  Map<String, DateTime> get certificationDates =>
-      throw _privateConstructorUsedError;
+  EntityId get vendorId => throw _privateConstructorUsedError;
+  int get skillLevel => throw _privateConstructorUsedError; // Professional info
+  String? get role => throw _privateConstructorUsedError;
+  List<String> get certs => throw _privateConstructorUsedError;
+  List<String> get specs => throw _privateConstructorUsedError; // Contact info
+  String? get phone => throw _privateConstructorUsedError;
+  String? get email => throw _privateConstructorUsedError; // Metadata
+  Map<String, Object>? get customData => throw _privateConstructorUsedError;
+  Map<String, Object> get meta => throw _privateConstructorUsedError;
+  Map<String, Object> get schedule => throw _privateConstructorUsedError;
+  Map<String, DateTime> get certDates => throw _privateConstructorUsedError;
 
   /// Serializes this Personnel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -1603,15 +1567,15 @@ abstract class $PersonnelCopyWith<$Res> {
       {String name,
       EntityId vendorId,
       int skillLevel,
-      String? position,
-      List<String> certifications,
-      List<String> specializations,
-      String? contactNumber,
+      String? role,
+      List<String> certs,
+      List<String> specs,
+      String? phone,
       String? email,
-      Map<String, Object>? additionalInfo,
-      Map<String, Object> metadata,
+      Map<String, Object>? customData,
+      Map<String, Object> meta,
       Map<String, Object> schedule,
-      Map<String, DateTime> certificationDates});
+      Map<String, DateTime> certDates});
 
   $EntityIdCopyWith<$Res> get vendorId;
 }
@@ -1634,15 +1598,15 @@ class _$PersonnelCopyWithImpl<$Res, $Val extends Personnel>
     Object? name = null,
     Object? vendorId = null,
     Object? skillLevel = null,
-    Object? position = freezed,
-    Object? certifications = null,
-    Object? specializations = null,
-    Object? contactNumber = freezed,
+    Object? role = freezed,
+    Object? certs = null,
+    Object? specs = null,
+    Object? phone = freezed,
     Object? email = freezed,
-    Object? additionalInfo = freezed,
-    Object? metadata = null,
+    Object? customData = freezed,
+    Object? meta = null,
     Object? schedule = null,
-    Object? certificationDates = null,
+    Object? certDates = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -1657,41 +1621,41 @@ class _$PersonnelCopyWithImpl<$Res, $Val extends Personnel>
           ? _value.skillLevel
           : skillLevel // ignore: cast_nullable_to_non_nullable
               as int,
-      position: freezed == position
-          ? _value.position
-          : position // ignore: cast_nullable_to_non_nullable
+      role: freezed == role
+          ? _value.role
+          : role // ignore: cast_nullable_to_non_nullable
               as String?,
-      certifications: null == certifications
-          ? _value.certifications
-          : certifications // ignore: cast_nullable_to_non_nullable
+      certs: null == certs
+          ? _value.certs
+          : certs // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      specializations: null == specializations
-          ? _value.specializations
-          : specializations // ignore: cast_nullable_to_non_nullable
+      specs: null == specs
+          ? _value.specs
+          : specs // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      contactNumber: freezed == contactNumber
-          ? _value.contactNumber
-          : contactNumber // ignore: cast_nullable_to_non_nullable
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
               as String?,
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      additionalInfo: freezed == additionalInfo
-          ? _value.additionalInfo
-          : additionalInfo // ignore: cast_nullable_to_non_nullable
+      customData: freezed == customData
+          ? _value.customData
+          : customData // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>?,
-      metadata: null == metadata
-          ? _value.metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
+      meta: null == meta
+          ? _value.meta
+          : meta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
       schedule: null == schedule
           ? _value.schedule
           : schedule // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      certificationDates: null == certificationDates
-          ? _value.certificationDates
-          : certificationDates // ignore: cast_nullable_to_non_nullable
+      certDates: null == certDates
+          ? _value.certDates
+          : certDates // ignore: cast_nullable_to_non_nullable
               as Map<String, DateTime>,
     ) as $Val);
   }
@@ -1719,15 +1683,15 @@ abstract class _$$PersonnelImplCopyWith<$Res>
       {String name,
       EntityId vendorId,
       int skillLevel,
-      String? position,
-      List<String> certifications,
-      List<String> specializations,
-      String? contactNumber,
+      String? role,
+      List<String> certs,
+      List<String> specs,
+      String? phone,
       String? email,
-      Map<String, Object>? additionalInfo,
-      Map<String, Object> metadata,
+      Map<String, Object>? customData,
+      Map<String, Object> meta,
       Map<String, Object> schedule,
-      Map<String, DateTime> certificationDates});
+      Map<String, DateTime> certDates});
 
   @override
   $EntityIdCopyWith<$Res> get vendorId;
@@ -1749,15 +1713,15 @@ class __$$PersonnelImplCopyWithImpl<$Res>
     Object? name = null,
     Object? vendorId = null,
     Object? skillLevel = null,
-    Object? position = freezed,
-    Object? certifications = null,
-    Object? specializations = null,
-    Object? contactNumber = freezed,
+    Object? role = freezed,
+    Object? certs = null,
+    Object? specs = null,
+    Object? phone = freezed,
     Object? email = freezed,
-    Object? additionalInfo = freezed,
-    Object? metadata = null,
+    Object? customData = freezed,
+    Object? meta = null,
     Object? schedule = null,
-    Object? certificationDates = null,
+    Object? certDates = null,
   }) {
     return _then(_$PersonnelImpl(
       name: null == name
@@ -1772,41 +1736,41 @@ class __$$PersonnelImplCopyWithImpl<$Res>
           ? _value.skillLevel
           : skillLevel // ignore: cast_nullable_to_non_nullable
               as int,
-      position: freezed == position
-          ? _value.position
-          : position // ignore: cast_nullable_to_non_nullable
+      role: freezed == role
+          ? _value.role
+          : role // ignore: cast_nullable_to_non_nullable
               as String?,
-      certifications: null == certifications
-          ? _value._certifications
-          : certifications // ignore: cast_nullable_to_non_nullable
+      certs: null == certs
+          ? _value._certs
+          : certs // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      specializations: null == specializations
-          ? _value._specializations
-          : specializations // ignore: cast_nullable_to_non_nullable
+      specs: null == specs
+          ? _value._specs
+          : specs // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      contactNumber: freezed == contactNumber
-          ? _value.contactNumber
-          : contactNumber // ignore: cast_nullable_to_non_nullable
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
               as String?,
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      additionalInfo: freezed == additionalInfo
-          ? _value._additionalInfo
-          : additionalInfo // ignore: cast_nullable_to_non_nullable
+      customData: freezed == customData
+          ? _value._customData
+          : customData // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>?,
-      metadata: null == metadata
-          ? _value._metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
+      meta: null == meta
+          ? _value._meta
+          : meta // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
       schedule: null == schedule
           ? _value._schedule
           : schedule // ignore: cast_nullable_to_non_nullable
               as Map<String, Object>,
-      certificationDates: null == certificationDates
-          ? _value._certificationDates
-          : certificationDates // ignore: cast_nullable_to_non_nullable
+      certDates: null == certDates
+          ? _value._certDates
+          : certDates // ignore: cast_nullable_to_non_nullable
               as Map<String, DateTime>,
     ));
   }
@@ -1819,85 +1783,81 @@ class _$PersonnelImpl extends _Personnel {
       {required this.name,
       required this.vendorId,
       required this.skillLevel,
-      this.position,
-      final List<String> certifications = const [],
-      final List<String> specializations = const [],
-      this.contactNumber,
+      this.role,
+      final List<String> certs = const [],
+      final List<String> specs = const [],
+      this.phone,
       this.email,
-      final Map<String, Object>? additionalInfo,
-      final Map<String, Object> metadata = const {},
+      final Map<String, Object>? customData,
+      final Map<String, Object> meta = const {},
       final Map<String, Object> schedule = const {},
-      final Map<String, DateTime> certificationDates = const {}})
-      : _certifications = certifications,
-        _specializations = specializations,
-        _additionalInfo = additionalInfo,
-        _metadata = metadata,
+      final Map<String, DateTime> certDates = const {}})
+      : _certs = certs,
+        _specs = specs,
+        _customData = customData,
+        _meta = meta,
         _schedule = schedule,
-        _certificationDates = certificationDates,
+        _certDates = certDates,
         super._();
 
   factory _$PersonnelImpl.fromJson(Map<String, dynamic> json) =>
       _$$PersonnelImplFromJson(json);
 
-// Core Information
+// Core info
   @override
   final String name;
   @override
   final EntityId vendorId;
-// Updated to EntityId
   @override
   final int skillLevel;
-// Made required
-// Professional Details
+// Professional info
   @override
-  final String? position;
-  final List<String> _certifications;
-  @override
-  @JsonKey()
-  List<String> get certifications {
-    if (_certifications is EqualUnmodifiableListView) return _certifications;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_certifications);
-  }
-
-  final List<String> _specializations;
+  final String? role;
+  final List<String> _certs;
   @override
   @JsonKey()
-  List<String> get specializations {
-    if (_specializations is EqualUnmodifiableListView) return _specializations;
+  List<String> get certs {
+    if (_certs is EqualUnmodifiableListView) return _certs;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_specializations);
+    return EqualUnmodifiableListView(_certs);
   }
 
-// Contact Information
+  final List<String> _specs;
   @override
-  final String? contactNumber;
+  @JsonKey()
+  List<String> get specs {
+    if (_specs is EqualUnmodifiableListView) return _specs;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_specs);
+  }
+
+// Contact info
+  @override
+  final String? phone;
   @override
   final String? email;
-// Additional Data
-  final Map<String, Object>? _additionalInfo;
-// Additional Data
+// Metadata
+  final Map<String, Object>? _customData;
+// Metadata
   @override
-  Map<String, Object>? get additionalInfo {
-    final value = _additionalInfo;
+  Map<String, Object>? get customData {
+    final value = _customData;
     if (value == null) return null;
-    if (_additionalInfo is EqualUnmodifiableMapView) return _additionalInfo;
+    if (_customData is EqualUnmodifiableMapView) return _customData;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(value);
   }
 
-  final Map<String, Object> _metadata;
+  final Map<String, Object> _meta;
   @override
   @JsonKey()
-  Map<String, Object> get metadata {
-    if (_metadata is EqualUnmodifiableMapView) return _metadata;
+  Map<String, Object> get meta {
+    if (_meta is EqualUnmodifiableMapView) return _meta;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_metadata);
+    return EqualUnmodifiableMapView(_meta);
   }
 
-// Added standardized metadata
   final Map<String, Object> _schedule;
-// Added standardized metadata
   @override
   @JsonKey()
   Map<String, Object> get schedule {
@@ -1906,21 +1866,18 @@ class _$PersonnelImpl extends _Personnel {
     return EqualUnmodifiableMapView(_schedule);
   }
 
-// Added schedule tracking
-  final Map<String, DateTime> _certificationDates;
-// Added schedule tracking
+  final Map<String, DateTime> _certDates;
   @override
   @JsonKey()
-  Map<String, DateTime> get certificationDates {
-    if (_certificationDates is EqualUnmodifiableMapView)
-      return _certificationDates;
+  Map<String, DateTime> get certDates {
+    if (_certDates is EqualUnmodifiableMapView) return _certDates;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_certificationDates);
+    return EqualUnmodifiableMapView(_certDates);
   }
 
   @override
   String toString() {
-    return 'Personnel(name: $name, vendorId: $vendorId, skillLevel: $skillLevel, position: $position, certifications: $certifications, specializations: $specializations, contactNumber: $contactNumber, email: $email, additionalInfo: $additionalInfo, metadata: $metadata, schedule: $schedule, certificationDates: $certificationDates)';
+    return 'Personnel(name: $name, vendorId: $vendorId, skillLevel: $skillLevel, role: $role, certs: $certs, specs: $specs, phone: $phone, email: $email, customData: $customData, meta: $meta, schedule: $schedule, certDates: $certDates)';
   }
 
   @override
@@ -1933,21 +1890,17 @@ class _$PersonnelImpl extends _Personnel {
                 other.vendorId == vendorId) &&
             (identical(other.skillLevel, skillLevel) ||
                 other.skillLevel == skillLevel) &&
-            (identical(other.position, position) ||
-                other.position == position) &&
-            const DeepCollectionEquality()
-                .equals(other._certifications, _certifications) &&
-            const DeepCollectionEquality()
-                .equals(other._specializations, _specializations) &&
-            (identical(other.contactNumber, contactNumber) ||
-                other.contactNumber == contactNumber) &&
+            (identical(other.role, role) || other.role == role) &&
+            const DeepCollectionEquality().equals(other._certs, _certs) &&
+            const DeepCollectionEquality().equals(other._specs, _specs) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.email, email) || other.email == email) &&
             const DeepCollectionEquality()
-                .equals(other._additionalInfo, _additionalInfo) &&
-            const DeepCollectionEquality().equals(other._metadata, _metadata) &&
+                .equals(other._customData, _customData) &&
+            const DeepCollectionEquality().equals(other._meta, _meta) &&
             const DeepCollectionEquality().equals(other._schedule, _schedule) &&
             const DeepCollectionEquality()
-                .equals(other._certificationDates, _certificationDates));
+                .equals(other._certDates, _certDates));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1957,15 +1910,15 @@ class _$PersonnelImpl extends _Personnel {
       name,
       vendorId,
       skillLevel,
-      position,
-      const DeepCollectionEquality().hash(_certifications),
-      const DeepCollectionEquality().hash(_specializations),
-      contactNumber,
+      role,
+      const DeepCollectionEquality().hash(_certs),
+      const DeepCollectionEquality().hash(_specs),
+      phone,
       email,
-      const DeepCollectionEquality().hash(_additionalInfo),
-      const DeepCollectionEquality().hash(_metadata),
+      const DeepCollectionEquality().hash(_customData),
+      const DeepCollectionEquality().hash(_meta),
       const DeepCollectionEquality().hash(_schedule),
-      const DeepCollectionEquality().hash(_certificationDates));
+      const DeepCollectionEquality().hash(_certDates));
 
   /// Create a copy of Personnel
   /// with the given fields replaced by the non-null parameter values.
@@ -1988,46 +1941,45 @@ abstract class _Personnel extends Personnel {
       {required final String name,
       required final EntityId vendorId,
       required final int skillLevel,
-      final String? position,
-      final List<String> certifications,
-      final List<String> specializations,
-      final String? contactNumber,
+      final String? role,
+      final List<String> certs,
+      final List<String> specs,
+      final String? phone,
       final String? email,
-      final Map<String, Object>? additionalInfo,
-      final Map<String, Object> metadata,
+      final Map<String, Object>? customData,
+      final Map<String, Object> meta,
       final Map<String, Object> schedule,
-      final Map<String, DateTime> certificationDates}) = _$PersonnelImpl;
+      final Map<String, DateTime> certDates}) = _$PersonnelImpl;
   const _Personnel._() : super._();
 
   factory _Personnel.fromJson(Map<String, dynamic> json) =
       _$PersonnelImpl.fromJson;
 
-// Core Information
+// Core info
   @override
   String get name;
   @override
-  EntityId get vendorId; // Updated to EntityId
+  EntityId get vendorId;
   @override
-  int get skillLevel; // Made required
-// Professional Details
+  int get skillLevel; // Professional info
   @override
-  String? get position;
+  String? get role;
   @override
-  List<String> get certifications;
+  List<String> get certs;
   @override
-  List<String> get specializations; // Contact Information
+  List<String> get specs; // Contact info
   @override
-  String? get contactNumber;
+  String? get phone;
   @override
-  String? get email; // Additional Data
+  String? get email; // Metadata
   @override
-  Map<String, Object>? get additionalInfo;
+  Map<String, Object>? get customData;
   @override
-  Map<String, Object> get metadata; // Added standardized metadata
+  Map<String, Object> get meta;
   @override
-  Map<String, Object> get schedule; // Added schedule tracking
+  Map<String, Object> get schedule;
   @override
-  Map<String, DateTime> get certificationDates;
+  Map<String, DateTime> get certDates;
 
   /// Create a copy of Personnel
   /// with the given fields replaced by the non-null parameter values.

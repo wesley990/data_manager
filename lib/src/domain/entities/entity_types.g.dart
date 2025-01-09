@@ -17,21 +17,21 @@ _$OwnerImpl _$$OwnerImplFromJson(Map<String, dynamic> json) => _$OwnerImpl(
                   )))
               .toList() ??
           const [],
-      additionalInfo: (json['additionalInfo'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as Object),
-      ),
-      metadata: (json['metadata'] as Map<String, dynamic>?)?.map(
+      meta: (json['meta'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as Object),
           ) ??
           const {},
+      customData: (json['customData'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as Object),
+      ),
     );
 
 Map<String, dynamic> _$$OwnerImplToJson(_$OwnerImpl instance) =>
     <String, dynamic>{
       'contact': instance.contact,
       'siteIds': instance.siteIds,
-      'additionalInfo': instance.additionalInfo,
-      'metadata': instance.metadata,
+      'meta': instance.meta,
+      'customData': instance.customData,
     };
 
 _$SiteImpl _$$SiteImplFromJson(Map<String, dynamic> json) => _$SiteImpl(
@@ -48,18 +48,18 @@ _$SiteImpl _$$SiteImplFromJson(Map<String, dynamic> json) => _$SiteImpl(
                   )))
               .toList() ??
           const [],
-      siteDetails: (json['siteDetails'] as Map<String, dynamic>?)?.map(
+      siteInfo: (json['siteInfo'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as Object),
           ) ??
           const {},
-      additionalInfo: (json['additionalInfo'] as Map<String, dynamic>?)?.map(
+      customData: (json['customData'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as Object),
       ),
-      metadata: (json['metadata'] as Map<String, dynamic>?)?.map(
+      meta: (json['meta'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as Object),
           ) ??
           const {},
-      contacts: (json['contacts'] as Map<String, dynamic>?)?.map(
+      contactInfo: (json['contactInfo'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as String),
           ) ??
           const {},
@@ -73,10 +73,10 @@ Map<String, dynamic> _$$SiteImplToJson(_$SiteImpl instance) =>
       'latitude': instance.latitude,
       'longitude': instance.longitude,
       'equipmentIds': instance.equipmentIds,
-      'siteDetails': instance.siteDetails,
-      'additionalInfo': instance.additionalInfo,
-      'metadata': instance.metadata,
-      'contacts': instance.contacts,
+      'siteInfo': instance.siteInfo,
+      'customData': instance.customData,
+      'meta': instance.meta,
+      'contactInfo': instance.contactInfo,
     };
 
 _$EquipmentImpl _$$EquipmentImplFromJson(Map<String, dynamic> json) =>
@@ -86,43 +86,41 @@ _$EquipmentImpl _$$EquipmentImplFromJson(Map<String, dynamic> json) =>
         (k, e) => MapEntry(k, e as Object),
       )),
       type: $enumDecode(_$EquipmentTypeEnumMap, json['type']),
-      serialNumber: json['serialNumber'] as String?,
-      model: json['model'] as String?,
+      serialNum: json['serialNum'] as String?,
+      modelId: json['modelId'] as String?,
       manufacturer: json['manufacturer'] as String?,
-      specifications: (json['specifications'] as Map<String, dynamic>?)?.map(
+      specs: (json['specs'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as Object),
           ) ??
           const {},
-      installationDate: json['installationDate'] == null
+      installDate: json['installDate'] == null
           ? null
-          : DateTime.parse(json['installationDate'] as String),
-      lastMaintenanceDate: json['lastMaintenanceDate'] == null
+          : DateTime.parse(json['installDate'] as String),
+      lastMaintDate: json['lastMaintDate'] == null
           ? null
-          : DateTime.parse(json['lastMaintenanceDate'] as String),
-      parentEquipmentId: json['parentEquipmentId'] == null
+          : DateTime.parse(json['lastMaintDate'] as String),
+      parentId: json['parentId'] == null
           ? null
-          : EntityId.fromJson(
-              (json['parentEquipmentId'] as Map<String, dynamic>).map(
+          : EntityId.fromJson((json['parentId'] as Map<String, dynamic>).map(
               (k, e) => MapEntry(k, e as Object),
             )),
-      childEquipmentIds: (json['childEquipmentIds'] as List<dynamic>?)
+      childIds: (json['childIds'] as List<dynamic>?)
               ?.map((e) => EntityId.fromJson((e as Map<String, dynamic>).map(
                     (k, e) => MapEntry(k, e as Object),
                   )))
               .toList() ??
           const [],
-      additionalInfo: (json['additionalInfo'] as Map<String, dynamic>?)?.map(
+      customData: (json['customData'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as Object),
       ),
-      metadata: (json['metadata'] as Map<String, dynamic>?)?.map(
+      meta: (json['meta'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as Object),
           ) ??
           const {},
-      maintenanceContacts:
-          (json['maintenanceContacts'] as Map<String, dynamic>?)?.map(
-                (k, e) => MapEntry(k, e as String),
-              ) ??
-              const {},
+      maintContacts: (json['maintContacts'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(k, e as String),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$$EquipmentImplToJson(_$EquipmentImpl instance) =>
@@ -130,17 +128,17 @@ Map<String, dynamic> _$$EquipmentImplToJson(_$EquipmentImpl instance) =>
       'name': instance.name,
       'siteId': instance.siteId,
       'type': _$EquipmentTypeEnumMap[instance.type]!,
-      'serialNumber': instance.serialNumber,
-      'model': instance.model,
+      'serialNum': instance.serialNum,
+      'modelId': instance.modelId,
       'manufacturer': instance.manufacturer,
-      'specifications': instance.specifications,
-      'installationDate': instance.installationDate?.toIso8601String(),
-      'lastMaintenanceDate': instance.lastMaintenanceDate?.toIso8601String(),
-      'parentEquipmentId': instance.parentEquipmentId,
-      'childEquipmentIds': instance.childEquipmentIds,
-      'additionalInfo': instance.additionalInfo,
-      'metadata': instance.metadata,
-      'maintenanceContacts': instance.maintenanceContacts,
+      'specs': instance.specs,
+      'installDate': instance.installDate?.toIso8601String(),
+      'lastMaintDate': instance.lastMaintDate?.toIso8601String(),
+      'parentId': instance.parentId,
+      'childIds': instance.childIds,
+      'customData': instance.customData,
+      'meta': instance.meta,
+      'maintContacts': instance.maintContacts,
     };
 
 const _$EquipmentTypeEnumMap = {
@@ -157,24 +155,24 @@ _$VendorImpl _$$VendorImplFromJson(Map<String, dynamic> json) => _$VendorImpl(
           ContactInfo.fromJson((json['contact'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, e as Object),
       )),
-      personnelIds: (json['personnelIds'] as List<dynamic>?)
+      staffIds: (json['staffIds'] as List<dynamic>?)
               ?.map((e) => EntityId.fromJson((e as Map<String, dynamic>).map(
                     (k, e) => MapEntry(k, e as Object),
                   )))
               .toList() ??
           const [],
-      serviceCategories: (json['serviceCategories'] as List<dynamic>?)
+      services: (json['services'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      metadata: (json['metadata'] as Map<String, dynamic>?)?.map(
+      meta: (json['meta'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as Object),
           ) ??
           const {},
-      additionalInfo: (json['additionalInfo'] as Map<String, dynamic>?)?.map(
+      customData: (json['customData'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as Object),
       ),
-      qualifications: (json['qualifications'] as Map<String, dynamic>?)?.map(
+      certifications: (json['certifications'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as Object),
           ) ??
           const {},
@@ -183,11 +181,11 @@ _$VendorImpl _$$VendorImplFromJson(Map<String, dynamic> json) => _$VendorImpl(
 Map<String, dynamic> _$$VendorImplToJson(_$VendorImpl instance) =>
     <String, dynamic>{
       'contact': instance.contact,
-      'personnelIds': instance.personnelIds,
-      'serviceCategories': instance.serviceCategories,
-      'metadata': instance.metadata,
-      'additionalInfo': instance.additionalInfo,
-      'qualifications': instance.qualifications,
+      'staffIds': instance.staffIds,
+      'services': instance.services,
+      'meta': instance.meta,
+      'customData': instance.customData,
+      'certifications': instance.certifications,
     };
 
 _$PersonnelImpl _$$PersonnelImplFromJson(Map<String, dynamic> json) =>
@@ -198,21 +196,19 @@ _$PersonnelImpl _$$PersonnelImplFromJson(Map<String, dynamic> json) =>
         (k, e) => MapEntry(k, e as Object),
       )),
       skillLevel: (json['skillLevel'] as num).toInt(),
-      position: json['position'] as String?,
-      certifications: (json['certifications'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
-      specializations: (json['specializations'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
-      contactNumber: json['contactNumber'] as String?,
+      role: json['role'] as String?,
+      certs:
+          (json['certs'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+              const [],
+      specs:
+          (json['specs'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+              const [],
+      phone: json['phone'] as String?,
       email: json['email'] as String?,
-      additionalInfo: (json['additionalInfo'] as Map<String, dynamic>?)?.map(
+      customData: (json['customData'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as Object),
       ),
-      metadata: (json['metadata'] as Map<String, dynamic>?)?.map(
+      meta: (json['meta'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as Object),
           ) ??
           const {},
@@ -220,11 +216,10 @@ _$PersonnelImpl _$$PersonnelImplFromJson(Map<String, dynamic> json) =>
             (k, e) => MapEntry(k, e as Object),
           ) ??
           const {},
-      certificationDates:
-          (json['certificationDates'] as Map<String, dynamic>?)?.map(
-                (k, e) => MapEntry(k, DateTime.parse(e as String)),
-              ) ??
-              const {},
+      certDates: (json['certDates'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(k, DateTime.parse(e as String)),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$$PersonnelImplToJson(_$PersonnelImpl instance) =>
@@ -232,14 +227,14 @@ Map<String, dynamic> _$$PersonnelImplToJson(_$PersonnelImpl instance) =>
       'name': instance.name,
       'vendorId': instance.vendorId,
       'skillLevel': instance.skillLevel,
-      'position': instance.position,
-      'certifications': instance.certifications,
-      'specializations': instance.specializations,
-      'contactNumber': instance.contactNumber,
+      'role': instance.role,
+      'certs': instance.certs,
+      'specs': instance.specs,
+      'phone': instance.phone,
       'email': instance.email,
-      'additionalInfo': instance.additionalInfo,
-      'metadata': instance.metadata,
+      'customData': instance.customData,
+      'meta': instance.meta,
       'schedule': instance.schedule,
-      'certificationDates': instance.certificationDates
-          .map((k, e) => MapEntry(k, e.toIso8601String())),
+      'certDates':
+          instance.certDates.map((k, e) => MapEntry(k, e.toIso8601String())),
     };
