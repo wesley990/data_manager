@@ -20,20 +20,22 @@ DomainEvent _$DomainEventFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$DomainEvent {
+// Core event data
   EventId get id => throw _privateConstructorUsedError;
   EntityId get entityId => throw _privateConstructorUsedError;
   String get eventType => throw _privateConstructorUsedError;
   DateTime get timestamp => throw _privateConstructorUsedError;
   UserAction get initiator => throw _privateConstructorUsedError;
-  Map<String, Object> get changes => throw _privateConstructorUsedError;
+  Map<String, Object> get changes =>
+      throw _privateConstructorUsedError; // Entity context
   String? get entityType => throw _privateConstructorUsedError;
-  EntityId? get aggregateId => throw _privateConstructorUsedError;
+  EntityId? get aggregateId => throw _privateConstructorUsedError; // Metadata
   Map<String, Object>? get metadata => throw _privateConstructorUsedError;
   bool get isAsync => throw _privateConstructorUsedError;
-  List<String> get tags => throw _privateConstructorUsedError;
+  List<String> get tags => throw _privateConstructorUsedError; // Event chain
   EventId? get correlationId => throw _privateConstructorUsedError;
   EventId? get causationId => throw _privateConstructorUsedError;
-  int get version => throw _privateConstructorUsedError;
+  int get version => throw _privateConstructorUsedError; // Status
   String? get status => throw _privateConstructorUsedError;
 
   /// Serializes this DomainEvent to a JSON map.
@@ -380,7 +382,7 @@ class __$$DomainEventImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$DomainEventImpl implements _DomainEvent {
+class _$DomainEventImpl extends _DomainEvent {
   const _$DomainEventImpl(
       {required this.id,
       required this.entityId,
@@ -391,19 +393,21 @@ class _$DomainEventImpl implements _DomainEvent {
       this.entityType,
       this.aggregateId,
       final Map<String, Object>? metadata,
-      this.isAsync = false,
-      final List<String> tags = const [],
+      this.isAsync = EventDefaults.isAsync,
+      final List<String> tags = EventDefaults.tags,
       this.correlationId,
       this.causationId,
-      this.version = 0,
+      this.version = EventDefaults.version,
       this.status})
       : _changes = changes,
         _metadata = metadata,
-        _tags = tags;
+        _tags = tags,
+        super._();
 
   factory _$DomainEventImpl.fromJson(Map<String, dynamic> json) =>
       _$$DomainEventImplFromJson(json);
 
+// Core event data
   @override
   final EventId id;
   @override
@@ -422,11 +426,14 @@ class _$DomainEventImpl implements _DomainEvent {
     return EqualUnmodifiableMapView(_changes);
   }
 
+// Entity context
   @override
   final String? entityType;
   @override
   final EntityId? aggregateId;
+// Metadata
   final Map<String, Object>? _metadata;
+// Metadata
   @override
   Map<String, Object>? get metadata {
     final value = _metadata;
@@ -448,6 +455,7 @@ class _$DomainEventImpl implements _DomainEvent {
     return EqualUnmodifiableListView(_tags);
   }
 
+// Event chain
   @override
   final EventId? correlationId;
   @override
@@ -455,6 +463,7 @@ class _$DomainEventImpl implements _DomainEvent {
   @override
   @JsonKey()
   final int version;
+// Status
   @override
   final String? status;
 
@@ -529,7 +538,7 @@ class _$DomainEventImpl implements _DomainEvent {
   }
 }
 
-abstract class _DomainEvent implements DomainEvent {
+abstract class _DomainEvent extends DomainEvent {
   const factory _DomainEvent(
       {required final EventId id,
       required final EntityId entityId,
@@ -546,10 +555,12 @@ abstract class _DomainEvent implements DomainEvent {
       final EventId? causationId,
       final int version,
       final String? status}) = _$DomainEventImpl;
+  const _DomainEvent._() : super._();
 
   factory _DomainEvent.fromJson(Map<String, dynamic> json) =
       _$DomainEventImpl.fromJson;
 
+// Core event data
   @override
   EventId get id;
   @override
@@ -561,23 +572,23 @@ abstract class _DomainEvent implements DomainEvent {
   @override
   UserAction get initiator;
   @override
-  Map<String, Object> get changes;
+  Map<String, Object> get changes; // Entity context
   @override
   String? get entityType;
   @override
-  EntityId? get aggregateId;
+  EntityId? get aggregateId; // Metadata
   @override
   Map<String, Object>? get metadata;
   @override
   bool get isAsync;
   @override
-  List<String> get tags;
+  List<String> get tags; // Event chain
   @override
   EventId? get correlationId;
   @override
   EventId? get causationId;
   @override
-  int get version;
+  int get version; // Status
   @override
   String? get status;
 

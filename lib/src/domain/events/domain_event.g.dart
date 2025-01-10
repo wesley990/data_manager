@@ -33,10 +33,10 @@ _$DomainEventImpl _$$DomainEventImplFromJson(Map<String, dynamic> json) =>
       metadata: (json['metadata'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as Object),
       ),
-      isAsync: json['isAsync'] as bool? ?? false,
+      isAsync: json['isAsync'] as bool? ?? EventDefaults.isAsync,
       tags:
           (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-              const [],
+              EventDefaults.tags,
       correlationId: json['correlationId'] == null
           ? null
           : EventId.fromJson(
@@ -48,7 +48,7 @@ _$DomainEventImpl _$$DomainEventImplFromJson(Map<String, dynamic> json) =>
           : EventId.fromJson((json['causationId'] as Map<String, dynamic>).map(
               (k, e) => MapEntry(k, e as Object),
             )),
-      version: (json['version'] as num?)?.toInt() ?? 0,
+      version: (json['version'] as num?)?.toInt() ?? EventDefaults.version,
       status: json['status'] as String?,
     );
 

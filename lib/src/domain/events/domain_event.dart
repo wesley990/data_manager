@@ -5,50 +5,55 @@ import 'package:data_manager/data_manager.dart';
 part 'domain_event.freezed.dart';
 part 'domain_event.g.dart';
 
+/// System-wide event defaults
+abstract class EventDefaults {
+  static const version = 0;
+  static const isAsync = false;
+  static const tags = <String>[];
+}
+
+/// Event limits for validation
+abstract class EventLimits {
+  static const maxChanges = 1000;
+  static const maxMetadata = 100;
+  static const maxTags = 50;
+}
+
 @freezed
 class DomainEvent with _$DomainEvent {
+  const DomainEvent._();
+
   const factory DomainEvent({
+    // Core event data
     required EventId id,
     required EntityId entityId,
     required String eventType,
     required DateTime timestamp,
     required UserAction initiator,
     required Map<String, Object> changes,
+    
+    // Entity context
     String? entityType,
     EntityId? aggregateId,
+    
+    // Metadata
     Map<String, Object>? metadata,
-    @Default(false) bool isAsync,
-    @Default([]) List<String> tags,
+    @Default(EventDefaults.isAsync) bool isAsync,
+    @Default(EventDefaults.tags) List<String> tags,
+    
+    // Event chain
     EventId? correlationId,
     EventId? causationId,
-    @Default(0) int version,
+    @Default(EventDefaults.version) int version,
+    
+    // Status
     String? status,
   }) = _DomainEvent;
 
   factory DomainEvent.fromJson(Map<String, Object> json) =>
       _$DomainEventFromJson(json);
 
-  /// Create from user action
-  factory DomainEvent.fromUserAction({
-    required EventId id,
-    required EntityId entityId,
-    required String eventType,
-    required UserAction action,
-    required Map<String, Object> changes,
-    Map<String, Object>? metadata,
-  }) {
-    return DomainEvent(
-      id: id,
-      entityId: entityId,
-      eventType: eventType,
-      timestamp: action.timestamp,
-      initiator: action,
-      changes: changes,
-      metadata: metadata,
-    );
-  }
-
-  /// Create entity creation event
+  // Entity lifecycle events
   factory DomainEvent.entityCreated({
     required EventId id,
     required EntityId entityId,
@@ -67,7 +72,6 @@ class DomainEvent with _$DomainEvent {
     );
   }
 
-  /// Create entity update event
   factory DomainEvent.entityUpdated({
     required EventId id,
     required EntityId entityId,
@@ -86,7 +90,7 @@ class DomainEvent with _$DomainEvent {
     );
   }
 
-  /// Create relationship change event
+  // Relationship events
   factory DomainEvent.relationshipChanged({
     required EventId id,
     required EntityId entityId,
@@ -107,7 +111,7 @@ class DomainEvent with _$DomainEvent {
     );
   }
 
-  /// Create status change event
+  // Status events
   factory DomainEvent.statusChanged({
     required EventId id,
     required EntityId entityId,
@@ -131,7 +135,7 @@ class DomainEvent with _$DomainEvent {
     );
   }
 
-  /// Create hierarchy change event
+  // Hierarchy events
   factory DomainEvent.hierarchyChanged({
     required EventId id,
     required EntityId entityId,
@@ -154,7 +158,7 @@ class DomainEvent with _$DomainEvent {
     );
   }
 
-  /// Create validation event
+  // Validation events
   factory DomainEvent.validationPerformed({
     required EventId id,
     required EntityId entityId,
@@ -177,49 +181,50 @@ class DomainEvent with _$DomainEvent {
   }
 }
 
+// Event type classifications
 enum EventType {
-  // Core Entity Events
+  // Entity lifecycle
   created,
   updated,
   deleted,
   validated,
 
-  // Status & Lock Events
+  // Status management
   locked,
   unlocked,
   statusChanged,
 
-  // Workflow Events
+  // Workflow
   workflowChanged,
   workflowTransitioned,
   workflowStepCompleted,
   workflowStepRejected,
 
-  // Relationship Events
+  // Relationships
   relationshipChanged,
   relationshipAdded,
   relationshipRemoved,
 
-  // Hierarchy Events
+  // Hierarchy
   hierarchyChanged,
   hierarchyParentChanged,
   hierarchyChildAdded,
   hierarchyChildRemoved,
 
-  // Metadata Events
+  // Metadata
   metadataChanged,
   tagged,
   untagged,
 
-  // Access Control Events
+  // Access control
   accessGranted,
   accessRevoked,
 
-  // Basic Sync Events
+  // Synchronization
   syncStarted,
   syncCompleted,
 
-  // Version Events
+  // Versioning
   versionCreated,
   versionMerged
 }
