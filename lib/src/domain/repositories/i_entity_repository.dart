@@ -5,57 +5,37 @@ import 'package:flutter/material.dart';
 
 // Repository interface
 abstract class IEntityRepository<T extends Object> {
-  // Core CRUD
-  Future<BaseEntity<T>> operate(OperationType type, EntityId id,
-      [Map<String, Object>? params]);
-  Future<List<BaseEntity<T>>> batchOperate(
-      OperationType type, List<EntityId> ids,
-      [Map<String, Object>? params]);
+  // Core operations
+  Future<BaseEntity<T>> operate(OperationType type, EntityId id, [Map<String, Object>? params]);
+  Future<List<BaseEntity<T>>> batchOperate(OperationType type, List<EntityId> ids, [Map<String, Object>? params]);
 
   // Query operations
   Future<PagedResult<BaseEntity<T>>> query(QueryParams params);
   Stream<BaseEntity<T>> watchEntity(EntityId id);
   Stream<List<BaseEntity<T>>> watchQuery(QueryParams params);
 
-  // Entity validation
+  // Validation & repair
   Future<ValidationResult> validateBatch(List<EntityId> ids);
   Future<RepairReport> repair(EntityId id, RepairOptions options);
 
-  // Hierarchy operations
+  // Hierarchy & relationships
   Future<List<BaseEntity<T>>> getHierarchy(EntityId id, HierarchyParams params);
-
-  // Sync operations
-  Future<SyncResult> sync(SyncMode mode, [SyncParams? params]);
-  Stream<SyncProgress> syncProgress();
-  Future<void> pauseSync();
-  Future<void> resumeSync();
-
-  // Version control
-  Future<BaseEntity<T>> getVersion(EntityId id, String version);
+  Future<void> addRelation(EntityId sourceId, String type, EntityId targetId);
+  Future<void> removeRelation(EntityId sourceId, String type, EntityId targetId);
+  Future<List<EntityRelation>> getRelations(EntityId id, {String? type});
+  Stream<List<EntityRelation>> watchRelations(EntityId id);
 
   // Transaction support
   Future<R> transaction<R>(Future<R> Function() operation);
 
-  // Lock Management
+  // Lock management
   Future<bool> acquireLock(EntityId id, UserAction user, {Duration? timeout});
   Future<bool> releaseLock(EntityId id, UserAction user);
   Future<bool> extendLock(EntityId id, UserAction user, Duration extension);
   Future<bool> forceLock(EntityId id, UserAction admin);
   Stream<LockState> watchLockState(EntityId id);
 
-  // History & Audit
-  Future<List<UserAction>> getModificationHistory(EntityId id);
-  Future<List<UserAction>> getAccessHistory(EntityId id);
-  Future<EntityAuditReport> getAuditReport(EntityId id, DateTimeRange period);
-
-  // Relationship Management
-  Future<void> addRelation(EntityId sourceId, String type, EntityId targetId);
-  Future<void> removeRelation(
-      EntityId sourceId, String type, EntityId targetId);
-  Future<List<EntityRelation>> getRelations(EntityId id, {String? type});
-  Stream<List<EntityRelation>> watchRelations(EntityId id);
-
-  // Cache Management
+  // Cache management
   Future<void> invalidateCache(EntityId id);
   Future<void> refreshCache();
 }

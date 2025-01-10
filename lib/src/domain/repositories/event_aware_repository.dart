@@ -23,7 +23,7 @@ abstract class EventAwareRepository<T extends BaseEntity>
 
     final action = UserAction(
         uid: 'system',
-        timestamp: DateTime.now()); // Create default UserAction instance
+        timestamp: DateTime.now());
     final event = _createEvent(type, id, params, action);
 
     final eventValidation = await eventStore.validateEvent(event);
@@ -57,9 +57,11 @@ abstract class EventAwareRepository<T extends BaseEntity>
     throw UnimplementedError();
   }
 
-  // Protected method to be implemented by subclasses
+  // Protected methods to be implemented
   Future<T> loadEntity(EntityId id);
-
+  Future<Map<String, BaseEntity>> _loadRelatedEntities(EntityId id);
+  
+  // Event management methods
   Stream<DomainEvent> watchEntityEvents(EntityId id) =>
       eventStore.watchEvents(id);
 
@@ -86,9 +88,21 @@ abstract class EventAwareRepository<T extends BaseEntity>
     return result!;
   }
 
-  Future<Map<String, BaseEntity>> _loadRelatedEntities(EntityId id) async {
-    // Implement in concrete repository classes
-    return {};
+  DomainEvent _createEvent(
+    OperationType type,
+    EntityId id,
+    Map<String, Object>? params,
+    UserAction initiator,
+  ) {
+    return DomainEvent(
+      id: EventId(const Uuid().v4()),
+      entityId: id,
+      eventType: type.name,
+      timestamp: DateTime.now(),
+      initiator: initiator,
+      changes: params ?? {},
+      entityType: T.toString(),
+    );
   }
 
   @override
@@ -99,7 +113,7 @@ abstract class EventAwareRepository<T extends BaseEntity>
   ]) async {
     final action = UserAction(
         uid: 'system',
-        timestamp: DateTime.now()); // Create default UserAction instance
+        timestamp: DateTime.now());
     final events =
         ids.map((id) => _createEvent(type, id, params, action)).toList();
 
@@ -143,22 +157,4 @@ abstract class EventAwareRepository<T extends BaseEntity>
   ]);
 
   Future<RepairReport> _executeRepair(EntityId id, RepairOptions options);
-
-  // Add helper method for creating events:
-  DomainEvent _createEvent(
-    OperationType type,
-    EntityId id,
-    Map<String, Object>? params,
-    UserAction action,
-  ) {
-    return DomainEvent(
-      id: EventId(const Uuid().v4()),
-      entityId: id,
-      eventType: type.name,
-      timestamp: DateTime.now(),
-      initiator: action,
-      changes: params ?? {},
-      entityType: T.toString(),
-    );
-  }
 }

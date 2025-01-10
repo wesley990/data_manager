@@ -15,34 +15,34 @@ abstract class AggregateRepositoryBase<T extends BaseEntity> {
 
   Future<void> save(T aggregate) async {
     // Validate aggregate state
-    final context = await buildValidationContext(aggregate);
+    final context = await _buildValidationContext(aggregate);
     final validationResult = await _validator.validate(aggregate, context);
 
     if (!validationResult.isValid) {
       throw DomainValidationException(validationResult);
     }
 
-    // Save and publish events
-    await saveAggregate(aggregate);
-    await _publishEvents(aggregate.eventPending);
+    await _saveAggregate(aggregate);
+    await _publishPendingEvents(aggregate.pendingEvents);
   }
 
   // Template methods
   Future<T> reconstituteFromEvents(List<DomainEvent> events);
-  Future<void> saveAggregate(T aggregate);
+  Future<void> _saveAggregate(T aggregate);
 
-  Future<ValidationContext> buildValidationContext(T aggregate) async {
+  Future<ValidationContext> _buildValidationContext(T aggregate) async {
     final relatedEntities = await loadRelatedEntities(aggregate);
     return ValidationContext(
       relatedEntities: relatedEntities,
       useCache: true,
+      data: aggregate.meta,
     );
   }
 
   Future<Map<String, BaseEntity>> loadRelatedEntities(T aggregate);
 
-  Future<void> _publishEvents(List<String> pendingEventIds) async {
-    for (final eventId in pendingEventIds) {
+  Future<void> _publishPendingEvents(List<String> eventIds) async {
+    for (final eventId in eventIds) {
       final event = await _eventStore.getEvents(EntityId(eventId));
       if (event.isNotEmpty) {
         await _eventStore.store(event.first);
