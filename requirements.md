@@ -21,13 +21,17 @@ The Data Manager package provides a robust entity management system with advance
      - Relationship metadata support
      - Relationship versioning
 
-2. ** Extensions**
+2. **Extensions**
    - Path Management must be consolidated into a single PathManagement extension
-   - Version and Lock Management must be  in ConcurrencyControl
+   - Version Management must be consolidated in ConcurrencyControl, focused solely on version vectors and conflict detection
    - History Tracking must be consolidated in TrackingManagement
-   - Lock Management must be  in LockManagement
+   - Lock Management must be consolidated in LockManagement extension, handling all locking mechanisms
    - AI/LLM/RAG/CAG capabilities must be consolidated in AIIntegration
-   - Relationship Management must be consolidated in RelationshipManagement extension
+   - All relationship operations must be consolidated in RelationshipManagement extension
+   - Extension boundaries must be clearly defined with no overlapping responsibilities
+   - Extensions must provide clear, well-documented public interfaces
+   - Extensions must follow single responsibility principle
+   - Extensions must implement standard lifecycle hooks for consistent behavior
 
 3. **Version Control**
    - The system must support version control for entities, including schema and data versions.
@@ -65,8 +69,11 @@ The Data Manager package provides a robust entity management system with advance
    - Entities must track domain events and support event-driven updates.
 
 9. **Concurrency Control**
-   - The system must ensure data consistency during concurrent updates.
-   - Entities must support conflict detection and resolution mechanisms.
+   - The system must implement version vectors for conflict detection
+   - The system must provide conflict resolution mechanisms
+   - Version management must be strictly separated from lock management
+   - The system must maintain version history and change tracking
+   - The system must support distributed conflict detection
 
 10. **Graph Traversal**
    - The system must provide methods for traversing entity relationships.
@@ -113,6 +120,27 @@ The Data Manager package provides a robust entity management system with advance
     - The system must collect performance metrics
     - The system must implement health monitoring
     - The system must provide anomaly detection and reporting
+
+17. **Extension Management** 
+    - The system must provide a unified extension registration mechanism
+    - The system must support extension lifecycle management
+    - The system must handle extension dependencies
+    - The system must provide extension configuration management
+    - The system must support extension versioning
+    - The system must implement extension health monitoring
+    - The system must provide extension metrics collection
+
+18. **Relationship Management**
+    - The system must provide centralized relationship operations
+    - The system must implement relationship validation rules
+    - The system must maintain bidirectional relationship consistency
+    - The system must support relationship metadata
+    - The system must handle relationship lifecycle events
+    - The system must provide relationship query capabilities
+    - The system must support relationship versioning
+    - The system must implement relationship caching
+    - The system must handle relationship conflict resolution
+    - The system must support bulk relationship operations
 
 ### Non-Functional Requirements
 
@@ -332,6 +360,31 @@ The Data Manager package provides a robust entity management system with advance
       - The system maintains path uniqueness
       - The system enforces path format standards
       - The system validates parent-child relationships
+
+28. **As a developer, I want clear extension boundaries, so that I can avoid functionality overlap.**
+    - Acceptance Criteria:
+      - Each extension has clearly documented responsibilities
+      - No duplicate functionality exists across extensions
+      - Extensions communicate through well-defined interfaces
+      - Extension dependencies are explicitly declared
+      - Extension configuration is centrally managed
+
+29. **As a developer, I want consolidated lock management, so that I can ensure consistent locking behavior.**
+    - Acceptance Criteria:
+      - All locking operations are handled by LockManagement extension
+      - Lock acquisition and release are atomic operations
+      - Lock timeouts are configurable
+      - Lock conflicts are properly detected and handled
+      - Dead lock detection is implemented
+      - Lock status is queryable
+
+30. **As a system architect, I want clear extension interfaces, so that I can ensure proper integration.**
+    - Acceptance Criteria:
+      - Extensions provide clear public APIs
+      - Extension dependencies are minimal and explicit
+      - Extensions support standard lifecycle hooks
+      - Extensions implement health check interfaces
+      - Extensions provide metrics endpoints
 
 ## Conclusion
 
