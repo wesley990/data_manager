@@ -12,6 +12,14 @@ The Data Manager package provides a robust entity management system with advance
    - The system must support the creation, cloning, and deletion of entities.
    - Entities must have unique identifiers and support hierarchical relationships.
    - The system must provide methods for validating entity paths and relationships.
+   - The system must provide centralized relationship management including:
+     - Relationship validation rules
+     - Relationship type constraints
+     - Bidirectional relationship consistency
+     - Relationship lifecycle management
+     - Orphaned relationship cleanup
+     - Relationship metadata support
+     - Relationship versioning
 
 2. ** Extensions**
    - Path Management must be consolidated into a single PathManagement extension
@@ -19,6 +27,7 @@ The Data Manager package provides a robust entity management system with advance
    - History Tracking must be consolidated in TrackingManagement
    - Lock Management must be  in LockManagement
    - AI/LLM/RAG/CAG capabilities must be consolidated in AIIntegration
+   - Relationship Management must be consolidated in RelationshipManagement extension
 
 3. **Version Control**
    - The system must support version control for entities, including schema and data versions.
@@ -67,6 +76,14 @@ The Data Manager package provides a robust entity management system with advance
     - The system must enforce path constraints (max length: 1024 chars, segment length: 255 chars)
     - The system must provide path normalization and validation
     - The system must support materialized paths for efficient hierarchical traversal
+    - The system must provide centralized path validation including:
+      - Path format standardization
+      - Reserved character handling
+      - Circular reference detection
+      - Path uniqueness validation
+      - Parent-child relationship validation
+      - Path length constraints enforcement
+      - Path segment validation
 
 12. **RAG Integration**
     - The system must support Retrieval Augmented Generation capabilities
@@ -297,6 +314,24 @@ The Data Manager package provides a robust entity management system with advance
       - The system implements aggregate roots
       - The system maintains bounded contexts
       - The system supports domain events
+
+26. **As a developer, I want centralized relationship management, so that I can ensure consistent relationship handling.**
+    - Acceptance Criteria:
+      - The system provides a unified API for relationship operations
+      - The system validates relationship constraints consistently
+      - The system maintains bidirectional relationship integrity
+      - The system handles relationship lifecycle events
+      - The system supports relationship metadata
+      - The system versions relationship changes
+
+27. **As a developer, I want consolidated path validation, so that I can ensure path integrity across the system.**
+    - Acceptance Criteria:
+      - The system provides unified path validation rules
+      - The system handles path edge cases consistently
+      - The system detects and prevents invalid paths
+      - The system maintains path uniqueness
+      - The system enforces path format standards
+      - The system validates parent-child relationships
 
 ## Conclusion
 
