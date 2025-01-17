@@ -28,7 +28,7 @@ abstract class EntityDefaults {
   static const stage = WorkflowStage.draft;
   static const isPublic = true;
   static const accessCount = 0;
-  
+
   // Path related
   static const pathSeparator = '/';
   static const encodedPathSeparator = '%2F';
@@ -46,7 +46,6 @@ abstract class LockConfig {
 @Freezed(genericArgumentFactories: true)
 class BaseEntity<T extends Object> with _$BaseEntity<T> {
   const BaseEntity._();
-  static Clock clock = SystemClock();
 
   const factory BaseEntity({
     // Identity & Core Data
@@ -128,7 +127,7 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
 
   // Factory methods
   factory BaseEntity.fromJson(
-      Map<String, Object> json, T Function(Object? json) fromJsonT) =>
+          Map<String, Object> json, T Function(Object? json) fromJsonT) =>
       _$BaseEntityFromJson(json, fromJsonT);
 
   // Core getters
@@ -136,7 +135,7 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
   String get type => T.toString();
   bool get isTreeRoot => treePath == null || treePath == id.value;
   bool get isTreeLeaf => !refs.containsKey('children');
-  
+
   // Utility methods
   dynamic getMeta(String key) => meta[key];
   Map<EntityId, String> get ancestorNames => Map.fromEntries(
