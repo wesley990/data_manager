@@ -1,5 +1,4 @@
 import 'package:data_manager/data_manager.dart';
-import 'package:data_manager/src/domain/core/core_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'base_entity.freezed.dart';
