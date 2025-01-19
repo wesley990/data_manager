@@ -16,3 +16,6 @@ export 'src/domain/validation/cache/validation_cache.dart';
 export 'package:data_manager/src/domain/repositories/i_entity_repository.dart';
 export 'package:data_manager/src/domain/repositories/i_event_store.dart';
 export 'package:data_manager/src/domain/repositories/aggregate_repository_base.dart';
+export 'src/domain/value_objects/user_action.dart';
+export 'src/domain/core/core_entity.dart';
+export 'src/domain/core/entity_config.dart';

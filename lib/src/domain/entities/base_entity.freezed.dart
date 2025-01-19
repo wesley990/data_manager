@@ -14,22 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-BaseEntity<T> _$BaseEntityFromJson<T extends Object>(
-    Map<String, dynamic> json, T Function(Object?) fromJsonT) {
-  return _BaseEntity<T>.fromJson(json, fromJsonT);
-}
-
 /// @nodoc
 mixin _$BaseEntity<T extends Object> {
-// Identity & Core Data
-  EntityId get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-  String? get description => throw _privateConstructorUsedError;
-  DateTime get createdAt => throw _privateConstructorUsedError;
-  DateTime get updatedAt => throw _privateConstructorUsedError;
-  String get schemaVer => throw _privateConstructorUsedError;
-  EntityStatus get status => throw _privateConstructorUsedError;
-  Map<String, Object> get meta =>
+// Core entity data
+  CoreEntity<T> get core =>
       throw _privateConstructorUsedError; // Hierarchical Structure
   String? get treePath => throw _privateConstructorUsedError;
   int get treeDepth => throw _privateConstructorUsedError;
@@ -47,9 +35,6 @@ mixin _$BaseEntity<T extends Object> {
   int get treeVersion => throw _privateConstructorUsedError;
   DateTime? get treeLastUpdate =>
       throw _privateConstructorUsedError; // Access Control & Security
-  UserAction get owner => throw _privateConstructorUsedError;
-  UserAction get creator => throw _privateConstructorUsedError;
-  UserAction get modifier => throw _privateConstructorUsedError;
   UserAction? get lastAccessor => throw _privateConstructorUsedError;
   UserAction? get lockOwner => throw _privateConstructorUsedError;
   DateTime? get lockExpiry => throw _privateConstructorUsedError;
@@ -92,10 +77,6 @@ mixin _$BaseEntity<T extends Object> {
   DateTime? get aiLastRun => throw _privateConstructorUsedError;
   String? get aiVer => throw _privateConstructorUsedError;
 
-  /// Serializes this BaseEntity to a JSON map.
-  Map<String, dynamic> toJson(Object? Function(T) toJsonT) =>
-      throw _privateConstructorUsedError;
-
   /// Create a copy of BaseEntity
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -110,14 +91,7 @@ abstract class $BaseEntityCopyWith<T extends Object, $Res> {
       _$BaseEntityCopyWithImpl<T, $Res, BaseEntity<T>>;
   @useResult
   $Res call(
-      {EntityId id,
-      String name,
-      String? description,
-      DateTime createdAt,
-      DateTime updatedAt,
-      String schemaVer,
-      EntityStatus status,
-      Map<String, Object> meta,
+      {CoreEntity<T> core,
       String? treePath,
       int treeDepth,
       Map<String, List<EntityId>> refs,
@@ -132,9 +106,6 @@ abstract class $BaseEntityCopyWith<T extends Object, $Res> {
       String? treeLevel,
       int treeVersion,
       DateTime? treeLastUpdate,
-      UserAction owner,
-      UserAction creator,
-      UserAction modifier,
       UserAction? lastAccessor,
       UserAction? lockOwner,
       DateTime? lockExpiry,
@@ -173,11 +144,8 @@ abstract class $BaseEntityCopyWith<T extends Object, $Res> {
       DateTime? aiLastRun,
       String? aiVer});
 
-  $EntityIdCopyWith<$Res> get id;
+  $CoreEntityCopyWith<T, $Res> get core;
   $EntityIdCopyWith<$Res>? get parentId;
-  $UserActionCopyWith<$Res> get owner;
-  $UserActionCopyWith<$Res> get creator;
-  $UserActionCopyWith<$Res> get modifier;
   $UserActionCopyWith<$Res>? get lastAccessor;
   $UserActionCopyWith<$Res>? get lockOwner;
   $UserActionCopyWith<$Res>? get remover;
@@ -198,14 +166,7 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? description = freezed,
-    Object? createdAt = null,
-    Object? updatedAt = null,
-    Object? schemaVer = null,
-    Object? status = null,
-    Object? meta = null,
+    Object? core = null,
     Object? treePath = freezed,
     Object? treeDepth = null,
     Object? refs = null,
@@ -220,9 +181,6 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
     Object? treeLevel = freezed,
     Object? treeVersion = null,
     Object? treeLastUpdate = freezed,
-    Object? owner = null,
-    Object? creator = null,
-    Object? modifier = null,
     Object? lastAccessor = freezed,
     Object? lockOwner = freezed,
     Object? lockExpiry = freezed,
@@ -262,38 +220,10 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
     Object? aiVer = freezed,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as EntityId,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: freezed == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String?,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      schemaVer: null == schemaVer
-          ? _value.schemaVer
-          : schemaVer // ignore: cast_nullable_to_non_nullable
-              as String,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as EntityStatus,
-      meta: null == meta
-          ? _value.meta
-          : meta // ignore: cast_nullable_to_non_nullable
-              as Map<String, Object>,
+      core: null == core
+          ? _value.core
+          : core // ignore: cast_nullable_to_non_nullable
+              as CoreEntity<T>,
       treePath: freezed == treePath
           ? _value.treePath
           : treePath // ignore: cast_nullable_to_non_nullable
@@ -350,18 +280,6 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
           ? _value.treeLastUpdate
           : treeLastUpdate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      owner: null == owner
-          ? _value.owner
-          : owner // ignore: cast_nullable_to_non_nullable
-              as UserAction,
-      creator: null == creator
-          ? _value.creator
-          : creator // ignore: cast_nullable_to_non_nullable
-              as UserAction,
-      modifier: null == modifier
-          ? _value.modifier
-          : modifier // ignore: cast_nullable_to_non_nullable
-              as UserAction,
       lastAccessor: freezed == lastAccessor
           ? _value.lastAccessor
           : lastAccessor // ignore: cast_nullable_to_non_nullable
@@ -517,9 +435,9 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $EntityIdCopyWith<$Res> get id {
-    return $EntityIdCopyWith<$Res>(_value.id, (value) {
-      return _then(_value.copyWith(id: value) as $Val);
+  $CoreEntityCopyWith<T, $Res> get core {
+    return $CoreEntityCopyWith<T, $Res>(_value.core, (value) {
+      return _then(_value.copyWith(core: value) as $Val);
     });
   }
 
@@ -534,36 +452,6 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
 
     return $EntityIdCopyWith<$Res>(_value.parentId!, (value) {
       return _then(_value.copyWith(parentId: value) as $Val);
-    });
-  }
-
-  /// Create a copy of BaseEntity
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $UserActionCopyWith<$Res> get owner {
-    return $UserActionCopyWith<$Res>(_value.owner, (value) {
-      return _then(_value.copyWith(owner: value) as $Val);
-    });
-  }
-
-  /// Create a copy of BaseEntity
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $UserActionCopyWith<$Res> get creator {
-    return $UserActionCopyWith<$Res>(_value.creator, (value) {
-      return _then(_value.copyWith(creator: value) as $Val);
-    });
-  }
-
-  /// Create a copy of BaseEntity
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $UserActionCopyWith<$Res> get modifier {
-    return $UserActionCopyWith<$Res>(_value.modifier, (value) {
-      return _then(_value.copyWith(modifier: value) as $Val);
     });
   }
 
@@ -619,14 +507,7 @@ abstract class _$$BaseEntityImplCopyWith<T extends Object, $Res>
   @override
   @useResult
   $Res call(
-      {EntityId id,
-      String name,
-      String? description,
-      DateTime createdAt,
-      DateTime updatedAt,
-      String schemaVer,
-      EntityStatus status,
-      Map<String, Object> meta,
+      {CoreEntity<T> core,
       String? treePath,
       int treeDepth,
       Map<String, List<EntityId>> refs,
@@ -641,9 +522,6 @@ abstract class _$$BaseEntityImplCopyWith<T extends Object, $Res>
       String? treeLevel,
       int treeVersion,
       DateTime? treeLastUpdate,
-      UserAction owner,
-      UserAction creator,
-      UserAction modifier,
       UserAction? lastAccessor,
       UserAction? lockOwner,
       DateTime? lockExpiry,
@@ -683,15 +561,9 @@ abstract class _$$BaseEntityImplCopyWith<T extends Object, $Res>
       String? aiVer});
 
   @override
-  $EntityIdCopyWith<$Res> get id;
+  $CoreEntityCopyWith<T, $Res> get core;
   @override
   $EntityIdCopyWith<$Res>? get parentId;
-  @override
-  $UserActionCopyWith<$Res> get owner;
-  @override
-  $UserActionCopyWith<$Res> get creator;
-  @override
-  $UserActionCopyWith<$Res> get modifier;
   @override
   $UserActionCopyWith<$Res>? get lastAccessor;
   @override
@@ -713,14 +585,7 @@ class __$$BaseEntityImplCopyWithImpl<T extends Object, $Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? description = freezed,
-    Object? createdAt = null,
-    Object? updatedAt = null,
-    Object? schemaVer = null,
-    Object? status = null,
-    Object? meta = null,
+    Object? core = null,
     Object? treePath = freezed,
     Object? treeDepth = null,
     Object? refs = null,
@@ -735,9 +600,6 @@ class __$$BaseEntityImplCopyWithImpl<T extends Object, $Res>
     Object? treeLevel = freezed,
     Object? treeVersion = null,
     Object? treeLastUpdate = freezed,
-    Object? owner = null,
-    Object? creator = null,
-    Object? modifier = null,
     Object? lastAccessor = freezed,
     Object? lockOwner = freezed,
     Object? lockExpiry = freezed,
@@ -777,38 +639,10 @@ class __$$BaseEntityImplCopyWithImpl<T extends Object, $Res>
     Object? aiVer = freezed,
   }) {
     return _then(_$BaseEntityImpl<T>(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as EntityId,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: freezed == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String?,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      schemaVer: null == schemaVer
-          ? _value.schemaVer
-          : schemaVer // ignore: cast_nullable_to_non_nullable
-              as String,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as EntityStatus,
-      meta: null == meta
-          ? _value._meta
-          : meta // ignore: cast_nullable_to_non_nullable
-              as Map<String, Object>,
+      core: null == core
+          ? _value.core
+          : core // ignore: cast_nullable_to_non_nullable
+              as CoreEntity<T>,
       treePath: freezed == treePath
           ? _value.treePath
           : treePath // ignore: cast_nullable_to_non_nullable
@@ -865,18 +699,6 @@ class __$$BaseEntityImplCopyWithImpl<T extends Object, $Res>
           ? _value.treeLastUpdate
           : treeLastUpdate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      owner: null == owner
-          ? _value.owner
-          : owner // ignore: cast_nullable_to_non_nullable
-              as UserAction,
-      creator: null == creator
-          ? _value.creator
-          : creator // ignore: cast_nullable_to_non_nullable
-              as UserAction,
-      modifier: null == modifier
-          ? _value.modifier
-          : modifier // ignore: cast_nullable_to_non_nullable
-              as UserAction,
       lastAccessor: freezed == lastAccessor
           ? _value.lastAccessor
           : lastAccessor // ignore: cast_nullable_to_non_nullable
@@ -1030,17 +852,10 @@ class __$$BaseEntityImplCopyWithImpl<T extends Object, $Res>
 }
 
 /// @nodoc
-@JsonSerializable(genericArgumentFactories: true)
+
 class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
   const _$BaseEntityImpl(
-      {required this.id,
-      required this.name,
-      this.description,
-      required this.createdAt,
-      required this.updatedAt,
-      this.schemaVer = EntityDefaults.version,
-      this.status = EntityDefaults.status,
-      final Map<String, Object> meta = const {},
+      {required this.core,
       this.treePath,
       this.treeDepth = 0,
       final Map<String, List<EntityId>> refs = const {},
@@ -1055,9 +870,6 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
       this.treeLevel,
       this.treeVersion = 0,
       this.treeLastUpdate,
-      required this.owner,
-      required this.creator,
-      required this.modifier,
       this.lastAccessor,
       this.lockOwner,
       this.lockExpiry,
@@ -1095,8 +907,7 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
       final Map<String, Object> aiNotes = const {},
       this.aiLastRun,
       this.aiVer})
-      : _meta = meta,
-        _refs = refs,
+      : _refs = refs,
         _ancestors = ancestors,
         _childIds = childIds,
         _subPaths = subPaths,
@@ -1119,36 +930,9 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
         _aiNotes = aiNotes,
         super._();
 
-  factory _$BaseEntityImpl.fromJson(
-          Map<String, dynamic> json, T Function(Object?) fromJsonT) =>
-      _$$BaseEntityImplFromJson(json, fromJsonT);
-
-// Identity & Core Data
+// Core entity data
   @override
-  final EntityId id;
-  @override
-  final String name;
-  @override
-  final String? description;
-  @override
-  final DateTime createdAt;
-  @override
-  final DateTime updatedAt;
-  @override
-  @JsonKey()
-  final String schemaVer;
-  @override
-  @JsonKey()
-  final EntityStatus status;
-  final Map<String, Object> _meta;
-  @override
-  @JsonKey()
-  Map<String, Object> get meta {
-    if (_meta is EqualUnmodifiableMapView) return _meta;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_meta);
-  }
-
+  final CoreEntity<T> core;
 // Hierarchical Structure
   @override
   final String? treePath;
@@ -1224,12 +1008,6 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
   @override
   final DateTime? treeLastUpdate;
 // Access Control & Security
-  @override
-  final UserAction owner;
-  @override
-  final UserAction creator;
-  @override
-  final UserAction modifier;
   @override
   final UserAction? lastAccessor;
   @override
@@ -1428,7 +1206,7 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
 
   @override
   String toString() {
-    return 'BaseEntity<$T>(id: $id, name: $name, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, schemaVer: $schemaVer, status: $status, meta: $meta, treePath: $treePath, treeDepth: $treeDepth, refs: $refs, treeMaxDepth: $treeMaxDepth, ancestors: $ancestors, parentId: $parentId, childIds: $childIds, subPaths: $subPaths, ancestorMeta: $ancestorMeta, parentName: $parentName, searchPaths: $searchPaths, treeLevel: $treeLevel, treeVersion: $treeVersion, treeLastUpdate: $treeLastUpdate, owner: $owner, creator: $creator, modifier: $modifier, lastAccessor: $lastAccessor, lockOwner: $lockOwner, lockExpiry: $lockExpiry, remover: $remover, modHistory: $modHistory, accessLog: $accessLog, isPublic: $isPublic, accessCount: $accessCount, tags: $tags, labels: $labels, priority: $priority, stage: $stage, expiryDate: $expiryDate, syncMeta: $syncMeta, syncVer: $syncVer, searchIndex: $searchIndex, extraData: $extraData, eventVer: $eventVer, pendingEvents: $pendingEvents, eventMeta: $eventMeta, historyLimit: $historyLimit, dataVer: $dataVer, structVer: $structVer, lastVer: $lastVer, distLockId: $distLockId, distLockExpiry: $distLockExpiry, distLockNode: $distLockNode, lockMeta: $lockMeta, verVectors: $verVectors, lockTimeout: $lockTimeout, aiVectors: $aiVectors, aiScores: $aiScores, aiMeta: $aiMeta, aiTags: $aiTags, aiNotes: $aiNotes, aiLastRun: $aiLastRun, aiVer: $aiVer)';
+    return 'BaseEntity<$T>(core: $core, treePath: $treePath, treeDepth: $treeDepth, refs: $refs, treeMaxDepth: $treeMaxDepth, ancestors: $ancestors, parentId: $parentId, childIds: $childIds, subPaths: $subPaths, ancestorMeta: $ancestorMeta, parentName: $parentName, searchPaths: $searchPaths, treeLevel: $treeLevel, treeVersion: $treeVersion, treeLastUpdate: $treeLastUpdate, lastAccessor: $lastAccessor, lockOwner: $lockOwner, lockExpiry: $lockExpiry, remover: $remover, modHistory: $modHistory, accessLog: $accessLog, isPublic: $isPublic, accessCount: $accessCount, tags: $tags, labels: $labels, priority: $priority, stage: $stage, expiryDate: $expiryDate, syncMeta: $syncMeta, syncVer: $syncVer, searchIndex: $searchIndex, extraData: $extraData, eventVer: $eventVer, pendingEvents: $pendingEvents, eventMeta: $eventMeta, historyLimit: $historyLimit, dataVer: $dataVer, structVer: $structVer, lastVer: $lastVer, distLockId: $distLockId, distLockExpiry: $distLockExpiry, distLockNode: $distLockNode, lockMeta: $lockMeta, verVectors: $verVectors, lockTimeout: $lockTimeout, aiVectors: $aiVectors, aiScores: $aiScores, aiMeta: $aiMeta, aiTags: $aiTags, aiNotes: $aiNotes, aiLastRun: $aiLastRun, aiVer: $aiVer)';
   }
 
   @override
@@ -1436,18 +1214,7 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$BaseEntityImpl<T> &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt) &&
-            (identical(other.schemaVer, schemaVer) ||
-                other.schemaVer == schemaVer) &&
-            (identical(other.status, status) || other.status == status) &&
-            const DeepCollectionEquality().equals(other._meta, _meta) &&
+            (identical(other.core, core) || other.core == core) &&
             (identical(other.treePath, treePath) ||
                 other.treePath == treePath) &&
             (identical(other.treeDepth, treeDepth) ||
@@ -1473,10 +1240,6 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
                 other.treeVersion == treeVersion) &&
             (identical(other.treeLastUpdate, treeLastUpdate) ||
                 other.treeLastUpdate == treeLastUpdate) &&
-            (identical(other.owner, owner) || other.owner == owner) &&
-            (identical(other.creator, creator) || other.creator == creator) &&
-            (identical(other.modifier, modifier) ||
-                other.modifier == modifier) &&
             (identical(other.lastAccessor, lastAccessor) ||
                 other.lastAccessor == lastAccessor) &&
             (identical(other.lockOwner, lockOwner) ||
@@ -1538,18 +1301,10 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
             (identical(other.aiVer, aiVer) || other.aiVer == aiVer));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
-        id,
-        name,
-        description,
-        createdAt,
-        updatedAt,
-        schemaVer,
-        status,
-        const DeepCollectionEquality().hash(_meta),
+        core,
         treePath,
         treeDepth,
         const DeepCollectionEquality().hash(_refs),
@@ -1564,9 +1319,6 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
         treeLevel,
         treeVersion,
         treeLastUpdate,
-        owner,
-        creator,
-        modifier,
         lastAccessor,
         lockOwner,
         lockExpiry,
@@ -1613,23 +1365,11 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
   @pragma('vm:prefer-inline')
   _$$BaseEntityImplCopyWith<T, _$BaseEntityImpl<T>> get copyWith =>
       __$$BaseEntityImplCopyWithImpl<T, _$BaseEntityImpl<T>>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson(Object? Function(T) toJsonT) {
-    return _$$BaseEntityImplToJson<T>(this, toJsonT);
-  }
 }
 
 abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
   const factory _BaseEntity(
-      {required final EntityId id,
-      required final String name,
-      final String? description,
-      required final DateTime createdAt,
-      required final DateTime updatedAt,
-      final String schemaVer,
-      final EntityStatus status,
-      final Map<String, Object> meta,
+      {required final CoreEntity<T> core,
       final String? treePath,
       final int treeDepth,
       final Map<String, List<EntityId>> refs,
@@ -1644,9 +1384,6 @@ abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
       final String? treeLevel,
       final int treeVersion,
       final DateTime? treeLastUpdate,
-      required final UserAction owner,
-      required final UserAction creator,
-      required final UserAction modifier,
       final UserAction? lastAccessor,
       final UserAction? lockOwner,
       final DateTime? lockExpiry,
@@ -1686,27 +1423,9 @@ abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
       final String? aiVer}) = _$BaseEntityImpl<T>;
   const _BaseEntity._() : super._();
 
-  factory _BaseEntity.fromJson(
-          Map<String, dynamic> json, T Function(Object?) fromJsonT) =
-      _$BaseEntityImpl<T>.fromJson;
-
-// Identity & Core Data
+// Core entity data
   @override
-  EntityId get id;
-  @override
-  String get name;
-  @override
-  String? get description;
-  @override
-  DateTime get createdAt;
-  @override
-  DateTime get updatedAt;
-  @override
-  String get schemaVer;
-  @override
-  EntityStatus get status;
-  @override
-  Map<String, Object> get meta; // Hierarchical Structure
+  CoreEntity<T> get core; // Hierarchical Structure
   @override
   String? get treePath;
   @override
@@ -1735,12 +1454,6 @@ abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
   int get treeVersion;
   @override
   DateTime? get treeLastUpdate; // Access Control & Security
-  @override
-  UserAction get owner;
-  @override
-  UserAction get creator;
-  @override
-  UserAction get modifier;
   @override
   UserAction? get lastAccessor;
   @override

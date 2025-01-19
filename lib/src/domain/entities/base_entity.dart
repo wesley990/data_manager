@@ -1,5 +1,5 @@
 import 'package:data_manager/data_manager.dart';
-import 'package:data_manager/src/domain/value_objects/user_action.dart';
+import 'package:data_manager/src/domain/core/core_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'base_entity.freezed.dart';
@@ -48,15 +48,8 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
   const BaseEntity._();
 
   const factory BaseEntity({
-    // Identity & Core Data
-    required EntityId id,
-    required String name,
-    String? description,
-    required DateTime createdAt,
-    required DateTime updatedAt,
-    @Default(EntityDefaults.version) String schemaVer,
-    @Default(EntityDefaults.status) EntityStatus status,
-    @Default({}) Map<String, Object> meta,
+    // Core entity data
+    required CoreEntity<T> core,
 
     // Hierarchical Structure
     String? treePath,
@@ -75,9 +68,6 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
     DateTime? treeLastUpdate,
 
     // Access Control & Security
-    required UserAction owner,
-    required UserAction creator,
-    required UserAction modifier,
     UserAction? lastAccessor,
     UserAction? lockOwner,
     DateTime? lockExpiry,
@@ -125,10 +115,41 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
     String? aiVer,
   }) = _BaseEntity<T>;
 
-  // Factory methods
-  factory BaseEntity.fromJson(
-          Map<String, Object> json, T Function(Object? json) fromJsonT) =>
-      _$BaseEntityFromJson(json, fromJsonT);
+  // Delegate core properties
+  EntityId get id => core.id;
+  String get name => core.name;
+  String? get description => core.description;
+  DateTime get createdAt => core.createdAt;
+  DateTime get updatedAt => core.updatedAt;
+  String get schemaVer => core.schemaVer;
+  EntityStatus get status => core.status;
+  Map<String, Object> get meta => core.meta;
+  UserAction get owner => core.owner;
+  UserAction get creator => core.creator;
+  UserAction get modifier => core.modifier;
+
+  // Factory method with configuration
+  factory BaseEntity.create({
+    required EntityId id,
+    required String name,
+    required UserAction owner,
+    required T data,
+    EntityConfig? config,
+  }) {
+    final now = DateTime.now();
+    return BaseEntity(
+      core: CoreEntity(
+        id: id,
+        name: name,
+        createdAt: now,
+        updatedAt: now,
+        owner: owner,
+        creator: owner,
+        modifier: owner,
+        data: data,
+      ),
+    );
+  }
 
   // Core getters
   String get uid => id.value;

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:data_manager/data_manager.dart';
-import 'package:data_manager/src/domain/value_objects/user_action.dart';
 
 /// Tree Path Management Extension
 extension TreePathExtension<T extends Object> on BaseEntity<T> {
@@ -35,10 +34,11 @@ extension TreePathExtension<T extends Object> on BaseEntity<T> {
   }
 
   String _sanitizePathSegment(String segment) {
-    final cleaned = segment.replaceAll(RegExp(EntityDefaults.invalidPathChars), '');
+    final cleaned =
+        segment.replaceAll(RegExp(EntityDefaults.invalidPathChars), '');
     final trimmed = cleaned.trim().replaceAll(RegExp(r'^\.+|\.+$'), '');
-    return Uri.encodeComponent(trimmed)
-        .replaceAll(EntityDefaults.encodedPathSeparator, EntityDefaults.pathSeparator);
+    return Uri.encodeComponent(trimmed).replaceAll(
+        EntityDefaults.encodedPathSeparator, EntityDefaults.pathSeparator);
   }
 
   bool isPathValid(String? path) {
@@ -58,7 +58,8 @@ extension TreePathExtension<T extends Object> on BaseEntity<T> {
   }
 
   String get canonicalPath => treePath?.toLowerCase() ?? id.value;
-  List<String> get pathParts => treePath?.split(EntityDefaults.pathSeparator) ?? [id.value];
+  List<String> get pathParts =>
+      treePath?.split(EntityDefaults.pathSeparator) ?? [id.value];
   List<String> get ancestorPaths => splitPath(treePath);
 
   String get absolutePath {
@@ -73,7 +74,9 @@ extension TreePathExtension<T extends Object> on BaseEntity<T> {
     String currentPath = '';
 
     for (final part in parts) {
-      currentPath = currentPath.isEmpty ? part : '$currentPath${EntityDefaults.pathSeparator}$part';
+      currentPath = currentPath.isEmpty
+          ? part
+          : '$currentPath${EntityDefaults.pathSeparator}$part';
       paths.add(currentPath);
     }
 
@@ -185,8 +188,10 @@ extension LockExtension<T extends Object> on BaseEntity<T> {
       lockOwner != null && (lockExpiry?.isAfter(DateTime.now()) ?? false);
 
   Duration _normalizeLockDuration(Duration duration) {
-    if (duration < LockConfig.minimumDuration) return LockConfig.minimumDuration;
-    if (duration > LockConfig.maximumDuration) return LockConfig.maximumDuration;
+    if (duration < LockConfig.minimumDuration)
+      return LockConfig.minimumDuration;
+    if (duration > LockConfig.maximumDuration)
+      return LockConfig.maximumDuration;
     return duration;
   }
 
@@ -230,9 +235,8 @@ extension AIExtension<T extends Object> on BaseEntity<T> {
     final timestamp = DateTime.now();
 
     // Handle embeddings
-    final newEmbeddings = embeddings != null
-        ? {...aiVectors, modelId: embeddings}
-        : aiVectors;
+    final newEmbeddings =
+        embeddings != null ? {...aiVectors, modelId: embeddings} : aiVectors;
 
     // Handle cache
     final cacheKey =
