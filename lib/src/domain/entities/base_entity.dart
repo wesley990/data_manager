@@ -53,18 +53,12 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
     // Hierarchical Structure
     String? treePath,
     @Default(0) int treeDepth,
-    @Default({}) Map<String, List<EntityId>> refs,
-    @Default(SystemLimits.hierarchyDepthMax) int treeMaxDepth,
     @Default([]) List<EntityId> ancestors,
     EntityId? parentId,
     @Default([]) List<EntityId> childIds,
-    @Default({}) Map<String, String> subPaths,
-    @Default({}) Map<String, EntityMetadata> ancestorMeta,
-    String? parentName,
-    @Default([]) List<String> searchPaths,
-    String? treeLevel,
-    @Default(0) int treeVersion,
-    DateTime? treeLastUpdate,
+    @Default(true) bool isHierarchyRoot,
+    @Default(true) bool isHierarchyLeaf,
+    @Default({}) Map<String, Object> hierarchyMeta,
 
     // Access Control & Security
     UserAction? lastAccessor,
@@ -127,6 +121,11 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
   UserAction get creator => core.creator;
   UserAction get modifier => core.modifier;
 
+  // Hierarchy properties - direct instead of delegated
+  bool get isRoot => isHierarchyRoot;
+  bool get isLeaf => isHierarchyLeaf;
+  String? get parentPath => parentId?.value;
+
   // Factory method with configuration
   factory BaseEntity.create({
     required EntityId id,
@@ -147,6 +146,15 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
         modifier: owner,
         data: data,
       ),
+      // Initialize hierarchy fields directly
+      treePath: id.value,
+      treeDepth: 0,
+      isHierarchyRoot: true,
+      isHierarchyLeaf: true,
+      hierarchyMeta: {
+        'created': now.toIso8601String(),
+        'pathType': 'root',
+      },
     );
   }
 
@@ -154,13 +162,16 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
   String get uid => id.value;
   String get type => T.toString();
   bool get isTreeRoot => treePath == null || treePath == id.value;
-  bool get isTreeLeaf => !refs.containsKey('children');
+  bool get isTreeLeaf => childIds.isEmpty;  // Fixed implementation
 
   // Utility methods
   dynamic getMeta(String key) => meta[key];
   Map<EntityId, String> get ancestorNames => Map.fromEntries(
-        ancestorMeta.entries.map(
-          (e) => MapEntry(EntityId(e.key), e.value.displayName),
+        ancestors.map(
+          (ancestorId) => MapEntry(
+            ancestorId,
+            meta['ancestor_name_${ancestorId.value}']?.toString() ?? '',
+          ),
         ),
       );
 

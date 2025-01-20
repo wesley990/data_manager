@@ -21,19 +21,12 @@ mixin _$BaseEntity<T extends Object> {
       throw _privateConstructorUsedError; // Hierarchical Structure
   String? get treePath => throw _privateConstructorUsedError;
   int get treeDepth => throw _privateConstructorUsedError;
-  Map<String, List<EntityId>> get refs => throw _privateConstructorUsedError;
-  int get treeMaxDepth => throw _privateConstructorUsedError;
   List<EntityId> get ancestors => throw _privateConstructorUsedError;
   EntityId? get parentId => throw _privateConstructorUsedError;
   List<EntityId> get childIds => throw _privateConstructorUsedError;
-  Map<String, String> get subPaths => throw _privateConstructorUsedError;
-  Map<String, EntityMetadata> get ancestorMeta =>
-      throw _privateConstructorUsedError;
-  String? get parentName => throw _privateConstructorUsedError;
-  List<String> get searchPaths => throw _privateConstructorUsedError;
-  String? get treeLevel => throw _privateConstructorUsedError;
-  int get treeVersion => throw _privateConstructorUsedError;
-  DateTime? get treeLastUpdate =>
+  bool get isHierarchyRoot => throw _privateConstructorUsedError;
+  bool get isHierarchyLeaf => throw _privateConstructorUsedError;
+  Map<String, Object> get hierarchyMeta =>
       throw _privateConstructorUsedError; // Access Control & Security
   UserAction? get lastAccessor => throw _privateConstructorUsedError;
   UserAction? get lockOwner => throw _privateConstructorUsedError;
@@ -94,18 +87,12 @@ abstract class $BaseEntityCopyWith<T extends Object, $Res> {
       {CoreEntity<T> core,
       String? treePath,
       int treeDepth,
-      Map<String, List<EntityId>> refs,
-      int treeMaxDepth,
       List<EntityId> ancestors,
       EntityId? parentId,
       List<EntityId> childIds,
-      Map<String, String> subPaths,
-      Map<String, EntityMetadata> ancestorMeta,
-      String? parentName,
-      List<String> searchPaths,
-      String? treeLevel,
-      int treeVersion,
-      DateTime? treeLastUpdate,
+      bool isHierarchyRoot,
+      bool isHierarchyLeaf,
+      Map<String, Object> hierarchyMeta,
       UserAction? lastAccessor,
       UserAction? lockOwner,
       DateTime? lockExpiry,
@@ -169,18 +156,12 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
     Object? core = null,
     Object? treePath = freezed,
     Object? treeDepth = null,
-    Object? refs = null,
-    Object? treeMaxDepth = null,
     Object? ancestors = null,
     Object? parentId = freezed,
     Object? childIds = null,
-    Object? subPaths = null,
-    Object? ancestorMeta = null,
-    Object? parentName = freezed,
-    Object? searchPaths = null,
-    Object? treeLevel = freezed,
-    Object? treeVersion = null,
-    Object? treeLastUpdate = freezed,
+    Object? isHierarchyRoot = null,
+    Object? isHierarchyLeaf = null,
+    Object? hierarchyMeta = null,
     Object? lastAccessor = freezed,
     Object? lockOwner = freezed,
     Object? lockExpiry = freezed,
@@ -232,14 +213,6 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
           ? _value.treeDepth
           : treeDepth // ignore: cast_nullable_to_non_nullable
               as int,
-      refs: null == refs
-          ? _value.refs
-          : refs // ignore: cast_nullable_to_non_nullable
-              as Map<String, List<EntityId>>,
-      treeMaxDepth: null == treeMaxDepth
-          ? _value.treeMaxDepth
-          : treeMaxDepth // ignore: cast_nullable_to_non_nullable
-              as int,
       ancestors: null == ancestors
           ? _value.ancestors
           : ancestors // ignore: cast_nullable_to_non_nullable
@@ -252,34 +225,18 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
           ? _value.childIds
           : childIds // ignore: cast_nullable_to_non_nullable
               as List<EntityId>,
-      subPaths: null == subPaths
-          ? _value.subPaths
-          : subPaths // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>,
-      ancestorMeta: null == ancestorMeta
-          ? _value.ancestorMeta
-          : ancestorMeta // ignore: cast_nullable_to_non_nullable
-              as Map<String, EntityMetadata>,
-      parentName: freezed == parentName
-          ? _value.parentName
-          : parentName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      searchPaths: null == searchPaths
-          ? _value.searchPaths
-          : searchPaths // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      treeLevel: freezed == treeLevel
-          ? _value.treeLevel
-          : treeLevel // ignore: cast_nullable_to_non_nullable
-              as String?,
-      treeVersion: null == treeVersion
-          ? _value.treeVersion
-          : treeVersion // ignore: cast_nullable_to_non_nullable
-              as int,
-      treeLastUpdate: freezed == treeLastUpdate
-          ? _value.treeLastUpdate
-          : treeLastUpdate // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+      isHierarchyRoot: null == isHierarchyRoot
+          ? _value.isHierarchyRoot
+          : isHierarchyRoot // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isHierarchyLeaf: null == isHierarchyLeaf
+          ? _value.isHierarchyLeaf
+          : isHierarchyLeaf // ignore: cast_nullable_to_non_nullable
+              as bool,
+      hierarchyMeta: null == hierarchyMeta
+          ? _value.hierarchyMeta
+          : hierarchyMeta // ignore: cast_nullable_to_non_nullable
+              as Map<String, Object>,
       lastAccessor: freezed == lastAccessor
           ? _value.lastAccessor
           : lastAccessor // ignore: cast_nullable_to_non_nullable
@@ -510,18 +467,12 @@ abstract class _$$BaseEntityImplCopyWith<T extends Object, $Res>
       {CoreEntity<T> core,
       String? treePath,
       int treeDepth,
-      Map<String, List<EntityId>> refs,
-      int treeMaxDepth,
       List<EntityId> ancestors,
       EntityId? parentId,
       List<EntityId> childIds,
-      Map<String, String> subPaths,
-      Map<String, EntityMetadata> ancestorMeta,
-      String? parentName,
-      List<String> searchPaths,
-      String? treeLevel,
-      int treeVersion,
-      DateTime? treeLastUpdate,
+      bool isHierarchyRoot,
+      bool isHierarchyLeaf,
+      Map<String, Object> hierarchyMeta,
       UserAction? lastAccessor,
       UserAction? lockOwner,
       DateTime? lockExpiry,
@@ -588,18 +539,12 @@ class __$$BaseEntityImplCopyWithImpl<T extends Object, $Res>
     Object? core = null,
     Object? treePath = freezed,
     Object? treeDepth = null,
-    Object? refs = null,
-    Object? treeMaxDepth = null,
     Object? ancestors = null,
     Object? parentId = freezed,
     Object? childIds = null,
-    Object? subPaths = null,
-    Object? ancestorMeta = null,
-    Object? parentName = freezed,
-    Object? searchPaths = null,
-    Object? treeLevel = freezed,
-    Object? treeVersion = null,
-    Object? treeLastUpdate = freezed,
+    Object? isHierarchyRoot = null,
+    Object? isHierarchyLeaf = null,
+    Object? hierarchyMeta = null,
     Object? lastAccessor = freezed,
     Object? lockOwner = freezed,
     Object? lockExpiry = freezed,
@@ -651,14 +596,6 @@ class __$$BaseEntityImplCopyWithImpl<T extends Object, $Res>
           ? _value.treeDepth
           : treeDepth // ignore: cast_nullable_to_non_nullable
               as int,
-      refs: null == refs
-          ? _value._refs
-          : refs // ignore: cast_nullable_to_non_nullable
-              as Map<String, List<EntityId>>,
-      treeMaxDepth: null == treeMaxDepth
-          ? _value.treeMaxDepth
-          : treeMaxDepth // ignore: cast_nullable_to_non_nullable
-              as int,
       ancestors: null == ancestors
           ? _value._ancestors
           : ancestors // ignore: cast_nullable_to_non_nullable
@@ -671,34 +608,18 @@ class __$$BaseEntityImplCopyWithImpl<T extends Object, $Res>
           ? _value._childIds
           : childIds // ignore: cast_nullable_to_non_nullable
               as List<EntityId>,
-      subPaths: null == subPaths
-          ? _value._subPaths
-          : subPaths // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>,
-      ancestorMeta: null == ancestorMeta
-          ? _value._ancestorMeta
-          : ancestorMeta // ignore: cast_nullable_to_non_nullable
-              as Map<String, EntityMetadata>,
-      parentName: freezed == parentName
-          ? _value.parentName
-          : parentName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      searchPaths: null == searchPaths
-          ? _value._searchPaths
-          : searchPaths // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      treeLevel: freezed == treeLevel
-          ? _value.treeLevel
-          : treeLevel // ignore: cast_nullable_to_non_nullable
-              as String?,
-      treeVersion: null == treeVersion
-          ? _value.treeVersion
-          : treeVersion // ignore: cast_nullable_to_non_nullable
-              as int,
-      treeLastUpdate: freezed == treeLastUpdate
-          ? _value.treeLastUpdate
-          : treeLastUpdate // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+      isHierarchyRoot: null == isHierarchyRoot
+          ? _value.isHierarchyRoot
+          : isHierarchyRoot // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isHierarchyLeaf: null == isHierarchyLeaf
+          ? _value.isHierarchyLeaf
+          : isHierarchyLeaf // ignore: cast_nullable_to_non_nullable
+              as bool,
+      hierarchyMeta: null == hierarchyMeta
+          ? _value._hierarchyMeta
+          : hierarchyMeta // ignore: cast_nullable_to_non_nullable
+              as Map<String, Object>,
       lastAccessor: freezed == lastAccessor
           ? _value.lastAccessor
           : lastAccessor // ignore: cast_nullable_to_non_nullable
@@ -858,18 +779,12 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
       {required this.core,
       this.treePath,
       this.treeDepth = 0,
-      final Map<String, List<EntityId>> refs = const {},
-      this.treeMaxDepth = SystemLimits.hierarchyDepthMax,
       final List<EntityId> ancestors = const [],
       this.parentId,
       final List<EntityId> childIds = const [],
-      final Map<String, String> subPaths = const {},
-      final Map<String, EntityMetadata> ancestorMeta = const {},
-      this.parentName,
-      final List<String> searchPaths = const [],
-      this.treeLevel,
-      this.treeVersion = 0,
-      this.treeLastUpdate,
+      this.isHierarchyRoot = true,
+      this.isHierarchyLeaf = true,
+      final Map<String, Object> hierarchyMeta = const {},
       this.lastAccessor,
       this.lockOwner,
       this.lockExpiry,
@@ -907,12 +822,9 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
       final Map<String, Object> aiNotes = const {},
       this.aiLastRun,
       this.aiVer})
-      : _refs = refs,
-        _ancestors = ancestors,
+      : _ancestors = ancestors,
         _childIds = childIds,
-        _subPaths = subPaths,
-        _ancestorMeta = ancestorMeta,
-        _searchPaths = searchPaths,
+        _hierarchyMeta = hierarchyMeta,
         _modHistory = modHistory,
         _accessLog = accessLog,
         _tags = tags,
@@ -939,18 +851,6 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
   @override
   @JsonKey()
   final int treeDepth;
-  final Map<String, List<EntityId>> _refs;
-  @override
-  @JsonKey()
-  Map<String, List<EntityId>> get refs {
-    if (_refs is EqualUnmodifiableMapView) return _refs;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_refs);
-  }
-
-  @override
-  @JsonKey()
-  final int treeMaxDepth;
   final List<EntityId> _ancestors;
   @override
   @JsonKey()
@@ -971,42 +871,21 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
     return EqualUnmodifiableListView(_childIds);
   }
 
-  final Map<String, String> _subPaths;
   @override
   @JsonKey()
-  Map<String, String> get subPaths {
-    if (_subPaths is EqualUnmodifiableMapView) return _subPaths;
+  final bool isHierarchyRoot;
+  @override
+  @JsonKey()
+  final bool isHierarchyLeaf;
+  final Map<String, Object> _hierarchyMeta;
+  @override
+  @JsonKey()
+  Map<String, Object> get hierarchyMeta {
+    if (_hierarchyMeta is EqualUnmodifiableMapView) return _hierarchyMeta;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_subPaths);
+    return EqualUnmodifiableMapView(_hierarchyMeta);
   }
 
-  final Map<String, EntityMetadata> _ancestorMeta;
-  @override
-  @JsonKey()
-  Map<String, EntityMetadata> get ancestorMeta {
-    if (_ancestorMeta is EqualUnmodifiableMapView) return _ancestorMeta;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_ancestorMeta);
-  }
-
-  @override
-  final String? parentName;
-  final List<String> _searchPaths;
-  @override
-  @JsonKey()
-  List<String> get searchPaths {
-    if (_searchPaths is EqualUnmodifiableListView) return _searchPaths;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_searchPaths);
-  }
-
-  @override
-  final String? treeLevel;
-  @override
-  @JsonKey()
-  final int treeVersion;
-  @override
-  final DateTime? treeLastUpdate;
 // Access Control & Security
   @override
   final UserAction? lastAccessor;
@@ -1206,7 +1085,7 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
 
   @override
   String toString() {
-    return 'BaseEntity<$T>(core: $core, treePath: $treePath, treeDepth: $treeDepth, refs: $refs, treeMaxDepth: $treeMaxDepth, ancestors: $ancestors, parentId: $parentId, childIds: $childIds, subPaths: $subPaths, ancestorMeta: $ancestorMeta, parentName: $parentName, searchPaths: $searchPaths, treeLevel: $treeLevel, treeVersion: $treeVersion, treeLastUpdate: $treeLastUpdate, lastAccessor: $lastAccessor, lockOwner: $lockOwner, lockExpiry: $lockExpiry, remover: $remover, modHistory: $modHistory, accessLog: $accessLog, isPublic: $isPublic, accessCount: $accessCount, tags: $tags, labels: $labels, priority: $priority, stage: $stage, expiryDate: $expiryDate, syncMeta: $syncMeta, syncVer: $syncVer, searchIndex: $searchIndex, extraData: $extraData, eventVer: $eventVer, pendingEvents: $pendingEvents, eventMeta: $eventMeta, historyLimit: $historyLimit, dataVer: $dataVer, structVer: $structVer, lastVer: $lastVer, distLockId: $distLockId, distLockExpiry: $distLockExpiry, distLockNode: $distLockNode, lockMeta: $lockMeta, verVectors: $verVectors, lockTimeout: $lockTimeout, aiVectors: $aiVectors, aiScores: $aiScores, aiMeta: $aiMeta, aiTags: $aiTags, aiNotes: $aiNotes, aiLastRun: $aiLastRun, aiVer: $aiVer)';
+    return 'BaseEntity<$T>(core: $core, treePath: $treePath, treeDepth: $treeDepth, ancestors: $ancestors, parentId: $parentId, childIds: $childIds, isHierarchyRoot: $isHierarchyRoot, isHierarchyLeaf: $isHierarchyLeaf, hierarchyMeta: $hierarchyMeta, lastAccessor: $lastAccessor, lockOwner: $lockOwner, lockExpiry: $lockExpiry, remover: $remover, modHistory: $modHistory, accessLog: $accessLog, isPublic: $isPublic, accessCount: $accessCount, tags: $tags, labels: $labels, priority: $priority, stage: $stage, expiryDate: $expiryDate, syncMeta: $syncMeta, syncVer: $syncVer, searchIndex: $searchIndex, extraData: $extraData, eventVer: $eventVer, pendingEvents: $pendingEvents, eventMeta: $eventMeta, historyLimit: $historyLimit, dataVer: $dataVer, structVer: $structVer, lastVer: $lastVer, distLockId: $distLockId, distLockExpiry: $distLockExpiry, distLockNode: $distLockNode, lockMeta: $lockMeta, verVectors: $verVectors, lockTimeout: $lockTimeout, aiVectors: $aiVectors, aiScores: $aiScores, aiMeta: $aiMeta, aiTags: $aiTags, aiNotes: $aiNotes, aiLastRun: $aiLastRun, aiVer: $aiVer)';
   }
 
   @override
@@ -1219,27 +1098,17 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
                 other.treePath == treePath) &&
             (identical(other.treeDepth, treeDepth) ||
                 other.treeDepth == treeDepth) &&
-            const DeepCollectionEquality().equals(other._refs, _refs) &&
-            (identical(other.treeMaxDepth, treeMaxDepth) ||
-                other.treeMaxDepth == treeMaxDepth) &&
             const DeepCollectionEquality()
                 .equals(other._ancestors, _ancestors) &&
             (identical(other.parentId, parentId) ||
                 other.parentId == parentId) &&
             const DeepCollectionEquality().equals(other._childIds, _childIds) &&
-            const DeepCollectionEquality().equals(other._subPaths, _subPaths) &&
+            (identical(other.isHierarchyRoot, isHierarchyRoot) ||
+                other.isHierarchyRoot == isHierarchyRoot) &&
+            (identical(other.isHierarchyLeaf, isHierarchyLeaf) ||
+                other.isHierarchyLeaf == isHierarchyLeaf) &&
             const DeepCollectionEquality()
-                .equals(other._ancestorMeta, _ancestorMeta) &&
-            (identical(other.parentName, parentName) ||
-                other.parentName == parentName) &&
-            const DeepCollectionEquality()
-                .equals(other._searchPaths, _searchPaths) &&
-            (identical(other.treeLevel, treeLevel) ||
-                other.treeLevel == treeLevel) &&
-            (identical(other.treeVersion, treeVersion) ||
-                other.treeVersion == treeVersion) &&
-            (identical(other.treeLastUpdate, treeLastUpdate) ||
-                other.treeLastUpdate == treeLastUpdate) &&
+                .equals(other._hierarchyMeta, _hierarchyMeta) &&
             (identical(other.lastAccessor, lastAccessor) ||
                 other.lastAccessor == lastAccessor) &&
             (identical(other.lockOwner, lockOwner) ||
@@ -1307,18 +1176,12 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
         core,
         treePath,
         treeDepth,
-        const DeepCollectionEquality().hash(_refs),
-        treeMaxDepth,
         const DeepCollectionEquality().hash(_ancestors),
         parentId,
         const DeepCollectionEquality().hash(_childIds),
-        const DeepCollectionEquality().hash(_subPaths),
-        const DeepCollectionEquality().hash(_ancestorMeta),
-        parentName,
-        const DeepCollectionEquality().hash(_searchPaths),
-        treeLevel,
-        treeVersion,
-        treeLastUpdate,
+        isHierarchyRoot,
+        isHierarchyLeaf,
+        const DeepCollectionEquality().hash(_hierarchyMeta),
         lastAccessor,
         lockOwner,
         lockExpiry,
@@ -1372,18 +1235,12 @@ abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
       {required final CoreEntity<T> core,
       final String? treePath,
       final int treeDepth,
-      final Map<String, List<EntityId>> refs,
-      final int treeMaxDepth,
       final List<EntityId> ancestors,
       final EntityId? parentId,
       final List<EntityId> childIds,
-      final Map<String, String> subPaths,
-      final Map<String, EntityMetadata> ancestorMeta,
-      final String? parentName,
-      final List<String> searchPaths,
-      final String? treeLevel,
-      final int treeVersion,
-      final DateTime? treeLastUpdate,
+      final bool isHierarchyRoot,
+      final bool isHierarchyLeaf,
+      final Map<String, Object> hierarchyMeta,
       final UserAction? lastAccessor,
       final UserAction? lockOwner,
       final DateTime? lockExpiry,
@@ -1431,29 +1288,17 @@ abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
   @override
   int get treeDepth;
   @override
-  Map<String, List<EntityId>> get refs;
-  @override
-  int get treeMaxDepth;
-  @override
   List<EntityId> get ancestors;
   @override
   EntityId? get parentId;
   @override
   List<EntityId> get childIds;
   @override
-  Map<String, String> get subPaths;
+  bool get isHierarchyRoot;
   @override
-  Map<String, EntityMetadata> get ancestorMeta;
+  bool get isHierarchyLeaf;
   @override
-  String? get parentName;
-  @override
-  List<String> get searchPaths;
-  @override
-  String? get treeLevel;
-  @override
-  int get treeVersion;
-  @override
-  DateTime? get treeLastUpdate; // Access Control & Security
+  Map<String, Object> get hierarchyMeta; // Access Control & Security
   @override
   UserAction? get lastAccessor;
   @override

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:data_manager/data_manager.dart';
 
-/// Tree Path Management Extension
+/// Tree Path Management Extension  
 extension TreePathExtension<T extends Object> on BaseEntity<T> {
   String sanitizePath(String? rawPath) {
     if (rawPath == null || rawPath.isEmpty) return '';
@@ -82,13 +82,176 @@ extension TreePathExtension<T extends Object> on BaseEntity<T> {
 
     return paths;
   }
+}
 
-  Map<String, Object> buildTreeIndex() {
+/// Enhanced Hierarchy Management Extension
+extension HierarchyExtension<T extends Object> on BaseEntity<T> {
+  // Core navigation methods
+  List<String> get ancestorPaths => ancestors.map((a) => a.value).toList(); 
+  String get fullPath => treePath ?? id.value;
+  
+  bool isAncestorOf(BaseEntity<T> other) => other.ancestors.contains(id);
+  bool isDescendantOf(BaseEntity<T> other) => ancestors.contains(other.id);
+  bool isRelatedTo(BaseEntity<T> other) => 
+      isAncestorOf(other) || isDescendantOf(other);
+
+  // Path validation
+  bool hasCircularReference() {
+    if (parentId == null) return false;
+    return ancestors.contains(id);
+  }
+
+  int getDepthTo(BaseEntity<T> ancestor) {
+    if (!isDescendantOf(ancestor)) return -1;
+    final ancestorIndex = ancestors.indexOf(ancestor.id);
+    return ancestors.length - ancestorIndex;
+  }
+
+  BaseEntity<T> updateHierarchy({
+    required EntityId? newParentId,
+    String? newPath,
+    List<EntityId>? newAncestors,
+    bool validateDepth = true,
+  }) {
+    if (validateDepth && newAncestors != null && 
+        newAncestors.length >= SystemLimits.hierarchyDepthMax) {
+      throw ValidationException('New hierarchy would exceed maximum depth');
+    }
+
+    final updatedPath = newPath ?? treePath;
+    final updatedAncestors = newAncestors ?? ancestors;
+    final existingHistory = hierarchyMeta['parent_history'] as List<String>? ?? [];
+    
+    return copyWith(
+      parentId: newParentId,
+      treePath: updatedPath,
+      ancestors: updatedAncestors,
+      treeDepth: updatedAncestors.length,
+      isHierarchyRoot: newParentId == null,
+      isHierarchyLeaf: childIds.isEmpty,
+      hierarchyMeta: {
+        ...hierarchyMeta,
+        'last_hierarchy_update': DateTime.now().toIso8601String(),
+        'parent_history': [
+          ...existingHistory,
+          newParentId?.value ?? 'root'
+        ],
+      },
+    );
+  }
+
+  // Child management
+  BaseEntity<T> addChild(EntityId childId) {
+    if (childIds.contains(childId)) return this;
+    
+    final updatedChildren = [...childIds, childId];
+    return copyWith(
+      childIds: updatedChildren,
+      isHierarchyLeaf: false,
+      hierarchyMeta: {
+        ...hierarchyMeta,
+        'children_count': updatedChildren.length,
+        'last_child_added': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  BaseEntity<T> removeChild(EntityId childId) {
+    if (!childIds.contains(childId)) return this;
+    
+    final updatedChildren = childIds.where((id) => id != childId).toList();
+    return copyWith(
+      childIds: updatedChildren,
+      isHierarchyLeaf: updatedChildren.isEmpty,
+      hierarchyMeta: {
+        ...hierarchyMeta,
+        'children_count': updatedChildren.length,
+        'last_child_removed': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  // Search indexing
+  Map<String, Object> buildHierarchyIndex() {
     return {
-      'depth_name': '${treeDepth}_${name.toLowerCase()}',
-      'parent_type': '${parentId ?? ''}_${treeLevel ?? ''}',
-      'ancestry': ancestors.map((e) => e.value).join('|'),
+      'depth_level': treeDepth,
+      'parent_type': parentId?.value ?? 'root',
+      'ancestry_path': ancestors.map((a) => a.value).join('|'),
+      'child_count': childIds.length,
+      'is_leaf': isHierarchyLeaf,
+      'is_root': isHierarchyRoot,
+      ...hierarchyMeta,
     };
+  }
+}
+
+/// AI Processing Extension
+extension AIExtension<T extends Object> on BaseEntity<T> {
+  // Core AI getters
+  bool get hasEmbeddings => aiVectors.isNotEmpty;
+  bool get hasScores => aiScores.isNotEmpty;
+  
+  double? getScore(String modelId) => aiScores[modelId];
+  List<double>? getVector(String modelId) => aiVectors[modelId];
+
+  // AI Processing methods
+  BaseEntity<T> processWithAI({
+    required String modelId,
+    required Map<String, dynamic> input,
+    required Map<String, dynamic> output,
+    List<double>? embeddings,
+    double? confidence,
+    bool useCache = true,
+  }) {
+    final timestamp = DateTime.now();
+    final newEmbeddings = embeddings != null ? 
+      {...aiVectors, modelId: embeddings} : 
+      aiVectors;
+
+    final cacheKey = useCache ? _generateCacheKey(modelId, input.toString()) : null;
+    final newMeta = {
+      ...aiMeta,
+      if (cacheKey != null)
+        'cache_$cacheKey': json.encode({
+          'output': output,
+          'timestamp': timestamp.toIso8601String(),
+          'confidence': confidence,
+          'model_version': aiVer,
+        }),
+    };
+
+    return copyWith(
+      aiVectors: newEmbeddings,
+      aiMeta: newMeta,
+      aiScores: {...aiScores, if (confidence != null) modelId: confidence},
+      aiLastRun: timestamp,
+    );
+  }
+
+  // Cache management
+  Map<String, dynamic>? getCachedResult(
+    String modelId, 
+    Map<String, dynamic> input,
+    {bool requireLatestVersion = false}
+  ) {
+    final cacheKey = _generateCacheKey(modelId, input.toString());
+    final cached = aiMeta['cache_$cacheKey'];
+    
+    if (cached == null) return null;
+    
+    final result = json.decode(cached) as Map<String, dynamic>;
+    
+    if (requireLatestVersion) {
+      final cachedVersion = result['model_version'];
+      if (cachedVersion != aiVer) return null;
+    }
+    
+    return result;
+  }
+
+  String _generateCacheKey(String modelId, String input) {
+    final hash = sha256.convert(utf8.encode(input)).toString();
+    return '$modelId:$hash';
   }
 }
 
@@ -188,10 +351,12 @@ extension LockExtension<T extends Object> on BaseEntity<T> {
       lockOwner != null && (lockExpiry?.isAfter(DateTime.now()) ?? false);
 
   Duration _normalizeLockDuration(Duration duration) {
-    if (duration < LockConfig.minimumDuration)
+    if (duration < LockConfig.minimumDuration) {
       return LockConfig.minimumDuration;
-    if (duration > LockConfig.maximumDuration)
+    }
+    if (duration > LockConfig.maximumDuration) {
       return LockConfig.maximumDuration;
+    }
     return duration;
   }
 
@@ -221,53 +386,13 @@ extension LockExtension<T extends Object> on BaseEntity<T> {
   }
 }
 
-/// AI Processing Extension
-extension AIExtension<T extends Object> on BaseEntity<T> {
-  // Combine AI/LLM/RAG/CAG capabilities
-  BaseEntity<T> processWithAI({
-    required String modelId,
-    required Map<String, dynamic> input,
-    required Map<String, dynamic> output,
-    List<double>? embeddings,
-    double? confidence,
-    bool useCache = true,
-  }) {
-    final timestamp = DateTime.now();
-
-    // Handle embeddings
-    final newEmbeddings =
-        embeddings != null ? {...aiVectors, modelId: embeddings} : aiVectors;
-
-    // Handle cache
-    final cacheKey =
-        useCache ? _generateCacheKey(modelId, input.toString()) : null;
-    final newMeta = {
-      ...aiMeta,
-      if (cacheKey != null)
-        'cache_$cacheKey': {
-          'output': output,
-          'timestamp': timestamp.toIso8601String(),
-          'confidence': confidence,
-        }.toString(),
+/// Tree Path Management Methods
+extension PathManagementExtension<T extends Object> on BaseEntity<T> {
+  Map<String, Object> buildTreeIndex() {
+    return {
+      'depth_name': '${treeDepth}_${name.toLowerCase()}',
+      'parent_type': parentId?.value ?? 'root',
+      'ancestry': ancestors.map((e) => e.value).join('|'),
     };
-
-    return copyWith(
-      aiVectors: newEmbeddings,
-      aiMeta: newMeta,
-      aiScores: {...aiScores, if (confidence != null) modelId: confidence},
-      aiLastRun: timestamp,
-    );
-  }
-
-  Map<String, dynamic>? getCachedResult(
-      String modelId, Map<String, dynamic> input) {
-    final cacheKey = _generateCacheKey(modelId, input.toString());
-    final cached = aiMeta['cache_$cacheKey'];
-    return cached != null ? json.decode(cached) : null;
-  }
-
-  String _generateCacheKey(String modelId, String input) {
-    final hash = sha256.convert(utf8.encode(input)).toString();
-    return '$modelId:$hash';
   }
 }
