@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:data_manager/data_manager.dart';
-import 'package:data_manager/src/domain/core/exceptions.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'base_entity_extensions.freezed.dart';
