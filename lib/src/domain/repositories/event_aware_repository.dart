@@ -1,5 +1,4 @@
 import 'package:data_manager/data_manager.dart';
-import 'package:data_manager/src/domain/value_objects/user_action.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class EventAwareRepository<T extends BaseEntity>
@@ -21,9 +20,7 @@ abstract class EventAwareRepository<T extends BaseEntity>
       return _executeOperation(type, id, params);
     }
 
-    final action = UserAction(
-        uid: 'system',
-        timestamp: DateTime.now());
+    final action = UserAction(uid: 'system', timestamp: DateTime.now());
     final event = _createEvent(type, id, params, action);
 
     final eventValidation = await eventStore.validateEvent(event);
@@ -60,7 +57,7 @@ abstract class EventAwareRepository<T extends BaseEntity>
   // Protected methods to be implemented
   Future<T> loadEntity(EntityId id);
   Future<Map<String, BaseEntity>> _loadRelatedEntities(EntityId id);
-  
+
   // Event management methods
   Stream<DomainEvent> watchEntityEvents(EntityId id) =>
       eventStore.watchEvents(id);
@@ -111,9 +108,7 @@ abstract class EventAwareRepository<T extends BaseEntity>
     List<EntityId> ids, [
     Map<String, Object>? params,
   ]) async {
-    final action = UserAction(
-        uid: 'system',
-        timestamp: DateTime.now());
+    final action = UserAction(uid: 'system', timestamp: DateTime.now());
     final events =
         ids.map((id) => _createEvent(type, id, params, action)).toList();
 

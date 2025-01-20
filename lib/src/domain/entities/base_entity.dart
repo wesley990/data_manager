@@ -201,10 +201,3 @@ class EntityMetadata with _$EntityMetadata {
   factory EntityMetadata.fromJson(Map<String, Object> json) =>
       _$EntityMetadataFromJson(json);
 }
-
-class PathValidationException implements Exception {
-  final String message;
-  PathValidationException(this.message);
-  @override
-  String toString() => 'PathValidationException: $message';
-}

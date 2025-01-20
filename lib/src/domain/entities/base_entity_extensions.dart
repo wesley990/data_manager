@@ -1,8 +1,13 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
-import 'package:data_manager/data_manager.dart';
+import 'package:data_manager/data_manager.dart' hide ValidationException; // Hide validation from data_manager
+import 'package:data_manager/src/domain/core/exceptions.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// Tree Path Management Extension  
+part 'base_entity_extensions.freezed.dart';
+part 'base_entity_extensions.g.dart';
+
+/// Tree Path Management Extension
 extension TreePathExtension<T extends Object> on BaseEntity<T> {
   String sanitizePath(String? rawPath) {
     if (rawPath == null || rawPath.isEmpty) return '';
@@ -11,7 +16,13 @@ extension TreePathExtension<T extends Object> on BaseEntity<T> {
       final decodedPath = Uri.decodeFull(rawPath);
 
       if (decodedPath.length > SystemLimits.pathMaxLength) {
-        throw ValidationException('Path exceeds maximum length');
+        throw FieldValidationException(
+          message: 'Path exceeds maximum length',
+          field: 'path',
+          invalidValue: decodedPath,
+          details:
+              'Max length: ${SystemLimits.pathMaxLength}, Actual: ${decodedPath.length}',
+        );
       }
 
       final segments = decodedPath
@@ -22,14 +33,24 @@ extension TreePathExtension<T extends Object> on BaseEntity<T> {
           .toList();
 
       if (segments.any((s) => s.length > SystemLimits.pathMaxSegment)) {
-        throw ValidationException('Path segment exceeds maximum length');
+        throw FieldValidationException(
+          message: 'Path segment exceeds maximum length',
+          field: 'path',
+          invalidValue: segments
+              .firstWhere((s) => s.length > SystemLimits.pathMaxSegment),
+          details: 'Max segment length: ${SystemLimits.pathMaxSegment}',
+        );
       }
 
       return segments.isEmpty
           ? ''
           : '${EntityDefaults.pathSeparator}${segments.join(EntityDefaults.pathSeparator)}${EntityDefaults.pathSeparator}';
     } catch (e) {
-      throw PathValidationException('Invalid path format: ${e.toString()}');
+      throw PathValidationException(
+        message: 'Invalid path format',
+        path: rawPath,
+        details: e.toString(),
+      );
     }
   }
 
@@ -84,15 +105,213 @@ extension TreePathExtension<T extends Object> on BaseEntity<T> {
   }
 }
 
+// Global type aliases
+typedef EntityVersionVector = Map<String, int>;
+typedef EntityLockMetadata = Map<String, dynamic>;
+typedef EntityEventMeta = Map<String, Object>;
+typedef EntitySearchIndex = Map<String, Object>;
+
+// System-wide constants
+abstract class SystemLimits {
+  static const pathMaxLength = 1024;
+  static const pathMaxSegment = 255;
+  static const hierarchyDepthMax = 10;
+  static const historyMax = 50;
+  static const historyDefault = 50;
+}
+
+// Entity-specific defaults
+abstract class EntityDefaults {
+  static const version = '1.0.0';
+  static const status = EntityStatus.active;
+  static const priority = Priority.medium;
+  static const stage = WorkflowStage.draft;
+  static const isPublic = true;
+  static const accessCount = 0;
+
+  // Path related
+  static const pathSeparator = '/';
+  static const encodedPathSeparator = '%2F';
+  static const invalidPathChars = r'[<>:"|?*\x00-\x1F]';
+}
+
+// Lock-related configurations
+abstract class LockConfig {
+  static const defaultTimeout = Duration(minutes: 15);
+  static const extensionPeriod = Duration(minutes: 5);
+  static const minimumDuration = Duration(seconds: 30);
+  static const maximumDuration = Duration(hours: 24);
+}
+
+@Freezed(genericArgumentFactories: true)
+class BaseEntity<T extends Object> with _$BaseEntity<T> {
+  const BaseEntity._();
+
+  const factory BaseEntity({
+    // Core entity data
+    required CoreEntity<T> core,
+
+    // Hierarchical Structure
+    String? treePath,
+    @Default(0) int treeDepth,
+    @Default([]) List<EntityId> ancestors,
+    EntityId? parentId,
+    @Default([]) List<EntityId> childIds,
+    @Default(true) bool isHierarchyRoot,
+    @Default(true) bool isHierarchyLeaf,
+    @Default({}) Map<String, Object> hierarchyMeta,
+
+    // Access Control & Security
+    UserAction? lastAccessor,
+    UserAction? lockOwner,
+    DateTime? lockExpiry,
+    UserAction? remover,
+    @Default([]) List<UserAction> modHistory,
+    @Default([]) List<UserAction> accessLog,
+    @Default(EntityDefaults.isPublic) bool isPublic,
+    @Default(EntityDefaults.accessCount) int accessCount,
+
+    // Classification & Metadata
+    @Default([]) List<String> tags,
+    @Default({}) Map<String, String> labels,
+    @Default(EntityDefaults.priority) Priority priority,
+    @Default(EntityDefaults.stage) WorkflowStage stage,
+    DateTime? expiryDate,
+
+    // Synchronization & Versioning
+    @Default({}) Map<String, Object> syncMeta,
+    String? syncVer,
+    @Default({}) Map<String, Object> searchIndex,
+    T? extraData,
+    @Default(0) int eventVer,
+    @Default([]) List<String> pendingEvents,
+    @Default({}) Map<String, Object> eventMeta,
+    @Default(SystemLimits.historyDefault) int historyLimit,
+    @Default(1) int dataVer,
+    @Default(1) int structVer,
+    String? lastVer,
+
+    // Distributed Systems
+    String? distLockId,
+    DateTime? distLockExpiry,
+    String? distLockNode,
+    @Default({}) Map<String, dynamic> lockMeta,
+    @Default({}) Map<String, int> verVectors,
+    @Default(LockConfig.defaultTimeout) Duration lockTimeout,
+
+    // AI & Machine Learning
+    @Default({}) Map<String, List<double>> aiVectors,
+    @Default({}) Map<String, double> aiScores,
+    @Default({}) Map<String, String> aiMeta,
+    @Default([]) List<String> aiTags,
+    @Default({}) Map<String, Object> aiNotes,
+    DateTime? aiLastRun,
+    String? aiVer,
+  }) = _BaseEntity<T>;
+
+  // Delegate core properties
+  EntityId get id => core.id;
+  String get name => core.name;
+  String? get description => core.description;
+  DateTime get createdAt => core.createdAt;
+  DateTime get updatedAt => core.updatedAt;
+  String get schemaVer => core.schemaVer;
+  EntityStatus get status => core.status;
+  Map<String, Object> get meta => core.meta;
+  UserAction get owner => core.owner;
+  UserAction get creator => core.creator;
+  UserAction get modifier => core.modifier;
+
+  // Hierarchy properties - direct instead of delegated
+  bool get isRoot => isHierarchyRoot;
+  bool get isLeaf => isHierarchyLeaf;
+  String? get parentPath => parentId?.value;
+
+  // Factory method with configuration
+  factory BaseEntity.create({
+    required EntityId id,
+    required String name,
+    required UserAction owner,
+    required T data,
+    EntityConfig? config,
+  }) {
+    final now = DateTime.now();
+    return BaseEntity(
+      core: CoreEntity(
+        id: id,
+        name: name,
+        createdAt: now,
+        updatedAt: now,
+        owner: owner,
+        creator: owner,
+        modifier: owner,
+        data: data,
+      ),
+      // Initialize hierarchy fields directly
+      treePath: id.value,
+      treeDepth: 0,
+      isHierarchyRoot: true,
+      isHierarchyLeaf: true,
+      hierarchyMeta: {
+        'created': now.toIso8601String(),
+        'pathType': 'root',
+      },
+    );
+  }
+
+  // Core getters
+  String get uid => id.value;
+  String get type => T.toString();
+  bool get isTreeRoot => treePath == null || treePath == id.value;
+  bool get isTreeLeaf => childIds.isEmpty; // Fixed implementation
+
+  // Utility methods
+  dynamic getMeta(String key) => meta[key];
+  Map<EntityId, String> get ancestorNames => Map.fromEntries(
+        ancestors.map(
+          (ancestorId) => MapEntry(
+            ancestorId,
+            meta['ancestor_name_${ancestorId.value}']?.toString() ?? '',
+          ),
+        ),
+      );
+
+  dynamic operator [](String key) {
+    return switch (key) {
+      'entityId' => id,
+      'entityName' => name,
+      'entityDescription' => description,
+      'status' => status,
+      _ => meta[key],
+    };
+  }
+}
+
+@freezed
+class EntityMetadata with _$EntityMetadata {
+  const EntityMetadata._();
+
+  const factory EntityMetadata({
+    required String displayName,
+    required String entityType,
+    String? description,
+    DateTime? lastNameUpdate,
+    @Default({}) Map<String, String> searchTerms,
+  }) = _EntityMetadata;
+
+  factory EntityMetadata.fromJson(Map<String, Object> json) =>
+      _$EntityMetadataFromJson(json);
+}
+
 /// Enhanced Hierarchy Management Extension
 extension HierarchyExtension<T extends Object> on BaseEntity<T> {
   // Core navigation methods
-  List<String> get ancestorPaths => ancestors.map((a) => a.value).toList(); 
+  List<String> get ancestorPaths => ancestors.map((a) => a.value).toList();
   String get fullPath => treePath ?? id.value;
-  
+
   bool isAncestorOf(BaseEntity<T> other) => other.ancestors.contains(id);
   bool isDescendantOf(BaseEntity<T> other) => ancestors.contains(other.id);
-  bool isRelatedTo(BaseEntity<T> other) => 
+  bool isRelatedTo(BaseEntity<T> other) =>
       isAncestorOf(other) || isDescendantOf(other);
 
   // Path validation
@@ -113,15 +332,22 @@ extension HierarchyExtension<T extends Object> on BaseEntity<T> {
     List<EntityId>? newAncestors,
     bool validateDepth = true,
   }) {
-    if (validateDepth && newAncestors != null && 
+    if (validateDepth &&
+        newAncestors != null &&
         newAncestors.length >= SystemLimits.hierarchyDepthMax) {
-      throw ValidationException('New hierarchy would exceed maximum depth');
+      throw HierarchyValidationException(
+        message: 'New hierarchy would exceed maximum depth',
+        field: 'hierarchy',
+        depth: newAncestors.length,
+        path: newAncestors.map((a) => a.value).toList(),
+      );
     }
 
     final updatedPath = newPath ?? treePath;
     final updatedAncestors = newAncestors ?? ancestors;
-    final existingHistory = hierarchyMeta['parent_history'] as List<String>? ?? [];
-    
+    final existingHistory =
+        hierarchyMeta['parent_history'] as List<String>? ?? [];
+
     return copyWith(
       parentId: newParentId,
       treePath: updatedPath,
@@ -132,10 +358,7 @@ extension HierarchyExtension<T extends Object> on BaseEntity<T> {
       hierarchyMeta: {
         ...hierarchyMeta,
         'last_hierarchy_update': DateTime.now().toIso8601String(),
-        'parent_history': [
-          ...existingHistory,
-          newParentId?.value ?? 'root'
-        ],
+        'parent_history': [...existingHistory, newParentId?.value ?? 'root'],
       },
     );
   }
@@ -143,7 +366,7 @@ extension HierarchyExtension<T extends Object> on BaseEntity<T> {
   // Child management
   BaseEntity<T> addChild(EntityId childId) {
     if (childIds.contains(childId)) return this;
-    
+
     final updatedChildren = [...childIds, childId];
     return copyWith(
       childIds: updatedChildren,
@@ -158,7 +381,7 @@ extension HierarchyExtension<T extends Object> on BaseEntity<T> {
 
   BaseEntity<T> removeChild(EntityId childId) {
     if (!childIds.contains(childId)) return this;
-    
+
     final updatedChildren = childIds.where((id) => id != childId).toList();
     return copyWith(
       childIds: updatedChildren,
@@ -190,7 +413,7 @@ extension AIExtension<T extends Object> on BaseEntity<T> {
   // Core AI getters
   bool get hasEmbeddings => aiVectors.isNotEmpty;
   bool get hasScores => aiScores.isNotEmpty;
-  
+
   double? getScore(String modelId) => aiScores[modelId];
   List<double>? getVector(String modelId) => aiVectors[modelId];
 
@@ -204,11 +427,11 @@ extension AIExtension<T extends Object> on BaseEntity<T> {
     bool useCache = true,
   }) {
     final timestamp = DateTime.now();
-    final newEmbeddings = embeddings != null ? 
-      {...aiVectors, modelId: embeddings} : 
-      aiVectors;
+    final newEmbeddings =
+        embeddings != null ? {...aiVectors, modelId: embeddings} : aiVectors;
 
-    final cacheKey = useCache ? _generateCacheKey(modelId, input.toString()) : null;
+    final cacheKey =
+        useCache ? _generateCacheKey(modelId, input.toString()) : null;
     final newMeta = {
       ...aiMeta,
       if (cacheKey != null)
@@ -230,22 +453,20 @@ extension AIExtension<T extends Object> on BaseEntity<T> {
 
   // Cache management
   Map<String, dynamic>? getCachedResult(
-    String modelId, 
-    Map<String, dynamic> input,
-    {bool requireLatestVersion = false}
-  ) {
+      String modelId, Map<String, dynamic> input,
+      {bool requireLatestVersion = false}) {
     final cacheKey = _generateCacheKey(modelId, input.toString());
     final cached = aiMeta['cache_$cacheKey'];
-    
+
     if (cached == null) return null;
-    
+
     final result = json.decode(cached) as Map<String, dynamic>;
-    
+
     if (requireLatestVersion) {
       final cachedVersion = result['model_version'];
       if (cachedVersion != aiVer) return null;
     }
-    
+
     return result;
   }
 

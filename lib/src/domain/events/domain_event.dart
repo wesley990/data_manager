@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../value_objects/user_action.dart';
 import 'package:data_manager/data_manager.dart';
 
 part 'domain_event.freezed.dart';
