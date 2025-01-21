@@ -1,6 +1,7 @@
 import 'package:uuid/uuid.dart';
 import 'package:authentication/authentication.dart';
 import 'package:data_manager/data_manager.dart';
+import 'base_entity_extensions.dart';
 
 class EntityCreateConfig<T extends Object> {
   // Core info
@@ -107,8 +108,8 @@ class EntityFactory {
       meta: config.meta ?? {},
     );
 
-    // Create base entity
-    final entity = BaseEntity<T>(
+    // Create base entity first
+    var entity = BaseEntity<T>(
       core: core,
       treePath: config.parentPath,
       parentId: config.parentId,
@@ -131,18 +132,16 @@ class EntityFactory {
       accessLog: [userAction],
     );
 
-    // Process with path extension
-    final treeExt = TreePathExtension(entity);
-    if (!treeExt.isPathValid(entity.treePath)) {
+    // Validate path using extension method
+    if (!entity.isPathValid(entity.treePath)) {
       throw PathValidationException(
         message: 'Invalid path format',
         path: entity.treePath,
       );
     }
 
-    // Process with hierarchy extension
-    final hierExt = HierarchyExtension(entity);
-    if (hierExt.hasCircularReference()) {
+    // Check for circular references using extension method
+    if (entity.hasCircularReference()) {
       throw HierarchyValidationException(
         message: 'Circular reference detected',
         field: 'hierarchy',
@@ -151,9 +150,9 @@ class EntityFactory {
       );
     }
 
-    final searchIndex = hierExt.buildHierarchyIndex();
+    final searchIndex = entity.buildHierarchyIndex();
     return entity.copyWith(
-      treePath: treeExt.sanitizePath(entity.treePath),
+      treePath: entity.sanitizePath(entity.treePath),
       treeDepth: entity.ancestors.length,
       searchIndex: searchIndex,
     );
@@ -179,8 +178,8 @@ class EntityFactory {
       meta: config.newMeta ?? Map<String, Object>.from(source.meta),
     );
 
-    // Create base entity
-    final entity = BaseEntity<T>(
+    // Create base entity first
+    var entity = BaseEntity<T>(
       core: core,
       treePath: config.newPath ?? source.treePath,
       tags: config.newTags ?? List<String>.from(source.tags),
@@ -200,13 +199,9 @@ class EntityFactory {
       accessLog: [userAction],
     );
 
-    // Process with extensions
-    final treeExt = TreePathExtension(entity);
-    final hierExt = HierarchyExtension(entity);
-
-    final searchIndex = hierExt.buildHierarchyIndex();
+    final searchIndex = entity.buildHierarchyIndex();
     return entity.copyWith(
-      treePath: treeExt.sanitizePath(entity.treePath),
+      treePath: entity.sanitizePath(entity.treePath),
       treeDepth: entity.ancestors.length,
       searchIndex: searchIndex,
     );
