@@ -27,38 +27,6 @@ class Owner with _$Owner {
   bool get hasValidContact => contact.email != null || contact.phone != null;
   String get displayName => contact.displayName;
 
-  // Validation methods
-  ValidationResult validate() {
-    final issues = <ValidationIssue>[];
-
-    if (!hasValidContact) {
-      issues.add(ValidationIssue(
-        message: 'Contact validation failed: requires email or phone',
-      ));
-    }
-
-    if (siteIds.length < 2) {
-      issues.add(ValidationIssue(
-        message: 'Site validation failed: minimum 2 sites required',
-      ));
-    }
-
-    return issues.isEmpty
-        ? ValidationResult.valid()
-        : ValidationResult.invalid(issues);
-  }
-
-  bool get isValid => validate().isValid;
-
-  // Path validation
-  bool validatePath(String path) => _validatePathRules(path);
-
-  bool _validatePathRules(String path) {
-    if (path.length > SystemLimits.pathMaxLength) return false;
-    final segments = path.split(EntityDefaults.pathSeparator);
-    return segments.every((s) => s.length <= SystemLimits.pathMaxSegment);
-  }
-
   // Event handling
   Owner applyEvent(DomainEvent event) {
     return switch (event.eventType) {
@@ -112,16 +80,6 @@ class Site with _$Site {
 
   // Equipment methods
   bool get hasEquipment => equipmentIds.isNotEmpty;
-
-  // Path validation
-  bool validatePath(String path) => _validatePathRules(path);
-
-  bool _validatePathRules(String path) {
-    return path.length <= SystemLimits.pathMaxLength &&
-        path
-            .split(EntityDefaults.pathSeparator)
-            .every((s) => s.length <= SystemLimits.pathMaxSegment);
-  }
 
   // Event handling
   Site applyEvent(DomainEvent event) {
@@ -197,16 +155,6 @@ class Equipment with _$Equipment {
   bool get isRoot => parentId == null;
   bool get hasSubComponents => childIds.isNotEmpty;
 
-  // Path validation
-  bool validateHierarchyPath(String path) => _validatePathRules(path);
-
-  bool _validatePathRules(String path) {
-    if (path.length > SystemLimits.pathMaxLength) return false;
-    final segments = path.split(EntityDefaults.pathSeparator);
-    if (segments.length > SystemLimits.hierarchyDepthMax) return false;
-    return segments.every((s) => s.length <= SystemLimits.pathMaxSegment);
-  }
-
   // Event handling
   Equipment applyEvent(DomainEvent event) {
     return switch (event.eventType) {
@@ -254,16 +202,6 @@ class Vendor with _$Vendor {
   bool get hasServices => services.isNotEmpty;
   String get displayName => contact.displayName;
   bool get hasValidContact => contact.email != null || contact.phone != null;
-
-  // Path validation
-  bool validateStaffPath(String path) => _validatePathRules(path);
-
-  bool _validatePathRules(String path) {
-    return path.length <= SystemLimits.pathMaxLength &&
-        path
-            .split(EntityDefaults.pathSeparator)
-            .every((s) => s.length <= SystemLimits.pathMaxSegment);
-  }
 
   // Event handling
   Vendor applyEvent(DomainEvent event) {
@@ -321,12 +259,6 @@ class Personnel with _$Personnel {
   bool get hasValidCerts => certs.isNotEmpty && certDates.isNotEmpty;
 
   DateTime? getCertExpiry(String cert) => certDates[cert];
-
-  // Certification methods
-  bool validateCert(String cert) {
-    final expiry = certDates[cert];
-    return expiry != null && expiry.isAfter(DateTime.now());
-  }
 
   // Event handling
   Personnel applyEvent(DomainEvent event) {

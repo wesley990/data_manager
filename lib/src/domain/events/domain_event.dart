@@ -11,13 +11,6 @@ abstract class EventDefaults {
   static const tags = <String>[];
 }
 
-/// Event limits for validation
-abstract class EventLimits {
-  static const maxChanges = 1000;
-  static const maxMetadata = 100;
-  static const maxTags = 50;
-}
-
 @freezed
 class DomainEvent with _$DomainEvent {
   const DomainEvent._();
@@ -157,7 +150,8 @@ class DomainEvent with _$DomainEvent {
     );
   }
 
-  // Validation events
+  // TODO: Temporarily disabled validation events
+  /* 
   factory DomainEvent.validationPerformed({
     required EventId id,
     required EntityId entityId,
@@ -178,6 +172,7 @@ class DomainEvent with _$DomainEvent {
       },
     );
   }
+  */
 }
 
 // Event type classifications
@@ -186,9 +181,8 @@ enum EventType {
   created,
   updated,
   deleted,
-  validated,
 
-  // Status management
+  // Status management 
   locked,
   unlocked,
   statusChanged,
