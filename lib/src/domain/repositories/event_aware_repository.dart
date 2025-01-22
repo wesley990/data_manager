@@ -4,11 +4,8 @@ import 'package:uuid/uuid.dart';
 abstract class EventAwareRepository<T extends BaseEntity>
     implements IEntityRepository<T> {
   final IEventStore eventStore;
-  final IEntityValidator<T> validator;
-  final ValidationCache validationCache;
 
-  EventAwareRepository(this.eventStore, this.validator)
-      : validationCache = ValidationCache();
+  EventAwareRepository(this.eventStore);
 
   @override
   Future<BaseEntity<T>> operate(
@@ -22,12 +19,6 @@ abstract class EventAwareRepository<T extends BaseEntity>
 
     final action = UserAction(uid: 'system', timestamp: DateTime.now());
     final event = _createEvent(type, id, params, action);
-
-    final eventValidation = await eventStore.validateEvent(event);
-    if (!eventValidation.isValid) {
-      throw ValidationException(eventValidation.getErrorMessage());
-    }
-
     final result = await _executeOperation(type, id, params);
     await eventStore.store(event);
     return result;
@@ -38,25 +29,12 @@ abstract class EventAwareRepository<T extends BaseEntity>
     EntityId id, [
     Map<String, Object>? params,
   ]) async {
-    final entity = await loadEntity(id);
-    final context = ValidationContext(
-      data: params ?? {},
-      relatedEntities: await _loadRelatedEntities(id),
-      useCache: true,
-    );
-
-    final validationResult = await validator.validate(entity, context);
-    if (!validationResult.isValid) {
-      throw ValidationException(validationResult.getErrorMessage());
-    }
-
     // Implement concrete operation logic in subclasses
     throw UnimplementedError();
   }
 
   // Protected methods to be implemented
   Future<T> loadEntity(EntityId id);
-  Future<Map<String, BaseEntity>> _loadRelatedEntities(EntityId id);
 
   // Event management methods
   Stream<DomainEvent> watchEntityEvents(EntityId id) =>
@@ -129,13 +107,6 @@ abstract class EventAwareRepository<T extends BaseEntity>
     }
   }
 
-  @override
-  Future<RepairReport> repair(EntityId id, RepairOptions options) async {
-    final report = await _executeRepair(id, options);
-    await eventStore.createSnapshot(DateTime.now());
-    return report;
-  }
-
   Future<void> createSnapshot(DateTime timestamp) async {
     await eventStore.createSnapshot(timestamp);
   }
@@ -150,6 +121,4 @@ abstract class EventAwareRepository<T extends BaseEntity>
     List<EntityId> ids, [
     Map<String, Object>? params,
   ]);
-
-  Future<RepairReport> _executeRepair(EntityId id, RepairOptions options);
 }

@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:uuid/uuid.dart';
-import '../validation/types/validation_types.dart';
 
 part 'identity_value_objects.freezed.dart';
 part 'identity_value_objects.g.dart';
@@ -20,13 +19,6 @@ class EntityId with _$EntityId {
   @override
   String toString() => value;
 
-  ValidationResult validate() {
-    if (value.isEmpty) {
-      return ValidationResult.invalid(
-          [ValidationIssue(message: 'Entity ID cannot be empty')]);
-    }
-    return ValidationResult.valid();
-  }
 
   factory EntityId.fromJson(Map<String, Object> json) =>
       _$EntityIdFromJson(json);
@@ -46,13 +38,6 @@ class EventId with _$EventId {
   @override
   String toString() => value;
 
-  ValidationResult validate() {
-    if (value.isEmpty) {
-      return ValidationResult.invalid(
-          [ValidationIssue(message: 'Event ID cannot be empty')]);
-    }
-    return ValidationResult.valid();
-  }
 
   factory EventId.fromJson(Map<String, Object> json) => _$EventIdFromJson(json);
 }

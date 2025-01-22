@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:data_manager/data_manager.dart';
-import 'package:data_manager/src/domain/value_objects/user_action.dart';
-import 'package:flutter/material.dart';
 
 // Repository interface
 abstract class IEntityRepository<T extends Object> {
@@ -13,10 +11,6 @@ abstract class IEntityRepository<T extends Object> {
   Future<PagedResult<BaseEntity<T>>> query(QueryParams params);
   Stream<BaseEntity<T>> watchEntity(EntityId id);
   Stream<List<BaseEntity<T>>> watchQuery(QueryParams params);
-
-  // Validation & repair
-  Future<ValidationResult> validateBatch(List<EntityId> ids);
-  Future<RepairReport> repair(EntityId id, RepairOptions options);
 
   // Hierarchy & relationships
   Future<List<BaseEntity<T>>> getHierarchy(EntityId id, HierarchyParams params);
@@ -159,38 +153,6 @@ class SyncProgress {
     required this.current,
     required this.status,
     required this.percentage,
-  });
-}
-
-// New Options class
-class RepairOptions {
-  final bool dryRun;
-  final ValidationLevel validationLevel;
-  final bool recursive;
-  final Map<String, Object>? settings;
-
-  const RepairOptions({
-    this.dryRun = true,
-    this.validationLevel = ValidationLevel.strict,
-    this.recursive = false,
-    this.settings,
-  });
-}
-
-// New Report class
-class RepairReport {
-  final int entitiesChecked;
-  final int entitiesRepaired;
-  final List<String> errors;
-  final Map<String, Object> stats;
-  final DateTime timestamp;
-
-  const RepairReport({
-    required this.entitiesChecked,
-    required this.entitiesRepaired,
-    required this.errors,
-    required this.stats,
-    required this.timestamp,
   });
 }
 

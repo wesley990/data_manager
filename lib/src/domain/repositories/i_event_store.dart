@@ -7,7 +7,6 @@ abstract class IEventStore {
   Future<void> storeBatch(List<DomainEvent> events);
   Future<List<DomainEvent>> getEvents(EntityId entityId);
   Future<List<DomainEvent>> queryEvents(EventQuery query);
-  Future<ValidationResult> validateEvent(DomainEvent event);
   Stream<DomainEvent> watchEvents(EntityId entityId);
   
   // Snapshot management
