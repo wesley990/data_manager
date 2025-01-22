@@ -84,7 +84,7 @@ extension TreePathExtension<T extends Object> on BaseEntityModel<T> {
     return sanitizePath('$basePath${EntityDefaults.pathSeparator}$entityPart');
   }
 
-  List<String> buildTreePaths() {
+  List<String> buildHierarchyPaths() {  // Renamed from buildTreePaths
     final paths = <String>[];
     final parts = treePath?.split(EntityDefaults.pathSeparator) ?? [];
     String currentPath = '';
@@ -210,12 +210,14 @@ extension AIExtension<T extends Object> on BaseEntityModel<T> {
   // Core AI getters
   bool get hasEmbeddings => aiVectors.isNotEmpty;
   bool get hasScores => aiScores.isNotEmpty;
+  bool get hasValidAiVersion => aiVer != null && aiVer!.isNotEmpty;
 
   double? getScore(String modelId) => aiScores[modelId];
   List<double>? getVector(String modelId) => aiVectors[modelId];
+  bool hasModel(String modelId) => aiVectors.containsKey(modelId);
 
   // AI Processing methods
-  BaseEntityModel<T> processWithAI({
+  BaseEntityModel<T> applyAIProcessing({  // Renamed from processWithAI
     required String modelId,
     required Map<String, dynamic> input,
     required Map<String, dynamic> output,
@@ -249,6 +251,11 @@ extension AIExtension<T extends Object> on BaseEntityModel<T> {
   }
 
   // Cache management
+  bool hasCachedResult(String modelId, Map<String, dynamic> input) {
+    final cacheKey = _generateCacheKey(modelId, input.toString());
+    return aiMeta.containsKey('cache_$cacheKey');
+  }
+
   Map<String, dynamic>? getCachedResult(
       String modelId, Map<String, dynamic> input,
       {bool requireLatestVersion = false}) {
@@ -298,9 +305,13 @@ extension HistoryExtension<T extends Object> on BaseEntityModel<T> {
 /// Version Control Extension
 extension VersionControlExtension<T extends Object> on BaseEntityModel<T> {
   // Combine version management and locking
-  bool hasValidVersion() {
+  bool hasValidVersion() => _isValidVersionFormat(schemaVer);
+  bool hasValidSchemaVersion() => _isValidVersionFormat(schemaVer);
+  bool hasValidDataVersion() => dataVer > 0;
+  
+  bool _isValidVersionFormat(String version) {
     try {
-      final parts = schemaVer.split('.');
+      final parts = version.split('.');
       return parts.length == 3 && parts.every((p) => int.tryParse(p) != null);
     } catch (_) {
       return false;
@@ -318,18 +329,17 @@ extension VersionControlExtension<T extends Object> on BaseEntityModel<T> {
     );
   }
 
-  bool hasConflict(BaseEntityModel<T> other) =>
+  bool hasVersionConflict(BaseEntityModel<T> other) =>
       structVer != other.structVer ||
       dataVer != other.dataVer ||
-      _hasVersionVectorConflict(other) ||
-      hasLockConflict(other);
+      _hasVersionVectorConflict(other);
 
   bool _hasVersionVectorConflict(BaseEntityModel<T> other) =>
       verVectors.entries.any((entry) =>
           other.verVectors[entry.key] != null &&
           entry.value > other.verVectors[entry.key]!);
 
-  BaseEntityModel<T> updateWithConflictResolution(BaseEntityModel<T> serverVersion) {
+  BaseEntityModel<T> resolveVersionConflict(BaseEntityModel<T> serverVersion) {  // Renamed from resolveConflict
     final comparison = _compareVersions(schemaVer, serverVersion.schemaVer);
     if (comparison > 0) {
       return copyWith(
@@ -365,16 +375,12 @@ extension VersionControlExtension<T extends Object> on BaseEntityModel<T> {
 
 /// Lock Management Extension
 extension LockExtension<T extends Object> on BaseEntityModel<T> {
-  bool get isLockActive =>
+  bool get isLocked => 
       lockOwner != null && (lockExpiry?.isAfter(DateTime.now()) ?? false);
 
   Duration _normalizeLockDuration(Duration duration) {
-    if (duration < LockConfig.minimumDuration) {
-      return LockConfig.minimumDuration;
-    }
-    if (duration > LockConfig.maximumDuration) {
-      return LockConfig.maximumDuration;
-    }
+    if (duration < LockConfig.minimumDuration) return LockConfig.minimumDuration;
+    if (duration > LockConfig.maximumDuration) return LockConfig.maximumDuration;
     return duration;
   }
 
@@ -384,7 +390,7 @@ extension LockExtension<T extends Object> on BaseEntityModel<T> {
         distLockId != other.distLockId;
   }
 
-  BaseEntityModel<T> setLock(
+  BaseEntityModel<T> acquireLock(  // Renamed from setLock
     UserAction user, {
     Duration? duration,
     bool isDistributed = false,
@@ -404,13 +410,3 @@ extension LockExtension<T extends Object> on BaseEntityModel<T> {
   }
 }
 
-/// Tree Path Management Methods
-extension PathManagementExtension<T extends Object> on BaseEntityModel<T> {
-  Map<String, Object> buildTreeIndex() {
-    return {
-      'depth_name': '${treeDepth}_${name.toLowerCase()}',
-      'parent_type': parentId?.value ?? 'root',
-      'ancestry': ancestors.map((e) => e.value).join('|'),
-    };
-  }
-}
