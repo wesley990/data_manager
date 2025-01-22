@@ -12,10 +12,10 @@ abstract class EventDefaults {
 }
 
 @freezed
-class DomainEvent with _$DomainEvent {
-  const DomainEvent._();
+class DomainEventModel with _$DomainEventModel {
+  const DomainEventModel._();
 
-  const factory DomainEvent({
+  const factory DomainEventModel({
     // Core event data
     required EventId id,
     required EntityId entityId,
@@ -40,20 +40,20 @@ class DomainEvent with _$DomainEvent {
     
     // Status
     String? status,
-  }) = _DomainEvent;
+  }) = _DomainEventModel;
 
-  factory DomainEvent.fromJson(Map<String, Object> json) =>
-      _$DomainEventFromJson(json);
+  factory DomainEventModel.fromJson(Map<String, Object> json) =>
+      _$DomainEventModelFromJson(json);
 
   // Entity lifecycle events
-  factory DomainEvent.entityCreated({
+  factory DomainEventModel.entityCreated({
     required EventId id,
     required EntityId entityId,
     required String entityType,
     required UserAction action,
     required Map<String, Object> initialData,
   }) {
-    return DomainEvent(
+    return DomainEventModel(
       id: id,
       entityId: entityId,
       entityType: entityType,
@@ -64,14 +64,14 @@ class DomainEvent with _$DomainEvent {
     );
   }
 
-  factory DomainEvent.entityUpdated({
+  factory DomainEventModel.entityUpdated({
     required EventId id,
     required EntityId entityId,
     required String entityType,
     required UserAction action,
     required Map<String, Object> changes,
   }) {
-    return DomainEvent(
+    return DomainEventModel(
       id: id,
       entityId: entityId,
       entityType: entityType,
@@ -83,7 +83,7 @@ class DomainEvent with _$DomainEvent {
   }
 
   // Relationship events
-  factory DomainEvent.relationshipChanged({
+  factory DomainEventModel.relationshipChanged({
     required EventId id,
     required EntityId entityId,
     required String entityType,
@@ -91,7 +91,7 @@ class DomainEvent with _$DomainEvent {
     required String relationshipType,
     required Map<String, Object> changes,
   }) {
-    return DomainEvent(
+    return DomainEventModel(
       id: id,
       entityId: entityId,
       entityType: entityType,
@@ -104,7 +104,7 @@ class DomainEvent with _$DomainEvent {
   }
 
   // Status events
-  factory DomainEvent.statusChanged({
+  factory DomainEventModel.statusChanged({
     required EventId id,
     required EntityId entityId,
     required String entityType,
@@ -112,7 +112,7 @@ class DomainEvent with _$DomainEvent {
     required String oldStatus,
     required String newStatus,
   }) {
-    return DomainEvent(
+    return DomainEventModel(
       id: id,
       entityId: entityId,
       entityType: entityType,
@@ -128,7 +128,7 @@ class DomainEvent with _$DomainEvent {
   }
 
   // Hierarchy events
-  factory DomainEvent.hierarchyChanged({
+  factory DomainEventModel.hierarchyChanged({
     required EventId id,
     required EntityId entityId,
     required String entityType,
@@ -136,7 +136,7 @@ class DomainEvent with _$DomainEvent {
     required EntityId? oldParentId,
     required EntityId? newParentId,
   }) {
-    return DomainEvent(
+    return DomainEventModel(
       id: id,
       entityId: entityId,
       entityType: entityType,
@@ -152,14 +152,14 @@ class DomainEvent with _$DomainEvent {
 
   // TODO: Temporarily disabled validation events
   /* 
-  factory DomainEvent.validationPerformed({
+  factory DomainEventModel.validationPerformed({
     required EventId id,
     required EntityId entityId,
     required String entityType,
     required UserAction action,
     required ValidationResult result,
   }) {
-    return DomainEvent(
+    return DomainEventModel(
       id: id,
       entityId: entityId,
       entityType: entityType,

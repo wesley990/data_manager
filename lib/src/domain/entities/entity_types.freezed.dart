@@ -14,31 +14,33 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-Owner _$OwnerFromJson(Map<String, dynamic> json) {
-  return _Owner.fromJson(json);
+OwnerModel _$OwnerModelFromJson(Map<String, dynamic> json) {
+  return _OwnerModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$Owner {
+mixin _$OwnerModel {
 // Core info
   ContactInfo get contact => throw _privateConstructorUsedError;
   List<EntityId> get siteIds => throw _privateConstructorUsedError; // Metadata
   Map<String, Object> get meta => throw _privateConstructorUsedError;
   Map<String, Object>? get customData => throw _privateConstructorUsedError;
 
-  /// Serializes this Owner to a JSON map.
+  /// Serializes this OwnerModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of Owner
+  /// Create a copy of OwnerModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $OwnerCopyWith<Owner> get copyWith => throw _privateConstructorUsedError;
+  $OwnerModelCopyWith<OwnerModel> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $OwnerCopyWith<$Res> {
-  factory $OwnerCopyWith(Owner value, $Res Function(Owner) then) =
-      _$OwnerCopyWithImpl<$Res, Owner>;
+abstract class $OwnerModelCopyWith<$Res> {
+  factory $OwnerModelCopyWith(
+          OwnerModel value, $Res Function(OwnerModel) then) =
+      _$OwnerModelCopyWithImpl<$Res, OwnerModel>;
   @useResult
   $Res call(
       {ContactInfo contact,
@@ -50,16 +52,16 @@ abstract class $OwnerCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$OwnerCopyWithImpl<$Res, $Val extends Owner>
-    implements $OwnerCopyWith<$Res> {
-  _$OwnerCopyWithImpl(this._value, this._then);
+class _$OwnerModelCopyWithImpl<$Res, $Val extends OwnerModel>
+    implements $OwnerModelCopyWith<$Res> {
+  _$OwnerModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of Owner
+  /// Create a copy of OwnerModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -89,7 +91,7 @@ class _$OwnerCopyWithImpl<$Res, $Val extends Owner>
     ) as $Val);
   }
 
-  /// Create a copy of Owner
+  /// Create a copy of OwnerModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -101,10 +103,11 @@ class _$OwnerCopyWithImpl<$Res, $Val extends Owner>
 }
 
 /// @nodoc
-abstract class _$$OwnerImplCopyWith<$Res> implements $OwnerCopyWith<$Res> {
-  factory _$$OwnerImplCopyWith(
-          _$OwnerImpl value, $Res Function(_$OwnerImpl) then) =
-      __$$OwnerImplCopyWithImpl<$Res>;
+abstract class _$$OwnerModelImplCopyWith<$Res>
+    implements $OwnerModelCopyWith<$Res> {
+  factory _$$OwnerModelImplCopyWith(
+          _$OwnerModelImpl value, $Res Function(_$OwnerModelImpl) then) =
+      __$$OwnerModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -118,14 +121,14 @@ abstract class _$$OwnerImplCopyWith<$Res> implements $OwnerCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$OwnerImplCopyWithImpl<$Res>
-    extends _$OwnerCopyWithImpl<$Res, _$OwnerImpl>
-    implements _$$OwnerImplCopyWith<$Res> {
-  __$$OwnerImplCopyWithImpl(
-      _$OwnerImpl _value, $Res Function(_$OwnerImpl) _then)
+class __$$OwnerModelImplCopyWithImpl<$Res>
+    extends _$OwnerModelCopyWithImpl<$Res, _$OwnerModelImpl>
+    implements _$$OwnerModelImplCopyWith<$Res> {
+  __$$OwnerModelImplCopyWithImpl(
+      _$OwnerModelImpl _value, $Res Function(_$OwnerModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of Owner
+  /// Create a copy of OwnerModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -135,7 +138,7 @@ class __$$OwnerImplCopyWithImpl<$Res>
     Object? meta = null,
     Object? customData = freezed,
   }) {
-    return _then(_$OwnerImpl(
+    return _then(_$OwnerModelImpl(
       contact: null == contact
           ? _value.contact
           : contact // ignore: cast_nullable_to_non_nullable
@@ -158,8 +161,8 @@ class __$$OwnerImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$OwnerImpl extends _Owner {
-  const _$OwnerImpl(
+class _$OwnerModelImpl extends _OwnerModel {
+  const _$OwnerModelImpl(
       {required this.contact,
       final List<EntityId> siteIds = const [],
       final Map<String, Object> meta = const {},
@@ -169,8 +172,8 @@ class _$OwnerImpl extends _Owner {
         _customData = customData,
         super._();
 
-  factory _$OwnerImpl.fromJson(Map<String, dynamic> json) =>
-      _$$OwnerImplFromJson(json);
+  factory _$OwnerModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$OwnerModelImplFromJson(json);
 
 // Core info
   @override
@@ -207,14 +210,14 @@ class _$OwnerImpl extends _Owner {
 
   @override
   String toString() {
-    return 'Owner(contact: $contact, siteIds: $siteIds, meta: $meta, customData: $customData)';
+    return 'OwnerModel(contact: $contact, siteIds: $siteIds, meta: $meta, customData: $customData)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$OwnerImpl &&
+            other is _$OwnerModelImpl &&
             (identical(other.contact, contact) || other.contact == contact) &&
             const DeepCollectionEquality().equals(other._siteIds, _siteIds) &&
             const DeepCollectionEquality().equals(other._meta, _meta) &&
@@ -231,31 +234,32 @@ class _$OwnerImpl extends _Owner {
       const DeepCollectionEquality().hash(_meta),
       const DeepCollectionEquality().hash(_customData));
 
-  /// Create a copy of Owner
+  /// Create a copy of OwnerModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$OwnerImplCopyWith<_$OwnerImpl> get copyWith =>
-      __$$OwnerImplCopyWithImpl<_$OwnerImpl>(this, _$identity);
+  _$$OwnerModelImplCopyWith<_$OwnerModelImpl> get copyWith =>
+      __$$OwnerModelImplCopyWithImpl<_$OwnerModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$OwnerImplToJson(
+    return _$$OwnerModelImplToJson(
       this,
     );
   }
 }
 
-abstract class _Owner extends Owner {
-  const factory _Owner(
+abstract class _OwnerModel extends OwnerModel {
+  const factory _OwnerModel(
       {required final ContactInfo contact,
       final List<EntityId> siteIds,
       final Map<String, Object> meta,
-      final Map<String, Object>? customData}) = _$OwnerImpl;
-  const _Owner._() : super._();
+      final Map<String, Object>? customData}) = _$OwnerModelImpl;
+  const _OwnerModel._() : super._();
 
-  factory _Owner.fromJson(Map<String, dynamic> json) = _$OwnerImpl.fromJson;
+  factory _OwnerModel.fromJson(Map<String, dynamic> json) =
+      _$OwnerModelImpl.fromJson;
 
 // Core info
   @override
@@ -267,20 +271,20 @@ abstract class _Owner extends Owner {
   @override
   Map<String, Object>? get customData;
 
-  /// Create a copy of Owner
+  /// Create a copy of OwnerModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$OwnerImplCopyWith<_$OwnerImpl> get copyWith =>
+  _$$OwnerModelImplCopyWith<_$OwnerModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
-Site _$SiteFromJson(Map<String, dynamic> json) {
-  return _Site.fromJson(json);
+SiteModel _$SiteModelFromJson(Map<String, dynamic> json) {
+  return _SiteModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$Site {
+mixin _$SiteModel {
 // Core info
   String get name => throw _privateConstructorUsedError;
   EntityId get ownerId => throw _privateConstructorUsedError; // Location
@@ -295,19 +299,20 @@ mixin _$Site {
   Map<String, Object> get meta => throw _privateConstructorUsedError;
   Map<String, String> get contactInfo => throw _privateConstructorUsedError;
 
-  /// Serializes this Site to a JSON map.
+  /// Serializes this SiteModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of Site
+  /// Create a copy of SiteModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $SiteCopyWith<Site> get copyWith => throw _privateConstructorUsedError;
+  $SiteModelCopyWith<SiteModel> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $SiteCopyWith<$Res> {
-  factory $SiteCopyWith(Site value, $Res Function(Site) then) =
-      _$SiteCopyWithImpl<$Res, Site>;
+abstract class $SiteModelCopyWith<$Res> {
+  factory $SiteModelCopyWith(SiteModel value, $Res Function(SiteModel) then) =
+      _$SiteModelCopyWithImpl<$Res, SiteModel>;
   @useResult
   $Res call(
       {String name,
@@ -325,16 +330,16 @@ abstract class $SiteCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$SiteCopyWithImpl<$Res, $Val extends Site>
-    implements $SiteCopyWith<$Res> {
-  _$SiteCopyWithImpl(this._value, this._then);
+class _$SiteModelCopyWithImpl<$Res, $Val extends SiteModel>
+    implements $SiteModelCopyWith<$Res> {
+  _$SiteModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of Site
+  /// Create a copy of SiteModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -394,7 +399,7 @@ class _$SiteCopyWithImpl<$Res, $Val extends Site>
     ) as $Val);
   }
 
-  /// Create a copy of Site
+  /// Create a copy of SiteModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -406,10 +411,11 @@ class _$SiteCopyWithImpl<$Res, $Val extends Site>
 }
 
 /// @nodoc
-abstract class _$$SiteImplCopyWith<$Res> implements $SiteCopyWith<$Res> {
-  factory _$$SiteImplCopyWith(
-          _$SiteImpl value, $Res Function(_$SiteImpl) then) =
-      __$$SiteImplCopyWithImpl<$Res>;
+abstract class _$$SiteModelImplCopyWith<$Res>
+    implements $SiteModelCopyWith<$Res> {
+  factory _$$SiteModelImplCopyWith(
+          _$SiteModelImpl value, $Res Function(_$SiteModelImpl) then) =
+      __$$SiteModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -429,13 +435,14 @@ abstract class _$$SiteImplCopyWith<$Res> implements $SiteCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$SiteImplCopyWithImpl<$Res>
-    extends _$SiteCopyWithImpl<$Res, _$SiteImpl>
-    implements _$$SiteImplCopyWith<$Res> {
-  __$$SiteImplCopyWithImpl(_$SiteImpl _value, $Res Function(_$SiteImpl) _then)
+class __$$SiteModelImplCopyWithImpl<$Res>
+    extends _$SiteModelCopyWithImpl<$Res, _$SiteModelImpl>
+    implements _$$SiteModelImplCopyWith<$Res> {
+  __$$SiteModelImplCopyWithImpl(
+      _$SiteModelImpl _value, $Res Function(_$SiteModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of Site
+  /// Create a copy of SiteModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -451,7 +458,7 @@ class __$$SiteImplCopyWithImpl<$Res>
     Object? meta = null,
     Object? contactInfo = null,
   }) {
-    return _then(_$SiteImpl(
+    return _then(_$SiteModelImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -498,8 +505,8 @@ class __$$SiteImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$SiteImpl extends _Site {
-  const _$SiteImpl(
+class _$SiteModelImpl extends _SiteModel {
+  const _$SiteModelImpl(
       {required this.name,
       required this.ownerId,
       this.address,
@@ -517,8 +524,8 @@ class _$SiteImpl extends _Site {
         _contactInfo = contactInfo,
         super._();
 
-  factory _$SiteImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SiteImplFromJson(json);
+  factory _$SiteModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SiteModelImplFromJson(json);
 
 // Core info
   @override
@@ -586,14 +593,14 @@ class _$SiteImpl extends _Site {
 
   @override
   String toString() {
-    return 'Site(name: $name, ownerId: $ownerId, address: $address, latitude: $latitude, longitude: $longitude, equipmentIds: $equipmentIds, siteInfo: $siteInfo, customData: $customData, meta: $meta, contactInfo: $contactInfo)';
+    return 'SiteModel(name: $name, ownerId: $ownerId, address: $address, latitude: $latitude, longitude: $longitude, equipmentIds: $equipmentIds, siteInfo: $siteInfo, customData: $customData, meta: $meta, contactInfo: $contactInfo)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SiteImpl &&
+            other is _$SiteModelImpl &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.ownerId, ownerId) || other.ownerId == ownerId) &&
             (identical(other.address, address) || other.address == address) &&
@@ -626,24 +633,24 @@ class _$SiteImpl extends _Site {
       const DeepCollectionEquality().hash(_meta),
       const DeepCollectionEquality().hash(_contactInfo));
 
-  /// Create a copy of Site
+  /// Create a copy of SiteModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$SiteImplCopyWith<_$SiteImpl> get copyWith =>
-      __$$SiteImplCopyWithImpl<_$SiteImpl>(this, _$identity);
+  _$$SiteModelImplCopyWith<_$SiteModelImpl> get copyWith =>
+      __$$SiteModelImplCopyWithImpl<_$SiteModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$SiteImplToJson(
+    return _$$SiteModelImplToJson(
       this,
     );
   }
 }
 
-abstract class _Site extends Site {
-  const factory _Site(
+abstract class _SiteModel extends SiteModel {
+  const factory _SiteModel(
       {required final String name,
       required final EntityId ownerId,
       final String? address,
@@ -653,10 +660,11 @@ abstract class _Site extends Site {
       final Map<String, Object> siteInfo,
       final Map<String, Object>? customData,
       final Map<String, Object> meta,
-      final Map<String, String> contactInfo}) = _$SiteImpl;
-  const _Site._() : super._();
+      final Map<String, String> contactInfo}) = _$SiteModelImpl;
+  const _SiteModel._() : super._();
 
-  factory _Site.fromJson(Map<String, dynamic> json) = _$SiteImpl.fromJson;
+  factory _SiteModel.fromJson(Map<String, dynamic> json) =
+      _$SiteModelImpl.fromJson;
 
 // Core info
   @override
@@ -680,20 +688,20 @@ abstract class _Site extends Site {
   @override
   Map<String, String> get contactInfo;
 
-  /// Create a copy of Site
+  /// Create a copy of SiteModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SiteImplCopyWith<_$SiteImpl> get copyWith =>
+  _$$SiteModelImplCopyWith<_$SiteModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
-Equipment _$EquipmentFromJson(Map<String, dynamic> json) {
-  return _Equipment.fromJson(json);
+EquipmentModel _$EquipmentModelFromJson(Map<String, dynamic> json) {
+  return _EquipmentModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$Equipment {
+mixin _$EquipmentModel {
 // Core info
   String get name => throw _privateConstructorUsedError;
   EntityId get siteId => throw _privateConstructorUsedError;
@@ -712,20 +720,21 @@ mixin _$Equipment {
   Map<String, Object> get meta => throw _privateConstructorUsedError;
   Map<String, String> get maintContacts => throw _privateConstructorUsedError;
 
-  /// Serializes this Equipment to a JSON map.
+  /// Serializes this EquipmentModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of Equipment
+  /// Create a copy of EquipmentModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $EquipmentCopyWith<Equipment> get copyWith =>
+  $EquipmentModelCopyWith<EquipmentModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $EquipmentCopyWith<$Res> {
-  factory $EquipmentCopyWith(Equipment value, $Res Function(Equipment) then) =
-      _$EquipmentCopyWithImpl<$Res, Equipment>;
+abstract class $EquipmentModelCopyWith<$Res> {
+  factory $EquipmentModelCopyWith(
+          EquipmentModel value, $Res Function(EquipmentModel) then) =
+      _$EquipmentModelCopyWithImpl<$Res, EquipmentModel>;
   @useResult
   $Res call(
       {String name,
@@ -748,16 +757,16 @@ abstract class $EquipmentCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$EquipmentCopyWithImpl<$Res, $Val extends Equipment>
-    implements $EquipmentCopyWith<$Res> {
-  _$EquipmentCopyWithImpl(this._value, this._then);
+class _$EquipmentModelCopyWithImpl<$Res, $Val extends EquipmentModel>
+    implements $EquipmentModelCopyWith<$Res> {
+  _$EquipmentModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of Equipment
+  /// Create a copy of EquipmentModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -837,7 +846,7 @@ class _$EquipmentCopyWithImpl<$Res, $Val extends Equipment>
     ) as $Val);
   }
 
-  /// Create a copy of Equipment
+  /// Create a copy of EquipmentModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -847,7 +856,7 @@ class _$EquipmentCopyWithImpl<$Res, $Val extends Equipment>
     });
   }
 
-  /// Create a copy of Equipment
+  /// Create a copy of EquipmentModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -863,11 +872,11 @@ class _$EquipmentCopyWithImpl<$Res, $Val extends Equipment>
 }
 
 /// @nodoc
-abstract class _$$EquipmentImplCopyWith<$Res>
-    implements $EquipmentCopyWith<$Res> {
-  factory _$$EquipmentImplCopyWith(
-          _$EquipmentImpl value, $Res Function(_$EquipmentImpl) then) =
-      __$$EquipmentImplCopyWithImpl<$Res>;
+abstract class _$$EquipmentModelImplCopyWith<$Res>
+    implements $EquipmentModelCopyWith<$Res> {
+  factory _$$EquipmentModelImplCopyWith(_$EquipmentModelImpl value,
+          $Res Function(_$EquipmentModelImpl) then) =
+      __$$EquipmentModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -893,14 +902,14 @@ abstract class _$$EquipmentImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$EquipmentImplCopyWithImpl<$Res>
-    extends _$EquipmentCopyWithImpl<$Res, _$EquipmentImpl>
-    implements _$$EquipmentImplCopyWith<$Res> {
-  __$$EquipmentImplCopyWithImpl(
-      _$EquipmentImpl _value, $Res Function(_$EquipmentImpl) _then)
+class __$$EquipmentModelImplCopyWithImpl<$Res>
+    extends _$EquipmentModelCopyWithImpl<$Res, _$EquipmentModelImpl>
+    implements _$$EquipmentModelImplCopyWith<$Res> {
+  __$$EquipmentModelImplCopyWithImpl(
+      _$EquipmentModelImpl _value, $Res Function(_$EquipmentModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of Equipment
+  /// Create a copy of EquipmentModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -920,7 +929,7 @@ class __$$EquipmentImplCopyWithImpl<$Res>
     Object? meta = null,
     Object? maintContacts = null,
   }) {
-    return _then(_$EquipmentImpl(
+    return _then(_$EquipmentModelImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -983,8 +992,8 @@ class __$$EquipmentImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$EquipmentImpl extends _Equipment {
-  const _$EquipmentImpl(
+class _$EquipmentModelImpl extends _EquipmentModel {
+  const _$EquipmentModelImpl(
       {required this.name,
       required this.siteId,
       required this.type,
@@ -1006,8 +1015,8 @@ class _$EquipmentImpl extends _Equipment {
         _maintContacts = maintContacts,
         super._();
 
-  factory _$EquipmentImpl.fromJson(Map<String, dynamic> json) =>
-      _$$EquipmentImplFromJson(json);
+  factory _$EquipmentModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$EquipmentModelImplFromJson(json);
 
 // Core info
   @override
@@ -1083,14 +1092,14 @@ class _$EquipmentImpl extends _Equipment {
 
   @override
   String toString() {
-    return 'Equipment(name: $name, siteId: $siteId, type: $type, serialNum: $serialNum, modelId: $modelId, manufacturer: $manufacturer, specs: $specs, installDate: $installDate, lastMaintDate: $lastMaintDate, parentId: $parentId, childIds: $childIds, customData: $customData, meta: $meta, maintContacts: $maintContacts)';
+    return 'EquipmentModel(name: $name, siteId: $siteId, type: $type, serialNum: $serialNum, modelId: $modelId, manufacturer: $manufacturer, specs: $specs, installDate: $installDate, lastMaintDate: $lastMaintDate, parentId: $parentId, childIds: $childIds, customData: $customData, meta: $meta, maintContacts: $maintContacts)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$EquipmentImpl &&
+            other is _$EquipmentModelImpl &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.siteId, siteId) || other.siteId == siteId) &&
             (identical(other.type, type) || other.type == type) &&
@@ -1133,24 +1142,25 @@ class _$EquipmentImpl extends _Equipment {
       const DeepCollectionEquality().hash(_meta),
       const DeepCollectionEquality().hash(_maintContacts));
 
-  /// Create a copy of Equipment
+  /// Create a copy of EquipmentModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$EquipmentImplCopyWith<_$EquipmentImpl> get copyWith =>
-      __$$EquipmentImplCopyWithImpl<_$EquipmentImpl>(this, _$identity);
+  _$$EquipmentModelImplCopyWith<_$EquipmentModelImpl> get copyWith =>
+      __$$EquipmentModelImplCopyWithImpl<_$EquipmentModelImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$EquipmentImplToJson(
+    return _$$EquipmentModelImplToJson(
       this,
     );
   }
 }
 
-abstract class _Equipment extends Equipment {
-  const factory _Equipment(
+abstract class _EquipmentModel extends EquipmentModel {
+  const factory _EquipmentModel(
       {required final String name,
       required final EntityId siteId,
       required final EquipmentType type,
@@ -1164,11 +1174,11 @@ abstract class _Equipment extends Equipment {
       final List<EntityId> childIds,
       final Map<String, Object>? customData,
       final Map<String, Object> meta,
-      final Map<String, String> maintContacts}) = _$EquipmentImpl;
-  const _Equipment._() : super._();
+      final Map<String, String> maintContacts}) = _$EquipmentModelImpl;
+  const _EquipmentModel._() : super._();
 
-  factory _Equipment.fromJson(Map<String, dynamic> json) =
-      _$EquipmentImpl.fromJson;
+  factory _EquipmentModel.fromJson(Map<String, dynamic> json) =
+      _$EquipmentModelImpl.fromJson;
 
 // Core info
   @override
@@ -1200,20 +1210,20 @@ abstract class _Equipment extends Equipment {
   @override
   Map<String, String> get maintContacts;
 
-  /// Create a copy of Equipment
+  /// Create a copy of EquipmentModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$EquipmentImplCopyWith<_$EquipmentImpl> get copyWith =>
+  _$$EquipmentModelImplCopyWith<_$EquipmentModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
-Vendor _$VendorFromJson(Map<String, dynamic> json) {
-  return _Vendor.fromJson(json);
+VendorModel _$VendorModelFromJson(Map<String, dynamic> json) {
+  return _VendorModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$Vendor {
+mixin _$VendorModel {
 // Core info
   ContactInfo get contact => throw _privateConstructorUsedError;
   List<EntityId> get staffIds => throw _privateConstructorUsedError;
@@ -1222,19 +1232,21 @@ mixin _$Vendor {
   Map<String, Object>? get customData => throw _privateConstructorUsedError;
   Map<String, Object> get certifications => throw _privateConstructorUsedError;
 
-  /// Serializes this Vendor to a JSON map.
+  /// Serializes this VendorModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of Vendor
+  /// Create a copy of VendorModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $VendorCopyWith<Vendor> get copyWith => throw _privateConstructorUsedError;
+  $VendorModelCopyWith<VendorModel> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $VendorCopyWith<$Res> {
-  factory $VendorCopyWith(Vendor value, $Res Function(Vendor) then) =
-      _$VendorCopyWithImpl<$Res, Vendor>;
+abstract class $VendorModelCopyWith<$Res> {
+  factory $VendorModelCopyWith(
+          VendorModel value, $Res Function(VendorModel) then) =
+      _$VendorModelCopyWithImpl<$Res, VendorModel>;
   @useResult
   $Res call(
       {ContactInfo contact,
@@ -1248,16 +1260,16 @@ abstract class $VendorCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$VendorCopyWithImpl<$Res, $Val extends Vendor>
-    implements $VendorCopyWith<$Res> {
-  _$VendorCopyWithImpl(this._value, this._then);
+class _$VendorModelCopyWithImpl<$Res, $Val extends VendorModel>
+    implements $VendorModelCopyWith<$Res> {
+  _$VendorModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of Vendor
+  /// Create a copy of VendorModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1297,7 +1309,7 @@ class _$VendorCopyWithImpl<$Res, $Val extends Vendor>
     ) as $Val);
   }
 
-  /// Create a copy of Vendor
+  /// Create a copy of VendorModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -1309,10 +1321,11 @@ class _$VendorCopyWithImpl<$Res, $Val extends Vendor>
 }
 
 /// @nodoc
-abstract class _$$VendorImplCopyWith<$Res> implements $VendorCopyWith<$Res> {
-  factory _$$VendorImplCopyWith(
-          _$VendorImpl value, $Res Function(_$VendorImpl) then) =
-      __$$VendorImplCopyWithImpl<$Res>;
+abstract class _$$VendorModelImplCopyWith<$Res>
+    implements $VendorModelCopyWith<$Res> {
+  factory _$$VendorModelImplCopyWith(
+          _$VendorModelImpl value, $Res Function(_$VendorModelImpl) then) =
+      __$$VendorModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -1328,14 +1341,14 @@ abstract class _$$VendorImplCopyWith<$Res> implements $VendorCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$VendorImplCopyWithImpl<$Res>
-    extends _$VendorCopyWithImpl<$Res, _$VendorImpl>
-    implements _$$VendorImplCopyWith<$Res> {
-  __$$VendorImplCopyWithImpl(
-      _$VendorImpl _value, $Res Function(_$VendorImpl) _then)
+class __$$VendorModelImplCopyWithImpl<$Res>
+    extends _$VendorModelCopyWithImpl<$Res, _$VendorModelImpl>
+    implements _$$VendorModelImplCopyWith<$Res> {
+  __$$VendorModelImplCopyWithImpl(
+      _$VendorModelImpl _value, $Res Function(_$VendorModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of Vendor
+  /// Create a copy of VendorModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1347,7 +1360,7 @@ class __$$VendorImplCopyWithImpl<$Res>
     Object? customData = freezed,
     Object? certifications = null,
   }) {
-    return _then(_$VendorImpl(
+    return _then(_$VendorModelImpl(
       contact: null == contact
           ? _value.contact
           : contact // ignore: cast_nullable_to_non_nullable
@@ -1378,8 +1391,8 @@ class __$$VendorImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$VendorImpl extends _Vendor {
-  const _$VendorImpl(
+class _$VendorModelImpl extends _VendorModel {
+  const _$VendorModelImpl(
       {required this.contact,
       final List<EntityId> staffIds = const [],
       final List<String> services = const [],
@@ -1393,8 +1406,8 @@ class _$VendorImpl extends _Vendor {
         _certifications = certifications,
         super._();
 
-  factory _$VendorImpl.fromJson(Map<String, dynamic> json) =>
-      _$$VendorImplFromJson(json);
+  factory _$VendorModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$VendorModelImplFromJson(json);
 
 // Core info
   @override
@@ -1449,14 +1462,14 @@ class _$VendorImpl extends _Vendor {
 
   @override
   String toString() {
-    return 'Vendor(contact: $contact, staffIds: $staffIds, services: $services, meta: $meta, customData: $customData, certifications: $certifications)';
+    return 'VendorModel(contact: $contact, staffIds: $staffIds, services: $services, meta: $meta, customData: $customData, certifications: $certifications)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$VendorImpl &&
+            other is _$VendorModelImpl &&
             (identical(other.contact, contact) || other.contact == contact) &&
             const DeepCollectionEquality().equals(other._staffIds, _staffIds) &&
             const DeepCollectionEquality().equals(other._services, _services) &&
@@ -1478,33 +1491,34 @@ class _$VendorImpl extends _Vendor {
       const DeepCollectionEquality().hash(_customData),
       const DeepCollectionEquality().hash(_certifications));
 
-  /// Create a copy of Vendor
+  /// Create a copy of VendorModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$VendorImplCopyWith<_$VendorImpl> get copyWith =>
-      __$$VendorImplCopyWithImpl<_$VendorImpl>(this, _$identity);
+  _$$VendorModelImplCopyWith<_$VendorModelImpl> get copyWith =>
+      __$$VendorModelImplCopyWithImpl<_$VendorModelImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$VendorImplToJson(
+    return _$$VendorModelImplToJson(
       this,
     );
   }
 }
 
-abstract class _Vendor extends Vendor {
-  const factory _Vendor(
+abstract class _VendorModel extends VendorModel {
+  const factory _VendorModel(
       {required final ContactInfo contact,
       final List<EntityId> staffIds,
       final List<String> services,
       final Map<String, Object> meta,
       final Map<String, Object>? customData,
-      final Map<String, Object> certifications}) = _$VendorImpl;
-  const _Vendor._() : super._();
+      final Map<String, Object> certifications}) = _$VendorModelImpl;
+  const _VendorModel._() : super._();
 
-  factory _Vendor.fromJson(Map<String, dynamic> json) = _$VendorImpl.fromJson;
+  factory _VendorModel.fromJson(Map<String, dynamic> json) =
+      _$VendorModelImpl.fromJson;
 
 // Core info
   @override
@@ -1520,20 +1534,20 @@ abstract class _Vendor extends Vendor {
   @override
   Map<String, Object> get certifications;
 
-  /// Create a copy of Vendor
+  /// Create a copy of VendorModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$VendorImplCopyWith<_$VendorImpl> get copyWith =>
+  _$$VendorModelImplCopyWith<_$VendorModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
-Personnel _$PersonnelFromJson(Map<String, dynamic> json) {
-  return _Personnel.fromJson(json);
+PersonnelModel _$PersonnelModelFromJson(Map<String, dynamic> json) {
+  return _PersonnelModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$Personnel {
+mixin _$PersonnelModel {
 // Core info
   String get name => throw _privateConstructorUsedError;
   EntityId get vendorId => throw _privateConstructorUsedError;
@@ -1548,20 +1562,21 @@ mixin _$Personnel {
   Map<String, Object> get schedule => throw _privateConstructorUsedError;
   Map<String, DateTime> get certDates => throw _privateConstructorUsedError;
 
-  /// Serializes this Personnel to a JSON map.
+  /// Serializes this PersonnelModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of Personnel
+  /// Create a copy of PersonnelModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $PersonnelCopyWith<Personnel> get copyWith =>
+  $PersonnelModelCopyWith<PersonnelModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $PersonnelCopyWith<$Res> {
-  factory $PersonnelCopyWith(Personnel value, $Res Function(Personnel) then) =
-      _$PersonnelCopyWithImpl<$Res, Personnel>;
+abstract class $PersonnelModelCopyWith<$Res> {
+  factory $PersonnelModelCopyWith(
+          PersonnelModel value, $Res Function(PersonnelModel) then) =
+      _$PersonnelModelCopyWithImpl<$Res, PersonnelModel>;
   @useResult
   $Res call(
       {String name,
@@ -1581,16 +1596,16 @@ abstract class $PersonnelCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$PersonnelCopyWithImpl<$Res, $Val extends Personnel>
-    implements $PersonnelCopyWith<$Res> {
-  _$PersonnelCopyWithImpl(this._value, this._then);
+class _$PersonnelModelCopyWithImpl<$Res, $Val extends PersonnelModel>
+    implements $PersonnelModelCopyWith<$Res> {
+  _$PersonnelModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of Personnel
+  /// Create a copy of PersonnelModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1660,7 +1675,7 @@ class _$PersonnelCopyWithImpl<$Res, $Val extends Personnel>
     ) as $Val);
   }
 
-  /// Create a copy of Personnel
+  /// Create a copy of PersonnelModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -1672,11 +1687,11 @@ class _$PersonnelCopyWithImpl<$Res, $Val extends Personnel>
 }
 
 /// @nodoc
-abstract class _$$PersonnelImplCopyWith<$Res>
-    implements $PersonnelCopyWith<$Res> {
-  factory _$$PersonnelImplCopyWith(
-          _$PersonnelImpl value, $Res Function(_$PersonnelImpl) then) =
-      __$$PersonnelImplCopyWithImpl<$Res>;
+abstract class _$$PersonnelModelImplCopyWith<$Res>
+    implements $PersonnelModelCopyWith<$Res> {
+  factory _$$PersonnelModelImplCopyWith(_$PersonnelModelImpl value,
+          $Res Function(_$PersonnelModelImpl) then) =
+      __$$PersonnelModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -1698,14 +1713,14 @@ abstract class _$$PersonnelImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$PersonnelImplCopyWithImpl<$Res>
-    extends _$PersonnelCopyWithImpl<$Res, _$PersonnelImpl>
-    implements _$$PersonnelImplCopyWith<$Res> {
-  __$$PersonnelImplCopyWithImpl(
-      _$PersonnelImpl _value, $Res Function(_$PersonnelImpl) _then)
+class __$$PersonnelModelImplCopyWithImpl<$Res>
+    extends _$PersonnelModelCopyWithImpl<$Res, _$PersonnelModelImpl>
+    implements _$$PersonnelModelImplCopyWith<$Res> {
+  __$$PersonnelModelImplCopyWithImpl(
+      _$PersonnelModelImpl _value, $Res Function(_$PersonnelModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of Personnel
+  /// Create a copy of PersonnelModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1723,7 +1738,7 @@ class __$$PersonnelImplCopyWithImpl<$Res>
     Object? schedule = null,
     Object? certDates = null,
   }) {
-    return _then(_$PersonnelImpl(
+    return _then(_$PersonnelModelImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -1778,8 +1793,8 @@ class __$$PersonnelImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$PersonnelImpl extends _Personnel {
-  const _$PersonnelImpl(
+class _$PersonnelModelImpl extends _PersonnelModel {
+  const _$PersonnelModelImpl(
       {required this.name,
       required this.vendorId,
       required this.skillLevel,
@@ -1800,8 +1815,8 @@ class _$PersonnelImpl extends _Personnel {
         _certDates = certDates,
         super._();
 
-  factory _$PersonnelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PersonnelImplFromJson(json);
+  factory _$PersonnelModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PersonnelModelImplFromJson(json);
 
 // Core info
   @override
@@ -1877,14 +1892,14 @@ class _$PersonnelImpl extends _Personnel {
 
   @override
   String toString() {
-    return 'Personnel(name: $name, vendorId: $vendorId, skillLevel: $skillLevel, role: $role, certs: $certs, specs: $specs, phone: $phone, email: $email, customData: $customData, meta: $meta, schedule: $schedule, certDates: $certDates)';
+    return 'PersonnelModel(name: $name, vendorId: $vendorId, skillLevel: $skillLevel, role: $role, certs: $certs, specs: $specs, phone: $phone, email: $email, customData: $customData, meta: $meta, schedule: $schedule, certDates: $certDates)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$PersonnelImpl &&
+            other is _$PersonnelModelImpl &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.vendorId, vendorId) ||
                 other.vendorId == vendorId) &&
@@ -1920,24 +1935,25 @@ class _$PersonnelImpl extends _Personnel {
       const DeepCollectionEquality().hash(_schedule),
       const DeepCollectionEquality().hash(_certDates));
 
-  /// Create a copy of Personnel
+  /// Create a copy of PersonnelModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$PersonnelImplCopyWith<_$PersonnelImpl> get copyWith =>
-      __$$PersonnelImplCopyWithImpl<_$PersonnelImpl>(this, _$identity);
+  _$$PersonnelModelImplCopyWith<_$PersonnelModelImpl> get copyWith =>
+      __$$PersonnelModelImplCopyWithImpl<_$PersonnelModelImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$PersonnelImplToJson(
+    return _$$PersonnelModelImplToJson(
       this,
     );
   }
 }
 
-abstract class _Personnel extends Personnel {
-  const factory _Personnel(
+abstract class _PersonnelModel extends PersonnelModel {
+  const factory _PersonnelModel(
       {required final String name,
       required final EntityId vendorId,
       required final int skillLevel,
@@ -1949,11 +1965,11 @@ abstract class _Personnel extends Personnel {
       final Map<String, Object>? customData,
       final Map<String, Object> meta,
       final Map<String, Object> schedule,
-      final Map<String, DateTime> certDates}) = _$PersonnelImpl;
-  const _Personnel._() : super._();
+      final Map<String, DateTime> certDates}) = _$PersonnelModelImpl;
+  const _PersonnelModel._() : super._();
 
-  factory _Personnel.fromJson(Map<String, dynamic> json) =
-      _$PersonnelImpl.fromJson;
+  factory _PersonnelModel.fromJson(Map<String, dynamic> json) =
+      _$PersonnelModelImpl.fromJson;
 
 // Core info
   @override
@@ -1981,10 +1997,10 @@ abstract class _Personnel extends Personnel {
   @override
   Map<String, DateTime> get certDates;
 
-  /// Create a copy of Personnel
+  /// Create a copy of PersonnelModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PersonnelImplCopyWith<_$PersonnelImpl> get copyWith =>
+  _$$PersonnelModelImplCopyWith<_$PersonnelModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

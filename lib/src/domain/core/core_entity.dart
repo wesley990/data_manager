@@ -5,10 +5,10 @@ part 'core_entity.freezed.dart';
 part 'core_entity.g.dart';
 
 @Freezed(genericArgumentFactories: true)
-class CoreEntity<T extends Object> with _$CoreEntity<T> {
-  const CoreEntity._();
+class CoreEntityDto<T extends Object> with _$CoreEntityDto<T> {
+  const CoreEntityDto._();
 
-  const factory CoreEntity({
+  const factory CoreEntityDto({
     required EntityId id,
     required String name,
     String? description,
@@ -21,13 +21,13 @@ class CoreEntity<T extends Object> with _$CoreEntity<T> {
     required UserAction creator,
     required UserAction modifier,
     T? data,
-  }) = _CoreEntity<T>;
+  }) = _CoreEntityDto<T>;
 
-  factory CoreEntity.fromJson(
+  factory CoreEntityDto.fromJson(
     Map<String, Object> json,
     T Function(Object? json) fromJsonT,
   ) =>
-      _$CoreEntityFromJson(json, fromJsonT);
+      _$CoreEntityDtoFromJson(json, fromJsonT);
 
   String get uid => id.value;
   String get type => T.toString();

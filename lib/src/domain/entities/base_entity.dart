@@ -43,12 +43,12 @@ abstract class LockConfig {
 }
 
 @Freezed(genericArgumentFactories: true)
-class BaseEntity<T extends Object> with _$BaseEntity<T> {
-  const BaseEntity._();
+class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
+  const BaseEntityModel._();
 
-  const factory BaseEntity({
+  const factory BaseEntityModel({
     // Core entity data
-    required CoreEntity<T> core,
+    required CoreEntityDto<T> core,
 
     // Hierarchical Structure
     String? treePath,
@@ -106,7 +106,7 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
     @Default({}) Map<String, Object> aiNotes,
     DateTime? aiLastRun,
     String? aiVer,
-  }) = _BaseEntity<T>;
+  }) = _BaseEntityModel<T>;
 
   // Delegate core properties
   EntityId get id => core.id;
@@ -127,7 +127,7 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
   String? get parentPath => parentId?.value;
 
   // Factory method with configuration
-  factory BaseEntity.create({
+  factory BaseEntityModel.create({
     required EntityId id,
     required String name,
     required UserAction owner,
@@ -135,8 +135,8 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
     EntityConfig? config,
   }) {
     final now = DateTime.now();
-    return BaseEntity(
-      core: CoreEntity(
+    return BaseEntityModel(
+      core: CoreEntityDto(
         id: id,
         name: name,
         createdAt: now,
@@ -162,7 +162,7 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
   String get uid => id.value;
   String get type => T.toString();
   bool get isTreeRoot => treePath == null || treePath == id.value;
-  bool get isTreeLeaf => childIds.isEmpty;  // Fixed implementation
+  bool get isTreeLeaf => childIds.isEmpty; // Fixed implementation
 
   // Utility methods
   dynamic getMeta(String key) => meta[key];
@@ -187,17 +187,17 @@ class BaseEntity<T extends Object> with _$BaseEntity<T> {
 }
 
 @freezed
-class EntityMetadata with _$EntityMetadata {
-  const EntityMetadata._();
+class EntityMetadataDto with _$EntityMetadataDto {
+  const EntityMetadataDto._();
 
-  const factory EntityMetadata({
+  const factory EntityMetadataDto({
     required String displayName,
     required String entityType,
     String? description,
     DateTime? lastNameUpdate,
     @Default({}) Map<String, String> searchTerms,
-  }) = _EntityMetadata;
+  }) = _EntityMetadataDto;
 
-  factory EntityMetadata.fromJson(Map<String, Object> json) =>
-      _$EntityMetadataFromJson(json);
+  factory EntityMetadataDto.fromJson(Map<String, Object> json) =>
+      _$EntityMetadataDtoFromJson(json);
 }

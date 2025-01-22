@@ -6,7 +6,8 @@ part of 'entity_types.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$OwnerImpl _$$OwnerImplFromJson(Map<String, dynamic> json) => _$OwnerImpl(
+_$OwnerModelImpl _$$OwnerModelImplFromJson(Map<String, dynamic> json) =>
+    _$OwnerModelImpl(
       contact:
           ContactInfo.fromJson((json['contact'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, e as Object),
@@ -26,7 +27,7 @@ _$OwnerImpl _$$OwnerImplFromJson(Map<String, dynamic> json) => _$OwnerImpl(
       ),
     );
 
-Map<String, dynamic> _$$OwnerImplToJson(_$OwnerImpl instance) =>
+Map<String, dynamic> _$$OwnerModelImplToJson(_$OwnerModelImpl instance) =>
     <String, dynamic>{
       'contact': instance.contact,
       'siteIds': instance.siteIds,
@@ -34,7 +35,8 @@ Map<String, dynamic> _$$OwnerImplToJson(_$OwnerImpl instance) =>
       'customData': instance.customData,
     };
 
-_$SiteImpl _$$SiteImplFromJson(Map<String, dynamic> json) => _$SiteImpl(
+_$SiteModelImpl _$$SiteModelImplFromJson(Map<String, dynamic> json) =>
+    _$SiteModelImpl(
       name: json['name'] as String,
       ownerId: EntityId.fromJson((json['ownerId'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, e as Object),
@@ -65,7 +67,7 @@ _$SiteImpl _$$SiteImplFromJson(Map<String, dynamic> json) => _$SiteImpl(
           const {},
     );
 
-Map<String, dynamic> _$$SiteImplToJson(_$SiteImpl instance) =>
+Map<String, dynamic> _$$SiteModelImplToJson(_$SiteModelImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'ownerId': instance.ownerId,
@@ -79,8 +81,8 @@ Map<String, dynamic> _$$SiteImplToJson(_$SiteImpl instance) =>
       'contactInfo': instance.contactInfo,
     };
 
-_$EquipmentImpl _$$EquipmentImplFromJson(Map<String, dynamic> json) =>
-    _$EquipmentImpl(
+_$EquipmentModelImpl _$$EquipmentModelImplFromJson(Map<String, dynamic> json) =>
+    _$EquipmentModelImpl(
       name: json['name'] as String,
       siteId: EntityId.fromJson((json['siteId'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, e as Object),
@@ -123,7 +125,8 @@ _$EquipmentImpl _$$EquipmentImplFromJson(Map<String, dynamic> json) =>
           const {},
     );
 
-Map<String, dynamic> _$$EquipmentImplToJson(_$EquipmentImpl instance) =>
+Map<String, dynamic> _$$EquipmentModelImplToJson(
+        _$EquipmentModelImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'siteId': instance.siteId,
@@ -150,7 +153,8 @@ const _$EquipmentTypeEnumMap = {
   EquipmentType.cell: 'cell',
 };
 
-_$VendorImpl _$$VendorImplFromJson(Map<String, dynamic> json) => _$VendorImpl(
+_$VendorModelImpl _$$VendorModelImplFromJson(Map<String, dynamic> json) =>
+    _$VendorModelImpl(
       contact:
           ContactInfo.fromJson((json['contact'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, e as Object),
@@ -178,7 +182,7 @@ _$VendorImpl _$$VendorImplFromJson(Map<String, dynamic> json) => _$VendorImpl(
           const {},
     );
 
-Map<String, dynamic> _$$VendorImplToJson(_$VendorImpl instance) =>
+Map<String, dynamic> _$$VendorModelImplToJson(_$VendorModelImpl instance) =>
     <String, dynamic>{
       'contact': instance.contact,
       'staffIds': instance.staffIds,
@@ -188,8 +192,8 @@ Map<String, dynamic> _$$VendorImplToJson(_$VendorImpl instance) =>
       'certifications': instance.certifications,
     };
 
-_$PersonnelImpl _$$PersonnelImplFromJson(Map<String, dynamic> json) =>
-    _$PersonnelImpl(
+_$PersonnelModelImpl _$$PersonnelModelImplFromJson(Map<String, dynamic> json) =>
+    _$PersonnelModelImpl(
       name: json['name'] as String,
       vendorId:
           EntityId.fromJson((json['vendorId'] as Map<String, dynamic>).map(
@@ -222,7 +226,8 @@ _$PersonnelImpl _$$PersonnelImplFromJson(Map<String, dynamic> json) =>
           const {},
     );
 
-Map<String, dynamic> _$$PersonnelImplToJson(_$PersonnelImpl instance) =>
+Map<String, dynamic> _$$PersonnelModelImplToJson(
+        _$PersonnelModelImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'vendorId': instance.vendorId,

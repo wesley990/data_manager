@@ -6,8 +6,9 @@ part of 'domain_event.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$DomainEventImpl _$$DomainEventImplFromJson(Map<String, dynamic> json) =>
-    _$DomainEventImpl(
+_$DomainEventModelImpl _$$DomainEventModelImplFromJson(
+        Map<String, dynamic> json) =>
+    _$DomainEventModelImpl(
       id: EventId.fromJson((json['id'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, e as Object),
       )),
@@ -52,7 +53,8 @@ _$DomainEventImpl _$$DomainEventImplFromJson(Map<String, dynamic> json) =>
       status: json['status'] as String?,
     );
 
-Map<String, dynamic> _$$DomainEventImplToJson(_$DomainEventImpl instance) =>
+Map<String, dynamic> _$$DomainEventModelImplToJson(
+        _$DomainEventModelImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'entityId': instance.entityId,

@@ -14,13 +14,13 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-CoreEntity<T> _$CoreEntityFromJson<T extends Object>(
+CoreEntityDto<T> _$CoreEntityDtoFromJson<T extends Object>(
     Map<String, dynamic> json, T Function(Object?) fromJsonT) {
-  return _CoreEntity<T>.fromJson(json, fromJsonT);
+  return _CoreEntityDto<T>.fromJson(json, fromJsonT);
 }
 
 /// @nodoc
-mixin _$CoreEntity<T extends Object> {
+mixin _$CoreEntityDto<T extends Object> {
   EntityId get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
@@ -34,22 +34,22 @@ mixin _$CoreEntity<T extends Object> {
   UserAction get modifier => throw _privateConstructorUsedError;
   T? get data => throw _privateConstructorUsedError;
 
-  /// Serializes this CoreEntity to a JSON map.
+  /// Serializes this CoreEntityDto to a JSON map.
   Map<String, dynamic> toJson(Object? Function(T) toJsonT) =>
       throw _privateConstructorUsedError;
 
-  /// Create a copy of CoreEntity
+  /// Create a copy of CoreEntityDto
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $CoreEntityCopyWith<T, CoreEntity<T>> get copyWith =>
+  $CoreEntityDtoCopyWith<T, CoreEntityDto<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $CoreEntityCopyWith<T extends Object, $Res> {
-  factory $CoreEntityCopyWith(
-          CoreEntity<T> value, $Res Function(CoreEntity<T>) then) =
-      _$CoreEntityCopyWithImpl<T, $Res, CoreEntity<T>>;
+abstract class $CoreEntityDtoCopyWith<T extends Object, $Res> {
+  factory $CoreEntityDtoCopyWith(
+          CoreEntityDto<T> value, $Res Function(CoreEntityDto<T>) then) =
+      _$CoreEntityDtoCopyWithImpl<T, $Res, CoreEntityDto<T>>;
   @useResult
   $Res call(
       {EntityId id,
@@ -72,16 +72,16 @@ abstract class $CoreEntityCopyWith<T extends Object, $Res> {
 }
 
 /// @nodoc
-class _$CoreEntityCopyWithImpl<T extends Object, $Res,
-    $Val extends CoreEntity<T>> implements $CoreEntityCopyWith<T, $Res> {
-  _$CoreEntityCopyWithImpl(this._value, this._then);
+class _$CoreEntityDtoCopyWithImpl<T extends Object, $Res,
+    $Val extends CoreEntityDto<T>> implements $CoreEntityDtoCopyWith<T, $Res> {
+  _$CoreEntityDtoCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of CoreEntity
+  /// Create a copy of CoreEntityDto
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -151,7 +151,7 @@ class _$CoreEntityCopyWithImpl<T extends Object, $Res,
     ) as $Val);
   }
 
-  /// Create a copy of CoreEntity
+  /// Create a copy of CoreEntityDto
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -161,7 +161,7 @@ class _$CoreEntityCopyWithImpl<T extends Object, $Res,
     });
   }
 
-  /// Create a copy of CoreEntity
+  /// Create a copy of CoreEntityDto
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -171,7 +171,7 @@ class _$CoreEntityCopyWithImpl<T extends Object, $Res,
     });
   }
 
-  /// Create a copy of CoreEntity
+  /// Create a copy of CoreEntityDto
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -181,7 +181,7 @@ class _$CoreEntityCopyWithImpl<T extends Object, $Res,
     });
   }
 
-  /// Create a copy of CoreEntity
+  /// Create a copy of CoreEntityDto
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -193,11 +193,11 @@ class _$CoreEntityCopyWithImpl<T extends Object, $Res,
 }
 
 /// @nodoc
-abstract class _$$CoreEntityImplCopyWith<T extends Object, $Res>
-    implements $CoreEntityCopyWith<T, $Res> {
-  factory _$$CoreEntityImplCopyWith(
-          _$CoreEntityImpl<T> value, $Res Function(_$CoreEntityImpl<T>) then) =
-      __$$CoreEntityImplCopyWithImpl<T, $Res>;
+abstract class _$$CoreEntityDtoImplCopyWith<T extends Object, $Res>
+    implements $CoreEntityDtoCopyWith<T, $Res> {
+  factory _$$CoreEntityDtoImplCopyWith(_$CoreEntityDtoImpl<T> value,
+          $Res Function(_$CoreEntityDtoImpl<T>) then) =
+      __$$CoreEntityDtoImplCopyWithImpl<T, $Res>;
   @override
   @useResult
   $Res call(
@@ -225,14 +225,14 @@ abstract class _$$CoreEntityImplCopyWith<T extends Object, $Res>
 }
 
 /// @nodoc
-class __$$CoreEntityImplCopyWithImpl<T extends Object, $Res>
-    extends _$CoreEntityCopyWithImpl<T, $Res, _$CoreEntityImpl<T>>
-    implements _$$CoreEntityImplCopyWith<T, $Res> {
-  __$$CoreEntityImplCopyWithImpl(
-      _$CoreEntityImpl<T> _value, $Res Function(_$CoreEntityImpl<T>) _then)
+class __$$CoreEntityDtoImplCopyWithImpl<T extends Object, $Res>
+    extends _$CoreEntityDtoCopyWithImpl<T, $Res, _$CoreEntityDtoImpl<T>>
+    implements _$$CoreEntityDtoImplCopyWith<T, $Res> {
+  __$$CoreEntityDtoImplCopyWithImpl(_$CoreEntityDtoImpl<T> _value,
+      $Res Function(_$CoreEntityDtoImpl<T>) _then)
       : super(_value, _then);
 
-  /// Create a copy of CoreEntity
+  /// Create a copy of CoreEntityDto
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -250,7 +250,7 @@ class __$$CoreEntityImplCopyWithImpl<T extends Object, $Res>
     Object? modifier = null,
     Object? data = freezed,
   }) {
-    return _then(_$CoreEntityImpl<T>(
+    return _then(_$CoreEntityDtoImpl<T>(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -305,8 +305,8 @@ class __$$CoreEntityImplCopyWithImpl<T extends Object, $Res>
 
 /// @nodoc
 @JsonSerializable(genericArgumentFactories: true)
-class _$CoreEntityImpl<T extends Object> extends _CoreEntity<T> {
-  const _$CoreEntityImpl(
+class _$CoreEntityDtoImpl<T extends Object> extends _CoreEntityDto<T> {
+  const _$CoreEntityDtoImpl(
       {required this.id,
       required this.name,
       this.description,
@@ -322,9 +322,9 @@ class _$CoreEntityImpl<T extends Object> extends _CoreEntity<T> {
       : _meta = meta,
         super._();
 
-  factory _$CoreEntityImpl.fromJson(
+  factory _$CoreEntityDtoImpl.fromJson(
           Map<String, dynamic> json, T Function(Object?) fromJsonT) =>
-      _$$CoreEntityImplFromJson(json, fromJsonT);
+      _$$CoreEntityDtoImplFromJson(json, fromJsonT);
 
   @override
   final EntityId id;
@@ -362,14 +362,14 @@ class _$CoreEntityImpl<T extends Object> extends _CoreEntity<T> {
 
   @override
   String toString() {
-    return 'CoreEntity<$T>(id: $id, name: $name, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, schemaVer: $schemaVer, status: $status, meta: $meta, owner: $owner, creator: $creator, modifier: $modifier, data: $data)';
+    return 'CoreEntityDto<$T>(id: $id, name: $name, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, schemaVer: $schemaVer, status: $status, meta: $meta, owner: $owner, creator: $creator, modifier: $modifier, data: $data)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CoreEntityImpl<T> &&
+            other is _$CoreEntityDtoImpl<T> &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
@@ -406,22 +406,23 @@ class _$CoreEntityImpl<T extends Object> extends _CoreEntity<T> {
       modifier,
       const DeepCollectionEquality().hash(data));
 
-  /// Create a copy of CoreEntity
+  /// Create a copy of CoreEntityDto
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$CoreEntityImplCopyWith<T, _$CoreEntityImpl<T>> get copyWith =>
-      __$$CoreEntityImplCopyWithImpl<T, _$CoreEntityImpl<T>>(this, _$identity);
+  _$$CoreEntityDtoImplCopyWith<T, _$CoreEntityDtoImpl<T>> get copyWith =>
+      __$$CoreEntityDtoImplCopyWithImpl<T, _$CoreEntityDtoImpl<T>>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson(Object? Function(T) toJsonT) {
-    return _$$CoreEntityImplToJson<T>(this, toJsonT);
+    return _$$CoreEntityDtoImplToJson<T>(this, toJsonT);
   }
 }
 
-abstract class _CoreEntity<T extends Object> extends CoreEntity<T> {
-  const factory _CoreEntity(
+abstract class _CoreEntityDto<T extends Object> extends CoreEntityDto<T> {
+  const factory _CoreEntityDto(
       {required final EntityId id,
       required final String name,
       final String? description,
@@ -433,12 +434,12 @@ abstract class _CoreEntity<T extends Object> extends CoreEntity<T> {
       required final UserAction owner,
       required final UserAction creator,
       required final UserAction modifier,
-      final T? data}) = _$CoreEntityImpl<T>;
-  const _CoreEntity._() : super._();
+      final T? data}) = _$CoreEntityDtoImpl<T>;
+  const _CoreEntityDto._() : super._();
 
-  factory _CoreEntity.fromJson(
+  factory _CoreEntityDto.fromJson(
           Map<String, dynamic> json, T Function(Object?) fromJsonT) =
-      _$CoreEntityImpl<T>.fromJson;
+      _$CoreEntityDtoImpl<T>.fromJson;
 
   @override
   EntityId get id;
@@ -465,10 +466,10 @@ abstract class _CoreEntity<T extends Object> extends CoreEntity<T> {
   @override
   T? get data;
 
-  /// Create a copy of CoreEntity
+  /// Create a copy of CoreEntityDto
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CoreEntityImplCopyWith<T, _$CoreEntityImpl<T>> get copyWith =>
+  _$$CoreEntityDtoImplCopyWith<T, _$CoreEntityDtoImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -15,9 +15,9 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$BaseEntity<T extends Object> {
+mixin _$BaseEntityModel<T extends Object> {
 // Core entity data
-  CoreEntity<T> get core =>
+  CoreEntityDto<T> get core =>
       throw _privateConstructorUsedError; // Hierarchical Structure
   String? get treePath => throw _privateConstructorUsedError;
   int get treeDepth => throw _privateConstructorUsedError;
@@ -70,21 +70,21 @@ mixin _$BaseEntity<T extends Object> {
   DateTime? get aiLastRun => throw _privateConstructorUsedError;
   String? get aiVer => throw _privateConstructorUsedError;
 
-  /// Create a copy of BaseEntity
+  /// Create a copy of BaseEntityModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $BaseEntityCopyWith<T, BaseEntity<T>> get copyWith =>
+  $BaseEntityModelCopyWith<T, BaseEntityModel<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $BaseEntityCopyWith<T extends Object, $Res> {
-  factory $BaseEntityCopyWith(
-          BaseEntity<T> value, $Res Function(BaseEntity<T>) then) =
-      _$BaseEntityCopyWithImpl<T, $Res, BaseEntity<T>>;
+abstract class $BaseEntityModelCopyWith<T extends Object, $Res> {
+  factory $BaseEntityModelCopyWith(
+          BaseEntityModel<T> value, $Res Function(BaseEntityModel<T>) then) =
+      _$BaseEntityModelCopyWithImpl<T, $Res, BaseEntityModel<T>>;
   @useResult
   $Res call(
-      {CoreEntity<T> core,
+      {CoreEntityDto<T> core,
       String? treePath,
       int treeDepth,
       List<EntityId> ancestors,
@@ -131,7 +131,7 @@ abstract class $BaseEntityCopyWith<T extends Object, $Res> {
       DateTime? aiLastRun,
       String? aiVer});
 
-  $CoreEntityCopyWith<T, $Res> get core;
+  $CoreEntityDtoCopyWith<T, $Res> get core;
   $EntityIdCopyWith<$Res>? get parentId;
   $UserActionCopyWith<$Res>? get lastAccessor;
   $UserActionCopyWith<$Res>? get lockOwner;
@@ -139,16 +139,17 @@ abstract class $BaseEntityCopyWith<T extends Object, $Res> {
 }
 
 /// @nodoc
-class _$BaseEntityCopyWithImpl<T extends Object, $Res,
-    $Val extends BaseEntity<T>> implements $BaseEntityCopyWith<T, $Res> {
-  _$BaseEntityCopyWithImpl(this._value, this._then);
+class _$BaseEntityModelCopyWithImpl<T extends Object, $Res,
+        $Val extends BaseEntityModel<T>>
+    implements $BaseEntityModelCopyWith<T, $Res> {
+  _$BaseEntityModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of BaseEntity
+  /// Create a copy of BaseEntityModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -204,7 +205,7 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
       core: null == core
           ? _value.core
           : core // ignore: cast_nullable_to_non_nullable
-              as CoreEntity<T>,
+              as CoreEntityDto<T>,
       treePath: freezed == treePath
           ? _value.treePath
           : treePath // ignore: cast_nullable_to_non_nullable
@@ -388,17 +389,17 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
     ) as $Val);
   }
 
-  /// Create a copy of BaseEntity
+  /// Create a copy of BaseEntityModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $CoreEntityCopyWith<T, $Res> get core {
-    return $CoreEntityCopyWith<T, $Res>(_value.core, (value) {
+  $CoreEntityDtoCopyWith<T, $Res> get core {
+    return $CoreEntityDtoCopyWith<T, $Res>(_value.core, (value) {
       return _then(_value.copyWith(core: value) as $Val);
     });
   }
 
-  /// Create a copy of BaseEntity
+  /// Create a copy of BaseEntityModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -412,7 +413,7 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
     });
   }
 
-  /// Create a copy of BaseEntity
+  /// Create a copy of BaseEntityModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -426,7 +427,7 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
     });
   }
 
-  /// Create a copy of BaseEntity
+  /// Create a copy of BaseEntityModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -440,7 +441,7 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
     });
   }
 
-  /// Create a copy of BaseEntity
+  /// Create a copy of BaseEntityModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -456,15 +457,15 @@ class _$BaseEntityCopyWithImpl<T extends Object, $Res,
 }
 
 /// @nodoc
-abstract class _$$BaseEntityImplCopyWith<T extends Object, $Res>
-    implements $BaseEntityCopyWith<T, $Res> {
-  factory _$$BaseEntityImplCopyWith(
-          _$BaseEntityImpl<T> value, $Res Function(_$BaseEntityImpl<T>) then) =
-      __$$BaseEntityImplCopyWithImpl<T, $Res>;
+abstract class _$$BaseEntityModelImplCopyWith<T extends Object, $Res>
+    implements $BaseEntityModelCopyWith<T, $Res> {
+  factory _$$BaseEntityModelImplCopyWith(_$BaseEntityModelImpl<T> value,
+          $Res Function(_$BaseEntityModelImpl<T>) then) =
+      __$$BaseEntityModelImplCopyWithImpl<T, $Res>;
   @override
   @useResult
   $Res call(
-      {CoreEntity<T> core,
+      {CoreEntityDto<T> core,
       String? treePath,
       int treeDepth,
       List<EntityId> ancestors,
@@ -512,7 +513,7 @@ abstract class _$$BaseEntityImplCopyWith<T extends Object, $Res>
       String? aiVer});
 
   @override
-  $CoreEntityCopyWith<T, $Res> get core;
+  $CoreEntityDtoCopyWith<T, $Res> get core;
   @override
   $EntityIdCopyWith<$Res>? get parentId;
   @override
@@ -524,14 +525,14 @@ abstract class _$$BaseEntityImplCopyWith<T extends Object, $Res>
 }
 
 /// @nodoc
-class __$$BaseEntityImplCopyWithImpl<T extends Object, $Res>
-    extends _$BaseEntityCopyWithImpl<T, $Res, _$BaseEntityImpl<T>>
-    implements _$$BaseEntityImplCopyWith<T, $Res> {
-  __$$BaseEntityImplCopyWithImpl(
-      _$BaseEntityImpl<T> _value, $Res Function(_$BaseEntityImpl<T>) _then)
+class __$$BaseEntityModelImplCopyWithImpl<T extends Object, $Res>
+    extends _$BaseEntityModelCopyWithImpl<T, $Res, _$BaseEntityModelImpl<T>>
+    implements _$$BaseEntityModelImplCopyWith<T, $Res> {
+  __$$BaseEntityModelImplCopyWithImpl(_$BaseEntityModelImpl<T> _value,
+      $Res Function(_$BaseEntityModelImpl<T>) _then)
       : super(_value, _then);
 
-  /// Create a copy of BaseEntity
+  /// Create a copy of BaseEntityModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -583,11 +584,11 @@ class __$$BaseEntityImplCopyWithImpl<T extends Object, $Res>
     Object? aiLastRun = freezed,
     Object? aiVer = freezed,
   }) {
-    return _then(_$BaseEntityImpl<T>(
+    return _then(_$BaseEntityModelImpl<T>(
       core: null == core
           ? _value.core
           : core // ignore: cast_nullable_to_non_nullable
-              as CoreEntity<T>,
+              as CoreEntityDto<T>,
       treePath: freezed == treePath
           ? _value.treePath
           : treePath // ignore: cast_nullable_to_non_nullable
@@ -774,8 +775,8 @@ class __$$BaseEntityImplCopyWithImpl<T extends Object, $Res>
 
 /// @nodoc
 
-class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
-  const _$BaseEntityImpl(
+class _$BaseEntityModelImpl<T extends Object> extends _BaseEntityModel<T> {
+  const _$BaseEntityModelImpl(
       {required this.core,
       this.treePath,
       this.treeDepth = 0,
@@ -844,7 +845,7 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
 
 // Core entity data
   @override
-  final CoreEntity<T> core;
+  final CoreEntityDto<T> core;
 // Hierarchical Structure
   @override
   final String? treePath;
@@ -1085,14 +1086,14 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
 
   @override
   String toString() {
-    return 'BaseEntity<$T>(core: $core, treePath: $treePath, treeDepth: $treeDepth, ancestors: $ancestors, parentId: $parentId, childIds: $childIds, isHierarchyRoot: $isHierarchyRoot, isHierarchyLeaf: $isHierarchyLeaf, hierarchyMeta: $hierarchyMeta, lastAccessor: $lastAccessor, lockOwner: $lockOwner, lockExpiry: $lockExpiry, remover: $remover, modHistory: $modHistory, accessLog: $accessLog, isPublic: $isPublic, accessCount: $accessCount, tags: $tags, labels: $labels, priority: $priority, stage: $stage, expiryDate: $expiryDate, syncMeta: $syncMeta, syncVer: $syncVer, searchIndex: $searchIndex, extraData: $extraData, eventVer: $eventVer, pendingEvents: $pendingEvents, eventMeta: $eventMeta, historyLimit: $historyLimit, dataVer: $dataVer, structVer: $structVer, lastVer: $lastVer, distLockId: $distLockId, distLockExpiry: $distLockExpiry, distLockNode: $distLockNode, lockMeta: $lockMeta, verVectors: $verVectors, lockTimeout: $lockTimeout, aiVectors: $aiVectors, aiScores: $aiScores, aiMeta: $aiMeta, aiTags: $aiTags, aiNotes: $aiNotes, aiLastRun: $aiLastRun, aiVer: $aiVer)';
+    return 'BaseEntityModel<$T>(core: $core, treePath: $treePath, treeDepth: $treeDepth, ancestors: $ancestors, parentId: $parentId, childIds: $childIds, isHierarchyRoot: $isHierarchyRoot, isHierarchyLeaf: $isHierarchyLeaf, hierarchyMeta: $hierarchyMeta, lastAccessor: $lastAccessor, lockOwner: $lockOwner, lockExpiry: $lockExpiry, remover: $remover, modHistory: $modHistory, accessLog: $accessLog, isPublic: $isPublic, accessCount: $accessCount, tags: $tags, labels: $labels, priority: $priority, stage: $stage, expiryDate: $expiryDate, syncMeta: $syncMeta, syncVer: $syncVer, searchIndex: $searchIndex, extraData: $extraData, eventVer: $eventVer, pendingEvents: $pendingEvents, eventMeta: $eventMeta, historyLimit: $historyLimit, dataVer: $dataVer, structVer: $structVer, lastVer: $lastVer, distLockId: $distLockId, distLockExpiry: $distLockExpiry, distLockNode: $distLockNode, lockMeta: $lockMeta, verVectors: $verVectors, lockTimeout: $lockTimeout, aiVectors: $aiVectors, aiScores: $aiScores, aiMeta: $aiMeta, aiTags: $aiTags, aiNotes: $aiNotes, aiLastRun: $aiLastRun, aiVer: $aiVer)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$BaseEntityImpl<T> &&
+            other is _$BaseEntityModelImpl<T> &&
             (identical(other.core, core) || other.core == core) &&
             (identical(other.treePath, treePath) ||
                 other.treePath == treePath) &&
@@ -1221,18 +1222,19 @@ class _$BaseEntityImpl<T extends Object> extends _BaseEntity<T> {
         aiVer
       ]);
 
-  /// Create a copy of BaseEntity
+  /// Create a copy of BaseEntityModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$BaseEntityImplCopyWith<T, _$BaseEntityImpl<T>> get copyWith =>
-      __$$BaseEntityImplCopyWithImpl<T, _$BaseEntityImpl<T>>(this, _$identity);
+  _$$BaseEntityModelImplCopyWith<T, _$BaseEntityModelImpl<T>> get copyWith =>
+      __$$BaseEntityModelImplCopyWithImpl<T, _$BaseEntityModelImpl<T>>(
+          this, _$identity);
 }
 
-abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
-  const factory _BaseEntity(
-      {required final CoreEntity<T> core,
+abstract class _BaseEntityModel<T extends Object> extends BaseEntityModel<T> {
+  const factory _BaseEntityModel(
+      {required final CoreEntityDto<T> core,
       final String? treePath,
       final int treeDepth,
       final List<EntityId> ancestors,
@@ -1277,12 +1279,12 @@ abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
       final List<String> aiTags,
       final Map<String, Object> aiNotes,
       final DateTime? aiLastRun,
-      final String? aiVer}) = _$BaseEntityImpl<T>;
-  const _BaseEntity._() : super._();
+      final String? aiVer}) = _$BaseEntityModelImpl<T>;
+  const _BaseEntityModel._() : super._();
 
 // Core entity data
   @override
-  CoreEntity<T> get core; // Hierarchical Structure
+  CoreEntityDto<T> get core; // Hierarchical Structure
   @override
   String? get treePath;
   @override
@@ -1374,41 +1376,41 @@ abstract class _BaseEntity<T extends Object> extends BaseEntity<T> {
   @override
   String? get aiVer;
 
-  /// Create a copy of BaseEntity
+  /// Create a copy of BaseEntityModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$BaseEntityImplCopyWith<T, _$BaseEntityImpl<T>> get copyWith =>
+  _$$BaseEntityModelImplCopyWith<T, _$BaseEntityModelImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
-EntityMetadata _$EntityMetadataFromJson(Map<String, dynamic> json) {
-  return _EntityMetadata.fromJson(json);
+EntityMetadataDto _$EntityMetadataDtoFromJson(Map<String, dynamic> json) {
+  return _EntityMetadataDto.fromJson(json);
 }
 
 /// @nodoc
-mixin _$EntityMetadata {
+mixin _$EntityMetadataDto {
   String get displayName => throw _privateConstructorUsedError;
   String get entityType => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   DateTime? get lastNameUpdate => throw _privateConstructorUsedError;
   Map<String, String> get searchTerms => throw _privateConstructorUsedError;
 
-  /// Serializes this EntityMetadata to a JSON map.
+  /// Serializes this EntityMetadataDto to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of EntityMetadata
+  /// Create a copy of EntityMetadataDto
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $EntityMetadataCopyWith<EntityMetadata> get copyWith =>
+  $EntityMetadataDtoCopyWith<EntityMetadataDto> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $EntityMetadataCopyWith<$Res> {
-  factory $EntityMetadataCopyWith(
-          EntityMetadata value, $Res Function(EntityMetadata) then) =
-      _$EntityMetadataCopyWithImpl<$Res, EntityMetadata>;
+abstract class $EntityMetadataDtoCopyWith<$Res> {
+  factory $EntityMetadataDtoCopyWith(
+          EntityMetadataDto value, $Res Function(EntityMetadataDto) then) =
+      _$EntityMetadataDtoCopyWithImpl<$Res, EntityMetadataDto>;
   @useResult
   $Res call(
       {String displayName,
@@ -1419,16 +1421,16 @@ abstract class $EntityMetadataCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$EntityMetadataCopyWithImpl<$Res, $Val extends EntityMetadata>
-    implements $EntityMetadataCopyWith<$Res> {
-  _$EntityMetadataCopyWithImpl(this._value, this._then);
+class _$EntityMetadataDtoCopyWithImpl<$Res, $Val extends EntityMetadataDto>
+    implements $EntityMetadataDtoCopyWith<$Res> {
+  _$EntityMetadataDtoCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of EntityMetadata
+  /// Create a copy of EntityMetadataDto
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1465,11 +1467,11 @@ class _$EntityMetadataCopyWithImpl<$Res, $Val extends EntityMetadata>
 }
 
 /// @nodoc
-abstract class _$$EntityMetadataImplCopyWith<$Res>
-    implements $EntityMetadataCopyWith<$Res> {
-  factory _$$EntityMetadataImplCopyWith(_$EntityMetadataImpl value,
-          $Res Function(_$EntityMetadataImpl) then) =
-      __$$EntityMetadataImplCopyWithImpl<$Res>;
+abstract class _$$EntityMetadataDtoImplCopyWith<$Res>
+    implements $EntityMetadataDtoCopyWith<$Res> {
+  factory _$$EntityMetadataDtoImplCopyWith(_$EntityMetadataDtoImpl value,
+          $Res Function(_$EntityMetadataDtoImpl) then) =
+      __$$EntityMetadataDtoImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -1481,14 +1483,14 @@ abstract class _$$EntityMetadataImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$EntityMetadataImplCopyWithImpl<$Res>
-    extends _$EntityMetadataCopyWithImpl<$Res, _$EntityMetadataImpl>
-    implements _$$EntityMetadataImplCopyWith<$Res> {
-  __$$EntityMetadataImplCopyWithImpl(
-      _$EntityMetadataImpl _value, $Res Function(_$EntityMetadataImpl) _then)
+class __$$EntityMetadataDtoImplCopyWithImpl<$Res>
+    extends _$EntityMetadataDtoCopyWithImpl<$Res, _$EntityMetadataDtoImpl>
+    implements _$$EntityMetadataDtoImplCopyWith<$Res> {
+  __$$EntityMetadataDtoImplCopyWithImpl(_$EntityMetadataDtoImpl _value,
+      $Res Function(_$EntityMetadataDtoImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of EntityMetadata
+  /// Create a copy of EntityMetadataDto
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1499,7 +1501,7 @@ class __$$EntityMetadataImplCopyWithImpl<$Res>
     Object? lastNameUpdate = freezed,
     Object? searchTerms = null,
   }) {
-    return _then(_$EntityMetadataImpl(
+    return _then(_$EntityMetadataDtoImpl(
       displayName: null == displayName
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
@@ -1526,8 +1528,8 @@ class __$$EntityMetadataImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$EntityMetadataImpl extends _EntityMetadata {
-  const _$EntityMetadataImpl(
+class _$EntityMetadataDtoImpl extends _EntityMetadataDto {
+  const _$EntityMetadataDtoImpl(
       {required this.displayName,
       required this.entityType,
       this.description,
@@ -1536,8 +1538,8 @@ class _$EntityMetadataImpl extends _EntityMetadata {
       : _searchTerms = searchTerms,
         super._();
 
-  factory _$EntityMetadataImpl.fromJson(Map<String, dynamic> json) =>
-      _$$EntityMetadataImplFromJson(json);
+  factory _$EntityMetadataDtoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$EntityMetadataDtoImplFromJson(json);
 
   @override
   final String displayName;
@@ -1558,14 +1560,14 @@ class _$EntityMetadataImpl extends _EntityMetadata {
 
   @override
   String toString() {
-    return 'EntityMetadata(displayName: $displayName, entityType: $entityType, description: $description, lastNameUpdate: $lastNameUpdate, searchTerms: $searchTerms)';
+    return 'EntityMetadataDto(displayName: $displayName, entityType: $entityType, description: $description, lastNameUpdate: $lastNameUpdate, searchTerms: $searchTerms)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$EntityMetadataImpl &&
+            other is _$EntityMetadataDtoImpl &&
             (identical(other.displayName, displayName) ||
                 other.displayName == displayName) &&
             (identical(other.entityType, entityType) ||
@@ -1588,34 +1590,34 @@ class _$EntityMetadataImpl extends _EntityMetadata {
       lastNameUpdate,
       const DeepCollectionEquality().hash(_searchTerms));
 
-  /// Create a copy of EntityMetadata
+  /// Create a copy of EntityMetadataDto
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$EntityMetadataImplCopyWith<_$EntityMetadataImpl> get copyWith =>
-      __$$EntityMetadataImplCopyWithImpl<_$EntityMetadataImpl>(
+  _$$EntityMetadataDtoImplCopyWith<_$EntityMetadataDtoImpl> get copyWith =>
+      __$$EntityMetadataDtoImplCopyWithImpl<_$EntityMetadataDtoImpl>(
           this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$EntityMetadataImplToJson(
+    return _$$EntityMetadataDtoImplToJson(
       this,
     );
   }
 }
 
-abstract class _EntityMetadata extends EntityMetadata {
-  const factory _EntityMetadata(
+abstract class _EntityMetadataDto extends EntityMetadataDto {
+  const factory _EntityMetadataDto(
       {required final String displayName,
       required final String entityType,
       final String? description,
       final DateTime? lastNameUpdate,
-      final Map<String, String> searchTerms}) = _$EntityMetadataImpl;
-  const _EntityMetadata._() : super._();
+      final Map<String, String> searchTerms}) = _$EntityMetadataDtoImpl;
+  const _EntityMetadataDto._() : super._();
 
-  factory _EntityMetadata.fromJson(Map<String, dynamic> json) =
-      _$EntityMetadataImpl.fromJson;
+  factory _EntityMetadataDto.fromJson(Map<String, dynamic> json) =
+      _$EntityMetadataDtoImpl.fromJson;
 
   @override
   String get displayName;
@@ -1628,10 +1630,10 @@ abstract class _EntityMetadata extends EntityMetadata {
   @override
   Map<String, String> get searchTerms;
 
-  /// Create a copy of EntityMetadata
+  /// Create a copy of EntityMetadataDto
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$EntityMetadataImplCopyWith<_$EntityMetadataImpl> get copyWith =>
+  _$$EntityMetadataDtoImplCopyWith<_$EntityMetadataDtoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

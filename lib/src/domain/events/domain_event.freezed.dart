@@ -14,12 +14,12 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-DomainEvent _$DomainEventFromJson(Map<String, dynamic> json) {
-  return _DomainEvent.fromJson(json);
+DomainEventModel _$DomainEventModelFromJson(Map<String, dynamic> json) {
+  return _DomainEventModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$DomainEvent {
+mixin _$DomainEventModel {
 // Core event data
   EventId get id => throw _privateConstructorUsedError;
   EntityId get entityId => throw _privateConstructorUsedError;
@@ -38,21 +38,21 @@ mixin _$DomainEvent {
   int get version => throw _privateConstructorUsedError; // Status
   String? get status => throw _privateConstructorUsedError;
 
-  /// Serializes this DomainEvent to a JSON map.
+  /// Serializes this DomainEventModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of DomainEvent
+  /// Create a copy of DomainEventModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $DomainEventCopyWith<DomainEvent> get copyWith =>
+  $DomainEventModelCopyWith<DomainEventModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $DomainEventCopyWith<$Res> {
-  factory $DomainEventCopyWith(
-          DomainEvent value, $Res Function(DomainEvent) then) =
-      _$DomainEventCopyWithImpl<$Res, DomainEvent>;
+abstract class $DomainEventModelCopyWith<$Res> {
+  factory $DomainEventModelCopyWith(
+          DomainEventModel value, $Res Function(DomainEventModel) then) =
+      _$DomainEventModelCopyWithImpl<$Res, DomainEventModel>;
   @useResult
   $Res call(
       {EventId id,
@@ -80,16 +80,16 @@ abstract class $DomainEventCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$DomainEventCopyWithImpl<$Res, $Val extends DomainEvent>
-    implements $DomainEventCopyWith<$Res> {
-  _$DomainEventCopyWithImpl(this._value, this._then);
+class _$DomainEventModelCopyWithImpl<$Res, $Val extends DomainEventModel>
+    implements $DomainEventModelCopyWith<$Res> {
+  _$DomainEventModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of DomainEvent
+  /// Create a copy of DomainEventModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -174,7 +174,7 @@ class _$DomainEventCopyWithImpl<$Res, $Val extends DomainEvent>
     ) as $Val);
   }
 
-  /// Create a copy of DomainEvent
+  /// Create a copy of DomainEventModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -184,7 +184,7 @@ class _$DomainEventCopyWithImpl<$Res, $Val extends DomainEvent>
     });
   }
 
-  /// Create a copy of DomainEvent
+  /// Create a copy of DomainEventModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -194,7 +194,7 @@ class _$DomainEventCopyWithImpl<$Res, $Val extends DomainEvent>
     });
   }
 
-  /// Create a copy of DomainEvent
+  /// Create a copy of DomainEventModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -204,7 +204,7 @@ class _$DomainEventCopyWithImpl<$Res, $Val extends DomainEvent>
     });
   }
 
-  /// Create a copy of DomainEvent
+  /// Create a copy of DomainEventModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -218,7 +218,7 @@ class _$DomainEventCopyWithImpl<$Res, $Val extends DomainEvent>
     });
   }
 
-  /// Create a copy of DomainEvent
+  /// Create a copy of DomainEventModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -232,7 +232,7 @@ class _$DomainEventCopyWithImpl<$Res, $Val extends DomainEvent>
     });
   }
 
-  /// Create a copy of DomainEvent
+  /// Create a copy of DomainEventModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -248,11 +248,11 @@ class _$DomainEventCopyWithImpl<$Res, $Val extends DomainEvent>
 }
 
 /// @nodoc
-abstract class _$$DomainEventImplCopyWith<$Res>
-    implements $DomainEventCopyWith<$Res> {
-  factory _$$DomainEventImplCopyWith(
-          _$DomainEventImpl value, $Res Function(_$DomainEventImpl) then) =
-      __$$DomainEventImplCopyWithImpl<$Res>;
+abstract class _$$DomainEventModelImplCopyWith<$Res>
+    implements $DomainEventModelCopyWith<$Res> {
+  factory _$$DomainEventModelImplCopyWith(_$DomainEventModelImpl value,
+          $Res Function(_$DomainEventModelImpl) then) =
+      __$$DomainEventModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -287,14 +287,14 @@ abstract class _$$DomainEventImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$DomainEventImplCopyWithImpl<$Res>
-    extends _$DomainEventCopyWithImpl<$Res, _$DomainEventImpl>
-    implements _$$DomainEventImplCopyWith<$Res> {
-  __$$DomainEventImplCopyWithImpl(
-      _$DomainEventImpl _value, $Res Function(_$DomainEventImpl) _then)
+class __$$DomainEventModelImplCopyWithImpl<$Res>
+    extends _$DomainEventModelCopyWithImpl<$Res, _$DomainEventModelImpl>
+    implements _$$DomainEventModelImplCopyWith<$Res> {
+  __$$DomainEventModelImplCopyWithImpl(_$DomainEventModelImpl _value,
+      $Res Function(_$DomainEventModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of DomainEvent
+  /// Create a copy of DomainEventModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -315,7 +315,7 @@ class __$$DomainEventImplCopyWithImpl<$Res>
     Object? version = null,
     Object? status = freezed,
   }) {
-    return _then(_$DomainEventImpl(
+    return _then(_$DomainEventModelImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -382,8 +382,8 @@ class __$$DomainEventImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$DomainEventImpl extends _DomainEvent {
-  const _$DomainEventImpl(
+class _$DomainEventModelImpl extends _DomainEventModel {
+  const _$DomainEventModelImpl(
       {required this.id,
       required this.entityId,
       required this.eventType,
@@ -404,8 +404,8 @@ class _$DomainEventImpl extends _DomainEvent {
         _tags = tags,
         super._();
 
-  factory _$DomainEventImpl.fromJson(Map<String, dynamic> json) =>
-      _$$DomainEventImplFromJson(json);
+  factory _$DomainEventModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$DomainEventModelImplFromJson(json);
 
 // Core event data
   @override
@@ -469,14 +469,14 @@ class _$DomainEventImpl extends _DomainEvent {
 
   @override
   String toString() {
-    return 'DomainEvent(id: $id, entityId: $entityId, eventType: $eventType, timestamp: $timestamp, initiator: $initiator, changes: $changes, entityType: $entityType, aggregateId: $aggregateId, metadata: $metadata, isAsync: $isAsync, tags: $tags, correlationId: $correlationId, causationId: $causationId, version: $version, status: $status)';
+    return 'DomainEventModel(id: $id, entityId: $entityId, eventType: $eventType, timestamp: $timestamp, initiator: $initiator, changes: $changes, entityType: $entityType, aggregateId: $aggregateId, metadata: $metadata, isAsync: $isAsync, tags: $tags, correlationId: $correlationId, causationId: $causationId, version: $version, status: $status)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$DomainEventImpl &&
+            other is _$DomainEventModelImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.entityId, entityId) ||
                 other.entityId == entityId) &&
@@ -522,24 +522,25 @@ class _$DomainEventImpl extends _DomainEvent {
       version,
       status);
 
-  /// Create a copy of DomainEvent
+  /// Create a copy of DomainEventModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$DomainEventImplCopyWith<_$DomainEventImpl> get copyWith =>
-      __$$DomainEventImplCopyWithImpl<_$DomainEventImpl>(this, _$identity);
+  _$$DomainEventModelImplCopyWith<_$DomainEventModelImpl> get copyWith =>
+      __$$DomainEventModelImplCopyWithImpl<_$DomainEventModelImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$DomainEventImplToJson(
+    return _$$DomainEventModelImplToJson(
       this,
     );
   }
 }
 
-abstract class _DomainEvent extends DomainEvent {
-  const factory _DomainEvent(
+abstract class _DomainEventModel extends DomainEventModel {
+  const factory _DomainEventModel(
       {required final EventId id,
       required final EntityId entityId,
       required final String eventType,
@@ -554,11 +555,11 @@ abstract class _DomainEvent extends DomainEvent {
       final EventId? correlationId,
       final EventId? causationId,
       final int version,
-      final String? status}) = _$DomainEventImpl;
-  const _DomainEvent._() : super._();
+      final String? status}) = _$DomainEventModelImpl;
+  const _DomainEventModel._() : super._();
 
-  factory _DomainEvent.fromJson(Map<String, dynamic> json) =
-      _$DomainEventImpl.fromJson;
+  factory _DomainEventModel.fromJson(Map<String, dynamic> json) =
+      _$DomainEventModelImpl.fromJson;
 
 // Core event data
   @override
@@ -592,10 +593,10 @@ abstract class _DomainEvent extends DomainEvent {
   @override
   String? get status;
 
-  /// Create a copy of DomainEvent
+  /// Create a copy of DomainEventModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DomainEventImplCopyWith<_$DomainEventImpl> get copyWith =>
+  _$$DomainEventModelImplCopyWith<_$DomainEventModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

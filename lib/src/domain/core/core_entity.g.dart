@@ -6,11 +6,11 @@ part of 'core_entity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$CoreEntityImpl<T> _$$CoreEntityImplFromJson<T extends Object>(
+_$CoreEntityDtoImpl<T> _$$CoreEntityDtoImplFromJson<T extends Object>(
   Map<String, dynamic> json,
   T Function(Object? json) fromJsonT,
 ) =>
-    _$CoreEntityImpl<T>(
+    _$CoreEntityDtoImpl<T>(
       id: EntityId.fromJson((json['id'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, e as Object),
       )),
@@ -39,8 +39,8 @@ _$CoreEntityImpl<T> _$$CoreEntityImplFromJson<T extends Object>(
       data: _$nullableGenericFromJson(json['data'], fromJsonT),
     );
 
-Map<String, dynamic> _$$CoreEntityImplToJson<T extends Object>(
-  _$CoreEntityImpl<T> instance,
+Map<String, dynamic> _$$CoreEntityDtoImplToJson<T extends Object>(
+  _$CoreEntityDtoImpl<T> instance,
   Object? Function(T value) toJsonT,
 ) =>
     <String, dynamic>{

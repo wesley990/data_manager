@@ -6,10 +6,10 @@ part 'entity_types.g.dart';
 
 // Entity-specific classes
 @freezed
-class Owner with _$Owner {
-  const Owner._(); // Add private constructor for methods
+class OwnerModel with _$OwnerModel {
+  const OwnerModel._(); // Add private constructor for methods
 
-  const factory Owner({
+  const factory OwnerModel({
     // Core info
     required ContactInfo contact,
     @Default([]) List<EntityId> siteIds,
@@ -17,9 +17,10 @@ class Owner with _$Owner {
     // Metadata
     @Default({}) Map<String, Object> meta,
     Map<String, Object>? customData,
-  }) = _Owner;
+  }) = _OwnerModel;
 
-  factory Owner.fromJson(Map<String, Object> json) => _$OwnerFromJson(json);
+  factory OwnerModel.fromJson(Map<String, Object> json) =>
+      _$OwnerModelFromJson(json);
 
   // Computed properties
   bool get hasSites => siteIds.isNotEmpty;
@@ -28,7 +29,7 @@ class Owner with _$Owner {
   String get displayName => contact.displayName;
 
   // Event handling
-  Owner applyEvent(DomainEvent event) {
+  OwnerModel applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'SITE_ADDED' => copyWith(
           siteIds: [...siteIds, event.changes['siteId'] as EntityId],
@@ -47,10 +48,10 @@ class Owner with _$Owner {
 }
 
 @freezed
-class Site with _$Site {
-  const Site._();
+class SiteModel with _$SiteModel {
+  const SiteModel._();
 
-  const factory Site({
+  const factory SiteModel({
     // Core info
     required String name,
     required EntityId ownerId,
@@ -70,9 +71,10 @@ class Site with _$Site {
     Map<String, Object>? customData,
     @Default({}) Map<String, Object> meta,
     @Default({}) Map<String, String> contactInfo,
-  }) = _Site;
+  }) = _SiteModel;
 
-  factory Site.fromJson(Map<String, Object> json) => _$SiteFromJson(json);
+  factory SiteModel.fromJson(Map<String, Object> json) =>
+      _$SiteModelFromJson(json);
 
   // Location methods
   bool get hasLocation => latitude != null && longitude != null;
@@ -82,7 +84,7 @@ class Site with _$Site {
   bool get hasEquipment => equipmentIds.isNotEmpty;
 
   // Event handling
-  Site applyEvent(DomainEvent event) {
+  SiteModel applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'EQUIPMENT_ADDED' => copyWith(
           equipmentIds: [
@@ -105,10 +107,10 @@ class Site with _$Site {
 }
 
 @freezed
-class Equipment with _$Equipment {
-  const Equipment._();
+class EquipmentModel with _$EquipmentModel {
+  const EquipmentModel._();
 
-  const factory Equipment({
+  const factory EquipmentModel({
     // Core info
     required String name,
     required EntityId siteId,
@@ -134,10 +136,10 @@ class Equipment with _$Equipment {
     Map<String, Object>? customData,
     @Default({}) Map<String, Object> meta,
     @Default({}) Map<String, String> maintContacts,
-  }) = _Equipment;
+  }) = _EquipmentModel;
 
-  factory Equipment.fromJson(Map<String, Object> json) =>
-      _$EquipmentFromJson(json);
+  factory EquipmentModel.fromJson(Map<String, Object> json) =>
+      _$EquipmentModelFromJson(json);
 
   // Maintenance methods
   bool get needsMaintenance =>
@@ -156,7 +158,7 @@ class Equipment with _$Equipment {
   bool get hasSubComponents => childIds.isNotEmpty;
 
   // Event handling
-  Equipment applyEvent(DomainEvent event) {
+  EquipmentModel applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'MAINTENANCE_PERFORMED' => copyWith(
           lastMaintDate: event.timestamp,
@@ -180,10 +182,10 @@ class Equipment with _$Equipment {
 }
 
 @freezed
-class Vendor with _$Vendor {
-  const Vendor._();
+class VendorModel with _$VendorModel {
+  const VendorModel._();
 
-  const factory Vendor({
+  const factory VendorModel({
     // Core info
     required ContactInfo contact,
     @Default([]) List<EntityId> staffIds,
@@ -193,9 +195,10 @@ class Vendor with _$Vendor {
     @Default({}) Map<String, Object> meta,
     Map<String, Object>? customData,
     @Default({}) Map<String, Object> certifications,
-  }) = _Vendor;
+  }) = _VendorModel;
 
-  factory Vendor.fromJson(Map<String, Object> json) => _$VendorFromJson(json);
+  factory VendorModel.fromJson(Map<String, Object> json) =>
+      _$VendorModelFromJson(json);
 
   // Business methods
   bool get hasStaff => staffIds.isNotEmpty;
@@ -204,7 +207,7 @@ class Vendor with _$Vendor {
   bool get hasValidContact => contact.email != null || contact.phone != null;
 
   // Event handling
-  Vendor applyEvent(DomainEvent event) {
+  VendorModel applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'PERSONNEL_ADDED' => copyWith(
           staffIds: [...staffIds, event.changes['personnelId'] as EntityId],
@@ -223,10 +226,10 @@ class Vendor with _$Vendor {
 }
 
 @freezed
-class Personnel with _$Personnel {
-  const Personnel._();
+class PersonnelModel with _$PersonnelModel {
+  const PersonnelModel._();
 
-  const factory Personnel({
+  const factory PersonnelModel({
     // Core info
     required String name,
     required EntityId vendorId,
@@ -246,10 +249,10 @@ class Personnel with _$Personnel {
     @Default({}) Map<String, Object> meta,
     @Default({}) Map<String, Object> schedule,
     @Default({}) Map<String, DateTime> certDates,
-  }) = _Personnel;
+  }) = _PersonnelModel;
 
-  factory Personnel.fromJson(Map<String, Object> json) =>
-      _$PersonnelFromJson(json);
+  factory PersonnelModel.fromJson(Map<String, Object> json) =>
+      _$PersonnelModelFromJson(json);
 
   // Qualification methods
   bool get isCertified => certs.isNotEmpty;
@@ -261,7 +264,7 @@ class Personnel with _$Personnel {
   DateTime? getCertExpiry(String cert) => certDates[cert];
 
   // Event handling
-  Personnel applyEvent(DomainEvent event) {
+  PersonnelModel applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'CERTIFICATION_ADDED' => copyWith(
           certs: [...certs, event.changes['cert'] as String],
@@ -283,8 +286,8 @@ class Personnel with _$Personnel {
 }
 
 // Type aliases for entity-specific BaseEntity instances
-typedef OwnerEntity = BaseEntity<Owner>;
-typedef SiteEntity = BaseEntity<Site>;
-typedef EquipmentEntity = BaseEntity<Equipment>;
-typedef VendorEntity = BaseEntity<Vendor>;
-typedef PersonnelEntity = BaseEntity<Personnel>;
+typedef OwnerEntity = BaseEntityModel<OwnerModel>;
+typedef SiteEntity = BaseEntityModel<SiteModel>;
+typedef EquipmentEntity = BaseEntityModel<EquipmentModel>;
+typedef VendorEntity = BaseEntityModel<VendorModel>;
+typedef PersonnelEntity = BaseEntityModel<PersonnelModel>;

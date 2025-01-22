@@ -57,7 +57,7 @@ class EntityCreateConfig<T extends Object> {
 }
 
 class EntityCloneConfig<T extends Object> {
-  final BaseEntity<T> source;
+  final BaseEntityModel<T> source;
   final AuthUser user;
   final String? newName;
   final String? newPath;
@@ -78,14 +78,15 @@ class EntityCloneConfig<T extends Object> {
 
 class EntityFactory {
   static final _validTypes = <Type>{
-    Owner,
-    Site,
-    Equipment,
-    Vendor,
-    Personnel,
+    OwnerModel,
+    SiteModel,
+    EquipmentModel,
+    VendorModel,
+    PersonnelModel,
   };
 
-  static BaseEntity<T> create<T extends Object>(EntityCreateConfig<T> config) {
+  static BaseEntityModel<T> create<T extends Object>(
+      EntityCreateConfig<T> config) {
     if (!_validTypes.contains(T)) {
       throw ArgumentError('Invalid type: ${T.toString()}');
     }
@@ -95,7 +96,7 @@ class EntityFactory {
     final id = EntityId(const Uuid().v4());
 
     // Create core entity first
-    final core = CoreEntity<T>(
+    final core = CoreEntityDto<T>(
       id: id,
       name: config.name,
       description: config.description,
@@ -109,7 +110,7 @@ class EntityFactory {
     );
 
     // Create base entity first
-    var entity = BaseEntity<T>(
+    var entity = BaseEntityModel<T>(
       core: core,
       treePath: config.parentPath,
       parentId: config.parentId,
@@ -158,14 +159,15 @@ class EntityFactory {
     );
   }
 
-  static BaseEntity<T> clone<T extends Object>(EntityCloneConfig<T> config) {
+  static BaseEntityModel<T> clone<T extends Object>(
+      EntityCloneConfig<T> config) {
     final now = DateTime.now();
     final userAction = UserAction.fromAuthUser(config.user);
     final id = EntityId(const Uuid().v4());
     final source = config.source;
 
     // Create new core entity
-    final core = CoreEntity<T>(
+    final core = CoreEntityDto<T>(
       id: id,
       name: config.newName ?? '${source.name} (Copy)',
       description: source.description,
@@ -179,7 +181,7 @@ class EntityFactory {
     );
 
     // Create base entity first
-    var entity = BaseEntity<T>(
+    var entity = BaseEntityModel<T>(
       core: core,
       treePath: config.newPath ?? source.treePath,
       tags: config.newTags ?? List<String>.from(source.tags),
