@@ -1,12 +1,19 @@
-import 'dart:convert';
-import 'package:crypto/crypto.dart';
 import 'package:data_manager/data_manager.dart';
+import 'package:data_manager/src/services/ai_service.dart';
+import 'package:data_manager/src/services/hierarchy_service.dart';
+import 'package:data_manager/src/services/lock_service.dart';
 import 'package:data_manager/src/services/path_service.dart';
+import 'package:data_manager/src/services/version_service.dart';
+
+/// Shared service instances
+final _pathService = PathService(config: EntityConfig());
+final _hierarchyService = HierarchyService(config: EntityConfig());
+final _lockService = LockService(config: EntityConfig());
+final _versionService = VersionService();
+final _aiService = AIService();
 
 /// Path sanitization and validation
 extension PathSanitizationExtension<T extends Object> on BaseEntityModel<T> {
-  static final _pathService = PathService(config: EntityConfig());
-
   String sanitizePath(String? rawPath) => _pathService.sanitizePath(rawPath);
   bool isPathValid(String? path) => _pathService.isValidPath(path);
 }
@@ -28,46 +35,40 @@ extension HierarchyNavigationExtension<T extends Object> on BaseEntityModel<T> {
   List<String> get ancestorPaths => ancestors.map((a) => a.value).toList();
   String get fullPath => treePath ?? id.value;
 
-  bool isAncestorOf(BaseEntityModel<T> other) => other.ancestors.contains(id);
-  bool isDescendantOf(BaseEntityModel<T> other) => ancestors.contains(other.id);
+  bool isAncestorOf(BaseEntityModel<T> other) => 
+      _hierarchyService.isAncestorOf(ancestors, other.id);
+      
+  bool isDescendantOf(BaseEntityModel<T> other) =>
+      _hierarchyService.isDescendantOf(id, other.ancestors);
+
   bool isRelatedTo(BaseEntityModel<T> other) =>
       isAncestorOf(other) || isDescendantOf(other);
 
-  int getDepthTo(BaseEntityModel<T> ancestor) {
-    if (!isDescendantOf(ancestor)) return -1;
-    final ancestorIndex = ancestors.indexOf(ancestor.id);
-    return ancestors.length - ancestorIndex;
-  }
+  int getDepthTo(BaseEntityModel<T> ancestor) =>
+      _hierarchyService.getDepthTo(ancestors, ancestor.id);
 }
 
 /// Hierarchy validation
 extension HierarchyValidationExtension<T extends Object> on BaseEntityModel<T> {
-  bool hasCircularReference() {
-    if (parentId == null) return false;
-    return ancestors.contains(id);
-  }
+  bool hasCircularReference() =>
+      _hierarchyService.hasCircularReference(id, parentId, ancestors);
 
   BaseEntityModel<T> updateHierarchy({
     required EntityId? newParentId,
     String? newPath,
     List<EntityId>? newAncestors,
-    bool validateDepth = true,
+    bool validateDepth = true,  
   }) {
-    if (validateDepth &&
-        newAncestors != null &&
-        newAncestors.length >= SystemLimits.hierarchyDepthMax) {
-      throw HierarchyValidationException(
-        message: 'New hierarchy would exceed maximum depth',
-        field: 'hierarchy',
-        depth: newAncestors.length,
-        path: newAncestors.map((a) => a.value).toList(),
-      );
+    if (validateDepth && newAncestors != null) {
+      _hierarchyService.validateHierarchyDepth(newAncestors);
     }
 
     final updatedPath = newPath ?? treePath;
     final updatedAncestors = newAncestors ?? ancestors;
-    final existingHistory =
-        hierarchyMeta['parent_history'] as List<String>? ?? [];
+    final updatedMeta = _hierarchyService.getUpdatedHierarchyMeta(
+      hierarchyMeta,
+      newParentId,
+    );
 
     return copyWith(
       parentId: newParentId,
@@ -76,21 +77,17 @@ extension HierarchyValidationExtension<T extends Object> on BaseEntityModel<T> {
       treeDepth: updatedAncestors.length,
       isHierarchyRoot: newParentId == null,
       isHierarchyLeaf: childIds.isEmpty,
-      hierarchyMeta: {
-        ...hierarchyMeta,
-        'last_hierarchy_update': DateTime.now().toIso8601String(),
-        'parent_history': [...existingHistory, newParentId?.value ?? 'root'],
-      },
+      hierarchyMeta: updatedMeta,
     );
   }
 }
 
-/// Child management
+/// Child management  
 extension HierarchyManagementExtension<T extends Object> on BaseEntityModel<T> {
   BaseEntityModel<T> addChild(EntityId childId) {
-    if (childIds.contains(childId)) return this;
+    final updatedChildren = _hierarchyService.addChild(childIds, childId);
+    if (updatedChildren == childIds) return this;
 
-    final updatedChildren = [...childIds, childId];
     return copyWith(
       childIds: updatedChildren,
       isHierarchyLeaf: false,
@@ -103,9 +100,9 @@ extension HierarchyManagementExtension<T extends Object> on BaseEntityModel<T> {
   }
 
   BaseEntityModel<T> removeChild(EntityId childId) {
-    if (!childIds.contains(childId)) return this;
+    final updatedChildren = _hierarchyService.removeChild(childIds, childId);
+    if (updatedChildren.length == childIds.length) return this;
 
-    final updatedChildren = childIds.where((id) => id != childId).toList();
     return copyWith(
       childIds: updatedChildren,
       isHierarchyLeaf: updatedChildren.isEmpty,
@@ -121,15 +118,15 @@ extension HierarchyManagementExtension<T extends Object> on BaseEntityModel<T> {
 /// Hierarchy indexing and search
 extension HierarchyIndexingExtension<T extends Object> on BaseEntityModel<T> {
   Map<String, Object> buildHierarchyIndex() {
-    return {
-      'depth_level': treeDepth,
-      'parent_type': parentId?.value ?? 'root',
-      'ancestry_path': ancestors.map((a) => a.value).join('|'),
-      'child_count': childIds.length,
-      'is_leaf': isHierarchyLeaf,
-      'is_root': isHierarchyRoot,
-      ...hierarchyMeta,
-    };
+    return _hierarchyService.buildHierarchyIndex(
+      depth: treeDepth,
+      parentId: parentId,
+      ancestors: ancestors,
+      children: childIds,
+      isLeaf: isHierarchyLeaf,
+      isRoot: isHierarchyRoot,
+      meta: hierarchyMeta,
+    );
   }
 }
 
@@ -158,18 +155,16 @@ extension AIProcessingExtension<T extends Object> on BaseEntityModel<T> {
     final newEmbeddings =
         embeddings != null ? {...aiVectors, modelId: embeddings} : aiVectors;
 
-    final cacheKey =
-        useCache ? _generateCacheKey(modelId, input.toString()) : null;
-    final newMeta = {
-      ...aiMeta,
-      if (cacheKey != null)
-        'cache_$cacheKey': json.encode({
-          'output': output,
-          'timestamp': timestamp.toIso8601String(),
-          'confidence': confidence,
-          'model_version': aiVer,
-        }),
-    };
+    final newMeta = _aiService.getProcessingMeta(
+      currentMeta: aiMeta,
+      modelId: modelId,
+      input: input,
+      output: output,
+      timestamp: timestamp,
+      confidence: confidence,
+      modelVersion: aiVer,
+      useCache: useCache,
+    );
 
     return copyWith(
       aiVectors: newEmbeddings,
@@ -183,31 +178,22 @@ extension AIProcessingExtension<T extends Object> on BaseEntityModel<T> {
 /// AI result caching
 extension AICacheExtension<T extends Object> on BaseEntityModel<T> {
   bool hasCachedResult(String modelId, Map<String, dynamic> input) {
-    final cacheKey = _generateCacheKey(modelId, input.toString());
-    return aiMeta.containsKey('cache_$cacheKey');
+    final cacheKey = _aiService.generateCacheKey(modelId, input.toString());
+    return _aiService.hasCachedResult(aiMeta, cacheKey);
   }
 
   Map<String, dynamic>? getCachedResult(
-      String modelId, Map<String, dynamic> input,
-      {bool requireLatestVersion = false}) {
-    final cacheKey = _generateCacheKey(modelId, input.toString());
-    final cached = aiMeta['cache_$cacheKey'];
-
-    if (cached == null) return null;
-
-    final result = json.decode(cached) as Map<String, dynamic>;
-
-    if (requireLatestVersion) {
-      final cachedVersion = result['model_version'];
-      if (cachedVersion != aiVer) return null;
-    }
-
-    return result;
-  }
-
-  String _generateCacheKey(String modelId, String input) {
-    final hash = sha256.convert(utf8.encode(input)).toString();
-    return '$modelId:$hash';
+    String modelId,
+    Map<String, dynamic> input,
+    {bool requireLatestVersion = false}
+  ) {
+    final cacheKey = _aiService.generateCacheKey(modelId, input.toString());
+    return _aiService.getCachedResult(
+      aiMeta,
+      cacheKey,
+      aiVer,
+      requireLatestVersion: requireLatestVersion,
+    );
   }
 }
 
@@ -235,18 +221,9 @@ extension HistoryExtension<T extends Object> on BaseEntityModel<T> {
 
 /// Version validation and incrementation
 extension EntityVersionExtension<T extends Object> on BaseEntityModel<T> {
-  bool hasValidVersion() => _isValidVersionFormat(schemaVer);
-  bool hasValidSchemaVersion() => _isValidVersionFormat(schemaVer);
+  bool hasValidVersion() => _versionService.isValidVersionFormat(schemaVer);
+  bool hasValidSchemaVersion() => _versionService.isValidVersionFormat(schemaVer);
   bool hasValidDataVersion() => dataVer > 0;
-  
-  bool _isValidVersionFormat(String version) {
-    try {
-      final parts = version.split('.');
-      return parts.length == 3 && parts.every((p) => int.tryParse(p) != null);
-    } catch (_) {
-      return false;
-    }
-  }
 
   BaseEntityModel<T> incrementVersion({bool isStructural = false, String? nodeId}) {
     return copyWith(
@@ -260,78 +237,70 @@ extension EntityVersionExtension<T extends Object> on BaseEntityModel<T> {
   }
 }
 
-/// Version conflict detection and resolution
+/// Version conflict detection and resolution  
 extension VersionConflictExtension<T extends Object> on BaseEntityModel<T> {
   bool hasVersionConflict(BaseEntityModel<T> other) =>
-      structVer != other.structVer ||
-      dataVer != other.dataVer ||
-      _hasVersionVectorConflict(other);
+      _versionService.hasVersionConflict(
+        structVer,
+        dataVer,
+        verVectors,
+        other,
+      );
 
-  bool _hasVersionVectorConflict(BaseEntityModel<T> other) =>
-      verVectors.entries.any((entry) =>
-          other.verVectors[entry.key] != null &&
-          entry.value > other.verVectors[entry.key]!);
+  BaseEntityModel<T> resolveVersionConflict(BaseEntityModel<T> serverVersion) {
+    final comparison = _versionService.compareVersions(
+      schemaVer,
+      serverVersion.schemaVer,
+    );
 
-  BaseEntityModel<T> resolveVersionConflict(BaseEntityModel<T> serverVersion) {  // Renamed from resolveConflict
-    final comparison = _compareVersions(schemaVer, serverVersion.schemaVer);
     if (comparison > 0) {
       return copyWith(
-        syncMeta: {
-          ...syncMeta,
-          'conflictResolved': 'localWins',
-          'serverVersion': serverVersion.schemaVer,
-        },
+        syncMeta: _versionService.getResolutionMeta(
+          syncMeta,
+          'localWins',
+          serverVersion.schemaVer,
+        ),
       );
     } else if (comparison < 0) {
       return serverVersion.copyWith(
-        syncMeta: {
-          ...serverVersion.syncMeta,
-          'conflictResolved': 'serverWins',
-          'localVersion': schemaVer,
-        },
+        syncMeta: _versionService.getResolutionMeta(
+          serverVersion.syncMeta,
+          'serverWins', 
+          schemaVer,
+        ),
       );
     }
     return this;
-  }
-
-  int _compareVersions(String v1, String v2) {
-    final v1Parts = v1.split('.').map(int.parse).toList();
-    final v2Parts = v2.split('.').map(int.parse).toList();
-    for (var i = 0; i < 3; i++) {
-      if (v1Parts[i] != v2Parts[i]) {
-        return v1Parts[i].compareTo(v2Parts[i]);
-      }
-    }
-    return 0;
   }
 }
 
 /// Core locking functionality
 extension LockingExtension<T extends Object> on BaseEntityModel<T> {
-  bool get isLocked => 
-      lockOwner != null && (lockExpiry?.isAfter(DateTime.now()) ?? false);
+  bool get isLocked => _lockService.isLocked(lockOwner, lockExpiry);
 
-  Duration _normalizeLockDuration(Duration duration) {
-    if (duration < LockConfig.minimumDuration) return LockConfig.minimumDuration;
-    if (duration > LockConfig.maximumDuration) return LockConfig.maximumDuration;
-    return duration;
-  }
+  Duration normalizeLockDuration(Duration duration) =>
+      _lockService.normalizeLockDuration(duration);
 
-  BaseEntityModel<T> acquireLock(  // Renamed from setLock
+  BaseEntityModel<T> acquireLock(
     UserAction user, {
     Duration? duration,
     bool isDistributed = false,
     String? nodeId,
   }) {
-    final lockDuration =
-        _normalizeLockDuration(duration ?? LockConfig.defaultTimeout);
+    final lockDuration = normalizeLockDuration(
+      duration ?? LockConfig.defaultTimeout,
+    );
+
+    final distLockId = _lockService.generateDistributedLockId(
+      id,
+      nodeId,
+      isDistributed,
+    );
 
     return copyWith(
       lockOwner: user,
       lockExpiry: DateTime.now().add(lockDuration),
-      distLockId: isDistributed
-          ? '${id.value}-$nodeId-${DateTime.now().millisecondsSinceEpoch}'
-          : null,
+      distLockId: distLockId,
       distLockNode: isDistributed ? nodeId : null,
     );
   }
@@ -339,10 +308,7 @@ extension LockingExtension<T extends Object> on BaseEntityModel<T> {
 
 /// Distributed lock coordination
 extension DistributedLockExtension<T extends Object> on BaseEntityModel<T> {
-  bool hasLockConflict(BaseEntityModel<T> other) {
-    return distLockId != null &&
-        other.distLockId != null &&
-        distLockId != other.distLockId;
-  }
+  bool hasLockConflict(BaseEntityModel<T> other) =>
+      _lockService.hasLockConflict(distLockId, other.distLockId);
 }
 
