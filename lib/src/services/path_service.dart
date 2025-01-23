@@ -3,8 +3,12 @@ import 'package:data_manager/data_manager.dart';
 /// Service class for handling path operations
 class PathService {
   final EntityConfig config;
+  
+  // Cache for parsed paths
+  final Map<String, List<String>> _segmentCache = {};
+  final Map<String, String> _canonicalCache = {};
 
-  const PathService({required this.config});
+  PathService({required this.config});
 
   String sanitizePath(String? rawPath) {
     if (rawPath == null || rawPath.isEmpty) return '';
@@ -12,6 +16,7 @@ class PathService {
     try {
       final decodedPath = Uri.decodeFull(rawPath);
 
+      // Length validation
       if (decodedPath.length > config.maxPathLength) {
         throw FieldValidationException(
           message: 'Path exceeds maximum length',
@@ -21,26 +26,21 @@ class PathService {
         );
       }
 
-      final segments = decodedPath
-          .split(config.pathSeparator)
-          .where((s) => s.isNotEmpty)
-          .map((s) => _sanitizePathSegment(s, config))
-          .where((s) => s.isNotEmpty)
-          .toList();
-
+      // Get or compute segments
+      final segments = _getSegments(decodedPath);
+      
+      // Validate segments
       if (segments.any((s) => s.length > config.maxPathSegment)) {
         throw FieldValidationException(
-          message: 'Path segment exceeds maximum length',
+          message: 'Path segment exceeds maximum length', 
           field: 'path',
-          invalidValue: segments
-              .firstWhere((s) => s.length > config.maxPathSegment),
+          invalidValue: segments.firstWhere((s) => s.length > config.maxPathSegment),
           details: 'Max segment length: ${config.maxPathSegment}',
         );
       }
 
-      return segments.isEmpty
-          ? ''
-          : '${config.pathSeparator}${segments.join(config.pathSeparator)}${config.pathSeparator}';
+      return _buildPath(segments);
+
     } catch (e) {
       throw PathValidationException(
         message: 'Invalid path format',
@@ -50,23 +50,47 @@ class PathService {
     }
   }
 
-  String _sanitizePathSegment(String segment, EntityConfig config) {
+  List<String> _getSegments(String path) {
+    // Check cache first
+    if (_segmentCache.containsKey(path)) {
+      return List.from(_segmentCache[path]!);
+    }
+
+    // Parse and cache segments
+    final segments = path
+        .split(config.pathSeparator)
+        .where((s) => s.isNotEmpty)
+        .map((s) => _sanitizePathSegment(s))
+        .where((s) => s.isNotEmpty)
+        .toList();
+
+    _segmentCache[path] = segments;
+    return List.from(segments);
+  }
+
+  String _sanitizePathSegment(String segment) {
     final cleaned = segment.replaceAll(RegExp(config.invalidPathChars), '');
     final trimmed = cleaned.trim().replaceAll(RegExp(r'^\.+|\.+$'), '');
     return Uri.encodeComponent(trimmed);
   }
 
+  String _buildPath(List<String> segments) {
+    if (segments.isEmpty) return '';
+    
+    final buffer = StringBuffer()
+      ..write(config.pathSeparator)
+      ..writeAll(segments, config.pathSeparator)
+      ..write(config.pathSeparator);
+      
+    return buffer.toString();
+  }
+
   List<String> splitPath(String? path) {
-    return sanitizePath(path)
-        .split(config.pathSeparator)
-        .where((s) => s.isNotEmpty)
-        .toList();
+    return _getSegments(sanitizePath(path));
   }
 
   String joinPath(List<String> segments) {
-    return segments.isEmpty
-        ? ''
-        : '${config.pathSeparator}${segments.join(config.pathSeparator)}${config.pathSeparator}';
+    return _buildPath(segments.map(_sanitizePathSegment).toList());
   }
 
   bool isValidPath(String? path) {
@@ -79,7 +103,17 @@ class PathService {
   }
 
   String getCanonicalPath(String? path, String fallback) {
-    return path?.toLowerCase() ?? fallback;
+    if (path == null) return fallback;
+    
+    // Check cache
+    if (_canonicalCache.containsKey(path)) {
+      return _canonicalCache[path]!;
+    }
+
+    // Compute and cache canonical form
+    final canonical = path.toLowerCase();
+    _canonicalCache[path] = canonical;
+    return canonical;
   }
 
   String getAbsolutePath(String? basePath, String entityId) {
@@ -88,17 +122,22 @@ class PathService {
   }
 
   List<String> buildAncestorPaths(String path) {
+    final segments = splitPath(path);
     final paths = <String>[];
-    final parts = path.split(config.pathSeparator);
-    String currentPath = '';
+    final buffer = StringBuffer();
 
-    for (final part in parts.where((p) => p.isNotEmpty)) {
-      currentPath = currentPath.isEmpty
-          ? part
-          : '$currentPath${config.pathSeparator}$part';
-      paths.add(currentPath);
+    for (final segment in segments) {
+      if (buffer.isNotEmpty) buffer.write(config.pathSeparator);
+      buffer.write(segment);
+      paths.add(buffer.toString());
     }
 
     return paths;
+  }
+
+  // Cache management
+  void clearPathCache() {
+    _segmentCache.clear();
+    _canonicalCache.clear();
   }
 }

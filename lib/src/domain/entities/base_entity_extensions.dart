@@ -24,10 +24,9 @@ extension PathNavigationExtension<T extends Object> on BaseEntityModel<T> {
 
   List<String> splitPath(String? path) => _pathService.splitPath(path);
   String get canonicalPath => _pathService.getCanonicalPath(treePath, id.value);
-  List<String> get pathParts => splitPath(treePath);
-  List<String> get ancestorPaths => splitPath(treePath);
+  List<String> get pathParts => _pathService.splitPath(treePath);
+  List<String> get ancestorPaths => _pathService.buildAncestorPaths(treePath ?? '');
   String get absolutePath => _pathService.getAbsolutePath(treePath, id.value);
-  List<String> buildHierarchyPaths() => treePath != null ? _pathService.buildAncestorPaths(treePath!) : [];
 }
 
 /// Hierarchy navigation and relationships
