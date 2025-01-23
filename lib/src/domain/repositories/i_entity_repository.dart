@@ -82,6 +82,32 @@ abstract class IEntityRepository<T extends Object> {
   // Cache management
   Future<void> invalidateCache(EntityId id);
   Future<void> refreshCache();
+
+  // Event & Version Control
+  Future<void> applyEvent(DomainEventModel event);
+  Future<void> applyEvents(List<DomainEventModel> events);
+  Future<List<DomainEventModel>> getEventHistory(EntityId id, {
+    DateTime? since,
+    int? limit,
+  });
+  Stream<DomainEventModel> watchEvents(EntityId id);
+  
+  Future<BaseEntityModel<T>> getVersion(EntityId id, int version);
+  Future<List<int>> getAvailableVersions(EntityId id);
+  Future<BaseEntityModel<T>> revertToVersion(EntityId id, int version);
+  
+  Future<bool> hasVersionConflict(EntityId id, Map<String, int> versionVectors);
+  Future<BaseEntityModel<T>> resolveConflict(
+    EntityId id,
+    BaseEntityModel<T> localVersion,
+    BaseEntityModel<T> serverVersion,
+  );
+  
+  Future<Map<String, int>> getVersionVectors(EntityId id);
+  Future<void> updateVersionVectors(
+    EntityId id, 
+    Map<String, int> vectors,
+  );
 }
 
 // Unified parameter classes
@@ -165,6 +191,25 @@ class HierarchyQueryParams {
     this.maxDepth,
     this.filter = const [],
     this.metadata = const {},
+  });
+}
+
+// Add new parameter class for version control
+class VersionQuery {
+  final EntityId entityId;
+  final DateTime? fromDate;
+  final DateTime? toDate;
+  final int? fromVersion;
+  final int? toVersion;
+  final bool includeMetadata;
+
+  const VersionQuery({
+    required this.entityId,
+    this.fromDate,
+    this.toDate,
+    this.fromVersion,
+    this.toVersion,
+    this.includeMetadata = false,
   });
 }
 
