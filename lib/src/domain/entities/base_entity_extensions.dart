@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:data_manager/data_manager.dart';
 
-/// Tree Path Management Extension
-extension TreePathExtension<T extends Object> on BaseEntityModel<T> {
+/// Path sanitization and validation
+extension PathSanitizationExtension<T extends Object> on BaseEntityModel<T> {
   String sanitizePath(String? rawPath) {
     if (rawPath == null || rawPath.isEmpty) return '';
 
@@ -65,7 +65,10 @@ extension TreePathExtension<T extends Object> on BaseEntityModel<T> {
       return false;
     }
   }
+}
 
+/// Path navigation and resolution
+extension PathNavigationExtension<T extends Object> on BaseEntityModel<T> {
   List<String> splitPath(String? path) {
     return sanitizePath(path)
         .split(EntityDefaults.pathSeparator)
@@ -100,9 +103,8 @@ extension TreePathExtension<T extends Object> on BaseEntityModel<T> {
   }
 }
 
-/// Enhanced Hierarchy Management Extension
-extension HierarchyExtension<T extends Object> on BaseEntityModel<T> {
-  // Core navigation methods
+/// Hierarchy navigation and relationships
+extension HierarchyNavigationExtension<T extends Object> on BaseEntityModel<T> {
   List<String> get ancestorPaths => ancestors.map((a) => a.value).toList();
   String get fullPath => treePath ?? id.value;
 
@@ -111,16 +113,18 @@ extension HierarchyExtension<T extends Object> on BaseEntityModel<T> {
   bool isRelatedTo(BaseEntityModel<T> other) =>
       isAncestorOf(other) || isDescendantOf(other);
 
-  // Path validation
-  bool hasCircularReference() {
-    if (parentId == null) return false;
-    return ancestors.contains(id);
-  }
-
   int getDepthTo(BaseEntityModel<T> ancestor) {
     if (!isDescendantOf(ancestor)) return -1;
     final ancestorIndex = ancestors.indexOf(ancestor.id);
     return ancestors.length - ancestorIndex;
+  }
+}
+
+/// Hierarchy validation
+extension HierarchyValidationExtension<T extends Object> on BaseEntityModel<T> {
+  bool hasCircularReference() {
+    if (parentId == null) return false;
+    return ancestors.contains(id);
   }
 
   BaseEntityModel<T> updateHierarchy({
@@ -159,8 +163,10 @@ extension HierarchyExtension<T extends Object> on BaseEntityModel<T> {
       },
     );
   }
+}
 
-  // Child management
+/// Child management
+extension HierarchyManagementExtension<T extends Object> on BaseEntityModel<T> {
   BaseEntityModel<T> addChild(EntityId childId) {
     if (childIds.contains(childId)) return this;
 
@@ -190,8 +196,10 @@ extension HierarchyExtension<T extends Object> on BaseEntityModel<T> {
       },
     );
   }
+}
 
-  // Search indexing
+/// Hierarchy indexing and search
+extension HierarchyIndexingExtension<T extends Object> on BaseEntityModel<T> {
   Map<String, Object> buildHierarchyIndex() {
     return {
       'depth_level': treeDepth,
@@ -205,9 +213,8 @@ extension HierarchyExtension<T extends Object> on BaseEntityModel<T> {
   }
 }
 
-/// AI Processing Extension
-extension AIExtension<T extends Object> on BaseEntityModel<T> {
-  // Core AI getters
+/// AI embeddings and scoring
+extension AIEmbeddingExtension<T extends Object> on BaseEntityModel<T> {
   bool get hasEmbeddings => aiVectors.isNotEmpty;
   bool get hasScores => aiScores.isNotEmpty;
   bool get hasValidAiVersion => aiVer != null && aiVer!.isNotEmpty;
@@ -215,9 +222,11 @@ extension AIExtension<T extends Object> on BaseEntityModel<T> {
   double? getScore(String modelId) => aiScores[modelId];
   List<double>? getVector(String modelId) => aiVectors[modelId];
   bool hasModel(String modelId) => aiVectors.containsKey(modelId);
+}
 
-  // AI Processing methods
-  BaseEntityModel<T> applyAIProcessing({  // Renamed from processWithAI
+/// AI processing and model execution
+extension AIProcessingExtension<T extends Object> on BaseEntityModel<T> {
+  BaseEntityModel<T> applyAIProcessing({
     required String modelId,
     required Map<String, dynamic> input,
     required Map<String, dynamic> output,
@@ -249,8 +258,10 @@ extension AIExtension<T extends Object> on BaseEntityModel<T> {
       aiLastRun: timestamp,
     );
   }
+}
 
-  // Cache management
+/// AI result caching
+extension AICacheExtension<T extends Object> on BaseEntityModel<T> {
   bool hasCachedResult(String modelId, Map<String, dynamic> input) {
     final cacheKey = _generateCacheKey(modelId, input.toString());
     return aiMeta.containsKey('cache_$cacheKey');
@@ -280,7 +291,7 @@ extension AIExtension<T extends Object> on BaseEntityModel<T> {
   }
 }
 
-/// History Management Extension
+/// History tracking
 extension HistoryExtension<T extends Object> on BaseEntityModel<T> {
   static const _historyMaxSize = 50;
 
@@ -302,9 +313,8 @@ extension HistoryExtension<T extends Object> on BaseEntityModel<T> {
   }
 }
 
-/// Version Control Extension
-extension VersionControlExtension<T extends Object> on BaseEntityModel<T> {
-  // Combine version management and locking
+/// Version validation and incrementation
+extension EntityVersionExtension<T extends Object> on BaseEntityModel<T> {
   bool hasValidVersion() => _isValidVersionFormat(schemaVer);
   bool hasValidSchemaVersion() => _isValidVersionFormat(schemaVer);
   bool hasValidDataVersion() => dataVer > 0;
@@ -328,7 +338,10 @@ extension VersionControlExtension<T extends Object> on BaseEntityModel<T> {
       },
     );
   }
+}
 
+/// Version conflict detection and resolution
+extension VersionConflictExtension<T extends Object> on BaseEntityModel<T> {
   bool hasVersionConflict(BaseEntityModel<T> other) =>
       structVer != other.structVer ||
       dataVer != other.dataVer ||
@@ -373,8 +386,8 @@ extension VersionControlExtension<T extends Object> on BaseEntityModel<T> {
   }
 }
 
-/// Lock Management Extension
-extension LockExtension<T extends Object> on BaseEntityModel<T> {
+/// Core locking functionality
+extension LockingExtension<T extends Object> on BaseEntityModel<T> {
   bool get isLocked => 
       lockOwner != null && (lockExpiry?.isAfter(DateTime.now()) ?? false);
 
@@ -382,12 +395,6 @@ extension LockExtension<T extends Object> on BaseEntityModel<T> {
     if (duration < LockConfig.minimumDuration) return LockConfig.minimumDuration;
     if (duration > LockConfig.maximumDuration) return LockConfig.maximumDuration;
     return duration;
-  }
-
-  bool hasLockConflict(BaseEntityModel<T> other) {
-    return distLockId != null &&
-        other.distLockId != null &&
-        distLockId != other.distLockId;
   }
 
   BaseEntityModel<T> acquireLock(  // Renamed from setLock
@@ -407,6 +414,15 @@ extension LockExtension<T extends Object> on BaseEntityModel<T> {
           : null,
       distLockNode: isDistributed ? nodeId : null,
     );
+  }
+}
+
+/// Distributed lock coordination
+extension DistributedLockExtension<T extends Object> on BaseEntityModel<T> {
+  bool hasLockConflict(BaseEntityModel<T> other) {
+    return distLockId != null &&
+        other.distLockId != null &&
+        distLockId != other.distLockId;
   }
 }
 
