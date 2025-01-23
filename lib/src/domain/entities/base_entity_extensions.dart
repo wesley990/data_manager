@@ -168,7 +168,7 @@ extension AIProcessingExtension<T extends Object> on BaseEntityModel<T> {
 
     return copyWith(
       aiVectors: newEmbeddings,
-      aiMeta: newMeta,
+      aiMeta: newMeta.map((key, value) => MapEntry(key, value.toString())),
       aiScores: {...aiScores, if (confidence != null) modelId: confidence},
       aiLastRun: timestamp,
     );
