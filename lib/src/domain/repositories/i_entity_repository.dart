@@ -27,6 +27,48 @@ abstract class IEntityRepository<T extends Object> {
   Future<List<EntityRelation>> getRelations(EntityId id, {String? type});
   Stream<List<EntityRelation>> watchRelations(EntityId id);
 
+  // Enhanced hierarchy operations
+  Future<BaseEntityModel<T>> getParent(EntityId id);
+  Future<List<BaseEntityModel<T>>> getAncestors(
+    EntityId id, {
+    bool includeRoot = false,
+  });
+  Future<List<BaseEntityModel<T>>> getChildren(
+    EntityId id, {
+    bool recursive = false,  
+    int? maxDepth,
+  });
+  Future<List<BaseEntityModel<T>>> getDescendants(
+    EntityId id, {
+    bool includeDeleted = false,
+  });
+
+  // Path-based operations
+  Future<BaseEntityModel<T>> getByPath(String path);
+  Future<List<BaseEntityModel<T>>> getByPaths(List<String> paths);
+  Future<String> getCanonicalPath(EntityId id);
+  Future<List<String>> getAncestorPaths(String path);
+  
+  // Tree restructuring
+  Future<void> moveEntity(
+    EntityId id,
+    EntityId newParentId,
+  );
+  Future<void> reorderChildren(
+    EntityId parentId,
+    List<EntityId> newOrder,
+  );
+  Future<void> detachFromParent(EntityId id);
+  
+  // Hierarchy queries
+  Future<List<BaseEntityModel<T>>> queryHierarchy(
+    HierarchyQueryParams params,
+  );
+  Stream<List<BaseEntityModel<T>>> watchHierarchy(
+    EntityId rootId,
+    HierarchyQueryParams params,
+  );
+
   // Transaction support
   Future<R> transaction<R>(Future<R> Function() operation);
 
@@ -108,6 +150,21 @@ class WatchParams {
     this.id,
     this.query,
     this.debounceTime = const Duration(milliseconds: 500),
+  });
+}
+
+// Add new parameter class for hierarchy queries
+class HierarchyQueryParams {
+  final String? pathPrefix;
+  final int? maxDepth; 
+  final List<String> filter;
+  final Map<String, Object> metadata;
+
+  const HierarchyQueryParams({
+    this.pathPrefix,
+    this.maxDepth,
+    this.filter = const [],
+    this.metadata = const {},
   });
 }
 
