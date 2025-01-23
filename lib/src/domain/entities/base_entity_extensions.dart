@@ -1,106 +1,26 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:data_manager/data_manager.dart';
+import 'package:data_manager/src/services/path_service.dart';
 
 /// Path sanitization and validation
 extension PathSanitizationExtension<T extends Object> on BaseEntityModel<T> {
-  String sanitizePath(String? rawPath) {
-    if (rawPath == null || rawPath.isEmpty) return '';
+  static final _pathService = PathService(config: EntityConfig());
 
-    try {
-      final decodedPath = Uri.decodeFull(rawPath);
-
-      if (decodedPath.length > SystemLimits.pathMaxLength) {
-        throw FieldValidationException(
-          message: 'Path exceeds maximum length',
-          field: 'path',
-          invalidValue: decodedPath,
-          details:
-              'Max length: ${SystemLimits.pathMaxLength}, Actual: ${decodedPath.length}',
-        );
-      }
-
-      final segments = decodedPath
-          .split(EntityDefaults.pathSeparator)
-          .where((s) => s.isNotEmpty)
-          .map(_sanitizePathSegment)
-          .where((s) => s.isNotEmpty)
-          .toList();
-
-      if (segments.any((s) => s.length > SystemLimits.pathMaxSegment)) {
-        throw FieldValidationException(
-          message: 'Path segment exceeds maximum length',
-          field: 'path',
-          invalidValue: segments
-              .firstWhere((s) => s.length > SystemLimits.pathMaxSegment),
-          details: 'Max segment length: ${SystemLimits.pathMaxSegment}',
-        );
-      }
-
-      return segments.isEmpty
-          ? ''
-          : '${EntityDefaults.pathSeparator}${segments.join(EntityDefaults.pathSeparator)}${EntityDefaults.pathSeparator}';
-    } catch (e) {
-      throw PathValidationException(
-        message: 'Invalid path format',
-        path: rawPath,
-        details: e.toString(),
-      );
-    }
-  }
-
-  String _sanitizePathSegment(String segment) {
-    final cleaned =
-        segment.replaceAll(RegExp(EntityDefaults.invalidPathChars), '');
-    final trimmed = cleaned.trim().replaceAll(RegExp(r'^\.+|\.+$'), '');
-    return Uri.encodeComponent(trimmed).replaceAll(
-        EntityDefaults.encodedPathSeparator, EntityDefaults.pathSeparator);
-  }
-
-  bool isPathValid(String? path) {
-    if (path == null) return true;
-    try {
-      return sanitizePath(path) == path;
-    } catch (_) {
-      return false;
-    }
-  }
+  String sanitizePath(String? rawPath) => _pathService.sanitizePath(rawPath);
+  bool isPathValid(String? path) => _pathService.isValidPath(path);
 }
 
 /// Path navigation and resolution
 extension PathNavigationExtension<T extends Object> on BaseEntityModel<T> {
-  List<String> splitPath(String? path) {
-    return sanitizePath(path)
-        .split(EntityDefaults.pathSeparator)
-        .where((s) => s.isNotEmpty)
-        .toList();
-  }
+  static final _pathService = PathService(config: EntityConfig());
 
-  String get canonicalPath => treePath?.toLowerCase() ?? id.value;
-  List<String> get pathParts =>
-      treePath?.split(EntityDefaults.pathSeparator) ?? [id.value];
+  List<String> splitPath(String? path) => _pathService.splitPath(path);
+  String get canonicalPath => _pathService.getCanonicalPath(treePath, id.value);
+  List<String> get pathParts => splitPath(treePath);
   List<String> get ancestorPaths => splitPath(treePath);
-
-  String get absolutePath {
-    final basePath = treePath ?? '';
-    final entityPart = id.value;
-    return sanitizePath('$basePath${EntityDefaults.pathSeparator}$entityPart');
-  }
-
-  List<String> buildHierarchyPaths() {  // Renamed from buildTreePaths
-    final paths = <String>[];
-    final parts = treePath?.split(EntityDefaults.pathSeparator) ?? [];
-    String currentPath = '';
-
-    for (final part in parts) {
-      currentPath = currentPath.isEmpty
-          ? part
-          : '$currentPath${EntityDefaults.pathSeparator}$part';
-      paths.add(currentPath);
-    }
-
-    return paths;
-  }
+  String get absolutePath => _pathService.getAbsolutePath(treePath, id.value);
+  List<String> buildHierarchyPaths() => treePath != null ? _pathService.buildAncestorPaths(treePath!) : [];
 }
 
 /// Hierarchy navigation and relationships
