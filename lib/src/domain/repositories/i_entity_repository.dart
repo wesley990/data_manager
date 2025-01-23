@@ -1,21 +1,29 @@
 import 'dart:async';
 import 'package:data_manager/data_manager.dart';
 
-// Repository interface
 abstract class IEntityRepository<T extends Object> {
-  // Core operations
-  Future<BaseEntity<T>> operate(OperationType type, EntityId id, [Map<String, Object>? params]);
-  Future<List<BaseEntity<T>>> batchOperate(OperationType type, List<EntityId> ids, [Map<String, Object>? params]);
+  // Core operations with proper return types and error handling
+  Future<BaseEntityModel<T>> create(EntityCreateConfig<T> config);
+  Future<BaseEntityModel<T>> read(EntityId id, {bool includeDeleted = false});
+  Future<BaseEntityModel<T>> update(EntityId id, Map<String, Object> changes);
+  Future<void> delete(EntityId id, {bool permanent = false});
 
-  // Query operations
-  Future<PagedResult<BaseEntity<T>>> query(QueryParams params);
-  Stream<BaseEntity<T>> watchEntity(EntityId id);
-  Stream<List<BaseEntity<T>>> watchQuery(QueryParams params);
+  // Enhanced query operations
+  Future<PagedResult<BaseEntityModel<T>>> query(QueryParams params);
+  Future<SearchResult<BaseEntityModel<T>>> search(SearchParams params);
+  Future<List<BaseEntityModel<T>>> findByIds(List<EntityId> ids);
+
+  // Reactive streams
+  Stream<BaseEntityModel<T>> watchEntity(EntityId id);
+  Stream<PagedResult<BaseEntityModel<T>>> watchQuery(QueryParams params);
+  Stream<SearchResult<BaseEntityModel<T>>> watchSearch(SearchParams params);
 
   // Hierarchy & relationships
-  Future<List<BaseEntity<T>>> getHierarchy(EntityId id, HierarchyParams params);
+  Future<List<BaseEntityModel<T>>> getHierarchy(
+      EntityId id, HierarchyParams params);
   Future<void> addRelation(EntityId sourceId, String type, EntityId targetId);
-  Future<void> removeRelation(EntityId sourceId, String type, EntityId targetId);
+  Future<void> removeRelation(
+      EntityId sourceId, String type, EntityId targetId);
   Future<List<EntityRelation>> getRelations(EntityId id, {String? type});
   Stream<List<EntityRelation>> watchRelations(EntityId id);
 
