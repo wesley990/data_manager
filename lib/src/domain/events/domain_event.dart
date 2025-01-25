@@ -11,6 +11,37 @@ abstract class EventDefaults {
   static const tags = <String>[];
 }
 
+/// Event schema versioning configuration
+abstract class EventSchemaConfig {
+  static const currentVersion = '1.0.0';
+  static const minVersion = '1.0.0';
+  static const maxBackwardsCompatible = '1.0.0';
+  
+  static final supportedVersions = <String>{
+    '1.0.0'
+  };
+  
+  static final migrationPaths = {
+    '1.0.0': {'1.0.0': null}, // No migration needed for same version
+  };
+}
+
+/// Event schema structure definition
+@freezed
+class EventSchema with _$EventSchema {
+  const factory EventSchema({
+    required String version,
+    required String eventType,
+    required Map<String, String> fields,
+    required Map<String, bool> required,
+    Map<String, Object>? defaults,
+    Map<String, String>? migrations,
+  }) = _EventSchema;
+
+  factory EventSchema.fromJson(Map<String, Object> json) =>
+    _$EventSchemaFromJson(json);
+}
+
 @freezed
 class DomainEventModel with _$DomainEventModel {
   const DomainEventModel._();
@@ -40,6 +71,15 @@ class DomainEventModel with _$DomainEventModel {
     
     // Status
     String? status,
+
+    // Schema versioning
+    @Default(EventSchemaConfig.currentVersion) String schemaVersion,
+    Map<String, Object>? schemaChanges,
+    String? previousSchemaVersion,
+    
+    // Version vectors for distributed events
+    @Default({}) Map<String, int> schemaVectors,
+    
   }) = _DomainEventModel;
 
   factory DomainEventModel.fromJson(Map<String, Object> json) =>
@@ -173,6 +213,68 @@ class DomainEventModel with _$DomainEventModel {
     );
   }
   */
+
+  /// Schema validation and migration
+  bool hasValidSchema() {
+    return EventSchemaConfig.supportedVersions.contains(schemaVersion);
+  }
+
+  bool isBackwardsCompatible() {
+    final minVer = EventSchemaConfig.maxBackwardsCompatible;
+    return schemaVersion.compareTo(minVer) >= 0;  
+  }
+
+  String? getMigrationPath(String targetVersion) {
+    final paths = EventSchemaConfig.migrationPaths[schemaVersion];
+    return paths?[targetVersion];
+  }
+
+  DomainEventModel migrateSchema(String targetVersion) {
+    if (schemaVersion == targetVersion) return this;
+    
+    final path = getMigrationPath(targetVersion);
+    if (path == null) {
+      throw StateError('No migration path from $schemaVersion to $targetVersion');
+    }
+
+    // Apply migration logic based on path
+    final migrated = copyWith(
+      schemaVersion: targetVersion,
+      previousSchemaVersion: schemaVersion,
+      schemaChanges: {
+        'from': schemaVersion,
+        'to': targetVersion,
+        'path': path,
+        'timestamp': DateTime.now().toIso8601String(),
+      }
+    );
+
+    return migrated;
+  }
+
+  /// Schema version vector operations
+  bool hasVectorConflict(Map<String, int> otherVectors) {
+    return otherVectors.entries.any((entry) =>
+      schemaVectors[entry.key] != null && 
+      schemaVectors[entry.key]! > entry.value);
+  }
+
+  DomainEventModel incrementVector(String node) {
+    final vectors = Map<String, int>.from(schemaVectors);
+    vectors[node] = (vectors[node] ?? 0) + 1;
+    return copyWith(schemaVectors: vectors);
+  }
+
+  DomainEventModel mergeVectors(Map<String, int> otherVectors) {
+    final merged = Map<String, int>.from(schemaVectors);
+    for (final entry in otherVectors.entries) {
+      final current = merged[entry.key] ?? 0;
+      if (entry.value > current) {
+        merged[entry.key] = entry.value;
+      }
+    }
+    return copyWith(schemaVectors: merged);
+  }
 }
 
 // Event type classifications

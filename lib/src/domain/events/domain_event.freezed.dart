@@ -14,6 +14,299 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+EventSchema _$EventSchemaFromJson(Map<String, dynamic> json) {
+  return _EventSchema.fromJson(json);
+}
+
+/// @nodoc
+mixin _$EventSchema {
+  String get version => throw _privateConstructorUsedError;
+  String get eventType => throw _privateConstructorUsedError;
+  Map<String, String> get fields => throw _privateConstructorUsedError;
+  Map<String, bool> get required => throw _privateConstructorUsedError;
+  Map<String, Object>? get defaults => throw _privateConstructorUsedError;
+  Map<String, String>? get migrations => throw _privateConstructorUsedError;
+
+  /// Serializes this EventSchema to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of EventSchema
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $EventSchemaCopyWith<EventSchema> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $EventSchemaCopyWith<$Res> {
+  factory $EventSchemaCopyWith(
+          EventSchema value, $Res Function(EventSchema) then) =
+      _$EventSchemaCopyWithImpl<$Res, EventSchema>;
+  @useResult
+  $Res call(
+      {String version,
+      String eventType,
+      Map<String, String> fields,
+      Map<String, bool> required,
+      Map<String, Object>? defaults,
+      Map<String, String>? migrations});
+}
+
+/// @nodoc
+class _$EventSchemaCopyWithImpl<$Res, $Val extends EventSchema>
+    implements $EventSchemaCopyWith<$Res> {
+  _$EventSchemaCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of EventSchema
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? version = null,
+    Object? eventType = null,
+    Object? fields = null,
+    Object? required = null,
+    Object? defaults = freezed,
+    Object? migrations = freezed,
+  }) {
+    return _then(_value.copyWith(
+      version: null == version
+          ? _value.version
+          : version // ignore: cast_nullable_to_non_nullable
+              as String,
+      eventType: null == eventType
+          ? _value.eventType
+          : eventType // ignore: cast_nullable_to_non_nullable
+              as String,
+      fields: null == fields
+          ? _value.fields
+          : fields // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
+      required: null == required
+          ? _value.required
+          : required // ignore: cast_nullable_to_non_nullable
+              as Map<String, bool>,
+      defaults: freezed == defaults
+          ? _value.defaults
+          : defaults // ignore: cast_nullable_to_non_nullable
+              as Map<String, Object>?,
+      migrations: freezed == migrations
+          ? _value.migrations
+          : migrations // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$EventSchemaImplCopyWith<$Res>
+    implements $EventSchemaCopyWith<$Res> {
+  factory _$$EventSchemaImplCopyWith(
+          _$EventSchemaImpl value, $Res Function(_$EventSchemaImpl) then) =
+      __$$EventSchemaImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {String version,
+      String eventType,
+      Map<String, String> fields,
+      Map<String, bool> required,
+      Map<String, Object>? defaults,
+      Map<String, String>? migrations});
+}
+
+/// @nodoc
+class __$$EventSchemaImplCopyWithImpl<$Res>
+    extends _$EventSchemaCopyWithImpl<$Res, _$EventSchemaImpl>
+    implements _$$EventSchemaImplCopyWith<$Res> {
+  __$$EventSchemaImplCopyWithImpl(
+      _$EventSchemaImpl _value, $Res Function(_$EventSchemaImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of EventSchema
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? version = null,
+    Object? eventType = null,
+    Object? fields = null,
+    Object? required = null,
+    Object? defaults = freezed,
+    Object? migrations = freezed,
+  }) {
+    return _then(_$EventSchemaImpl(
+      version: null == version
+          ? _value.version
+          : version // ignore: cast_nullable_to_non_nullable
+              as String,
+      eventType: null == eventType
+          ? _value.eventType
+          : eventType // ignore: cast_nullable_to_non_nullable
+              as String,
+      fields: null == fields
+          ? _value._fields
+          : fields // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
+      required: null == required
+          ? _value._required
+          : required // ignore: cast_nullable_to_non_nullable
+              as Map<String, bool>,
+      defaults: freezed == defaults
+          ? _value._defaults
+          : defaults // ignore: cast_nullable_to_non_nullable
+              as Map<String, Object>?,
+      migrations: freezed == migrations
+          ? _value._migrations
+          : migrations // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$EventSchemaImpl implements _EventSchema {
+  const _$EventSchemaImpl(
+      {required this.version,
+      required this.eventType,
+      required final Map<String, String> fields,
+      required final Map<String, bool> required,
+      final Map<String, Object>? defaults,
+      final Map<String, String>? migrations})
+      : _fields = fields,
+        _required = required,
+        _defaults = defaults,
+        _migrations = migrations;
+
+  factory _$EventSchemaImpl.fromJson(Map<String, dynamic> json) =>
+      _$$EventSchemaImplFromJson(json);
+
+  @override
+  final String version;
+  @override
+  final String eventType;
+  final Map<String, String> _fields;
+  @override
+  Map<String, String> get fields {
+    if (_fields is EqualUnmodifiableMapView) return _fields;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_fields);
+  }
+
+  final Map<String, bool> _required;
+  @override
+  Map<String, bool> get required {
+    if (_required is EqualUnmodifiableMapView) return _required;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_required);
+  }
+
+  final Map<String, Object>? _defaults;
+  @override
+  Map<String, Object>? get defaults {
+    final value = _defaults;
+    if (value == null) return null;
+    if (_defaults is EqualUnmodifiableMapView) return _defaults;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
+  final Map<String, String>? _migrations;
+  @override
+  Map<String, String>? get migrations {
+    final value = _migrations;
+    if (value == null) return null;
+    if (_migrations is EqualUnmodifiableMapView) return _migrations;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
+  @override
+  String toString() {
+    return 'EventSchema(version: $version, eventType: $eventType, fields: $fields, required: $required, defaults: $defaults, migrations: $migrations)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$EventSchemaImpl &&
+            (identical(other.version, version) || other.version == version) &&
+            (identical(other.eventType, eventType) ||
+                other.eventType == eventType) &&
+            const DeepCollectionEquality().equals(other._fields, _fields) &&
+            const DeepCollectionEquality().equals(other._required, _required) &&
+            const DeepCollectionEquality().equals(other._defaults, _defaults) &&
+            const DeepCollectionEquality()
+                .equals(other._migrations, _migrations));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      version,
+      eventType,
+      const DeepCollectionEquality().hash(_fields),
+      const DeepCollectionEquality().hash(_required),
+      const DeepCollectionEquality().hash(_defaults),
+      const DeepCollectionEquality().hash(_migrations));
+
+  /// Create a copy of EventSchema
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$EventSchemaImplCopyWith<_$EventSchemaImpl> get copyWith =>
+      __$$EventSchemaImplCopyWithImpl<_$EventSchemaImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$EventSchemaImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _EventSchema implements EventSchema {
+  const factory _EventSchema(
+      {required final String version,
+      required final String eventType,
+      required final Map<String, String> fields,
+      required final Map<String, bool> required,
+      final Map<String, Object>? defaults,
+      final Map<String, String>? migrations}) = _$EventSchemaImpl;
+
+  factory _EventSchema.fromJson(Map<String, dynamic> json) =
+      _$EventSchemaImpl.fromJson;
+
+  @override
+  String get version;
+  @override
+  String get eventType;
+  @override
+  Map<String, String> get fields;
+  @override
+  Map<String, bool> get required;
+  @override
+  Map<String, Object>? get defaults;
+  @override
+  Map<String, String>? get migrations;
+
+  /// Create a copy of EventSchema
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$EventSchemaImplCopyWith<_$EventSchemaImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
 DomainEventModel _$DomainEventModelFromJson(Map<String, dynamic> json) {
   return _DomainEventModel.fromJson(json);
 }
@@ -36,7 +329,12 @@ mixin _$DomainEventModel {
   EventId? get correlationId => throw _privateConstructorUsedError;
   EventId? get causationId => throw _privateConstructorUsedError;
   int get version => throw _privateConstructorUsedError; // Status
-  String? get status => throw _privateConstructorUsedError;
+  String? get status => throw _privateConstructorUsedError; // Schema versioning
+  String get schemaVersion => throw _privateConstructorUsedError;
+  Map<String, Object>? get schemaChanges => throw _privateConstructorUsedError;
+  String? get previousSchemaVersion =>
+      throw _privateConstructorUsedError; // Version vectors for distributed events
+  Map<String, int> get schemaVectors => throw _privateConstructorUsedError;
 
   /// Serializes this DomainEventModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -69,7 +367,11 @@ abstract class $DomainEventModelCopyWith<$Res> {
       EventId? correlationId,
       EventId? causationId,
       int version,
-      String? status});
+      String? status,
+      String schemaVersion,
+      Map<String, Object>? schemaChanges,
+      String? previousSchemaVersion,
+      Map<String, int> schemaVectors});
 
   $EventIdCopyWith<$Res> get id;
   $EntityIdCopyWith<$Res> get entityId;
@@ -109,6 +411,10 @@ class _$DomainEventModelCopyWithImpl<$Res, $Val extends DomainEventModel>
     Object? causationId = freezed,
     Object? version = null,
     Object? status = freezed,
+    Object? schemaVersion = null,
+    Object? schemaChanges = freezed,
+    Object? previousSchemaVersion = freezed,
+    Object? schemaVectors = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -171,6 +477,22 @@ class _$DomainEventModelCopyWithImpl<$Res, $Val extends DomainEventModel>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as String?,
+      schemaVersion: null == schemaVersion
+          ? _value.schemaVersion
+          : schemaVersion // ignore: cast_nullable_to_non_nullable
+              as String,
+      schemaChanges: freezed == schemaChanges
+          ? _value.schemaChanges
+          : schemaChanges // ignore: cast_nullable_to_non_nullable
+              as Map<String, Object>?,
+      previousSchemaVersion: freezed == previousSchemaVersion
+          ? _value.previousSchemaVersion
+          : previousSchemaVersion // ignore: cast_nullable_to_non_nullable
+              as String?,
+      schemaVectors: null == schemaVectors
+          ? _value.schemaVectors
+          : schemaVectors // ignore: cast_nullable_to_non_nullable
+              as Map<String, int>,
     ) as $Val);
   }
 
@@ -270,7 +592,11 @@ abstract class _$$DomainEventModelImplCopyWith<$Res>
       EventId? correlationId,
       EventId? causationId,
       int version,
-      String? status});
+      String? status,
+      String schemaVersion,
+      Map<String, Object>? schemaChanges,
+      String? previousSchemaVersion,
+      Map<String, int> schemaVectors});
 
   @override
   $EventIdCopyWith<$Res> get id;
@@ -314,6 +640,10 @@ class __$$DomainEventModelImplCopyWithImpl<$Res>
     Object? causationId = freezed,
     Object? version = null,
     Object? status = freezed,
+    Object? schemaVersion = null,
+    Object? schemaChanges = freezed,
+    Object? previousSchemaVersion = freezed,
+    Object? schemaVectors = null,
   }) {
     return _then(_$DomainEventModelImpl(
       id: null == id
@@ -376,6 +706,22 @@ class __$$DomainEventModelImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as String?,
+      schemaVersion: null == schemaVersion
+          ? _value.schemaVersion
+          : schemaVersion // ignore: cast_nullable_to_non_nullable
+              as String,
+      schemaChanges: freezed == schemaChanges
+          ? _value._schemaChanges
+          : schemaChanges // ignore: cast_nullable_to_non_nullable
+              as Map<String, Object>?,
+      previousSchemaVersion: freezed == previousSchemaVersion
+          ? _value.previousSchemaVersion
+          : previousSchemaVersion // ignore: cast_nullable_to_non_nullable
+              as String?,
+      schemaVectors: null == schemaVectors
+          ? _value._schemaVectors
+          : schemaVectors // ignore: cast_nullable_to_non_nullable
+              as Map<String, int>,
     ));
   }
 }
@@ -398,10 +744,16 @@ class _$DomainEventModelImpl extends _DomainEventModel {
       this.correlationId,
       this.causationId,
       this.version = EventDefaults.version,
-      this.status})
+      this.status,
+      this.schemaVersion = EventSchemaConfig.currentVersion,
+      final Map<String, Object>? schemaChanges,
+      this.previousSchemaVersion,
+      final Map<String, int> schemaVectors = const {}})
       : _changes = changes,
         _metadata = metadata,
         _tags = tags,
+        _schemaChanges = schemaChanges,
+        _schemaVectors = schemaVectors,
         super._();
 
   factory _$DomainEventModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -466,10 +818,36 @@ class _$DomainEventModelImpl extends _DomainEventModel {
 // Status
   @override
   final String? status;
+// Schema versioning
+  @override
+  @JsonKey()
+  final String schemaVersion;
+  final Map<String, Object>? _schemaChanges;
+  @override
+  Map<String, Object>? get schemaChanges {
+    final value = _schemaChanges;
+    if (value == null) return null;
+    if (_schemaChanges is EqualUnmodifiableMapView) return _schemaChanges;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
+  @override
+  final String? previousSchemaVersion;
+// Version vectors for distributed events
+  final Map<String, int> _schemaVectors;
+// Version vectors for distributed events
+  @override
+  @JsonKey()
+  Map<String, int> get schemaVectors {
+    if (_schemaVectors is EqualUnmodifiableMapView) return _schemaVectors;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_schemaVectors);
+  }
 
   @override
   String toString() {
-    return 'DomainEventModel(id: $id, entityId: $entityId, eventType: $eventType, timestamp: $timestamp, initiator: $initiator, changes: $changes, entityType: $entityType, aggregateId: $aggregateId, metadata: $metadata, isAsync: $isAsync, tags: $tags, correlationId: $correlationId, causationId: $causationId, version: $version, status: $status)';
+    return 'DomainEventModel(id: $id, entityId: $entityId, eventType: $eventType, timestamp: $timestamp, initiator: $initiator, changes: $changes, entityType: $entityType, aggregateId: $aggregateId, metadata: $metadata, isAsync: $isAsync, tags: $tags, correlationId: $correlationId, causationId: $causationId, version: $version, status: $status, schemaVersion: $schemaVersion, schemaChanges: $schemaChanges, previousSchemaVersion: $previousSchemaVersion, schemaVectors: $schemaVectors)';
   }
 
   @override
@@ -499,28 +877,41 @@ class _$DomainEventModelImpl extends _DomainEventModel {
             (identical(other.causationId, causationId) ||
                 other.causationId == causationId) &&
             (identical(other.version, version) || other.version == version) &&
-            (identical(other.status, status) || other.status == status));
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.schemaVersion, schemaVersion) ||
+                other.schemaVersion == schemaVersion) &&
+            const DeepCollectionEquality()
+                .equals(other._schemaChanges, _schemaChanges) &&
+            (identical(other.previousSchemaVersion, previousSchemaVersion) ||
+                other.previousSchemaVersion == previousSchemaVersion) &&
+            const DeepCollectionEquality()
+                .equals(other._schemaVectors, _schemaVectors));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      entityId,
-      eventType,
-      timestamp,
-      initiator,
-      const DeepCollectionEquality().hash(_changes),
-      entityType,
-      aggregateId,
-      const DeepCollectionEquality().hash(_metadata),
-      isAsync,
-      const DeepCollectionEquality().hash(_tags),
-      correlationId,
-      causationId,
-      version,
-      status);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        entityId,
+        eventType,
+        timestamp,
+        initiator,
+        const DeepCollectionEquality().hash(_changes),
+        entityType,
+        aggregateId,
+        const DeepCollectionEquality().hash(_metadata),
+        isAsync,
+        const DeepCollectionEquality().hash(_tags),
+        correlationId,
+        causationId,
+        version,
+        status,
+        schemaVersion,
+        const DeepCollectionEquality().hash(_schemaChanges),
+        previousSchemaVersion,
+        const DeepCollectionEquality().hash(_schemaVectors)
+      ]);
 
   /// Create a copy of DomainEventModel
   /// with the given fields replaced by the non-null parameter values.
@@ -555,7 +946,11 @@ abstract class _DomainEventModel extends DomainEventModel {
       final EventId? correlationId,
       final EventId? causationId,
       final int version,
-      final String? status}) = _$DomainEventModelImpl;
+      final String? status,
+      final String schemaVersion,
+      final Map<String, Object>? schemaChanges,
+      final String? previousSchemaVersion,
+      final Map<String, int> schemaVectors}) = _$DomainEventModelImpl;
   const _DomainEventModel._() : super._();
 
   factory _DomainEventModel.fromJson(Map<String, dynamic> json) =
@@ -591,7 +986,15 @@ abstract class _DomainEventModel extends DomainEventModel {
   @override
   int get version; // Status
   @override
-  String? get status;
+  String? get status; // Schema versioning
+  @override
+  String get schemaVersion;
+  @override
+  Map<String, Object>? get schemaChanges;
+  @override
+  String? get previousSchemaVersion; // Version vectors for distributed events
+  @override
+  Map<String, int> get schemaVectors;
 
   /// Create a copy of DomainEventModel
   /// with the given fields replaced by the non-null parameter values.

@@ -6,6 +6,30 @@ part of 'domain_event.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+_$EventSchemaImpl _$$EventSchemaImplFromJson(Map<String, dynamic> json) =>
+    _$EventSchemaImpl(
+      version: json['version'] as String,
+      eventType: json['eventType'] as String,
+      fields: Map<String, String>.from(json['fields'] as Map),
+      required: Map<String, bool>.from(json['required'] as Map),
+      defaults: (json['defaults'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as Object),
+      ),
+      migrations: (json['migrations'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ),
+    );
+
+Map<String, dynamic> _$$EventSchemaImplToJson(_$EventSchemaImpl instance) =>
+    <String, dynamic>{
+      'version': instance.version,
+      'eventType': instance.eventType,
+      'fields': instance.fields,
+      'required': instance.required,
+      'defaults': instance.defaults,
+      'migrations': instance.migrations,
+    };
+
 _$DomainEventModelImpl _$$DomainEventModelImplFromJson(
         Map<String, dynamic> json) =>
     _$DomainEventModelImpl(
@@ -51,6 +75,16 @@ _$DomainEventModelImpl _$$DomainEventModelImplFromJson(
             )),
       version: (json['version'] as num?)?.toInt() ?? EventDefaults.version,
       status: json['status'] as String?,
+      schemaVersion:
+          json['schemaVersion'] as String? ?? EventSchemaConfig.currentVersion,
+      schemaChanges: (json['schemaChanges'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as Object),
+      ),
+      previousSchemaVersion: json['previousSchemaVersion'] as String?,
+      schemaVectors: (json['schemaVectors'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(k, (e as num).toInt()),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$$DomainEventModelImplToJson(
@@ -71,4 +105,8 @@ Map<String, dynamic> _$$DomainEventModelImplToJson(
       'causationId': instance.causationId,
       'version': instance.version,
       'status': instance.status,
+      'schemaVersion': instance.schemaVersion,
+      'schemaChanges': instance.schemaChanges,
+      'previousSchemaVersion': instance.previousSchemaVersion,
+      'schemaVectors': instance.schemaVectors,
     };
