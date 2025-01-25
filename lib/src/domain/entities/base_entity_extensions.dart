@@ -236,7 +236,7 @@ extension EntityVersionExtension<T extends Object> on BaseEntityModel<T> {
 
   BaseEntityModel<T> incrementVersion({bool isStructural = false, String? nodeId}) {
     return copyWith(
-      version: version.copyWith(
+      versioning: version.copyWith(
         dataVer: isStructural ? version.dataVer : version.dataVer + 1,
         structVer: isStructural ? version.structVer + 1 : version.structVer,
         verVectors: {
@@ -266,7 +266,7 @@ extension VersionConflictExtension<T extends Object> on BaseEntityModel<T> {
 
     if (comparison > 0) {
       return copyWith(
-        version: version.copyWith(
+        versioning: version.copyWith(
           syncMeta: _versionService.getResolutionMeta(
             version.syncMeta,
             'localWins',
@@ -276,7 +276,7 @@ extension VersionConflictExtension<T extends Object> on BaseEntityModel<T> {
       );
     } else if (comparison < 0) {
       return serverVersion.copyWith(
-        version: serverVersion.version.copyWith(
+        versioning: serverVersion.version.copyWith(
           syncMeta: _versionService.getResolutionMeta(
             serverVersion.version.syncMeta,
             'serverWins', 
@@ -313,7 +313,7 @@ extension LockingExtension<T extends Object> on BaseEntityModel<T> {
     );
 
     return copyWith(
-      lock: lock.copyWith(
+      locking: lock.copyWith(
         lockOwner: user,
         lockExpiry: DateTime.now().add(lockDuration),
         distLockId: distLockId,

@@ -95,6 +95,8 @@ class EntityVersioning with _$EntityVersioning {
     @Default(1) int dataVer,
     @Default(1) int structVer,
     String? lastVer,
+    @Default(EntityDefaults.version) String schemaVer,
+    @Default({}) Map<String, int> verVectors,
   }) = _EntityVersioning;
 }
 
@@ -120,6 +122,8 @@ class EntityLocking with _$EntityLocking {
     @Default({}) Map<String, dynamic> lockMeta,
     @Default({}) Map<String, int> verVectors,
     @Default(LockConfig.defaultTimeout) Duration lockTimeout,
+    UserAction? lockOwner,
+    DateTime? lockExpiry,
   }) = _EntityLocking;
 }
 
@@ -156,6 +160,10 @@ class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   UserAction get owner => core.owner;
   UserAction get creator => core.creator;
   UserAction get modifier => core.modifier;
+
+  // Component-based property getters 
+  EntityVersioning get version => versioning;
+  EntityLocking get lock => locking;
 
   // Core helpers
   String get uid => id.value;

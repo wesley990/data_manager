@@ -961,6 +961,8 @@ mixin _$EntityVersioning {
   int get dataVer => throw _privateConstructorUsedError;
   int get structVer => throw _privateConstructorUsedError;
   String? get lastVer => throw _privateConstructorUsedError;
+  String get schemaVer => throw _privateConstructorUsedError;
+  Map<String, int> get verVectors => throw _privateConstructorUsedError;
 
   /// Create a copy of EntityVersioning
   /// with the given fields replaced by the non-null parameter values.
@@ -985,7 +987,9 @@ abstract class $EntityVersioningCopyWith<$Res> {
       int historyLimit,
       int dataVer,
       int structVer,
-      String? lastVer});
+      String? lastVer,
+      String schemaVer,
+      Map<String, int> verVectors});
 }
 
 /// @nodoc
@@ -1013,6 +1017,8 @@ class _$EntityVersioningCopyWithImpl<$Res, $Val extends EntityVersioning>
     Object? dataVer = null,
     Object? structVer = null,
     Object? lastVer = freezed,
+    Object? schemaVer = null,
+    Object? verVectors = null,
   }) {
     return _then(_value.copyWith(
       syncMeta: null == syncMeta
@@ -1055,6 +1061,14 @@ class _$EntityVersioningCopyWithImpl<$Res, $Val extends EntityVersioning>
           ? _value.lastVer
           : lastVer // ignore: cast_nullable_to_non_nullable
               as String?,
+      schemaVer: null == schemaVer
+          ? _value.schemaVer
+          : schemaVer // ignore: cast_nullable_to_non_nullable
+              as String,
+      verVectors: null == verVectors
+          ? _value.verVectors
+          : verVectors // ignore: cast_nullable_to_non_nullable
+              as Map<String, int>,
     ) as $Val);
   }
 }
@@ -1077,7 +1091,9 @@ abstract class _$$EntityVersioningImplCopyWith<$Res>
       int historyLimit,
       int dataVer,
       int structVer,
-      String? lastVer});
+      String? lastVer,
+      String schemaVer,
+      Map<String, int> verVectors});
 }
 
 /// @nodoc
@@ -1103,6 +1119,8 @@ class __$$EntityVersioningImplCopyWithImpl<$Res>
     Object? dataVer = null,
     Object? structVer = null,
     Object? lastVer = freezed,
+    Object? schemaVer = null,
+    Object? verVectors = null,
   }) {
     return _then(_$EntityVersioningImpl(
       syncMeta: null == syncMeta
@@ -1145,6 +1163,14 @@ class __$$EntityVersioningImplCopyWithImpl<$Res>
           ? _value.lastVer
           : lastVer // ignore: cast_nullable_to_non_nullable
               as String?,
+      schemaVer: null == schemaVer
+          ? _value.schemaVer
+          : schemaVer // ignore: cast_nullable_to_non_nullable
+              as String,
+      verVectors: null == verVectors
+          ? _value._verVectors
+          : verVectors // ignore: cast_nullable_to_non_nullable
+              as Map<String, int>,
     ));
   }
 }
@@ -1162,11 +1188,14 @@ class _$EntityVersioningImpl implements _EntityVersioning {
       this.historyLimit = SystemLimits.historyDefault,
       this.dataVer = 1,
       this.structVer = 1,
-      this.lastVer})
+      this.lastVer,
+      this.schemaVer = EntityDefaults.version,
+      final Map<String, int> verVectors = const {}})
       : _syncMeta = syncMeta,
         _searchIndex = searchIndex,
         _pendingEvents = pendingEvents,
-        _eventMeta = eventMeta;
+        _eventMeta = eventMeta,
+        _verVectors = verVectors;
 
   final Map<String, Object> _syncMeta;
   @override
@@ -1220,10 +1249,21 @@ class _$EntityVersioningImpl implements _EntityVersioning {
   final int structVer;
   @override
   final String? lastVer;
+  @override
+  @JsonKey()
+  final String schemaVer;
+  final Map<String, int> _verVectors;
+  @override
+  @JsonKey()
+  Map<String, int> get verVectors {
+    if (_verVectors is EqualUnmodifiableMapView) return _verVectors;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_verVectors);
+  }
 
   @override
   String toString() {
-    return 'EntityVersioning(syncMeta: $syncMeta, syncVer: $syncVer, searchIndex: $searchIndex, eventVer: $eventVer, pendingEvents: $pendingEvents, eventMeta: $eventMeta, historyLimit: $historyLimit, dataVer: $dataVer, structVer: $structVer, lastVer: $lastVer)';
+    return 'EntityVersioning(syncMeta: $syncMeta, syncVer: $syncVer, searchIndex: $searchIndex, eventVer: $eventVer, pendingEvents: $pendingEvents, eventMeta: $eventMeta, historyLimit: $historyLimit, dataVer: $dataVer, structVer: $structVer, lastVer: $lastVer, schemaVer: $schemaVer, verVectors: $verVectors)';
   }
 
   @override
@@ -1246,7 +1286,11 @@ class _$EntityVersioningImpl implements _EntityVersioning {
             (identical(other.dataVer, dataVer) || other.dataVer == dataVer) &&
             (identical(other.structVer, structVer) ||
                 other.structVer == structVer) &&
-            (identical(other.lastVer, lastVer) || other.lastVer == lastVer));
+            (identical(other.lastVer, lastVer) || other.lastVer == lastVer) &&
+            (identical(other.schemaVer, schemaVer) ||
+                other.schemaVer == schemaVer) &&
+            const DeepCollectionEquality()
+                .equals(other._verVectors, _verVectors));
   }
 
   @override
@@ -1261,7 +1305,9 @@ class _$EntityVersioningImpl implements _EntityVersioning {
       historyLimit,
       dataVer,
       structVer,
-      lastVer);
+      lastVer,
+      schemaVer,
+      const DeepCollectionEquality().hash(_verVectors));
 
   /// Create a copy of EntityVersioning
   /// with the given fields replaced by the non-null parameter values.
@@ -1284,7 +1330,9 @@ abstract class _EntityVersioning implements EntityVersioning {
       final int historyLimit,
       final int dataVer,
       final int structVer,
-      final String? lastVer}) = _$EntityVersioningImpl;
+      final String? lastVer,
+      final String schemaVer,
+      final Map<String, int> verVectors}) = _$EntityVersioningImpl;
 
   @override
   Map<String, Object> get syncMeta;
@@ -1306,6 +1354,10 @@ abstract class _EntityVersioning implements EntityVersioning {
   int get structVer;
   @override
   String? get lastVer;
+  @override
+  String get schemaVer;
+  @override
+  Map<String, int> get verVectors;
 
   /// Create a copy of EntityVersioning
   /// with the given fields replaced by the non-null parameter values.
@@ -1624,6 +1676,8 @@ mixin _$EntityLocking {
   Map<String, dynamic> get lockMeta => throw _privateConstructorUsedError;
   Map<String, int> get verVectors => throw _privateConstructorUsedError;
   Duration get lockTimeout => throw _privateConstructorUsedError;
+  UserAction? get lockOwner => throw _privateConstructorUsedError;
+  DateTime? get lockExpiry => throw _privateConstructorUsedError;
 
   /// Create a copy of EntityLocking
   /// with the given fields replaced by the non-null parameter values.
@@ -1644,7 +1698,11 @@ abstract class $EntityLockingCopyWith<$Res> {
       String? distLockNode,
       Map<String, dynamic> lockMeta,
       Map<String, int> verVectors,
-      Duration lockTimeout});
+      Duration lockTimeout,
+      UserAction? lockOwner,
+      DateTime? lockExpiry});
+
+  $UserActionCopyWith<$Res>? get lockOwner;
 }
 
 /// @nodoc
@@ -1668,6 +1726,8 @@ class _$EntityLockingCopyWithImpl<$Res, $Val extends EntityLocking>
     Object? lockMeta = null,
     Object? verVectors = null,
     Object? lockTimeout = null,
+    Object? lockOwner = freezed,
+    Object? lockExpiry = freezed,
   }) {
     return _then(_value.copyWith(
       distLockId: freezed == distLockId
@@ -1694,7 +1754,29 @@ class _$EntityLockingCopyWithImpl<$Res, $Val extends EntityLocking>
           ? _value.lockTimeout
           : lockTimeout // ignore: cast_nullable_to_non_nullable
               as Duration,
+      lockOwner: freezed == lockOwner
+          ? _value.lockOwner
+          : lockOwner // ignore: cast_nullable_to_non_nullable
+              as UserAction?,
+      lockExpiry: freezed == lockExpiry
+          ? _value.lockExpiry
+          : lockExpiry // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ) as $Val);
+  }
+
+  /// Create a copy of EntityLocking
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserActionCopyWith<$Res>? get lockOwner {
+    if (_value.lockOwner == null) {
+      return null;
+    }
+
+    return $UserActionCopyWith<$Res>(_value.lockOwner!, (value) {
+      return _then(_value.copyWith(lockOwner: value) as $Val);
+    });
   }
 }
 
@@ -1712,7 +1794,12 @@ abstract class _$$EntityLockingImplCopyWith<$Res>
       String? distLockNode,
       Map<String, dynamic> lockMeta,
       Map<String, int> verVectors,
-      Duration lockTimeout});
+      Duration lockTimeout,
+      UserAction? lockOwner,
+      DateTime? lockExpiry});
+
+  @override
+  $UserActionCopyWith<$Res>? get lockOwner;
 }
 
 /// @nodoc
@@ -1734,6 +1821,8 @@ class __$$EntityLockingImplCopyWithImpl<$Res>
     Object? lockMeta = null,
     Object? verVectors = null,
     Object? lockTimeout = null,
+    Object? lockOwner = freezed,
+    Object? lockExpiry = freezed,
   }) {
     return _then(_$EntityLockingImpl(
       distLockId: freezed == distLockId
@@ -1760,6 +1849,14 @@ class __$$EntityLockingImplCopyWithImpl<$Res>
           ? _value.lockTimeout
           : lockTimeout // ignore: cast_nullable_to_non_nullable
               as Duration,
+      lockOwner: freezed == lockOwner
+          ? _value.lockOwner
+          : lockOwner // ignore: cast_nullable_to_non_nullable
+              as UserAction?,
+      lockExpiry: freezed == lockExpiry
+          ? _value.lockExpiry
+          : lockExpiry // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -1773,7 +1870,9 @@ class _$EntityLockingImpl implements _EntityLocking {
       this.distLockNode,
       final Map<String, dynamic> lockMeta = const {},
       final Map<String, int> verVectors = const {},
-      this.lockTimeout = LockConfig.defaultTimeout})
+      this.lockTimeout = LockConfig.defaultTimeout,
+      this.lockOwner,
+      this.lockExpiry})
       : _lockMeta = lockMeta,
         _verVectors = verVectors;
 
@@ -1804,10 +1903,14 @@ class _$EntityLockingImpl implements _EntityLocking {
   @override
   @JsonKey()
   final Duration lockTimeout;
+  @override
+  final UserAction? lockOwner;
+  @override
+  final DateTime? lockExpiry;
 
   @override
   String toString() {
-    return 'EntityLocking(distLockId: $distLockId, distLockExpiry: $distLockExpiry, distLockNode: $distLockNode, lockMeta: $lockMeta, verVectors: $verVectors, lockTimeout: $lockTimeout)';
+    return 'EntityLocking(distLockId: $distLockId, distLockExpiry: $distLockExpiry, distLockNode: $distLockNode, lockMeta: $lockMeta, verVectors: $verVectors, lockTimeout: $lockTimeout, lockOwner: $lockOwner, lockExpiry: $lockExpiry)';
   }
 
   @override
@@ -1825,7 +1928,11 @@ class _$EntityLockingImpl implements _EntityLocking {
             const DeepCollectionEquality()
                 .equals(other._verVectors, _verVectors) &&
             (identical(other.lockTimeout, lockTimeout) ||
-                other.lockTimeout == lockTimeout));
+                other.lockTimeout == lockTimeout) &&
+            (identical(other.lockOwner, lockOwner) ||
+                other.lockOwner == lockOwner) &&
+            (identical(other.lockExpiry, lockExpiry) ||
+                other.lockExpiry == lockExpiry));
   }
 
   @override
@@ -1836,7 +1943,9 @@ class _$EntityLockingImpl implements _EntityLocking {
       distLockNode,
       const DeepCollectionEquality().hash(_lockMeta),
       const DeepCollectionEquality().hash(_verVectors),
-      lockTimeout);
+      lockTimeout,
+      lockOwner,
+      lockExpiry);
 
   /// Create a copy of EntityLocking
   /// with the given fields replaced by the non-null parameter values.
@@ -1854,7 +1963,9 @@ abstract class _EntityLocking implements EntityLocking {
       final String? distLockNode,
       final Map<String, dynamic> lockMeta,
       final Map<String, int> verVectors,
-      final Duration lockTimeout}) = _$EntityLockingImpl;
+      final Duration lockTimeout,
+      final UserAction? lockOwner,
+      final DateTime? lockExpiry}) = _$EntityLockingImpl;
 
   @override
   String? get distLockId;
@@ -1868,6 +1979,10 @@ abstract class _EntityLocking implements EntityLocking {
   Map<String, int> get verVectors;
   @override
   Duration get lockTimeout;
+  @override
+  UserAction? get lockOwner;
+  @override
+  DateTime? get lockExpiry;
 
   /// Create a copy of EntityLocking
   /// with the given fields replaced by the non-null parameter values.
