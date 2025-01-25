@@ -42,25 +42,24 @@ abstract class LockConfig {
   static const maximumDuration = Duration(hours: 24);
 }
 
-@Freezed(genericArgumentFactories: true)
-class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
-  const BaseEntityModel._();
-
-  const factory BaseEntityModel({
-    // Core entity data
-    required CoreEntityDto<T> core,
-
-    // Hierarchical Structure
+// Each component handles a specific aspect of entity data
+@freezed
+class EntityHierarchy with _$EntityHierarchy {
+  const factory EntityHierarchy({
     String? treePath,
     @Default(0) int treeDepth,
     @Default([]) List<EntityId> ancestors,
-    EntityId? parentId,
+    EntityId? parentId, 
     @Default([]) List<EntityId> childIds,
     @Default(true) bool isHierarchyRoot,
     @Default(true) bool isHierarchyLeaf,
     @Default({}) Map<String, Object> hierarchyMeta,
+  }) = _EntityHierarchy;
+}
 
-    // Access Control & Security
+@freezed 
+class EntitySecurity with _$EntitySecurity {
+  const factory EntitySecurity({
     UserAction? lastAccessor,
     UserAction? lockOwner,
     DateTime? lockExpiry,
@@ -69,19 +68,26 @@ class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
     @Default([]) List<UserAction> accessLog,
     @Default(EntityDefaults.isPublic) bool isPublic,
     @Default(EntityDefaults.accessCount) int accessCount,
+  }) = _EntitySecurity;
+}
 
-    // Classification & Metadata
+@freezed
+class EntityClassification with _$EntityClassification {
+  const factory EntityClassification({
     @Default([]) List<String> tags,
-    @Default({}) Map<String, String> labels,
+    @Default({}) Map<String, String> labels, 
     @Default(EntityDefaults.priority) Priority priority,
     @Default(EntityDefaults.stage) WorkflowStage stage,
     DateTime? expiryDate,
+  }) = _EntityClassification;
+}
 
-    // Synchronization & Versioning
+@freezed
+class EntityVersioning with _$EntityVersioning {
+  const factory EntityVersioning({
     @Default({}) Map<String, Object> syncMeta,
     String? syncVer,
     @Default({}) Map<String, Object> searchIndex,
-    T? extraData,
     @Default(0) int eventVer,
     @Default([]) List<String> pendingEvents,
     @Default({}) Map<String, Object> eventMeta,
@@ -89,16 +95,12 @@ class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
     @Default(1) int dataVer,
     @Default(1) int structVer,
     String? lastVer,
+  }) = _EntityVersioning;
+}
 
-    // Distributed Systems
-    String? distLockId,
-    DateTime? distLockExpiry,
-    String? distLockNode,
-    @Default({}) Map<String, dynamic> lockMeta,
-    @Default({}) Map<String, int> verVectors,
-    @Default(LockConfig.defaultTimeout) Duration lockTimeout,
-
-    // AI & Machine Learning
+@freezed
+class EntityAI with _$EntityAI {
+  const factory EntityAI({
     @Default({}) Map<String, List<double>> aiVectors,
     @Default({}) Map<String, double> aiScores,
     @Default({}) Map<String, String> aiMeta,
@@ -106,6 +108,40 @@ class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
     @Default({}) Map<String, Object> aiNotes,
     DateTime? aiLastRun,
     String? aiVer,
+  }) = _EntityAI;
+}
+
+@freezed
+class EntityLocking with _$EntityLocking {
+  const factory EntityLocking({
+    String? distLockId,
+    DateTime? distLockExpiry,
+    String? distLockNode,
+    @Default({}) Map<String, dynamic> lockMeta,
+    @Default({}) Map<String, int> verVectors,
+    @Default(LockConfig.defaultTimeout) Duration lockTimeout,
+  }) = _EntityLocking;
+}
+
+// Main entity class now composes these components
+@Freezed(genericArgumentFactories: true)
+class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
+  const BaseEntityModel._();
+
+  const factory BaseEntityModel({
+    // Core entity data
+    required CoreEntityDto<T> core,
+    
+    // Component-based structure
+    required EntityHierarchy hierarchy,
+    required EntitySecurity security,
+    required EntityClassification classification,
+    required EntityVersioning versioning,
+    required EntityAI ai,
+    required EntityLocking locking,
+    
+    // Optional extra data
+    T? extraData,
   }) = _BaseEntityModel<T>;
 
   // Delegate core properties
@@ -121,10 +157,15 @@ class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   UserAction get creator => core.creator;
   UserAction get modifier => core.modifier;
 
-  // Hierarchy properties - direct instead of delegated
-  bool get isRoot => isHierarchyRoot;
-  bool get isLeaf => isHierarchyLeaf;
-  String? get parentPath => parentId?.value;
+  // Core helpers
+  String get uid => id.value;
+  String get type => T.toString();
+  dynamic getMeta(String key) => meta[key];
+
+  // Short accessors to reduce verbosity
+  bool get isRoot => hierarchy.isHierarchyRoot;
+  bool get isLeaf => hierarchy.isHierarchyLeaf;
+  String? get parentPath => hierarchy.parentId?.value;
 
   // Factory method with configuration
   factory BaseEntityModel.create({
@@ -146,35 +187,24 @@ class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
         modifier: owner,
         data: data,
       ),
-      // Initialize hierarchy fields directly
-      treePath: id.value,
-      treeDepth: 0,
-      isHierarchyRoot: true,
-      isHierarchyLeaf: true,
-      hierarchyMeta: {
-        'created': now.toIso8601String(),
-        'pathType': 'root',
-      },
+      hierarchy: EntityHierarchy(
+        treePath: id.value,
+        isHierarchyRoot: true,
+        isHierarchyLeaf: true,
+        hierarchyMeta: {
+          'created': now.toIso8601String(),
+          'pathType': 'root',
+        },
+      ),
+      security: const EntitySecurity(),
+      classification: const EntityClassification(), 
+      versioning: const EntityVersioning(),
+      ai: const EntityAI(),
+      locking: const EntityLocking(),
     );
   }
-
-  // Core getters
-  String get uid => id.value;
-  String get type => T.toString();
-  bool get isTreeRoot => treePath == null || treePath == id.value;
-  bool get isTreeLeaf => childIds.isEmpty; // Fixed implementation
-
+  
   // Utility methods
-  dynamic getMeta(String key) => meta[key];
-  Map<EntityId, String> get ancestorNames => Map.fromEntries(
-        ancestors.map(
-          (ancestorId) => MapEntry(
-            ancestorId,
-            meta['ancestor_name_${ancestorId.value}']?.toString() ?? '',
-          ),
-        ),
-      );
-
   dynamic operator [](String key) {
     return switch (key) {
       'entityId' => id,
