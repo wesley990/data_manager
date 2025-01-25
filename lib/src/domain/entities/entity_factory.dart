@@ -95,7 +95,7 @@ class EntityFactory {
     final userAction = UserAction.fromAuthUser(config.user);
     final id = EntityId(const Uuid().v4());
 
-    // Create core entity first
+    // Create core entity
     final core = CoreEntityDto<T>(
       id: id,
       name: config.name,
@@ -109,53 +109,67 @@ class EntityFactory {
       meta: config.meta ?? {},
     );
 
-    // Create base entity first
+    // Create entity with component structure
     var entity = BaseEntityModel<T>(
       core: core,
-      treePath: config.parentPath,
-      parentId: config.parentId,
-      ancestors: config.ancestors ?? [],
-      isHierarchyRoot: config.parentId == null,
-      tags: config.tags ?? [],
-      labels: config.labels ?? {},
-      priority: config.priority ?? EntityDefaults.priority,
-      stage: config.stage ?? EntityDefaults.stage,
-      expiryDate: config.expiryDate,
-      isPublic: config.isPublic ?? EntityDefaults.isPublic,
-      aiVectors: config.aiVectors ?? {},
-      aiScores: config.aiScores ?? {},
-      aiMeta: config.aiMeta ?? {},
-      aiTags: config.aiTags ?? [],
-      aiNotes: config.aiNotes ?? {},
-      aiVer: config.aiVer,
-      aiLastRun: now,
-      modHistory: [userAction],
-      accessLog: [userAction],
+      hierarchy: EntityHierarchy(
+        treePath: config.parentPath,
+        parentId: config.parentId,
+        ancestors: config.ancestors ?? [],
+        isHierarchyRoot: config.parentId == null,
+        isHierarchyLeaf: true,
+      ),
+      security: EntitySecurity(
+        modHistory: [userAction],
+        accessLog: [userAction],
+        isPublic: config.isPublic ?? EntityDefaults.isPublic,
+      ),
+      classification: EntityClassification(
+        tags: config.tags ?? [],
+        labels: config.labels ?? {},
+        priority: config.priority ?? EntityDefaults.priority,
+        stage: config.stage ?? EntityDefaults.stage,
+        expiryDate: config.expiryDate,
+      ),
+      versioning: const EntityVersioning(),
+      ai: EntityAI(
+        aiVectors: config.aiVectors ?? {},
+        aiScores: config.aiScores ?? {},
+        aiMeta: config.aiMeta ?? {},
+        aiTags: config.aiTags ?? [],
+        aiNotes: config.aiNotes ?? {},
+        aiLastRun: now,
+        aiVer: config.aiVer,
+      ),
+      locking: const EntityLocking(),
     );
 
-    // Validate path using extension method
-    if (!entity.isPathValid(entity.treePath)) {
+    // Use extension methods for validation and path processing
+    if (!entity.isPathValid(entity.hierarchy.treePath)) {
       throw PathValidationException(
         message: 'Invalid path format',
-        path: entity.treePath,
+        path: entity.hierarchy.treePath,
       );
     }
 
-    // Check for circular references using extension method
     if (entity.hasCircularReference()) {
       throw HierarchyValidationException(
         message: 'Circular reference detected',
         field: 'hierarchy',
-        depth: entity.ancestors.length,
-        path: entity.ancestors.map((a) => a.value).toList(),
+        depth: entity.hierarchy.ancestors.length,
+        path: entity.hierarchy.ancestors.map((a) => a.value).toList(),
       );
     }
 
     final searchIndex = entity.buildHierarchyIndex();
     return entity.copyWith(
-      treePath: entity.sanitizePath(entity.treePath),
-      treeDepth: entity.ancestors.length,
-      searchIndex: searchIndex,
+      hierarchy: entity.hierarchy.copyWith(
+        treePath: entity.sanitizePath(entity.hierarchy.treePath),
+        treeDepth: entity.hierarchy.ancestors.length,
+      ),
+      versioning: entity.version.copyWith(
+        searchIndex: searchIndex,
+      ),
     );
   }
 
@@ -180,32 +194,41 @@ class EntityFactory {
       meta: config.newMeta ?? Map<String, Object>.from(source.meta),
     );
 
-    // Create base entity first
+    // Create clone with component structure
     var entity = BaseEntityModel<T>(
       core: core,
-      treePath: config.newPath ?? source.treePath,
-      tags: config.newTags ?? List<String>.from(source.tags),
-      labels: config.newLabels ?? Map<String, String>.from(source.labels),
-      priority: source.priority,
-      stage: source.stage,
-      expiryDate: source.expiryDate,
-      isPublic: source.isPublic,
-      aiVectors: Map<String, List<double>>.from(source.aiVectors),
-      aiScores: Map<String, double>.from(source.aiScores),
-      aiMeta: Map<String, String>.from(source.aiMeta),
-      aiTags: List<String>.from(source.aiTags),
-      aiNotes: Map<String, Object>.from(source.aiNotes),
-      aiVer: source.aiVer,
-      aiLastRun: now,
-      modHistory: [userAction],
-      accessLog: [userAction],
+      hierarchy: EntityHierarchy(
+        treePath: config.newPath ?? source.hierarchy.treePath,
+        ancestors: source.hierarchy.ancestors,
+        isHierarchyRoot: source.hierarchy.isHierarchyRoot,
+        isHierarchyLeaf: source.hierarchy.isHierarchyLeaf,
+      ),
+      security: EntitySecurity(
+        modHistory: [userAction],
+        accessLog: [userAction],
+        isPublic: source.security.isPublic,
+      ),
+      classification: EntityClassification(
+        tags: config.newTags ?? List<String>.from(source.classification.tags),
+        labels: config.newLabels ?? Map<String, String>.from(source.classification.labels),
+        priority: source.classification.priority,
+        stage: source.classification.stage,
+        expiryDate: source.classification.expiryDate,
+      ),
+      versioning: source.version,
+      ai: source.ai,
+      locking: const EntityLocking(),
     );
 
     final searchIndex = entity.buildHierarchyIndex();
     return entity.copyWith(
-      treePath: entity.sanitizePath(entity.treePath),
-      treeDepth: entity.ancestors.length,
-      searchIndex: searchIndex,
+      hierarchy: entity.hierarchy.copyWith(
+        treePath: entity.sanitizePath(entity.hierarchy.treePath),
+        treeDepth: entity.hierarchy.ancestors.length,
+      ),
+      versioning: entity.version.copyWith(
+        searchIndex: searchIndex,
+      ),
     );
   }
 }
