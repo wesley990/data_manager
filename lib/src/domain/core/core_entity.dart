@@ -40,6 +40,14 @@ class CoreEntity<T extends Object> with _$CoreEntity<T> {
       'entityName' => name,
       'entityDescription' => description,
       'status' => status,
+      'createdAt' => createdAt,
+      'updatedAt' => updatedAt,
+      'schemaVer' => schemaVer,
+      'owner' => owner,
+      'creator' => creator,
+      'modifier' => modifier,
+      'data' => data,
+      'meta' => meta,
       _ => meta[key],
     };
   }
