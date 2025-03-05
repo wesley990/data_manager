@@ -30,7 +30,7 @@ class CoreEntity<T extends Object> with _$CoreEntity<T> {
       _$CoreEntityFromJson(json, fromJsonT);
 
   String get uid => id.value;
-  String get type => T.toString();
+  String get type => data?.runtimeType.toString() ?? T.toString();
 
   T? get(String key) => meta[key] as T?;
 
