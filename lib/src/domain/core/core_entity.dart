@@ -36,7 +36,7 @@ class CoreEntity<T extends Object> with _$CoreEntity<T> {
 
   Object? operator [](String key) {
     return switch (key) {
-      'entityId' => id,
+      'entityId' => id.value,
       'entityName' => name,
       'entityDescription' => description,
       'status' => status,
