@@ -32,9 +32,9 @@ class CoreEntity<T extends Object> with _$CoreEntity<T> {
   String get uid => id.value;
   String get type => T.toString();
 
-  dynamic getMeta(String key) => meta[key];
+  T? get(String key) => meta[key] as T?;
 
-  dynamic operator [](String key) {
+  Object? operator [](String key) {
     return switch (key) {
       'entityId' => id,
       'entityName' => name,
