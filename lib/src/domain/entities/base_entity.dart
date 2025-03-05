@@ -49,7 +49,7 @@ class EntityHierarchy with _$EntityHierarchy {
     String? treePath,
     @Default(0) int treeDepth,
     @Default([]) List<EntityId> ancestors,
-    EntityId? parentId, 
+    EntityId? parentId,
     @Default([]) List<EntityId> childIds,
     @Default(true) bool isHierarchyRoot,
     @Default(true) bool isHierarchyLeaf,
@@ -57,7 +57,7 @@ class EntityHierarchy with _$EntityHierarchy {
   }) = _EntityHierarchy;
 }
 
-@freezed 
+@freezed
 class EntitySecurity with _$EntitySecurity {
   const factory EntitySecurity({
     UserAction? lastAccessor,
@@ -75,7 +75,7 @@ class EntitySecurity with _$EntitySecurity {
 class EntityClassification with _$EntityClassification {
   const factory EntityClassification({
     @Default([]) List<String> tags,
-    @Default({}) Map<String, String> labels, 
+    @Default({}) Map<String, String> labels,
     @Default(EntityDefaults.priority) Priority priority,
     @Default(EntityDefaults.stage) WorkflowStage stage,
     DateTime? expiryDate,
@@ -134,8 +134,8 @@ class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
 
   const factory BaseEntityModel({
     // Core entity data
-    required CoreEntityDto<T> core,
-    
+    required CoreEntity<T> core,
+
     // Component-based structure
     required EntityHierarchy hierarchy,
     required EntitySecurity security,
@@ -143,7 +143,7 @@ class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
     required EntityVersioning versioning,
     required EntityAI ai,
     required EntityLocking locking,
-    
+
     // Optional extra data
     T? extraData,
   }) = _BaseEntityModel<T>;
@@ -161,7 +161,7 @@ class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   UserAction get creator => core.creator;
   UserAction get modifier => core.modifier;
 
-  // Component-based property getters 
+  // Component-based property getters
   EntityVersioning get version => versioning;
   EntityLocking get lock => locking;
 
@@ -185,7 +185,7 @@ class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   }) {
     final now = DateTime.now();
     return BaseEntityModel(
-      core: CoreEntityDto(
+      core: CoreEntity(
         id: id,
         name: name,
         createdAt: now,
@@ -205,13 +205,13 @@ class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
         },
       ),
       security: const EntitySecurity(),
-      classification: const EntityClassification(), 
+      classification: const EntityClassification(),
       versioning: const EntityVersioning(),
       ai: const EntityAI(),
       locking: const EntityLocking(),
     );
   }
-  
+
   // Utility methods
   dynamic operator [](String key) {
     return switch (key) {

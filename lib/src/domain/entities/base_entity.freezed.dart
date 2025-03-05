@@ -1995,7 +1995,7 @@ abstract class _EntityLocking implements EntityLocking {
 /// @nodoc
 mixin _$BaseEntityModel<T extends Object> {
 // Core entity data
-  CoreEntityDto<T> get core =>
+  CoreEntity<T> get core =>
       throw _privateConstructorUsedError; // Component-based structure
   EntityHierarchy get hierarchy => throw _privateConstructorUsedError;
   EntitySecurity get security => throw _privateConstructorUsedError;
@@ -2020,7 +2020,7 @@ abstract class $BaseEntityModelCopyWith<T extends Object, $Res> {
       _$BaseEntityModelCopyWithImpl<T, $Res, BaseEntityModel<T>>;
   @useResult
   $Res call(
-      {CoreEntityDto<T> core,
+      {CoreEntity<T> core,
       EntityHierarchy hierarchy,
       EntitySecurity security,
       EntityClassification classification,
@@ -2029,7 +2029,7 @@ abstract class $BaseEntityModelCopyWith<T extends Object, $Res> {
       EntityLocking locking,
       T? extraData});
 
-  $CoreEntityDtoCopyWith<T, $Res> get core;
+  $CoreEntityCopyWith<T, $Res> get core;
   $EntityHierarchyCopyWith<$Res> get hierarchy;
   $EntitySecurityCopyWith<$Res> get security;
   $EntityClassificationCopyWith<$Res> get classification;
@@ -2067,7 +2067,7 @@ class _$BaseEntityModelCopyWithImpl<T extends Object, $Res,
       core: null == core
           ? _value.core
           : core // ignore: cast_nullable_to_non_nullable
-              as CoreEntityDto<T>,
+              as CoreEntity<T>,
       hierarchy: null == hierarchy
           ? _value.hierarchy
           : hierarchy // ignore: cast_nullable_to_non_nullable
@@ -2103,8 +2103,8 @@ class _$BaseEntityModelCopyWithImpl<T extends Object, $Res,
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $CoreEntityDtoCopyWith<T, $Res> get core {
-    return $CoreEntityDtoCopyWith<T, $Res>(_value.core, (value) {
+  $CoreEntityCopyWith<T, $Res> get core {
+    return $CoreEntityCopyWith<T, $Res>(_value.core, (value) {
       return _then(_value.copyWith(core: value) as $Val);
     });
   }
@@ -2179,7 +2179,7 @@ abstract class _$$BaseEntityModelImplCopyWith<T extends Object, $Res>
   @override
   @useResult
   $Res call(
-      {CoreEntityDto<T> core,
+      {CoreEntity<T> core,
       EntityHierarchy hierarchy,
       EntitySecurity security,
       EntityClassification classification,
@@ -2189,7 +2189,7 @@ abstract class _$$BaseEntityModelImplCopyWith<T extends Object, $Res>
       T? extraData});
 
   @override
-  $CoreEntityDtoCopyWith<T, $Res> get core;
+  $CoreEntityCopyWith<T, $Res> get core;
   @override
   $EntityHierarchyCopyWith<$Res> get hierarchy;
   @override
@@ -2230,7 +2230,7 @@ class __$$BaseEntityModelImplCopyWithImpl<T extends Object, $Res>
       core: null == core
           ? _value.core
           : core // ignore: cast_nullable_to_non_nullable
-              as CoreEntityDto<T>,
+              as CoreEntity<T>,
       hierarchy: null == hierarchy
           ? _value.hierarchy
           : hierarchy // ignore: cast_nullable_to_non_nullable
@@ -2279,7 +2279,7 @@ class _$BaseEntityModelImpl<T extends Object> extends _BaseEntityModel<T> {
 
 // Core entity data
   @override
-  final CoreEntityDto<T> core;
+  final CoreEntity<T> core;
 // Component-based structure
   @override
   final EntityHierarchy hierarchy;
@@ -2345,7 +2345,7 @@ class _$BaseEntityModelImpl<T extends Object> extends _BaseEntityModel<T> {
 
 abstract class _BaseEntityModel<T extends Object> extends BaseEntityModel<T> {
   const factory _BaseEntityModel(
-      {required final CoreEntityDto<T> core,
+      {required final CoreEntity<T> core,
       required final EntityHierarchy hierarchy,
       required final EntitySecurity security,
       required final EntityClassification classification,
@@ -2357,7 +2357,7 @@ abstract class _BaseEntityModel<T extends Object> extends BaseEntityModel<T> {
 
 // Core entity data
   @override
-  CoreEntityDto<T> get core; // Component-based structure
+  CoreEntity<T> get core; // Component-based structure
   @override
   EntityHierarchy get hierarchy;
   @override

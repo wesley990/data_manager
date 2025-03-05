@@ -96,7 +96,7 @@ class EntityFactory {
     final id = EntityId(const Uuid().v4());
 
     // Create core entity
-    final core = CoreEntityDto<T>(
+    final core = CoreEntity<T>(
       id: id,
       name: config.name,
       description: config.description,
@@ -181,7 +181,7 @@ class EntityFactory {
     final source = config.source;
 
     // Create new core entity
-    final core = CoreEntityDto<T>(
+    final core = CoreEntity<T>(
       id: id,
       name: config.newName ?? '${source.name} (Copy)',
       description: source.description,
@@ -210,7 +210,8 @@ class EntityFactory {
       ),
       classification: EntityClassification(
         tags: config.newTags ?? List<String>.from(source.classification.tags),
-        labels: config.newLabels ?? Map<String, String>.from(source.classification.labels),
+        labels: config.newLabels ??
+            Map<String, String>.from(source.classification.labels),
         priority: source.classification.priority,
         stage: source.classification.stage,
         expiryDate: source.classification.expiryDate,
