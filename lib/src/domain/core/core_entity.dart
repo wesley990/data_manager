@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:data_manager/data_manager.dart';
 
@@ -32,7 +33,16 @@ class CoreEntity<T extends Object> with _$CoreEntity<T> {
   String get uid => id.value;
   String get type => data?.runtimeType.toString() ?? T.toString();
 
-  T? get(String key) => meta[key] as T?;
+  T? get(String key) => meta.containsKey(key)
+      ? () {
+          try {
+            return meta[key] as T;
+          } catch (e) {
+            debugPrint('Type cast error for key "$key": $e');
+            return null;
+          }
+        }()
+      : null;
 
   Object? operator [](String key) {
     return switch (key) {

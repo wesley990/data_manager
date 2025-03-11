@@ -305,7 +305,8 @@ class __$$CoreEntityImplCopyWithImpl<T extends Object, $Res>
 
 /// @nodoc
 @JsonSerializable(genericArgumentFactories: true)
-class _$CoreEntityImpl<T extends Object> extends _CoreEntity<T> {
+class _$CoreEntityImpl<T extends Object> extends _CoreEntity<T>
+    with DiagnosticableTreeMixin {
   const _$CoreEntityImpl(
       {required this.id,
       required this.name,
@@ -361,8 +362,27 @@ class _$CoreEntityImpl<T extends Object> extends _CoreEntity<T> {
   final T? data;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'CoreEntity<$T>(id: $id, name: $name, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, schemaVer: $schemaVer, status: $status, meta: $meta, owner: $owner, creator: $creator, modifier: $modifier, data: $data)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'CoreEntity<$T>'))
+      ..add(DiagnosticsProperty('id', id))
+      ..add(DiagnosticsProperty('name', name))
+      ..add(DiagnosticsProperty('description', description))
+      ..add(DiagnosticsProperty('createdAt', createdAt))
+      ..add(DiagnosticsProperty('updatedAt', updatedAt))
+      ..add(DiagnosticsProperty('schemaVer', schemaVer))
+      ..add(DiagnosticsProperty('status', status))
+      ..add(DiagnosticsProperty('meta', meta))
+      ..add(DiagnosticsProperty('owner', owner))
+      ..add(DiagnosticsProperty('creator', creator))
+      ..add(DiagnosticsProperty('modifier', modifier))
+      ..add(DiagnosticsProperty('data', data));
   }
 
   @override
