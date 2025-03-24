@@ -12,27 +12,83 @@ class TypedMetadata {
   TypedMetadata(this._meta);
 
   /// Get a string value from metadata
-  String? getString(String key) => _meta[key] as String?;
+  String? getString(String key) {
+    if (!_meta.containsKey(key)) return null;
+    try {
+      return _meta[key] as String?;
+    } catch (e) {
+      debugPrint('Type cast error for key "$key": $e');
+      return null;
+    }
+  }
 
   /// Get an integer value from metadata
-  int? getInt(String key) => _meta[key] as int?;
+  int? getInt(String key) {
+    if (!_meta.containsKey(key)) return null;
+    try {
+      return _meta[key] as int?;
+    } catch (e) {
+      debugPrint('Type cast error for key "$key": $e');
+      return null;
+    }
+  }
 
   /// Get a double value from metadata
-  double? getDouble(String key) => _meta[key] as double?;
+  double? getDouble(String key) {
+    if (!_meta.containsKey(key)) return null;
+    try {
+      return _meta[key] as double?;
+    } catch (e) {
+      debugPrint('Type cast error for key "$key": $e');
+      return null;
+    }
+  }
 
   /// Get a boolean value from metadata
-  bool? getBool(String key) => _meta[key] as bool?;
+  bool? getBool(String key) {
+    if (!_meta.containsKey(key)) return null;
+    try {
+      return _meta[key] as bool?;
+    } catch (e) {
+      debugPrint('Type cast error for key "$key": $e');
+      return null;
+    }
+  }
 
   /// Get a DateTime value from metadata
-  DateTime? getDateTime(String key) => _meta[key] is String
-      ? DateTime.tryParse(_meta[key] as String)
-      : _meta[key] as DateTime?;
+  DateTime? getDateTime(String key) {
+    if (!_meta.containsKey(key)) return null;
+    try {
+      return _meta[key] is String
+          ? DateTime.tryParse(_meta[key] as String)
+          : _meta[key] as DateTime?;
+    } catch (e) {
+      debugPrint('Type cast error for key "$key": $e');
+      return null;
+    }
+  }
 
   /// Get a list value from metadata
-  List<R>? getList<R>(String key) => _meta[key] as List<R>?;
+  List<R>? getList<R>(String key) {
+    if (!_meta.containsKey(key)) return null;
+    try {
+      return _meta[key] as List<R>?;
+    } catch (e) {
+      debugPrint('Type cast error for key "$key": $e');
+      return null;
+    }
+  }
 
   /// Get a map value from metadata
-  Map<K, V>? getMap<K, V>(String key) => _meta[key] as Map<K, V>?;
+  Map<K, V>? getMap<K, V>(String key) {
+    if (!_meta.containsKey(key)) return null;
+    try {
+      return _meta[key] as Map<K, V>?;
+    } catch (e) {
+      debugPrint('Type cast error for key "$key": $e');
+      return null;
+    }
+  }
 }
 
 @Freezed(genericArgumentFactories: true)
