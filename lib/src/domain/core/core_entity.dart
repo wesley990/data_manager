@@ -123,28 +123,26 @@ class CoreEntity<T extends Object> with _$CoreEntity<T> {
   TypedMetadata get typedMeta => TypedMetadata(meta);
 
   /// Get a value from meta with an expected type
-  R? get<R>(String key) => meta.containsKey(key)
-      ? () {
-          try {
-            return meta[key] as R;
-          } catch (e) {
-            debugPrint('Type cast error for key "$key": $e');
-            return null;
-          }
-        }()
-      : null;
+  R? get<R>(String key) {
+    return _getValueWithType<R>(key);
+  }
 
   /// Check if metadata contains a specific key
   bool hasMetadata(String key) => meta.containsKey(key);
 
   /// Get metadata with type safety, providing a default value if not present
   R getMetadataOrDefault<R>(String key, R defaultValue) {
-    if (!meta.containsKey(key)) return defaultValue;
+    return _getValueWithType<R>(key) ?? defaultValue;
+  }
+
+  /// Internal helper method to handle type casting with error handling
+  R? _getValueWithType<R>(String key) {
+    if (!meta.containsKey(key)) return null;
     try {
       return meta[key] as R;
     } catch (e) {
       debugPrint('Type cast error for key "$key": $e');
-      return defaultValue;
+      return null;
     }
   }
 
