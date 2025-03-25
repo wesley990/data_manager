@@ -19,8 +19,8 @@ class EntityCreateConfig<T extends Object> {
   final Map<String, Object>? meta;
   final List<String>? tags;
   final Map<String, String>? labels;
-  final Priority? priority;
-  final WorkflowStage? stage;
+  final EntityPriority? priority;
+  final EntityStage? stage;
   final DateTime? expiryDate;
   final bool? isPublic;
 

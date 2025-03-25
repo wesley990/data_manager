@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'enums/entity_priority.dart';
-import 'enums/entity_stage.dart';
+import '../../domain/value_objects/enum_objects.dart';
 
 part 'entity_config.freezed.dart';
 part 'entity_config.g.dart';

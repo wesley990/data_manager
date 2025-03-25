@@ -16,13 +16,28 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$EntityHierarchy {
+  /// Full path in the entity tree
   String? get treePath => throw _privateConstructorUsedError;
+
+  /// Depth level in the hierarchy (0 = root)
   int get treeDepth => throw _privateConstructorUsedError;
+
+  /// List of ancestor entity IDs in order from root to parent
   List<EntityId> get ancestors => throw _privateConstructorUsedError;
+
+  /// Direct parent entity ID
   EntityId? get parentId => throw _privateConstructorUsedError;
+
+  /// List of direct child entity IDs
   List<EntityId> get childIds => throw _privateConstructorUsedError;
+
+  /// Indicates if this entity is a root node in a hierarchy
   bool get isHierarchyRoot => throw _privateConstructorUsedError;
+
+  /// Indicates if this entity is a leaf node (has no children)
   bool get isHierarchyLeaf => throw _privateConstructorUsedError;
+
+  /// Additional hierarchy-related metadata
   Map<String, Object> get hierarchyMeta => throw _privateConstructorUsedError;
 
   /// Create a copy of EntityHierarchy
@@ -223,12 +238,19 @@ class _$EntityHierarchyImpl implements _EntityHierarchy {
         _childIds = childIds,
         _hierarchyMeta = hierarchyMeta;
 
+  /// Full path in the entity tree
   @override
   final String? treePath;
+
+  /// Depth level in the hierarchy (0 = root)
   @override
   @JsonKey()
   final int treeDepth;
+
+  /// List of ancestor entity IDs in order from root to parent
   final List<EntityId> _ancestors;
+
+  /// List of ancestor entity IDs in order from root to parent
   @override
   @JsonKey()
   List<EntityId> get ancestors {
@@ -237,9 +259,14 @@ class _$EntityHierarchyImpl implements _EntityHierarchy {
     return EqualUnmodifiableListView(_ancestors);
   }
 
+  /// Direct parent entity ID
   @override
   final EntityId? parentId;
+
+  /// List of direct child entity IDs
   final List<EntityId> _childIds;
+
+  /// List of direct child entity IDs
   @override
   @JsonKey()
   List<EntityId> get childIds {
@@ -248,13 +275,20 @@ class _$EntityHierarchyImpl implements _EntityHierarchy {
     return EqualUnmodifiableListView(_childIds);
   }
 
+  /// Indicates if this entity is a root node in a hierarchy
   @override
   @JsonKey()
   final bool isHierarchyRoot;
+
+  /// Indicates if this entity is a leaf node (has no children)
   @override
   @JsonKey()
   final bool isHierarchyLeaf;
+
+  /// Additional hierarchy-related metadata
   final Map<String, Object> _hierarchyMeta;
+
+  /// Additional hierarchy-related metadata
   @override
   @JsonKey()
   Map<String, Object> get hierarchyMeta {
@@ -323,20 +357,35 @@ abstract class _EntityHierarchy implements EntityHierarchy {
       final bool isHierarchyLeaf,
       final Map<String, Object> hierarchyMeta}) = _$EntityHierarchyImpl;
 
+  /// Full path in the entity tree
   @override
   String? get treePath;
+
+  /// Depth level in the hierarchy (0 = root)
   @override
   int get treeDepth;
+
+  /// List of ancestor entity IDs in order from root to parent
   @override
   List<EntityId> get ancestors;
+
+  /// Direct parent entity ID
   @override
   EntityId? get parentId;
+
+  /// List of direct child entity IDs
   @override
   List<EntityId> get childIds;
+
+  /// Indicates if this entity is a root node in a hierarchy
   @override
   bool get isHierarchyRoot;
+
+  /// Indicates if this entity is a leaf node (has no children)
   @override
   bool get isHierarchyLeaf;
+
+  /// Additional hierarchy-related metadata
   @override
   Map<String, Object> get hierarchyMeta;
 
@@ -350,13 +399,28 @@ abstract class _EntityHierarchy implements EntityHierarchy {
 
 /// @nodoc
 mixin _$EntitySecurity {
+  /// User who last accessed the entity
   UserAction? get lastAccessor => throw _privateConstructorUsedError;
+
+  /// User who currently has a lock on the entity
   UserAction? get lockOwner => throw _privateConstructorUsedError;
+
+  /// When the current lock expires
   DateTime? get lockExpiry => throw _privateConstructorUsedError;
+
+  /// User who marked the entity as removed
   UserAction? get remover => throw _privateConstructorUsedError;
+
+  /// History of entity modifications
   List<UserAction> get modHistory => throw _privateConstructorUsedError;
+
+  /// Log of entity access events
   List<UserAction> get accessLog => throw _privateConstructorUsedError;
+
+  /// Whether the entity is publicly accessible
   bool get isPublic => throw _privateConstructorUsedError;
+
+  /// Number of times the entity has been accessed
   int get accessCount => throw _privateConstructorUsedError;
 
   /// Create a copy of EntitySecurity
@@ -590,15 +654,26 @@ class _$EntitySecurityImpl implements _EntitySecurity {
       : _modHistory = modHistory,
         _accessLog = accessLog;
 
+  /// User who last accessed the entity
   @override
   final UserAction? lastAccessor;
+
+  /// User who currently has a lock on the entity
   @override
   final UserAction? lockOwner;
+
+  /// When the current lock expires
   @override
   final DateTime? lockExpiry;
+
+  /// User who marked the entity as removed
   @override
   final UserAction? remover;
+
+  /// History of entity modifications
   final List<UserAction> _modHistory;
+
+  /// History of entity modifications
   @override
   @JsonKey()
   List<UserAction> get modHistory {
@@ -607,7 +682,10 @@ class _$EntitySecurityImpl implements _EntitySecurity {
     return EqualUnmodifiableListView(_modHistory);
   }
 
+  /// Log of entity access events
   final List<UserAction> _accessLog;
+
+  /// Log of entity access events
   @override
   @JsonKey()
   List<UserAction> get accessLog {
@@ -616,9 +694,12 @@ class _$EntitySecurityImpl implements _EntitySecurity {
     return EqualUnmodifiableListView(_accessLog);
   }
 
+  /// Whether the entity is publicly accessible
   @override
   @JsonKey()
   final bool isPublic;
+
+  /// Number of times the entity has been accessed
   @override
   @JsonKey()
   final int accessCount;
@@ -683,20 +764,35 @@ abstract class _EntitySecurity implements EntitySecurity {
       final bool isPublic,
       final int accessCount}) = _$EntitySecurityImpl;
 
+  /// User who last accessed the entity
   @override
   UserAction? get lastAccessor;
+
+  /// User who currently has a lock on the entity
   @override
   UserAction? get lockOwner;
+
+  /// When the current lock expires
   @override
   DateTime? get lockExpiry;
+
+  /// User who marked the entity as removed
   @override
   UserAction? get remover;
+
+  /// History of entity modifications
   @override
   List<UserAction> get modHistory;
+
+  /// Log of entity access events
   @override
   List<UserAction> get accessLog;
+
+  /// Whether the entity is publicly accessible
   @override
   bool get isPublic;
+
+  /// Number of times the entity has been accessed
   @override
   int get accessCount;
 
@@ -710,10 +806,19 @@ abstract class _EntitySecurity implements EntitySecurity {
 
 /// @nodoc
 mixin _$EntityClassification {
+  /// List of searchable tags associated with the entity
   List<String> get tags => throw _privateConstructorUsedError;
+
+  /// Key-value pairs of labels for categorization
   Map<String, String> get labels => throw _privateConstructorUsedError;
-  Priority get priority => throw _privateConstructorUsedError;
-  WorkflowStage get stage => throw _privateConstructorUsedError;
+
+  /// Priority level of the entity
+  EntityPriority get priority => throw _privateConstructorUsedError;
+
+  /// Current workflow stage of the entity
+  EntityStage get stage => throw _privateConstructorUsedError;
+
+  /// Date when the entity expires/becomes inactive
   DateTime? get expiryDate => throw _privateConstructorUsedError;
 
   /// Create a copy of EntityClassification
@@ -732,8 +837,8 @@ abstract class $EntityClassificationCopyWith<$Res> {
   $Res call(
       {List<String> tags,
       Map<String, String> labels,
-      Priority priority,
-      WorkflowStage stage,
+      EntityPriority priority,
+      EntityStage stage,
       DateTime? expiryDate});
 }
 
@@ -771,11 +876,11 @@ class _$EntityClassificationCopyWithImpl<$Res,
       priority: null == priority
           ? _value.priority
           : priority // ignore: cast_nullable_to_non_nullable
-              as Priority,
+              as EntityPriority,
       stage: null == stage
           ? _value.stage
           : stage // ignore: cast_nullable_to_non_nullable
-              as WorkflowStage,
+              as EntityStage,
       expiryDate: freezed == expiryDate
           ? _value.expiryDate
           : expiryDate // ignore: cast_nullable_to_non_nullable
@@ -795,8 +900,8 @@ abstract class _$$EntityClassificationImplCopyWith<$Res>
   $Res call(
       {List<String> tags,
       Map<String, String> labels,
-      Priority priority,
-      WorkflowStage stage,
+      EntityPriority priority,
+      EntityStage stage,
       DateTime? expiryDate});
 }
 
@@ -831,11 +936,11 @@ class __$$EntityClassificationImplCopyWithImpl<$Res>
       priority: null == priority
           ? _value.priority
           : priority // ignore: cast_nullable_to_non_nullable
-              as Priority,
+              as EntityPriority,
       stage: null == stage
           ? _value.stage
           : stage // ignore: cast_nullable_to_non_nullable
-              as WorkflowStage,
+              as EntityStage,
       expiryDate: freezed == expiryDate
           ? _value.expiryDate
           : expiryDate // ignore: cast_nullable_to_non_nullable
@@ -856,7 +961,10 @@ class _$EntityClassificationImpl implements _EntityClassification {
       : _tags = tags,
         _labels = labels;
 
+  /// List of searchable tags associated with the entity
   final List<String> _tags;
+
+  /// List of searchable tags associated with the entity
   @override
   @JsonKey()
   List<String> get tags {
@@ -865,7 +973,10 @@ class _$EntityClassificationImpl implements _EntityClassification {
     return EqualUnmodifiableListView(_tags);
   }
 
+  /// Key-value pairs of labels for categorization
   final Map<String, String> _labels;
+
+  /// Key-value pairs of labels for categorization
   @override
   @JsonKey()
   Map<String, String> get labels {
@@ -874,12 +985,17 @@ class _$EntityClassificationImpl implements _EntityClassification {
     return EqualUnmodifiableMapView(_labels);
   }
 
+  /// Priority level of the entity
   @override
   @JsonKey()
-  final Priority priority;
+  final EntityPriority priority;
+
+  /// Current workflow stage of the entity
   @override
   @JsonKey()
-  final WorkflowStage stage;
+  final EntityStage stage;
+
+  /// Date when the entity expires/becomes inactive
   @override
   final DateTime? expiryDate;
 
@@ -926,18 +1042,27 @@ abstract class _EntityClassification implements EntityClassification {
   const factory _EntityClassification(
       {final List<String> tags,
       final Map<String, String> labels,
-      final Priority priority,
-      final WorkflowStage stage,
+      final EntityPriority priority,
+      final EntityStage stage,
       final DateTime? expiryDate}) = _$EntityClassificationImpl;
 
+  /// List of searchable tags associated with the entity
   @override
   List<String> get tags;
+
+  /// Key-value pairs of labels for categorization
   @override
   Map<String, String> get labels;
+
+  /// Priority level of the entity
   @override
-  Priority get priority;
+  EntityPriority get priority;
+
+  /// Current workflow stage of the entity
   @override
-  WorkflowStage get stage;
+  EntityStage get stage;
+
+  /// Date when the entity expires/becomes inactive
   @override
   DateTime? get expiryDate;
 
@@ -951,17 +1076,40 @@ abstract class _EntityClassification implements EntityClassification {
 
 /// @nodoc
 mixin _$EntityVersioning {
+  /// Metadata for synchronization purposes
   Map<String, Object> get syncMeta => throw _privateConstructorUsedError;
+
+  /// Synchronization version identifier
   String? get syncVer => throw _privateConstructorUsedError;
+
+  /// Search index for efficient queries
   Map<String, Object> get searchIndex => throw _privateConstructorUsedError;
+
+  /// Event version counter
   int get eventVer => throw _privateConstructorUsedError;
+
+  /// List of event IDs that haven't been processed
   List<String> get pendingEvents => throw _privateConstructorUsedError;
+
+  /// Additional event-related metadata
   Map<String, Object> get eventMeta => throw _privateConstructorUsedError;
+
+  /// Maximum number of history entries to maintain
   int get historyLimit => throw _privateConstructorUsedError;
+
+  /// Data format version
   int get dataVer => throw _privateConstructorUsedError;
+
+  /// Structure version
   int get structVer => throw _privateConstructorUsedError;
+
+  /// Last version identifier
   String? get lastVer => throw _privateConstructorUsedError;
+
+  /// Schema version of the entity
   String get schemaVer => throw _privateConstructorUsedError;
+
+  /// Version vectors for distributed version control
   Map<String, int> get verVectors => throw _privateConstructorUsedError;
 
   /// Create a copy of EntityVersioning
@@ -1197,7 +1345,10 @@ class _$EntityVersioningImpl implements _EntityVersioning {
         _eventMeta = eventMeta,
         _verVectors = verVectors;
 
+  /// Metadata for synchronization purposes
   final Map<String, Object> _syncMeta;
+
+  /// Metadata for synchronization purposes
   @override
   @JsonKey()
   Map<String, Object> get syncMeta {
@@ -1206,9 +1357,14 @@ class _$EntityVersioningImpl implements _EntityVersioning {
     return EqualUnmodifiableMapView(_syncMeta);
   }
 
+  /// Synchronization version identifier
   @override
   final String? syncVer;
+
+  /// Search index for efficient queries
   final Map<String, Object> _searchIndex;
+
+  /// Search index for efficient queries
   @override
   @JsonKey()
   Map<String, Object> get searchIndex {
@@ -1217,10 +1373,15 @@ class _$EntityVersioningImpl implements _EntityVersioning {
     return EqualUnmodifiableMapView(_searchIndex);
   }
 
+  /// Event version counter
   @override
   @JsonKey()
   final int eventVer;
+
+  /// List of event IDs that haven't been processed
   final List<String> _pendingEvents;
+
+  /// List of event IDs that haven't been processed
   @override
   @JsonKey()
   List<String> get pendingEvents {
@@ -1229,7 +1390,10 @@ class _$EntityVersioningImpl implements _EntityVersioning {
     return EqualUnmodifiableListView(_pendingEvents);
   }
 
+  /// Additional event-related metadata
   final Map<String, Object> _eventMeta;
+
+  /// Additional event-related metadata
   @override
   @JsonKey()
   Map<String, Object> get eventMeta {
@@ -1238,21 +1402,34 @@ class _$EntityVersioningImpl implements _EntityVersioning {
     return EqualUnmodifiableMapView(_eventMeta);
   }
 
+  /// Maximum number of history entries to maintain
   @override
   @JsonKey()
   final int historyLimit;
+
+  /// Data format version
   @override
   @JsonKey()
   final int dataVer;
+
+  /// Structure version
   @override
   @JsonKey()
   final int structVer;
+
+  /// Last version identifier
   @override
   final String? lastVer;
+
+  /// Schema version of the entity
   @override
   @JsonKey()
   final String schemaVer;
+
+  /// Version vectors for distributed version control
   final Map<String, int> _verVectors;
+
+  /// Version vectors for distributed version control
   @override
   @JsonKey()
   Map<String, int> get verVectors {
@@ -1334,28 +1511,51 @@ abstract class _EntityVersioning implements EntityVersioning {
       final String schemaVer,
       final Map<String, int> verVectors}) = _$EntityVersioningImpl;
 
+  /// Metadata for synchronization purposes
   @override
   Map<String, Object> get syncMeta;
+
+  /// Synchronization version identifier
   @override
   String? get syncVer;
+
+  /// Search index for efficient queries
   @override
   Map<String, Object> get searchIndex;
+
+  /// Event version counter
   @override
   int get eventVer;
+
+  /// List of event IDs that haven't been processed
   @override
   List<String> get pendingEvents;
+
+  /// Additional event-related metadata
   @override
   Map<String, Object> get eventMeta;
+
+  /// Maximum number of history entries to maintain
   @override
   int get historyLimit;
+
+  /// Data format version
   @override
   int get dataVer;
+
+  /// Structure version
   @override
   int get structVer;
+
+  /// Last version identifier
   @override
   String? get lastVer;
+
+  /// Schema version of the entity
   @override
   String get schemaVer;
+
+  /// Version vectors for distributed version control
   @override
   Map<String, int> get verVectors;
 
@@ -1369,12 +1569,25 @@ abstract class _EntityVersioning implements EntityVersioning {
 
 /// @nodoc
 mixin _$EntityAI {
+  /// Vector embeddings for AI operations
   Map<String, List<double>> get aiVectors => throw _privateConstructorUsedError;
+
+  /// Scores from AI evaluations
   Map<String, double> get aiScores => throw _privateConstructorUsedError;
+
+  /// General AI-related metadata
   Map<String, String> get aiMeta => throw _privateConstructorUsedError;
+
+  /// AI-generated or AI-specific tags
   List<String> get aiTags => throw _privateConstructorUsedError;
+
+  /// Additional AI-related notes or data
   Map<String, Object> get aiNotes => throw _privateConstructorUsedError;
+
+  /// When AI processing was last performed
   DateTime? get aiLastRun => throw _privateConstructorUsedError;
+
+  /// Version of AI model/system used
   String? get aiVer => throw _privateConstructorUsedError;
 
   /// Create a copy of EntityAI
@@ -1544,7 +1757,10 @@ class _$EntityAIImpl implements _EntityAI {
         _aiTags = aiTags,
         _aiNotes = aiNotes;
 
+  /// Vector embeddings for AI operations
   final Map<String, List<double>> _aiVectors;
+
+  /// Vector embeddings for AI operations
   @override
   @JsonKey()
   Map<String, List<double>> get aiVectors {
@@ -1553,7 +1769,10 @@ class _$EntityAIImpl implements _EntityAI {
     return EqualUnmodifiableMapView(_aiVectors);
   }
 
+  /// Scores from AI evaluations
   final Map<String, double> _aiScores;
+
+  /// Scores from AI evaluations
   @override
   @JsonKey()
   Map<String, double> get aiScores {
@@ -1562,7 +1781,10 @@ class _$EntityAIImpl implements _EntityAI {
     return EqualUnmodifiableMapView(_aiScores);
   }
 
+  /// General AI-related metadata
   final Map<String, String> _aiMeta;
+
+  /// General AI-related metadata
   @override
   @JsonKey()
   Map<String, String> get aiMeta {
@@ -1571,7 +1793,10 @@ class _$EntityAIImpl implements _EntityAI {
     return EqualUnmodifiableMapView(_aiMeta);
   }
 
+  /// AI-generated or AI-specific tags
   final List<String> _aiTags;
+
+  /// AI-generated or AI-specific tags
   @override
   @JsonKey()
   List<String> get aiTags {
@@ -1580,7 +1805,10 @@ class _$EntityAIImpl implements _EntityAI {
     return EqualUnmodifiableListView(_aiTags);
   }
 
+  /// Additional AI-related notes or data
   final Map<String, Object> _aiNotes;
+
+  /// Additional AI-related notes or data
   @override
   @JsonKey()
   Map<String, Object> get aiNotes {
@@ -1589,8 +1817,11 @@ class _$EntityAIImpl implements _EntityAI {
     return EqualUnmodifiableMapView(_aiNotes);
   }
 
+  /// When AI processing was last performed
   @override
   final DateTime? aiLastRun;
+
+  /// Version of AI model/system used
   @override
   final String? aiVer;
 
@@ -1645,18 +1876,31 @@ abstract class _EntityAI implements EntityAI {
       final DateTime? aiLastRun,
       final String? aiVer}) = _$EntityAIImpl;
 
+  /// Vector embeddings for AI operations
   @override
   Map<String, List<double>> get aiVectors;
+
+  /// Scores from AI evaluations
   @override
   Map<String, double> get aiScores;
+
+  /// General AI-related metadata
   @override
   Map<String, String> get aiMeta;
+
+  /// AI-generated or AI-specific tags
   @override
   List<String> get aiTags;
+
+  /// Additional AI-related notes or data
   @override
   Map<String, Object> get aiNotes;
+
+  /// When AI processing was last performed
   @override
   DateTime? get aiLastRun;
+
+  /// Version of AI model/system used
   @override
   String? get aiVer;
 
@@ -1670,13 +1914,28 @@ abstract class _EntityAI implements EntityAI {
 
 /// @nodoc
 mixin _$EntityLocking {
+  /// Distributed lock identifier
   String? get distLockId => throw _privateConstructorUsedError;
+
+  /// When the distributed lock expires
   DateTime? get distLockExpiry => throw _privateConstructorUsedError;
+
+  /// Node/server holding the distributed lock
   String? get distLockNode => throw _privateConstructorUsedError;
+
+  /// Additional lock-related metadata
   Map<String, dynamic> get lockMeta => throw _privateConstructorUsedError;
+
+  /// Version vectors for distributed coordination
   Map<String, int> get verVectors => throw _privateConstructorUsedError;
+
+  /// Duration before lock automatically expires
   Duration get lockTimeout => throw _privateConstructorUsedError;
+
+  /// User who owns the lock
   UserAction? get lockOwner => throw _privateConstructorUsedError;
+
+  /// When the current lock expires
   DateTime? get lockExpiry => throw _privateConstructorUsedError;
 
   /// Create a copy of EntityLocking
@@ -1876,13 +2135,22 @@ class _$EntityLockingImpl implements _EntityLocking {
       : _lockMeta = lockMeta,
         _verVectors = verVectors;
 
+  /// Distributed lock identifier
   @override
   final String? distLockId;
+
+  /// When the distributed lock expires
   @override
   final DateTime? distLockExpiry;
+
+  /// Node/server holding the distributed lock
   @override
   final String? distLockNode;
+
+  /// Additional lock-related metadata
   final Map<String, dynamic> _lockMeta;
+
+  /// Additional lock-related metadata
   @override
   @JsonKey()
   Map<String, dynamic> get lockMeta {
@@ -1891,7 +2159,10 @@ class _$EntityLockingImpl implements _EntityLocking {
     return EqualUnmodifiableMapView(_lockMeta);
   }
 
+  /// Version vectors for distributed coordination
   final Map<String, int> _verVectors;
+
+  /// Version vectors for distributed coordination
   @override
   @JsonKey()
   Map<String, int> get verVectors {
@@ -1900,11 +2171,16 @@ class _$EntityLockingImpl implements _EntityLocking {
     return EqualUnmodifiableMapView(_verVectors);
   }
 
+  /// Duration before lock automatically expires
   @override
   @JsonKey()
   final Duration lockTimeout;
+
+  /// User who owns the lock
   @override
   final UserAction? lockOwner;
+
+  /// When the current lock expires
   @override
   final DateTime? lockExpiry;
 
@@ -1967,20 +2243,35 @@ abstract class _EntityLocking implements EntityLocking {
       final UserAction? lockOwner,
       final DateTime? lockExpiry}) = _$EntityLockingImpl;
 
+  /// Distributed lock identifier
   @override
   String? get distLockId;
+
+  /// When the distributed lock expires
   @override
   DateTime? get distLockExpiry;
+
+  /// Node/server holding the distributed lock
   @override
   String? get distLockNode;
+
+  /// Additional lock-related metadata
   @override
   Map<String, dynamic> get lockMeta;
+
+  /// Version vectors for distributed coordination
   @override
   Map<String, int> get verVectors;
+
+  /// Duration before lock automatically expires
   @override
   Duration get lockTimeout;
+
+  /// User who owns the lock
   @override
   UserAction? get lockOwner;
+
+  /// When the current lock expires
   @override
   DateTime? get lockExpiry;
 
@@ -1994,16 +2285,28 @@ abstract class _EntityLocking implements EntityLocking {
 
 /// @nodoc
 mixin _$BaseEntityModel<T extends Object> {
-// Core entity data
-  CoreEntity<T> get core =>
-      throw _privateConstructorUsedError; // Component-based structure
+  /// Core entity data containing essential properties
+  CoreEntity<T> get core => throw _privateConstructorUsedError;
+
+  /// Component for hierarchy and tree structure
   EntityHierarchy get hierarchy => throw _privateConstructorUsedError;
+
+  /// Component for access control and security
   EntitySecurity get security => throw _privateConstructorUsedError;
+
+  /// Component for organization and workflow
   EntityClassification get classification => throw _privateConstructorUsedError;
+
+  /// Component for change tracking and history
   EntityVersioning get versioning => throw _privateConstructorUsedError;
+
+  /// Component for AI-related features
   EntityAI get ai => throw _privateConstructorUsedError;
-  EntityLocking get locking =>
-      throw _privateConstructorUsedError; // Optional extra data
+
+  /// Component for concurrent access control
+  EntityLocking get locking => throw _privateConstructorUsedError;
+
+  /// Optional extra data of type T
   T? get extraData => throw _privateConstructorUsedError;
 
   /// Create a copy of BaseEntityModel
@@ -2277,23 +2580,35 @@ class _$BaseEntityModelImpl<T extends Object> extends _BaseEntityModel<T> {
       this.extraData})
       : super._();
 
-// Core entity data
+  /// Core entity data containing essential properties
   @override
   final CoreEntity<T> core;
-// Component-based structure
+
+  /// Component for hierarchy and tree structure
   @override
   final EntityHierarchy hierarchy;
+
+  /// Component for access control and security
   @override
   final EntitySecurity security;
+
+  /// Component for organization and workflow
   @override
   final EntityClassification classification;
+
+  /// Component for change tracking and history
   @override
   final EntityVersioning versioning;
+
+  /// Component for AI-related features
   @override
   final EntityAI ai;
+
+  /// Component for concurrent access control
   @override
   final EntityLocking locking;
-// Optional extra data
+
+  /// Optional extra data of type T
   @override
   final T? extraData;
 
@@ -2355,21 +2670,35 @@ abstract class _BaseEntityModel<T extends Object> extends BaseEntityModel<T> {
       final T? extraData}) = _$BaseEntityModelImpl<T>;
   const _BaseEntityModel._() : super._();
 
-// Core entity data
+  /// Core entity data containing essential properties
   @override
-  CoreEntity<T> get core; // Component-based structure
+  CoreEntity<T> get core;
+
+  /// Component for hierarchy and tree structure
   @override
   EntityHierarchy get hierarchy;
+
+  /// Component for access control and security
   @override
   EntitySecurity get security;
+
+  /// Component for organization and workflow
   @override
   EntityClassification get classification;
+
+  /// Component for change tracking and history
   @override
   EntityVersioning get versioning;
+
+  /// Component for AI-related features
   @override
   EntityAI get ai;
+
+  /// Component for concurrent access control
   @override
-  EntityLocking get locking; // Optional extra data
+  EntityLocking get locking;
+
+  /// Optional extra data of type T
   @override
   T? get extraData;
 

@@ -31,53 +31,110 @@ extension EntityStatusX on EntityStatus {
   }
 }
 
-enum Priority { low, medium, high, critical }
+/// Defines priority levels for entities in the data manager.
+enum EntityPriority {
+  /// Low priority entities.
+  low('low'),
 
-extension PriorityX on Priority {
-  bool get isLow => this == Priority.low;
-  bool get isMedium => this == Priority.medium;
-  bool get isHigh => this == Priority.high;
-  bool get isCritical => this == Priority.critical;
+  /// Medium priority entities (default).
+  medium('medium'),
+
+  /// High priority entities.
+  high('high'),
+
+  /// Critical priority entities requiring immediate attention.
+  critical('critical');
+
+  /// Creates a new entity priority with the given string representation.
+  const EntityPriority(this.value);
+
+  /// The string representation of this priority level.
+  final String value;
+
+  /// Converts a string to the corresponding EntityPriority.
+  ///
+  /// Returns [EntityPriority.medium] if the string doesn't match any priority.
+  static EntityPriority fromString(String value) {
+    return EntityPriority.values.firstWhere(
+      (priority) => priority.value == value.toLowerCase(),
+      orElse: () => EntityPriority.medium,
+    );
+  }
+}
+
+extension EntityPriorityX on EntityPriority {
+  bool get isLow => this == EntityPriority.low;
+  bool get isMedium => this == EntityPriority.medium;
+  bool get isHigh => this == EntityPriority.high;
+  bool get isCritical => this == EntityPriority.critical;
 
   String get displayName {
     switch (this) {
-      case Priority.low:
+      case EntityPriority.low:
         return 'Low';
-      case Priority.medium:
+      case EntityPriority.medium:
         return 'Medium';
-      case Priority.high:
+      case EntityPriority.high:
         return 'High';
-      case Priority.critical:
+      case EntityPriority.critical:
         return 'Critical';
     }
   }
 }
 
-enum WorkflowStage { draft, review, approved, rejected, active, inactive }
+/// Defines workflow stages for entities in the data manager.
+enum EntityStage {
+  /// Initial draft stage.
+  draft('draft'),
 
-extension WorkflowStageX on WorkflowStage {
-  bool get isDraft => this == WorkflowStage.draft;
-  bool get isReview => this == WorkflowStage.review;
-  bool get isApproved => this == WorkflowStage.approved;
-  bool get isRejected => this == WorkflowStage.rejected;
-  bool get isActive => this == WorkflowStage.active;
-  bool get isInactive => this == WorkflowStage.inactive;
+  /// Review stage where entity is being evaluated.
+  review('review'),
+
+  /// Approved stage ready for publication or deployment.
+  approved('approved'),
+
+  /// Published stage where entity is publicly available.
+  published('published'),
+
+  /// Archived stage for inactive entities.
+  archived('archived');
+
+  /// Creates a new entity stage with the given string representation.
+  const EntityStage(this.value);
+
+  /// The string representation of this workflow stage.
+  final String value;
+
+  /// Converts a string to the corresponding EntityStage.
+  ///
+  /// Returns [EntityStage.draft] if the string doesn't match any stage.
+  static EntityStage fromString(String value) {
+    return EntityStage.values.firstWhere(
+      (stage) => stage.value == value.toLowerCase(),
+      orElse: () => EntityStage.draft,
+    );
+  }
+}
+
+extension EntityStageX on EntityStage {
+  bool get isDraft => this == EntityStage.draft;
+  bool get isReview => this == EntityStage.review;
+  bool get isApproved => this == EntityStage.approved;
+  bool get isPublished => this == EntityStage.published;
+  bool get isArchived => this == EntityStage.archived;
 
   String get displayName {
     switch (this) {
-      case WorkflowStage.draft:
+      case EntityStage.draft:
         return 'Draft';
-      case WorkflowStage.review:
+      case EntityStage.review:
         return 'Review';
-      case WorkflowStage.approved:
+      case EntityStage.approved:
         return 'Approved';
-
-      case WorkflowStage.rejected:
-        return 'Rejected';
-      case WorkflowStage.active:
-        return 'Active';
-      case WorkflowStage.inactive:
-        return 'Inactive';
+      case EntityStage.published:
+        return 'Published';
+      case EntityStage.archived:
+        return 'Archived';
     }
   }
 }
