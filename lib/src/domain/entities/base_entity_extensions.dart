@@ -56,7 +56,7 @@ extension PathNavigationExtension<T extends Object> on BaseEntityModel<T> {
   /// Builds a list of ancestor paths from this entity's tree path.
   ///
   /// Returns a list of paths representing the ancestors of this entity.
-  List<String> get ancestorPaths =>
+  List<String> get pathAncestors =>
       _pathService.buildAncestorPaths(hierarchy.treePath ?? '');
 
   /// Gets the absolute path for this entity.
@@ -282,9 +282,11 @@ extension AIProcessingExtension<T extends Object> on BaseEntityModel<T> {
     bool useCache = true,
   }) {
     final timestamp = DateTime.now();
-    final newEmbeddings = embeddings != null
-        ? {...ai.aiVectors, modelId: embeddings}
-        : ai.aiVectors;
+
+    // More concise handling of embeddings
+    final newEmbeddings = embeddings == null
+        ? ai.aiVectors
+        : {...ai.aiVectors, modelId: embeddings};
 
     final newMeta = _aiService.getProcessingMeta(
       currentMeta: ai.aiMeta,
@@ -301,7 +303,10 @@ extension AIProcessingExtension<T extends Object> on BaseEntityModel<T> {
       ai: ai.copyWith(
         aiVectors: newEmbeddings,
         aiMeta: newMeta.map((key, value) => MapEntry(key, value.toString())),
-        aiScores: {...ai.aiScores, if (confidence != null) modelId: confidence},
+        aiScores: {
+          ...ai.aiScores,
+          if (confidence != null) modelId: confidence,
+        },
         aiLastRun: timestamp,
       ),
     );
@@ -328,9 +333,11 @@ extension AICacheExtension<T extends Object> on BaseEntityModel<T> {
   /// [input] - The input data to retrieve cached results for.
   /// [requireLatestVersion] - Whether to only return results from the latest model version.
   /// Returns the cached result, or null if not found.
-  Map<String, dynamic>? getCachedResult(
-      String modelId, Map<String, dynamic> input,
-      {bool requireLatestVersion = false}) {
+  Map<String, dynamic>? getCachedResult({
+    required String modelId,
+    required Map<String, dynamic> input,
+    bool requireLatestVersion = false,
+  }) {
     final cacheKey = _aiService.generateCacheKey(modelId, input.toString());
     return _aiService.getCachedResult(
       ai.aiMeta,
@@ -482,9 +489,9 @@ extension LockingExtension<T extends Object> on BaseEntityModel<T> {
   /// Acquires a lock on this entity.
   ///
   /// [user] - The user acquiring the lock.
-  /// [duration] - Optional lock duration.
-  /// [isDistributed] - Whether this is a distributed lock.
-  /// [nodeId] - Optional ID of the node acquiring the lock.
+  /// [duration] - Optional lock duration (defaults to LockConfig.defaultTimeout).
+  /// [isDistributed] - Whether this is a distributed lock across nodes.
+  /// [nodeId] - Optional ID of the node acquiring the lock (for distributed locks).
   /// Returns an updated entity with the lock in place.
   BaseEntityModel<T> acquireLock(
     UserAction user, {
