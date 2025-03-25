@@ -21,24 +21,49 @@ EntityConfig _$EntityConfigFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$EntityConfig {
 // Path limits
+  /// Maximum length of an entity path in characters.
   int get maxPathLength => throw _privateConstructorUsedError;
+
+  /// Maximum length of a single path segment in characters.
   int get maxPathSegment => throw _privateConstructorUsedError;
+
+  /// Maximum allowed depth of entity hierarchies.
   int get maxHierarchyDepth =>
       throw _privateConstructorUsedError; // History limits
+  /// Maximum number of history entries to retain per entity.
   int get maxHistorySize => throw _privateConstructorUsedError;
+
+  /// Default number of history entries to show in views.
   int get defaultHistorySize =>
       throw _privateConstructorUsedError; // Lock settings
+  /// Default duration before an entity lock expires.
   Duration get defaultLockTimeout => throw _privateConstructorUsedError;
+
+  /// Duration by which a lock can be extended.
   Duration get lockExtensionPeriod => throw _privateConstructorUsedError;
+
+  /// Minimum duration for which an entity can be locked.
   Duration get minLockDuration => throw _privateConstructorUsedError;
+
+  /// Maximum duration for which an entity can be locked.
   Duration get maxLockDuration =>
       throw _privateConstructorUsedError; // Entity defaults
+  /// Default version string for new entities.
   String get defaultVersion => throw _privateConstructorUsedError;
+
+  /// Whether entities are public by default.
   bool get defaultIsPublic => throw _privateConstructorUsedError;
-  String get defaultPriority => throw _privateConstructorUsedError;
-  String get defaultStage =>
+
+  /// Default priority level for new entities.
+  EntityPriority get defaultPriority => throw _privateConstructorUsedError;
+
+  /// Default workflow stage for new entities.
+  EntityStage get defaultStage =>
       throw _privateConstructorUsedError; // Path settings
+  /// Character used to separate path segments.
   String get pathSeparator => throw _privateConstructorUsedError;
+
+  /// Regular expression pattern defining invalid characters in paths.
   String get invalidPathChars => throw _privateConstructorUsedError;
 
   /// Serializes this EntityConfig to a JSON map.
@@ -69,8 +94,8 @@ abstract class $EntityConfigCopyWith<$Res> {
       Duration maxLockDuration,
       String defaultVersion,
       bool defaultIsPublic,
-      String defaultPriority,
-      String defaultStage,
+      EntityPriority defaultPriority,
+      EntityStage defaultStage,
       String pathSeparator,
       String invalidPathChars});
 }
@@ -154,11 +179,11 @@ class _$EntityConfigCopyWithImpl<$Res, $Val extends EntityConfig>
       defaultPriority: null == defaultPriority
           ? _value.defaultPriority
           : defaultPriority // ignore: cast_nullable_to_non_nullable
-              as String,
+              as EntityPriority,
       defaultStage: null == defaultStage
           ? _value.defaultStage
           : defaultStage // ignore: cast_nullable_to_non_nullable
-              as String,
+              as EntityStage,
       pathSeparator: null == pathSeparator
           ? _value.pathSeparator
           : pathSeparator // ignore: cast_nullable_to_non_nullable
@@ -191,8 +216,8 @@ abstract class _$$EntityConfigImplCopyWith<$Res>
       Duration maxLockDuration,
       String defaultVersion,
       bool defaultIsPublic,
-      String defaultPriority,
-      String defaultStage,
+      EntityPriority defaultPriority,
+      EntityStage defaultStage,
       String pathSeparator,
       String invalidPathChars});
 }
@@ -274,11 +299,11 @@ class __$$EntityConfigImplCopyWithImpl<$Res>
       defaultPriority: null == defaultPriority
           ? _value.defaultPriority
           : defaultPriority // ignore: cast_nullable_to_non_nullable
-              as String,
+              as EntityPriority,
       defaultStage: null == defaultStage
           ? _value.defaultStage
           : defaultStage // ignore: cast_nullable_to_non_nullable
-              as String,
+              as EntityStage,
       pathSeparator: null == pathSeparator
           ? _value.pathSeparator
           : pathSeparator // ignore: cast_nullable_to_non_nullable
@@ -306,8 +331,8 @@ class _$EntityConfigImpl implements _EntityConfig {
       this.maxLockDuration = const Duration(hours: 24),
       this.defaultVersion = '1.0.0',
       this.defaultIsPublic = true,
-      this.defaultPriority = 'medium',
-      this.defaultStage = 'draft',
+      this.defaultPriority = EntityPriority.medium,
+      this.defaultStage = EntityStage.draft,
       this.pathSeparator = '/',
       this.invalidPathChars = r'[<>:"|?*\x00-\x1F]'});
 
@@ -315,52 +340,77 @@ class _$EntityConfigImpl implements _EntityConfig {
       _$$EntityConfigImplFromJson(json);
 
 // Path limits
+  /// Maximum length of an entity path in characters.
   @override
   @JsonKey()
   final int maxPathLength;
+
+  /// Maximum length of a single path segment in characters.
   @override
   @JsonKey()
   final int maxPathSegment;
+
+  /// Maximum allowed depth of entity hierarchies.
   @override
   @JsonKey()
   final int maxHierarchyDepth;
 // History limits
+  /// Maximum number of history entries to retain per entity.
   @override
   @JsonKey()
   final int maxHistorySize;
+
+  /// Default number of history entries to show in views.
   @override
   @JsonKey()
   final int defaultHistorySize;
 // Lock settings
+  /// Default duration before an entity lock expires.
   @override
   @JsonKey()
   final Duration defaultLockTimeout;
+
+  /// Duration by which a lock can be extended.
   @override
   @JsonKey()
   final Duration lockExtensionPeriod;
+
+  /// Minimum duration for which an entity can be locked.
   @override
   @JsonKey()
   final Duration minLockDuration;
+
+  /// Maximum duration for which an entity can be locked.
   @override
   @JsonKey()
   final Duration maxLockDuration;
 // Entity defaults
+  /// Default version string for new entities.
   @override
   @JsonKey()
   final String defaultVersion;
+
+  /// Whether entities are public by default.
   @override
   @JsonKey()
   final bool defaultIsPublic;
+
+  /// Default priority level for new entities.
   @override
   @JsonKey()
-  final String defaultPriority;
+  final EntityPriority defaultPriority;
+
+  /// Default workflow stage for new entities.
   @override
   @JsonKey()
-  final String defaultStage;
+  final EntityStage defaultStage;
 // Path settings
+  /// Character used to separate path segments.
   @override
   @JsonKey()
   final String pathSeparator;
+
+  /// Regular expression pattern defining invalid characters in paths.
   @override
   @JsonKey()
   final String invalidPathChars;
@@ -456,8 +506,8 @@ abstract class _EntityConfig implements EntityConfig {
       final Duration maxLockDuration,
       final String defaultVersion,
       final bool defaultIsPublic,
-      final String defaultPriority,
-      final String defaultStage,
+      final EntityPriority defaultPriority,
+      final EntityStage defaultStage,
       final String pathSeparator,
       final String invalidPathChars}) = _$EntityConfigImpl;
 
@@ -465,34 +515,59 @@ abstract class _EntityConfig implements EntityConfig {
       _$EntityConfigImpl.fromJson;
 
 // Path limits
+  /// Maximum length of an entity path in characters.
   @override
   int get maxPathLength;
+
+  /// Maximum length of a single path segment in characters.
   @override
   int get maxPathSegment;
+
+  /// Maximum allowed depth of entity hierarchies.
   @override
   int get maxHierarchyDepth; // History limits
+  /// Maximum number of history entries to retain per entity.
   @override
   int get maxHistorySize;
+
+  /// Default number of history entries to show in views.
   @override
   int get defaultHistorySize; // Lock settings
+  /// Default duration before an entity lock expires.
   @override
   Duration get defaultLockTimeout;
+
+  /// Duration by which a lock can be extended.
   @override
   Duration get lockExtensionPeriod;
+
+  /// Minimum duration for which an entity can be locked.
   @override
   Duration get minLockDuration;
+
+  /// Maximum duration for which an entity can be locked.
   @override
   Duration get maxLockDuration; // Entity defaults
+  /// Default version string for new entities.
   @override
   String get defaultVersion;
+
+  /// Whether entities are public by default.
   @override
   bool get defaultIsPublic;
+
+  /// Default priority level for new entities.
   @override
-  String get defaultPriority;
+  EntityPriority get defaultPriority;
+
+  /// Default workflow stage for new entities.
   @override
-  String get defaultStage; // Path settings
+  EntityStage get defaultStage; // Path settings
+  /// Character used to separate path segments.
   @override
   String get pathSeparator;
+
+  /// Regular expression pattern defining invalid characters in paths.
   @override
   String get invalidPathChars;
 
