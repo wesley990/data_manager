@@ -1,6 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:data_manager/src/application/services/i_connectivity_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'dart:async';
 
@@ -16,7 +15,7 @@ class ConnectivityServiceImpl implements IConnectivityService {
   static const Duration _initialRetryDelay = Duration(seconds: 1);
 
   ConnectivityServiceImpl({Connectivity? connectivity})
-      : _connectivity = connectivity ?? Connectivity() {
+    : _connectivity = connectivity ?? Connectivity() {
     _initializeLogging();
   }
 
@@ -31,23 +30,26 @@ class ConnectivityServiceImpl implements IConnectivityService {
   Stream<(bool, ConnectionQuality)> get connectivityStatus {
     return _connectivity.onConnectivityChanged
         .distinct()
-        .asyncMap((status) =>
-            _checkConnectionWithQuality(status as ConnectivityResult))
+        .asyncMap(
+          (status) => _checkConnectionWithQuality(status as ConnectivityResult),
+        )
         .map((result) {
-      _lastKnownStatus = result.$1;
-      _lastKnownQuality = result.$2;
-      _logger.info(
-          'Connectivity changed: online=${result.$1}, quality=${result.$2}');
-      return result;
-    });
+          _lastKnownStatus = result.$1;
+          _lastKnownQuality = result.$2;
+          _logger.info(
+            'Connectivity changed: online=${result.$1}, quality=${result.$2}',
+          );
+          return result;
+        });
   }
 
   @override
   Future<bool> isOnline() async {
     return _withRetry(() async {
       final result = await _connectivity.checkConnectivity();
-      _lastKnownStatus =
-          result.any((status) => status != ConnectivityResult.none);
+      _lastKnownStatus = result.any(
+        (status) => status != ConnectivityResult.none,
+      );
       _logger.info('Connectivity check: online=$_lastKnownStatus');
       return _lastKnownStatus;
     });
@@ -59,8 +61,9 @@ class ConnectivityServiceImpl implements IConnectivityService {
       final latency = await _measureLatency();
       final quality = _determineQuality(latency);
       _lastKnownQuality = quality;
-      _logger
-          .info('Connection quality check: $quality (latency: ${latency}ms)');
+      _logger.info(
+        'Connection quality check: $quality (latency: ${latency}ms)',
+      );
       return quality;
     } catch (e) {
       _logger.warning('Failed to check connection quality: $e');
@@ -76,7 +79,8 @@ class ConnectivityServiceImpl implements IConnectivityService {
       } catch (e) {
         if (i == _maxRetries - 1) rethrow;
         _logger.warning(
-            'Operation failed, attempting retry ${i + 1}/$_maxRetries: $e');
+          'Operation failed, attempting retry ${i + 1}/$_maxRetries: $e',
+        );
         await Future.delayed(delay);
         delay *= 2; // Exponential backoff
       }
@@ -85,7 +89,8 @@ class ConnectivityServiceImpl implements IConnectivityService {
   }
 
   Future<(bool, ConnectionQuality)> _checkConnectionWithQuality(
-      ConnectivityResult status) async {
+    ConnectivityResult status,
+  ) async {
     final isOnline = status != ConnectivityResult.none;
     final quality =
         isOnline ? await checkConnectionQuality() : ConnectionQuality.none;
@@ -98,7 +103,8 @@ class ConnectivityServiceImpl implements IConnectivityService {
     final stopwatch = Stopwatch()..start();
     try {
       await _withRetry(
-          () => Future.delayed(Duration(milliseconds: 100))); // Placeholder
+        () => Future.delayed(Duration(milliseconds: 100)),
+      ); // Placeholder
       return stopwatch.elapsedMilliseconds;
     } finally {
       stopwatch.stop();

@@ -14,7 +14,7 @@ part of 'core_entity.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$CoreEntity<T extends Object> implements DiagnosticableTreeMixin {
+mixin _$CoreEntity<T extends Object> {
 
  EntityId get id; String get name; String? get description; DateTime get createdAt; DateTime get updatedAt; String get schemaVer; EntityStatus get status; Map<String, Object> get meta; UserAction get owner; UserAction get creator; UserAction get modifier; T? get data;
 /// Create a copy of CoreEntity
@@ -26,12 +26,6 @@ $CoreEntityCopyWith<T, CoreEntity<T>> get copyWith => _$CoreEntityCopyWithImpl<T
   /// Serializes this CoreEntity to a JSON map.
   Map<String, dynamic> toJson(Object? Function(T) toJsonT);
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'CoreEntity<$T>'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('schemaVer', schemaVer))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('meta', meta))..add(DiagnosticsProperty('owner', owner))..add(DiagnosticsProperty('creator', creator))..add(DiagnosticsProperty('modifier', modifier))..add(DiagnosticsProperty('data', data));
-}
 
 @override
 bool operator ==(Object other) {
@@ -43,7 +37,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,id,name,description,createdAt,updatedAt,schemaVer,status,const DeepCollectionEquality().hash(meta),owner,creator,modifier,const DeepCollectionEquality().hash(data));
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'CoreEntity<$T>(id: $id, name: $name, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, schemaVer: $schemaVer, status: $status, meta: $meta, owner: $owner, creator: $creator, modifier: $modifier, data: $data)';
 }
 
@@ -132,7 +126,7 @@ $UserActionCopyWith<$Res> get modifier {
 /// @nodoc
 @JsonSerializable(genericArgumentFactories: true)
 
-class _CoreEntity<T extends Object> extends CoreEntity<T> with DiagnosticableTreeMixin {
+class _CoreEntity<T extends Object> extends CoreEntity<T> {
   const _CoreEntity({required this.id, required this.name, this.description, required this.createdAt, required this.updatedAt, this.schemaVer = EntityDefaults.version, this.status = EntityDefaults.status, final  Map<String, Object> meta = const {}, required this.owner, required this.creator, required this.modifier, this.data}): _meta = meta,super._();
   factory _CoreEntity.fromJson(Map<String, dynamic> json,T Function(Object?) fromJsonT) => _$CoreEntityFromJson(json,fromJsonT);
 
@@ -165,12 +159,6 @@ _$CoreEntityCopyWith<T, _CoreEntity<T>> get copyWith => __$CoreEntityCopyWithImp
 Map<String, dynamic> toJson(Object? Function(T) toJsonT) {
   return _$CoreEntityToJson<T>(this, toJsonT);
 }
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'CoreEntity<$T>'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('schemaVer', schemaVer))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('meta', meta))..add(DiagnosticsProperty('owner', owner))..add(DiagnosticsProperty('creator', creator))..add(DiagnosticsProperty('modifier', modifier))..add(DiagnosticsProperty('data', data));
-}
 
 @override
 bool operator ==(Object other) {
@@ -182,7 +170,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,id,name,description,createdAt,updatedAt,schemaVer,status,const DeepCollectionEquality().hash(_meta),owner,creator,modifier,const DeepCollectionEquality().hash(data));
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'CoreEntity<$T>(id: $id, name: $name, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, schemaVer: $schemaVer, status: $status, meta: $meta, owner: $owner, creator: $creator, modifier: $modifier, data: $data)';
 }
 

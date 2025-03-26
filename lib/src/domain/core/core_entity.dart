@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:data_manager/data_manager.dart';
+import 'package:logging/logging.dart';
 
 part 'core_entity.freezed.dart';
 part 'core_entity.g.dart';
@@ -8,6 +8,7 @@ part 'core_entity.g.dart';
 /// A class that provides type-safe access to common metadata fields
 class TypedMetadata {
   final Map<String, Object> _meta;
+  final _logger = Logger('TypedMetadata');
 
   TypedMetadata(this._meta);
 
@@ -41,7 +42,7 @@ class TypedMetadata {
       throw TypeError();
     } catch (e) {
       // More informative error message including both expected and actual types
-      debugPrint(
+      _logger.warning(
         'Type error for key "$key": Expected $T but got ${value.runtimeType}. Error: $e',
       );
       return null;
@@ -75,7 +76,7 @@ class TypedMetadata {
       }
       return null;
     } catch (e) {
-      debugPrint('List cast error for key "$key": $e');
+      _logger.warning('List cast error for key "$key": $e');
       return null;
     }
   }
@@ -92,7 +93,7 @@ class TypedMetadata {
       }
       return null;
     } catch (e) {
-      debugPrint('Map cast error for key "$key": $e');
+      _logger.warning('Map cast error for key "$key": $e');
       return null;
     }
   }
@@ -101,6 +102,9 @@ class TypedMetadata {
 @Freezed(genericArgumentFactories: true)
 sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   const CoreEntity._();
+
+  // A logger instance for CoreEntity class
+  static final _logger = Logger('CoreEntity');
 
   /// Creates a new CoreEntity instance
   ///
@@ -184,7 +188,7 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
       // More complex conversion cases could be handled here
       throw TypeError();
     } catch (e) {
-      debugPrint(
+      _logger.warning(
         'Type cast error for key "$key": Expected $R but got ${value.runtimeType}. Error: $e',
       );
       return null;
