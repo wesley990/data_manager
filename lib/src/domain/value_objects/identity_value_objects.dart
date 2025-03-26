@@ -5,7 +5,7 @@ part 'identity_value_objects.freezed.dart';
 part 'identity_value_objects.g.dart';
 
 @freezed
-class EntityId with _$EntityId {
+sealed class EntityId with _$EntityId {
   const factory EntityId(String value) = _EntityId;
 
   factory EntityId.generate() => EntityId(const Uuid().v4());
@@ -25,7 +25,7 @@ class EntityId with _$EntityId {
 }
 
 @freezed
-class EventId with _$EventId {
+sealed class EventId with _$EventId {
   const factory EventId(String value) = _EventId;
 
   factory EventId.generate() => EventId(const Uuid().v4());
@@ -43,7 +43,7 @@ class EventId with _$EventId {
 }
 
 @freezed
-class ReferenceNumber with _$ReferenceNumber {
+sealed class ReferenceNumber with _$ReferenceNumber {
   const factory ReferenceNumber({
     required String prefix,
     required int sequence,

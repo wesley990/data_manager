@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,481 +10,395 @@ part of 'identity_value_objects.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-EntityId _$EntityIdFromJson(Map<String, dynamic> json) {
-  return _EntityId.fromJson(json);
-}
 
 /// @nodoc
 mixin _$EntityId {
-  String get value => throw _privateConstructorUsedError;
+
+ String get value;
+/// Create a copy of EntityId
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$EntityIdCopyWith<EntityId> get copyWith => _$EntityIdCopyWithImpl<EntityId>(this as EntityId, _$identity);
 
   /// Serializes this EntityId to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of EntityId
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $EntityIdCopyWith<EntityId> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntityId&&(identical(other.value, value) || other.value == value));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,value);
+
+
+
 }
 
 /// @nodoc
-abstract class $EntityIdCopyWith<$Res> {
-  factory $EntityIdCopyWith(EntityId value, $Res Function(EntityId) then) =
-      _$EntityIdCopyWithImpl<$Res, EntityId>;
-  @useResult
-  $Res call({String value});
-}
+abstract mixin class $EntityIdCopyWith<$Res>  {
+  factory $EntityIdCopyWith(EntityId value, $Res Function(EntityId) _then) = _$EntityIdCopyWithImpl;
+@useResult
+$Res call({
+ String value
+});
 
+
+
+
+}
 /// @nodoc
-class _$EntityIdCopyWithImpl<$Res, $Val extends EntityId>
+class _$EntityIdCopyWithImpl<$Res>
     implements $EntityIdCopyWith<$Res> {
-  _$EntityIdCopyWithImpl(this._value, this._then);
+  _$EntityIdCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final EntityId _self;
+  final $Res Function(EntityId) _then;
 
-  /// Create a copy of EntityId
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? value = null,
-  }) {
-    return _then(_value.copyWith(
-      value: null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
+/// Create a copy of EntityId
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? value = null,}) {
+  return _then(_self.copyWith(
+value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-abstract class _$$EntityIdImplCopyWith<$Res>
-    implements $EntityIdCopyWith<$Res> {
-  factory _$$EntityIdImplCopyWith(
-          _$EntityIdImpl value, $Res Function(_$EntityIdImpl) then) =
-      __$$EntityIdImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String value});
 }
 
-/// @nodoc
-class __$$EntityIdImplCopyWithImpl<$Res>
-    extends _$EntityIdCopyWithImpl<$Res, _$EntityIdImpl>
-    implements _$$EntityIdImplCopyWith<$Res> {
-  __$$EntityIdImplCopyWithImpl(
-      _$EntityIdImpl _value, $Res Function(_$EntityIdImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of EntityId
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? value = null,
-  }) {
-    return _then(_$EntityIdImpl(
-      null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
 
 /// @nodoc
 @JsonSerializable()
-class _$EntityIdImpl extends _EntityId {
-  const _$EntityIdImpl(this.value) : super._();
 
-  factory _$EntityIdImpl.fromJson(Map<String, dynamic> json) =>
-      _$$EntityIdImplFromJson(json);
+class _EntityId extends EntityId {
+  const _EntityId(this.value): super._();
+  factory _EntityId.fromJson(Map<String, dynamic> json) => _$EntityIdFromJson(json);
 
-  @override
-  final String value;
+@override final  String value;
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$EntityIdImpl &&
-            (identical(other.value, value) || other.value == value));
-  }
+/// Create a copy of EntityId
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$EntityIdCopyWith<_EntityId> get copyWith => __$EntityIdCopyWithImpl<_EntityId>(this, _$identity);
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, value);
-
-  /// Create a copy of EntityId
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$EntityIdImplCopyWith<_$EntityIdImpl> get copyWith =>
-      __$$EntityIdImplCopyWithImpl<_$EntityIdImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$EntityIdImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$EntityIdToJson(this, );
 }
 
-abstract class _EntityId extends EntityId {
-  const factory _EntityId(final String value) = _$EntityIdImpl;
-  const _EntityId._() : super._();
-
-  factory _EntityId.fromJson(Map<String, dynamic> json) =
-      _$EntityIdImpl.fromJson;
-
-  @override
-  String get value;
-
-  /// Create a copy of EntityId
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$EntityIdImplCopyWith<_$EntityIdImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntityId&&(identical(other.value, value) || other.value == value));
 }
 
-EventId _$EventIdFromJson(Map<String, dynamic> json) {
-  return _EventId.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,value);
+
+
+
 }
+
+/// @nodoc
+abstract mixin class _$EntityIdCopyWith<$Res> implements $EntityIdCopyWith<$Res> {
+  factory _$EntityIdCopyWith(_EntityId value, $Res Function(_EntityId) _then) = __$EntityIdCopyWithImpl;
+@override @useResult
+$Res call({
+ String value
+});
+
+
+
+
+}
+/// @nodoc
+class __$EntityIdCopyWithImpl<$Res>
+    implements _$EntityIdCopyWith<$Res> {
+  __$EntityIdCopyWithImpl(this._self, this._then);
+
+  final _EntityId _self;
+  final $Res Function(_EntityId) _then;
+
+/// Create a copy of EntityId
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? value = null,}) {
+  return _then(_EntityId(
+null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$EventId {
-  String get value => throw _privateConstructorUsedError;
+
+ String get value;
+/// Create a copy of EventId
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$EventIdCopyWith<EventId> get copyWith => _$EventIdCopyWithImpl<EventId>(this as EventId, _$identity);
 
   /// Serializes this EventId to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of EventId
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $EventIdCopyWith<EventId> get copyWith => throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EventId&&(identical(other.value, value) || other.value == value));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,value);
+
+
+
 }
 
 /// @nodoc
-abstract class $EventIdCopyWith<$Res> {
-  factory $EventIdCopyWith(EventId value, $Res Function(EventId) then) =
-      _$EventIdCopyWithImpl<$Res, EventId>;
-  @useResult
-  $Res call({String value});
-}
+abstract mixin class $EventIdCopyWith<$Res>  {
+  factory $EventIdCopyWith(EventId value, $Res Function(EventId) _then) = _$EventIdCopyWithImpl;
+@useResult
+$Res call({
+ String value
+});
 
+
+
+
+}
 /// @nodoc
-class _$EventIdCopyWithImpl<$Res, $Val extends EventId>
+class _$EventIdCopyWithImpl<$Res>
     implements $EventIdCopyWith<$Res> {
-  _$EventIdCopyWithImpl(this._value, this._then);
+  _$EventIdCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final EventId _self;
+  final $Res Function(EventId) _then;
 
-  /// Create a copy of EventId
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? value = null,
-  }) {
-    return _then(_value.copyWith(
-      value: null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
+/// Create a copy of EventId
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? value = null,}) {
+  return _then(_self.copyWith(
+value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-abstract class _$$EventIdImplCopyWith<$Res> implements $EventIdCopyWith<$Res> {
-  factory _$$EventIdImplCopyWith(
-          _$EventIdImpl value, $Res Function(_$EventIdImpl) then) =
-      __$$EventIdImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String value});
 }
 
-/// @nodoc
-class __$$EventIdImplCopyWithImpl<$Res>
-    extends _$EventIdCopyWithImpl<$Res, _$EventIdImpl>
-    implements _$$EventIdImplCopyWith<$Res> {
-  __$$EventIdImplCopyWithImpl(
-      _$EventIdImpl _value, $Res Function(_$EventIdImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of EventId
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? value = null,
-  }) {
-    return _then(_$EventIdImpl(
-      null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
 
 /// @nodoc
 @JsonSerializable()
-class _$EventIdImpl extends _EventId {
-  const _$EventIdImpl(this.value) : super._();
 
-  factory _$EventIdImpl.fromJson(Map<String, dynamic> json) =>
-      _$$EventIdImplFromJson(json);
+class _EventId extends EventId {
+  const _EventId(this.value): super._();
+  factory _EventId.fromJson(Map<String, dynamic> json) => _$EventIdFromJson(json);
 
-  @override
-  final String value;
+@override final  String value;
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$EventIdImpl &&
-            (identical(other.value, value) || other.value == value));
-  }
+/// Create a copy of EventId
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$EventIdCopyWith<_EventId> get copyWith => __$EventIdCopyWithImpl<_EventId>(this, _$identity);
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, value);
-
-  /// Create a copy of EventId
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$EventIdImplCopyWith<_$EventIdImpl> get copyWith =>
-      __$$EventIdImplCopyWithImpl<_$EventIdImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$EventIdImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$EventIdToJson(this, );
 }
 
-abstract class _EventId extends EventId {
-  const factory _EventId(final String value) = _$EventIdImpl;
-  const _EventId._() : super._();
-
-  factory _EventId.fromJson(Map<String, dynamic> json) = _$EventIdImpl.fromJson;
-
-  @override
-  String get value;
-
-  /// Create a copy of EventId
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$EventIdImplCopyWith<_$EventIdImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EventId&&(identical(other.value, value) || other.value == value));
 }
 
-ReferenceNumber _$ReferenceNumberFromJson(Map<String, dynamic> json) {
-  return _ReferenceNumber.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,value);
+
+
+
 }
+
+/// @nodoc
+abstract mixin class _$EventIdCopyWith<$Res> implements $EventIdCopyWith<$Res> {
+  factory _$EventIdCopyWith(_EventId value, $Res Function(_EventId) _then) = __$EventIdCopyWithImpl;
+@override @useResult
+$Res call({
+ String value
+});
+
+
+
+
+}
+/// @nodoc
+class __$EventIdCopyWithImpl<$Res>
+    implements _$EventIdCopyWith<$Res> {
+  __$EventIdCopyWithImpl(this._self, this._then);
+
+  final _EventId _self;
+  final $Res Function(_EventId) _then;
+
+/// Create a copy of EventId
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? value = null,}) {
+  return _then(_EventId(
+null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$ReferenceNumber {
-  String get prefix => throw _privateConstructorUsedError;
-  int get sequence => throw _privateConstructorUsedError;
-  String? get suffix => throw _privateConstructorUsedError;
+
+ String get prefix; int get sequence; String? get suffix;
+/// Create a copy of ReferenceNumber
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ReferenceNumberCopyWith<ReferenceNumber> get copyWith => _$ReferenceNumberCopyWithImpl<ReferenceNumber>(this as ReferenceNumber, _$identity);
 
   /// Serializes this ReferenceNumber to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of ReferenceNumber
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ReferenceNumberCopyWith<ReferenceNumber> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReferenceNumber&&(identical(other.prefix, prefix) || other.prefix == prefix)&&(identical(other.sequence, sequence) || other.sequence == sequence)&&(identical(other.suffix, suffix) || other.suffix == suffix));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,prefix,sequence,suffix);
+
+@override
+String toString() {
+  return 'ReferenceNumber(prefix: $prefix, sequence: $sequence, suffix: $suffix)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ReferenceNumberCopyWith<$Res> {
-  factory $ReferenceNumberCopyWith(
-          ReferenceNumber value, $Res Function(ReferenceNumber) then) =
-      _$ReferenceNumberCopyWithImpl<$Res, ReferenceNumber>;
-  @useResult
-  $Res call({String prefix, int sequence, String? suffix});
-}
+abstract mixin class $ReferenceNumberCopyWith<$Res>  {
+  factory $ReferenceNumberCopyWith(ReferenceNumber value, $Res Function(ReferenceNumber) _then) = _$ReferenceNumberCopyWithImpl;
+@useResult
+$Res call({
+ String prefix, int sequence, String? suffix
+});
 
+
+
+
+}
 /// @nodoc
-class _$ReferenceNumberCopyWithImpl<$Res, $Val extends ReferenceNumber>
+class _$ReferenceNumberCopyWithImpl<$Res>
     implements $ReferenceNumberCopyWith<$Res> {
-  _$ReferenceNumberCopyWithImpl(this._value, this._then);
+  _$ReferenceNumberCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final ReferenceNumber _self;
+  final $Res Function(ReferenceNumber) _then;
 
-  /// Create a copy of ReferenceNumber
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? prefix = null,
-    Object? sequence = null,
-    Object? suffix = freezed,
-  }) {
-    return _then(_value.copyWith(
-      prefix: null == prefix
-          ? _value.prefix
-          : prefix // ignore: cast_nullable_to_non_nullable
-              as String,
-      sequence: null == sequence
-          ? _value.sequence
-          : sequence // ignore: cast_nullable_to_non_nullable
-              as int,
-      suffix: freezed == suffix
-          ? _value.suffix
-          : suffix // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
-  }
+/// Create a copy of ReferenceNumber
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? prefix = null,Object? sequence = null,Object? suffix = freezed,}) {
+  return _then(_self.copyWith(
+prefix: null == prefix ? _self.prefix : prefix // ignore: cast_nullable_to_non_nullable
+as String,sequence: null == sequence ? _self.sequence : sequence // ignore: cast_nullable_to_non_nullable
+as int,suffix: freezed == suffix ? _self.suffix : suffix // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$ReferenceNumberImplCopyWith<$Res>
-    implements $ReferenceNumberCopyWith<$Res> {
-  factory _$$ReferenceNumberImplCopyWith(_$ReferenceNumberImpl value,
-          $Res Function(_$ReferenceNumberImpl) then) =
-      __$$ReferenceNumberImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String prefix, int sequence, String? suffix});
 }
 
-/// @nodoc
-class __$$ReferenceNumberImplCopyWithImpl<$Res>
-    extends _$ReferenceNumberCopyWithImpl<$Res, _$ReferenceNumberImpl>
-    implements _$$ReferenceNumberImplCopyWith<$Res> {
-  __$$ReferenceNumberImplCopyWithImpl(
-      _$ReferenceNumberImpl _value, $Res Function(_$ReferenceNumberImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of ReferenceNumber
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? prefix = null,
-    Object? sequence = null,
-    Object? suffix = freezed,
-  }) {
-    return _then(_$ReferenceNumberImpl(
-      prefix: null == prefix
-          ? _value.prefix
-          : prefix // ignore: cast_nullable_to_non_nullable
-              as String,
-      sequence: null == sequence
-          ? _value.sequence
-          : sequence // ignore: cast_nullable_to_non_nullable
-              as int,
-      suffix: freezed == suffix
-          ? _value.suffix
-          : suffix // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
-}
 
 /// @nodoc
 @JsonSerializable()
-class _$ReferenceNumberImpl extends _ReferenceNumber {
-  const _$ReferenceNumberImpl(
-      {required this.prefix, required this.sequence, this.suffix})
-      : super._();
 
-  factory _$ReferenceNumberImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ReferenceNumberImplFromJson(json);
+class _ReferenceNumber extends ReferenceNumber {
+  const _ReferenceNumber({required this.prefix, required this.sequence, this.suffix}): super._();
+  factory _ReferenceNumber.fromJson(Map<String, dynamic> json) => _$ReferenceNumberFromJson(json);
 
-  @override
-  final String prefix;
-  @override
-  final int sequence;
-  @override
-  final String? suffix;
+@override final  String prefix;
+@override final  int sequence;
+@override final  String? suffix;
 
-  @override
-  String toString() {
-    return 'ReferenceNumber(prefix: $prefix, sequence: $sequence, suffix: $suffix)';
-  }
+/// Create a copy of ReferenceNumber
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ReferenceNumberCopyWith<_ReferenceNumber> get copyWith => __$ReferenceNumberCopyWithImpl<_ReferenceNumber>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ReferenceNumberImpl &&
-            (identical(other.prefix, prefix) || other.prefix == prefix) &&
-            (identical(other.sequence, sequence) ||
-                other.sequence == sequence) &&
-            (identical(other.suffix, suffix) || other.suffix == suffix));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, prefix, sequence, suffix);
-
-  /// Create a copy of ReferenceNumber
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ReferenceNumberImplCopyWith<_$ReferenceNumberImpl> get copyWith =>
-      __$$ReferenceNumberImplCopyWithImpl<_$ReferenceNumberImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ReferenceNumberImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$ReferenceNumberToJson(this, );
 }
 
-abstract class _ReferenceNumber extends ReferenceNumber {
-  const factory _ReferenceNumber(
-      {required final String prefix,
-      required final int sequence,
-      final String? suffix}) = _$ReferenceNumberImpl;
-  const _ReferenceNumber._() : super._();
-
-  factory _ReferenceNumber.fromJson(Map<String, dynamic> json) =
-      _$ReferenceNumberImpl.fromJson;
-
-  @override
-  String get prefix;
-  @override
-  int get sequence;
-  @override
-  String? get suffix;
-
-  /// Create a copy of ReferenceNumber
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ReferenceNumberImplCopyWith<_$ReferenceNumberImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReferenceNumber&&(identical(other.prefix, prefix) || other.prefix == prefix)&&(identical(other.sequence, sequence) || other.sequence == sequence)&&(identical(other.suffix, suffix) || other.suffix == suffix));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,prefix,sequence,suffix);
+
+@override
+String toString() {
+  return 'ReferenceNumber(prefix: $prefix, sequence: $sequence, suffix: $suffix)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ReferenceNumberCopyWith<$Res> implements $ReferenceNumberCopyWith<$Res> {
+  factory _$ReferenceNumberCopyWith(_ReferenceNumber value, $Res Function(_ReferenceNumber) _then) = __$ReferenceNumberCopyWithImpl;
+@override @useResult
+$Res call({
+ String prefix, int sequence, String? suffix
+});
+
+
+
+
+}
+/// @nodoc
+class __$ReferenceNumberCopyWithImpl<$Res>
+    implements _$ReferenceNumberCopyWith<$Res> {
+  __$ReferenceNumberCopyWithImpl(this._self, this._then);
+
+  final _ReferenceNumber _self;
+  final $Res Function(_ReferenceNumber) _then;
+
+/// Create a copy of ReferenceNumber
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? prefix = null,Object? sequence = null,Object? suffix = freezed,}) {
+  return _then(_ReferenceNumber(
+prefix: null == prefix ? _self.prefix : prefix // ignore: cast_nullable_to_non_nullable
+as String,sequence: null == sequence ? _self.sequence : sequence // ignore: cast_nullable_to_non_nullable
+as int,suffix: freezed == suffix ? _self.suffix : suffix // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+// dart format on

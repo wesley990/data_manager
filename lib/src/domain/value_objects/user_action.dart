@@ -6,7 +6,7 @@ part 'user_action.g.dart';
 
 /// Represents a user action or event within the system
 @freezed
-class UserAction with _$UserAction {
+sealed class UserAction with _$UserAction {
   const factory UserAction({
     /// Core User Information
     required String uid,

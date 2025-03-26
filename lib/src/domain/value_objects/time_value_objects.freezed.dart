@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,350 +10,293 @@ part of 'time_value_objects.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
 /// @nodoc
 mixin _$TimeWindow {
-  DateTime get start => throw _privateConstructorUsedError;
-  DateTime get end => throw _privateConstructorUsedError;
 
-  /// Create a copy of TimeWindow
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $TimeWindowCopyWith<TimeWindow> get copyWith =>
-      throw _privateConstructorUsedError;
+ DateTime get start; DateTime get end;
+/// Create a copy of TimeWindow
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TimeWindowCopyWith<TimeWindow> get copyWith => _$TimeWindowCopyWithImpl<TimeWindow>(this as TimeWindow, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimeWindow&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,start,end);
+
+@override
+String toString() {
+  return 'TimeWindow(start: $start, end: $end)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $TimeWindowCopyWith<$Res> {
-  factory $TimeWindowCopyWith(
-          TimeWindow value, $Res Function(TimeWindow) then) =
-      _$TimeWindowCopyWithImpl<$Res, TimeWindow>;
-  @useResult
-  $Res call({DateTime start, DateTime end});
-}
+abstract mixin class $TimeWindowCopyWith<$Res>  {
+  factory $TimeWindowCopyWith(TimeWindow value, $Res Function(TimeWindow) _then) = _$TimeWindowCopyWithImpl;
+@useResult
+$Res call({
+ DateTime start, DateTime end
+});
 
+
+
+
+}
 /// @nodoc
-class _$TimeWindowCopyWithImpl<$Res, $Val extends TimeWindow>
+class _$TimeWindowCopyWithImpl<$Res>
     implements $TimeWindowCopyWith<$Res> {
-  _$TimeWindowCopyWithImpl(this._value, this._then);
+  _$TimeWindowCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final TimeWindow _self;
+  final $Res Function(TimeWindow) _then;
 
-  /// Create a copy of TimeWindow
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? start = null,
-    Object? end = null,
-  }) {
-    return _then(_value.copyWith(
-      start: null == start
-          ? _value.start
-          : start // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      end: null == end
-          ? _value.end
-          : end // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-    ) as $Val);
-  }
+/// Create a copy of TimeWindow
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? start = null,Object? end = null,}) {
+  return _then(_self.copyWith(
+start: null == start ? _self.start : start // ignore: cast_nullable_to_non_nullable
+as DateTime,end: null == end ? _self.end : end // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
 }
 
-/// @nodoc
-abstract class _$$TimeWindowImplCopyWith<$Res>
-    implements $TimeWindowCopyWith<$Res> {
-  factory _$$TimeWindowImplCopyWith(
-          _$TimeWindowImpl value, $Res Function(_$TimeWindowImpl) then) =
-      __$$TimeWindowImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({DateTime start, DateTime end});
 }
 
-/// @nodoc
-class __$$TimeWindowImplCopyWithImpl<$Res>
-    extends _$TimeWindowCopyWithImpl<$Res, _$TimeWindowImpl>
-    implements _$$TimeWindowImplCopyWith<$Res> {
-  __$$TimeWindowImplCopyWithImpl(
-      _$TimeWindowImpl _value, $Res Function(_$TimeWindowImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of TimeWindow
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? start = null,
-    Object? end = null,
-  }) {
-    return _then(_$TimeWindowImpl(
-      start: null == start
-          ? _value.start
-          : start // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      end: null == end
-          ? _value.end
-          : end // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-    ));
-  }
-}
 
 /// @nodoc
 
-class _$TimeWindowImpl extends _TimeWindow {
-  const _$TimeWindowImpl({required this.start, required this.end}) : super._();
 
-  @override
-  final DateTime start;
-  @override
-  final DateTime end;
+class _TimeWindow extends TimeWindow {
+  const _TimeWindow({required this.start, required this.end}): super._();
+  
 
-  @override
-  String toString() {
-    return 'TimeWindow(start: $start, end: $end)';
-  }
+@override final  DateTime start;
+@override final  DateTime end;
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$TimeWindowImpl &&
-            (identical(other.start, start) || other.start == start) &&
-            (identical(other.end, end) || other.end == end));
-  }
+/// Create a copy of TimeWindow
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TimeWindowCopyWith<_TimeWindow> get copyWith => __$TimeWindowCopyWithImpl<_TimeWindow>(this, _$identity);
 
-  @override
-  int get hashCode => Object.hash(runtimeType, start, end);
 
-  /// Create a copy of TimeWindow
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$TimeWindowImplCopyWith<_$TimeWindowImpl> get copyWith =>
-      __$$TimeWindowImplCopyWithImpl<_$TimeWindowImpl>(this, _$identity);
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TimeWindow&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end));
 }
 
-abstract class _TimeWindow extends TimeWindow {
-  const factory _TimeWindow(
-      {required final DateTime start,
-      required final DateTime end}) = _$TimeWindowImpl;
-  const _TimeWindow._() : super._();
 
-  @override
-  DateTime get start;
-  @override
-  DateTime get end;
+@override
+int get hashCode => Object.hash(runtimeType,start,end);
 
-  /// Create a copy of TimeWindow
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TimeWindowImplCopyWith<_$TimeWindowImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+String toString() {
+  return 'TimeWindow(start: $start, end: $end)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TimeWindowCopyWith<$Res> implements $TimeWindowCopyWith<$Res> {
+  factory _$TimeWindowCopyWith(_TimeWindow value, $Res Function(_TimeWindow) _then) = __$TimeWindowCopyWithImpl;
+@override @useResult
+$Res call({
+ DateTime start, DateTime end
+});
+
+
+
+
+}
+/// @nodoc
+class __$TimeWindowCopyWithImpl<$Res>
+    implements _$TimeWindowCopyWith<$Res> {
+  __$TimeWindowCopyWithImpl(this._self, this._then);
+
+  final _TimeWindow _self;
+  final $Res Function(_TimeWindow) _then;
+
+/// Create a copy of TimeWindow
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? start = null,Object? end = null,}) {
+  return _then(_TimeWindow(
+start: null == start ? _self.start : start // ignore: cast_nullable_to_non_nullable
+as DateTime,end: null == end ? _self.end : end // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
+}
+
+
 }
 
 /// @nodoc
 mixin _$Schedule {
-  TimeWindow get window => throw _privateConstructorUsedError;
-  List<DateTime> get breakTimes => throw _privateConstructorUsedError;
-  Duration get bufferTime => throw _privateConstructorUsedError;
 
-  /// Create a copy of Schedule
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ScheduleCopyWith<Schedule> get copyWith =>
-      throw _privateConstructorUsedError;
+ TimeWindow get window; List<DateTime> get breakTimes; Duration get bufferTime;
+/// Create a copy of Schedule
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ScheduleCopyWith<Schedule> get copyWith => _$ScheduleCopyWithImpl<Schedule>(this as Schedule, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Schedule&&(identical(other.window, window) || other.window == window)&&const DeepCollectionEquality().equals(other.breakTimes, breakTimes)&&(identical(other.bufferTime, bufferTime) || other.bufferTime == bufferTime));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,window,const DeepCollectionEquality().hash(breakTimes),bufferTime);
+
+@override
+String toString() {
+  return 'Schedule(window: $window, breakTimes: $breakTimes, bufferTime: $bufferTime)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ScheduleCopyWith<$Res> {
-  factory $ScheduleCopyWith(Schedule value, $Res Function(Schedule) then) =
-      _$ScheduleCopyWithImpl<$Res, Schedule>;
-  @useResult
-  $Res call(
-      {TimeWindow window, List<DateTime> breakTimes, Duration bufferTime});
+abstract mixin class $ScheduleCopyWith<$Res>  {
+  factory $ScheduleCopyWith(Schedule value, $Res Function(Schedule) _then) = _$ScheduleCopyWithImpl;
+@useResult
+$Res call({
+ TimeWindow window, List<DateTime> breakTimes, Duration bufferTime
+});
 
-  $TimeWindowCopyWith<$Res> get window;
+
+$TimeWindowCopyWith<$Res> get window;
+
 }
-
 /// @nodoc
-class _$ScheduleCopyWithImpl<$Res, $Val extends Schedule>
+class _$ScheduleCopyWithImpl<$Res>
     implements $ScheduleCopyWith<$Res> {
-  _$ScheduleCopyWithImpl(this._value, this._then);
+  _$ScheduleCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final Schedule _self;
+  final $Res Function(Schedule) _then;
 
-  /// Create a copy of Schedule
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? window = null,
-    Object? breakTimes = null,
-    Object? bufferTime = null,
-  }) {
-    return _then(_value.copyWith(
-      window: null == window
-          ? _value.window
-          : window // ignore: cast_nullable_to_non_nullable
-              as TimeWindow,
-      breakTimes: null == breakTimes
-          ? _value.breakTimes
-          : breakTimes // ignore: cast_nullable_to_non_nullable
-              as List<DateTime>,
-      bufferTime: null == bufferTime
-          ? _value.bufferTime
-          : bufferTime // ignore: cast_nullable_to_non_nullable
-              as Duration,
-    ) as $Val);
-  }
-
-  /// Create a copy of Schedule
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $TimeWindowCopyWith<$Res> get window {
-    return $TimeWindowCopyWith<$Res>(_value.window, (value) {
-      return _then(_value.copyWith(window: value) as $Val);
-    });
-  }
+/// Create a copy of Schedule
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? window = null,Object? breakTimes = null,Object? bufferTime = null,}) {
+  return _then(_self.copyWith(
+window: null == window ? _self.window : window // ignore: cast_nullable_to_non_nullable
+as TimeWindow,breakTimes: null == breakTimes ? _self.breakTimes : breakTimes // ignore: cast_nullable_to_non_nullable
+as List<DateTime>,bufferTime: null == bufferTime ? _self.bufferTime : bufferTime // ignore: cast_nullable_to_non_nullable
+as Duration,
+  ));
+}
+/// Create a copy of Schedule
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TimeWindowCopyWith<$Res> get window {
+  
+  return $TimeWindowCopyWith<$Res>(_self.window, (value) {
+    return _then(_self.copyWith(window: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$ScheduleImplCopyWith<$Res>
-    implements $ScheduleCopyWith<$Res> {
-  factory _$$ScheduleImplCopyWith(
-          _$ScheduleImpl value, $Res Function(_$ScheduleImpl) then) =
-      __$$ScheduleImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {TimeWindow window, List<DateTime> breakTimes, Duration bufferTime});
-
-  @override
-  $TimeWindowCopyWith<$Res> get window;
-}
-
-/// @nodoc
-class __$$ScheduleImplCopyWithImpl<$Res>
-    extends _$ScheduleCopyWithImpl<$Res, _$ScheduleImpl>
-    implements _$$ScheduleImplCopyWith<$Res> {
-  __$$ScheduleImplCopyWithImpl(
-      _$ScheduleImpl _value, $Res Function(_$ScheduleImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of Schedule
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? window = null,
-    Object? breakTimes = null,
-    Object? bufferTime = null,
-  }) {
-    return _then(_$ScheduleImpl(
-      window: null == window
-          ? _value.window
-          : window // ignore: cast_nullable_to_non_nullable
-              as TimeWindow,
-      breakTimes: null == breakTimes
-          ? _value._breakTimes
-          : breakTimes // ignore: cast_nullable_to_non_nullable
-              as List<DateTime>,
-      bufferTime: null == bufferTime
-          ? _value.bufferTime
-          : bufferTime // ignore: cast_nullable_to_non_nullable
-              as Duration,
-    ));
-  }
-}
 
 /// @nodoc
 
-class _$ScheduleImpl extends _Schedule {
-  const _$ScheduleImpl(
-      {required this.window,
-      final List<DateTime> breakTimes = const [],
-      this.bufferTime = Duration.zero})
-      : _breakTimes = breakTimes,
-        super._();
 
-  @override
-  final TimeWindow window;
-  final List<DateTime> _breakTimes;
-  @override
-  @JsonKey()
-  List<DateTime> get breakTimes {
-    if (_breakTimes is EqualUnmodifiableListView) return _breakTimes;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_breakTimes);
-  }
+class _Schedule extends Schedule {
+  const _Schedule({required this.window, final  List<DateTime> breakTimes = const [], this.bufferTime = Duration.zero}): _breakTimes = breakTimes,super._();
+  
 
-  @override
-  @JsonKey()
-  final Duration bufferTime;
-
-  @override
-  String toString() {
-    return 'Schedule(window: $window, breakTimes: $breakTimes, bufferTime: $bufferTime)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ScheduleImpl &&
-            (identical(other.window, window) || other.window == window) &&
-            const DeepCollectionEquality()
-                .equals(other._breakTimes, _breakTimes) &&
-            (identical(other.bufferTime, bufferTime) ||
-                other.bufferTime == bufferTime));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, window,
-      const DeepCollectionEquality().hash(_breakTimes), bufferTime);
-
-  /// Create a copy of Schedule
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ScheduleImplCopyWith<_$ScheduleImpl> get copyWith =>
-      __$$ScheduleImplCopyWithImpl<_$ScheduleImpl>(this, _$identity);
+@override final  TimeWindow window;
+ final  List<DateTime> _breakTimes;
+@override@JsonKey() List<DateTime> get breakTimes {
+  if (_breakTimes is EqualUnmodifiableListView) return _breakTimes;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_breakTimes);
 }
 
-abstract class _Schedule extends Schedule {
-  const factory _Schedule(
-      {required final TimeWindow window,
-      final List<DateTime> breakTimes,
-      final Duration bufferTime}) = _$ScheduleImpl;
-  const _Schedule._() : super._();
+@override@JsonKey() final  Duration bufferTime;
 
-  @override
-  TimeWindow get window;
-  @override
-  List<DateTime> get breakTimes;
-  @override
-  Duration get bufferTime;
+/// Create a copy of Schedule
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ScheduleCopyWith<_Schedule> get copyWith => __$ScheduleCopyWithImpl<_Schedule>(this, _$identity);
 
-  /// Create a copy of Schedule
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ScheduleImplCopyWith<_$ScheduleImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Schedule&&(identical(other.window, window) || other.window == window)&&const DeepCollectionEquality().equals(other._breakTimes, _breakTimes)&&(identical(other.bufferTime, bufferTime) || other.bufferTime == bufferTime));
 }
+
+
+@override
+int get hashCode => Object.hash(runtimeType,window,const DeepCollectionEquality().hash(_breakTimes),bufferTime);
+
+@override
+String toString() {
+  return 'Schedule(window: $window, breakTimes: $breakTimes, bufferTime: $bufferTime)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ScheduleCopyWith<$Res> implements $ScheduleCopyWith<$Res> {
+  factory _$ScheduleCopyWith(_Schedule value, $Res Function(_Schedule) _then) = __$ScheduleCopyWithImpl;
+@override @useResult
+$Res call({
+ TimeWindow window, List<DateTime> breakTimes, Duration bufferTime
+});
+
+
+@override $TimeWindowCopyWith<$Res> get window;
+
+}
+/// @nodoc
+class __$ScheduleCopyWithImpl<$Res>
+    implements _$ScheduleCopyWith<$Res> {
+  __$ScheduleCopyWithImpl(this._self, this._then);
+
+  final _Schedule _self;
+  final $Res Function(_Schedule) _then;
+
+/// Create a copy of Schedule
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? window = null,Object? breakTimes = null,Object? bufferTime = null,}) {
+  return _then(_Schedule(
+window: null == window ? _self.window : window // ignore: cast_nullable_to_non_nullable
+as TimeWindow,breakTimes: null == breakTimes ? _self._breakTimes : breakTimes // ignore: cast_nullable_to_non_nullable
+as List<DateTime>,bufferTime: null == bufferTime ? _self.bufferTime : bufferTime // ignore: cast_nullable_to_non_nullable
+as Duration,
+  ));
+}
+
+/// Create a copy of Schedule
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TimeWindowCopyWith<$Res> get window {
+  
+  return $TimeWindowCopyWith<$Res>(_self.window, (value) {
+    return _then(_self.copyWith(window: value));
+  });
+}
+}
+
+// dart format on

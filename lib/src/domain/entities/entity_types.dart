@@ -6,7 +6,7 @@ part 'entity_types.g.dart';
 
 // Entity-specific classes
 @freezed
-class OwnerModel with _$OwnerModel {
+sealed class OwnerModel with _$OwnerModel {
   const OwnerModel._(); // Add private constructor for methods
 
   const factory OwnerModel({
@@ -48,7 +48,7 @@ class OwnerModel with _$OwnerModel {
 }
 
 @freezed
-class SiteModel with _$SiteModel {
+sealed class SiteModel with _$SiteModel {
   const SiteModel._();
 
   const factory SiteModel({
@@ -107,7 +107,7 @@ class SiteModel with _$SiteModel {
 }
 
 @freezed
-class EquipmentModel with _$EquipmentModel {
+sealed class EquipmentModel with _$EquipmentModel {
   const EquipmentModel._();
 
   const factory EquipmentModel({
@@ -182,7 +182,7 @@ class EquipmentModel with _$EquipmentModel {
 }
 
 @freezed
-class VendorModel with _$VendorModel {
+sealed class VendorModel with _$VendorModel {
   const VendorModel._();
 
   const factory VendorModel({
@@ -226,7 +226,7 @@ class VendorModel with _$VendorModel {
 }
 
 @freezed
-class PersonnelModel with _$PersonnelModel {
+sealed class PersonnelModel with _$PersonnelModel {
   const PersonnelModel._();
 
   const factory PersonnelModel({

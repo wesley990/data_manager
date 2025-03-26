@@ -11,7 +11,7 @@ part 'entity_config.g.dart';
 /// entity-related operations including path handling, history tracking,
 /// locking behavior, and entity state defaults.
 @freezed
-class EntityConfig with _$EntityConfig {
+sealed class EntityConfig with _$EntityConfig {
   const factory EntityConfig({
     // Path limits
     /// Maximum length of an entity path in characters.

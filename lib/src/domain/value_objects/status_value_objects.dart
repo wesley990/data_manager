@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'status_value_objects.freezed.dart';
 
 @freezed
-class Progress with _$Progress {
+sealed class Progress with _$Progress {
   const factory Progress({
     required int completed,
     required int total,
@@ -19,7 +19,7 @@ class Progress with _$Progress {
 }
 
 @freezed
-class TaskStatus with _$TaskStatus {
+sealed class TaskStatus with _$TaskStatus {
   const factory TaskStatus({
     required String status,
     required DateTime timestamp,

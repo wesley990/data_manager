@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'measurement_value_objects.freezed.dart';
 
 @freezed
-class Measurement with _$Measurement {
+sealed class Measurement with _$Measurement {
   const factory Measurement({
     required double value,
     required String unit,
@@ -20,7 +20,7 @@ class Measurement with _$Measurement {
 }
 
 @freezed
-class Range<T extends num> with _$Range<T> {
+sealed class Range<T extends num> with _$Range<T> {
   const factory Range({
     required T min,
     required T max,

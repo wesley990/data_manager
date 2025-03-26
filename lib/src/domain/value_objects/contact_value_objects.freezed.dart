@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,912 +10,646 @@ part of 'contact_value_objects.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-EmailAddress _$EmailAddressFromJson(Map<String, dynamic> json) {
-  return _EmailAddress.fromJson(json);
-}
 
 /// @nodoc
 mixin _$EmailAddress {
-  String get value => throw _privateConstructorUsedError;
+
+ String get value;
+/// Create a copy of EmailAddress
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$EmailAddressCopyWith<EmailAddress> get copyWith => _$EmailAddressCopyWithImpl<EmailAddress>(this as EmailAddress, _$identity);
 
   /// Serializes this EmailAddress to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of EmailAddress
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $EmailAddressCopyWith<EmailAddress> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmailAddress&&(identical(other.value, value) || other.value == value));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,value);
+
+@override
+String toString() {
+  return 'EmailAddress(value: $value)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $EmailAddressCopyWith<$Res> {
-  factory $EmailAddressCopyWith(
-          EmailAddress value, $Res Function(EmailAddress) then) =
-      _$EmailAddressCopyWithImpl<$Res, EmailAddress>;
-  @useResult
-  $Res call({String value});
-}
+abstract mixin class $EmailAddressCopyWith<$Res>  {
+  factory $EmailAddressCopyWith(EmailAddress value, $Res Function(EmailAddress) _then) = _$EmailAddressCopyWithImpl;
+@useResult
+$Res call({
+ String value
+});
 
+
+
+
+}
 /// @nodoc
-class _$EmailAddressCopyWithImpl<$Res, $Val extends EmailAddress>
+class _$EmailAddressCopyWithImpl<$Res>
     implements $EmailAddressCopyWith<$Res> {
-  _$EmailAddressCopyWithImpl(this._value, this._then);
+  _$EmailAddressCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final EmailAddress _self;
+  final $Res Function(EmailAddress) _then;
 
-  /// Create a copy of EmailAddress
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? value = null,
-  }) {
-    return _then(_value.copyWith(
-      value: null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
+/// Create a copy of EmailAddress
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? value = null,}) {
+  return _then(_self.copyWith(
+value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-abstract class _$$EmailAddressImplCopyWith<$Res>
-    implements $EmailAddressCopyWith<$Res> {
-  factory _$$EmailAddressImplCopyWith(
-          _$EmailAddressImpl value, $Res Function(_$EmailAddressImpl) then) =
-      __$$EmailAddressImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String value});
 }
 
-/// @nodoc
-class __$$EmailAddressImplCopyWithImpl<$Res>
-    extends _$EmailAddressCopyWithImpl<$Res, _$EmailAddressImpl>
-    implements _$$EmailAddressImplCopyWith<$Res> {
-  __$$EmailAddressImplCopyWithImpl(
-      _$EmailAddressImpl _value, $Res Function(_$EmailAddressImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of EmailAddress
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? value = null,
-  }) {
-    return _then(_$EmailAddressImpl(
-      null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
 
 /// @nodoc
 @JsonSerializable()
-class _$EmailAddressImpl extends _EmailAddress {
-  const _$EmailAddressImpl(this.value) : super._();
 
-  factory _$EmailAddressImpl.fromJson(Map<String, dynamic> json) =>
-      _$$EmailAddressImplFromJson(json);
+class _EmailAddress extends EmailAddress {
+  const _EmailAddress(this.value): super._();
+  factory _EmailAddress.fromJson(Map<String, dynamic> json) => _$EmailAddressFromJson(json);
 
-  @override
-  final String value;
+@override final  String value;
 
-  @override
-  String toString() {
-    return 'EmailAddress(value: $value)';
-  }
+/// Create a copy of EmailAddress
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$EmailAddressCopyWith<_EmailAddress> get copyWith => __$EmailAddressCopyWithImpl<_EmailAddress>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$EmailAddressImpl &&
-            (identical(other.value, value) || other.value == value));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, value);
-
-  /// Create a copy of EmailAddress
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$EmailAddressImplCopyWith<_$EmailAddressImpl> get copyWith =>
-      __$$EmailAddressImplCopyWithImpl<_$EmailAddressImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$EmailAddressImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$EmailAddressToJson(this, );
 }
 
-abstract class _EmailAddress extends EmailAddress {
-  const factory _EmailAddress(final String value) = _$EmailAddressImpl;
-  const _EmailAddress._() : super._();
-
-  factory _EmailAddress.fromJson(Map<String, dynamic> json) =
-      _$EmailAddressImpl.fromJson;
-
-  @override
-  String get value;
-
-  /// Create a copy of EmailAddress
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$EmailAddressImplCopyWith<_$EmailAddressImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EmailAddress&&(identical(other.value, value) || other.value == value));
 }
 
-PhoneNumber _$PhoneNumberFromJson(Map<String, dynamic> json) {
-  return _PhoneNumber.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,value);
+
+@override
+String toString() {
+  return 'EmailAddress(value: $value)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$EmailAddressCopyWith<$Res> implements $EmailAddressCopyWith<$Res> {
+  factory _$EmailAddressCopyWith(_EmailAddress value, $Res Function(_EmailAddress) _then) = __$EmailAddressCopyWithImpl;
+@override @useResult
+$Res call({
+ String value
+});
+
+
+
+
+}
+/// @nodoc
+class __$EmailAddressCopyWithImpl<$Res>
+    implements _$EmailAddressCopyWith<$Res> {
+  __$EmailAddressCopyWithImpl(this._self, this._then);
+
+  final _EmailAddress _self;
+  final $Res Function(_EmailAddress) _then;
+
+/// Create a copy of EmailAddress
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? value = null,}) {
+  return _then(_EmailAddress(
+null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$PhoneNumber {
-  String get number => throw _privateConstructorUsedError;
-  String? get countryCode => throw _privateConstructorUsedError;
-  String? get extension => throw _privateConstructorUsedError;
+
+ String get number; String? get countryCode; String? get extension;
+/// Create a copy of PhoneNumber
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PhoneNumberCopyWith<PhoneNumber> get copyWith => _$PhoneNumberCopyWithImpl<PhoneNumber>(this as PhoneNumber, _$identity);
 
   /// Serializes this PhoneNumber to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of PhoneNumber
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $PhoneNumberCopyWith<PhoneNumber> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PhoneNumber&&(identical(other.number, number) || other.number == number)&&(identical(other.countryCode, countryCode) || other.countryCode == countryCode)&&(identical(other.extension, extension) || other.extension == extension));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,number,countryCode,extension);
+
+@override
+String toString() {
+  return 'PhoneNumber(number: $number, countryCode: $countryCode, extension: $extension)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $PhoneNumberCopyWith<$Res> {
-  factory $PhoneNumberCopyWith(
-          PhoneNumber value, $Res Function(PhoneNumber) then) =
-      _$PhoneNumberCopyWithImpl<$Res, PhoneNumber>;
-  @useResult
-  $Res call({String number, String? countryCode, String? extension});
-}
+abstract mixin class $PhoneNumberCopyWith<$Res>  {
+  factory $PhoneNumberCopyWith(PhoneNumber value, $Res Function(PhoneNumber) _then) = _$PhoneNumberCopyWithImpl;
+@useResult
+$Res call({
+ String number, String? countryCode, String? extension
+});
 
+
+
+
+}
 /// @nodoc
-class _$PhoneNumberCopyWithImpl<$Res, $Val extends PhoneNumber>
+class _$PhoneNumberCopyWithImpl<$Res>
     implements $PhoneNumberCopyWith<$Res> {
-  _$PhoneNumberCopyWithImpl(this._value, this._then);
+  _$PhoneNumberCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final PhoneNumber _self;
+  final $Res Function(PhoneNumber) _then;
 
-  /// Create a copy of PhoneNumber
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? number = null,
-    Object? countryCode = freezed,
-    Object? extension = freezed,
-  }) {
-    return _then(_value.copyWith(
-      number: null == number
-          ? _value.number
-          : number // ignore: cast_nullable_to_non_nullable
-              as String,
-      countryCode: freezed == countryCode
-          ? _value.countryCode
-          : countryCode // ignore: cast_nullable_to_non_nullable
-              as String?,
-      extension: freezed == extension
-          ? _value.extension
-          : extension // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
-  }
+/// Create a copy of PhoneNumber
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? number = null,Object? countryCode = freezed,Object? extension = freezed,}) {
+  return _then(_self.copyWith(
+number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
+as String,countryCode: freezed == countryCode ? _self.countryCode : countryCode // ignore: cast_nullable_to_non_nullable
+as String?,extension: freezed == extension ? _self.extension : extension // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$PhoneNumberImplCopyWith<$Res>
-    implements $PhoneNumberCopyWith<$Res> {
-  factory _$$PhoneNumberImplCopyWith(
-          _$PhoneNumberImpl value, $Res Function(_$PhoneNumberImpl) then) =
-      __$$PhoneNumberImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String number, String? countryCode, String? extension});
 }
 
-/// @nodoc
-class __$$PhoneNumberImplCopyWithImpl<$Res>
-    extends _$PhoneNumberCopyWithImpl<$Res, _$PhoneNumberImpl>
-    implements _$$PhoneNumberImplCopyWith<$Res> {
-  __$$PhoneNumberImplCopyWithImpl(
-      _$PhoneNumberImpl _value, $Res Function(_$PhoneNumberImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of PhoneNumber
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? number = null,
-    Object? countryCode = freezed,
-    Object? extension = freezed,
-  }) {
-    return _then(_$PhoneNumberImpl(
-      number: null == number
-          ? _value.number
-          : number // ignore: cast_nullable_to_non_nullable
-              as String,
-      countryCode: freezed == countryCode
-          ? _value.countryCode
-          : countryCode // ignore: cast_nullable_to_non_nullable
-              as String?,
-      extension: freezed == extension
-          ? _value.extension
-          : extension // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
-}
 
 /// @nodoc
 @JsonSerializable()
-class _$PhoneNumberImpl extends _PhoneNumber {
-  const _$PhoneNumberImpl(
-      {required this.number, this.countryCode, this.extension})
-      : super._();
 
-  factory _$PhoneNumberImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PhoneNumberImplFromJson(json);
+class _PhoneNumber extends PhoneNumber {
+  const _PhoneNumber({required this.number, this.countryCode, this.extension}): super._();
+  factory _PhoneNumber.fromJson(Map<String, dynamic> json) => _$PhoneNumberFromJson(json);
 
-  @override
-  final String number;
-  @override
-  final String? countryCode;
-  @override
-  final String? extension;
+@override final  String number;
+@override final  String? countryCode;
+@override final  String? extension;
 
-  @override
-  String toString() {
-    return 'PhoneNumber(number: $number, countryCode: $countryCode, extension: $extension)';
-  }
+/// Create a copy of PhoneNumber
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PhoneNumberCopyWith<_PhoneNumber> get copyWith => __$PhoneNumberCopyWithImpl<_PhoneNumber>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$PhoneNumberImpl &&
-            (identical(other.number, number) || other.number == number) &&
-            (identical(other.countryCode, countryCode) ||
-                other.countryCode == countryCode) &&
-            (identical(other.extension, extension) ||
-                other.extension == extension));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, number, countryCode, extension);
-
-  /// Create a copy of PhoneNumber
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$PhoneNumberImplCopyWith<_$PhoneNumberImpl> get copyWith =>
-      __$$PhoneNumberImplCopyWithImpl<_$PhoneNumberImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PhoneNumberImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$PhoneNumberToJson(this, );
 }
 
-abstract class _PhoneNumber extends PhoneNumber {
-  const factory _PhoneNumber(
-      {required final String number,
-      final String? countryCode,
-      final String? extension}) = _$PhoneNumberImpl;
-  const _PhoneNumber._() : super._();
-
-  factory _PhoneNumber.fromJson(Map<String, dynamic> json) =
-      _$PhoneNumberImpl.fromJson;
-
-  @override
-  String get number;
-  @override
-  String? get countryCode;
-  @override
-  String? get extension;
-
-  /// Create a copy of PhoneNumber
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PhoneNumberImplCopyWith<_$PhoneNumberImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PhoneNumber&&(identical(other.number, number) || other.number == number)&&(identical(other.countryCode, countryCode) || other.countryCode == countryCode)&&(identical(other.extension, extension) || other.extension == extension));
 }
 
-Address _$AddressFromJson(Map<String, dynamic> json) {
-  return _Address.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,number,countryCode,extension);
+
+@override
+String toString() {
+  return 'PhoneNumber(number: $number, countryCode: $countryCode, extension: $extension)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PhoneNumberCopyWith<$Res> implements $PhoneNumberCopyWith<$Res> {
+  factory _$PhoneNumberCopyWith(_PhoneNumber value, $Res Function(_PhoneNumber) _then) = __$PhoneNumberCopyWithImpl;
+@override @useResult
+$Res call({
+ String number, String? countryCode, String? extension
+});
+
+
+
+
+}
+/// @nodoc
+class __$PhoneNumberCopyWithImpl<$Res>
+    implements _$PhoneNumberCopyWith<$Res> {
+  __$PhoneNumberCopyWithImpl(this._self, this._then);
+
+  final _PhoneNumber _self;
+  final $Res Function(_PhoneNumber) _then;
+
+/// Create a copy of PhoneNumber
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? number = null,Object? countryCode = freezed,Object? extension = freezed,}) {
+  return _then(_PhoneNumber(
+number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
+as String,countryCode: freezed == countryCode ? _self.countryCode : countryCode // ignore: cast_nullable_to_non_nullable
+as String?,extension: freezed == extension ? _self.extension : extension // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$Address {
-  String get street => throw _privateConstructorUsedError;
-  String get city => throw _privateConstructorUsedError;
-  String get country => throw _privateConstructorUsedError;
-  String? get state => throw _privateConstructorUsedError;
-  String? get postalCode => throw _privateConstructorUsedError;
-  double? get latitude => throw _privateConstructorUsedError;
-  double? get longitude => throw _privateConstructorUsedError;
+
+ String get street; String get city; String get country; String? get state; String? get postalCode; double? get latitude; double? get longitude;
+/// Create a copy of Address
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AddressCopyWith<Address> get copyWith => _$AddressCopyWithImpl<Address>(this as Address, _$identity);
 
   /// Serializes this Address to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of Address
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $AddressCopyWith<Address> get copyWith => throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Address&&(identical(other.street, street) || other.street == street)&&(identical(other.city, city) || other.city == city)&&(identical(other.country, country) || other.country == country)&&(identical(other.state, state) || other.state == state)&&(identical(other.postalCode, postalCode) || other.postalCode == postalCode)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,street,city,country,state,postalCode,latitude,longitude);
+
+@override
+String toString() {
+  return 'Address(street: $street, city: $city, country: $country, state: $state, postalCode: $postalCode, latitude: $latitude, longitude: $longitude)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $AddressCopyWith<$Res> {
-  factory $AddressCopyWith(Address value, $Res Function(Address) then) =
-      _$AddressCopyWithImpl<$Res, Address>;
-  @useResult
-  $Res call(
-      {String street,
-      String city,
-      String country,
-      String? state,
-      String? postalCode,
-      double? latitude,
-      double? longitude});
-}
+abstract mixin class $AddressCopyWith<$Res>  {
+  factory $AddressCopyWith(Address value, $Res Function(Address) _then) = _$AddressCopyWithImpl;
+@useResult
+$Res call({
+ String street, String city, String country, String? state, String? postalCode, double? latitude, double? longitude
+});
 
+
+
+
+}
 /// @nodoc
-class _$AddressCopyWithImpl<$Res, $Val extends Address>
+class _$AddressCopyWithImpl<$Res>
     implements $AddressCopyWith<$Res> {
-  _$AddressCopyWithImpl(this._value, this._then);
+  _$AddressCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final Address _self;
+  final $Res Function(Address) _then;
 
-  /// Create a copy of Address
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? street = null,
-    Object? city = null,
-    Object? country = null,
-    Object? state = freezed,
-    Object? postalCode = freezed,
-    Object? latitude = freezed,
-    Object? longitude = freezed,
-  }) {
-    return _then(_value.copyWith(
-      street: null == street
-          ? _value.street
-          : street // ignore: cast_nullable_to_non_nullable
-              as String,
-      city: null == city
-          ? _value.city
-          : city // ignore: cast_nullable_to_non_nullable
-              as String,
-      country: null == country
-          ? _value.country
-          : country // ignore: cast_nullable_to_non_nullable
-              as String,
-      state: freezed == state
-          ? _value.state
-          : state // ignore: cast_nullable_to_non_nullable
-              as String?,
-      postalCode: freezed == postalCode
-          ? _value.postalCode
-          : postalCode // ignore: cast_nullable_to_non_nullable
-              as String?,
-      latitude: freezed == latitude
-          ? _value.latitude
-          : latitude // ignore: cast_nullable_to_non_nullable
-              as double?,
-      longitude: freezed == longitude
-          ? _value.longitude
-          : longitude // ignore: cast_nullable_to_non_nullable
-              as double?,
-    ) as $Val);
-  }
+/// Create a copy of Address
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? street = null,Object? city = null,Object? country = null,Object? state = freezed,Object? postalCode = freezed,Object? latitude = freezed,Object? longitude = freezed,}) {
+  return _then(_self.copyWith(
+street: null == street ? _self.street : street // ignore: cast_nullable_to_non_nullable
+as String,city: null == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
+as String,country: null == country ? _self.country : country // ignore: cast_nullable_to_non_nullable
+as String,state: freezed == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
+as String?,postalCode: freezed == postalCode ? _self.postalCode : postalCode // ignore: cast_nullable_to_non_nullable
+as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$AddressImplCopyWith<$Res> implements $AddressCopyWith<$Res> {
-  factory _$$AddressImplCopyWith(
-          _$AddressImpl value, $Res Function(_$AddressImpl) then) =
-      __$$AddressImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String street,
-      String city,
-      String country,
-      String? state,
-      String? postalCode,
-      double? latitude,
-      double? longitude});
 }
 
-/// @nodoc
-class __$$AddressImplCopyWithImpl<$Res>
-    extends _$AddressCopyWithImpl<$Res, _$AddressImpl>
-    implements _$$AddressImplCopyWith<$Res> {
-  __$$AddressImplCopyWithImpl(
-      _$AddressImpl _value, $Res Function(_$AddressImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of Address
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? street = null,
-    Object? city = null,
-    Object? country = null,
-    Object? state = freezed,
-    Object? postalCode = freezed,
-    Object? latitude = freezed,
-    Object? longitude = freezed,
-  }) {
-    return _then(_$AddressImpl(
-      street: null == street
-          ? _value.street
-          : street // ignore: cast_nullable_to_non_nullable
-              as String,
-      city: null == city
-          ? _value.city
-          : city // ignore: cast_nullable_to_non_nullable
-              as String,
-      country: null == country
-          ? _value.country
-          : country // ignore: cast_nullable_to_non_nullable
-              as String,
-      state: freezed == state
-          ? _value.state
-          : state // ignore: cast_nullable_to_non_nullable
-              as String?,
-      postalCode: freezed == postalCode
-          ? _value.postalCode
-          : postalCode // ignore: cast_nullable_to_non_nullable
-              as String?,
-      latitude: freezed == latitude
-          ? _value.latitude
-          : latitude // ignore: cast_nullable_to_non_nullable
-              as double?,
-      longitude: freezed == longitude
-          ? _value.longitude
-          : longitude // ignore: cast_nullable_to_non_nullable
-              as double?,
-    ));
-  }
-}
 
 /// @nodoc
 @JsonSerializable()
-class _$AddressImpl extends _Address {
-  const _$AddressImpl(
-      {required this.street,
-      required this.city,
-      required this.country,
-      this.state,
-      this.postalCode,
-      this.latitude,
-      this.longitude})
-      : super._();
 
-  factory _$AddressImpl.fromJson(Map<String, dynamic> json) =>
-      _$$AddressImplFromJson(json);
+class _Address extends Address {
+  const _Address({required this.street, required this.city, required this.country, this.state, this.postalCode, this.latitude, this.longitude}): super._();
+  factory _Address.fromJson(Map<String, dynamic> json) => _$AddressFromJson(json);
 
-  @override
-  final String street;
-  @override
-  final String city;
-  @override
-  final String country;
-  @override
-  final String? state;
-  @override
-  final String? postalCode;
-  @override
-  final double? latitude;
-  @override
-  final double? longitude;
+@override final  String street;
+@override final  String city;
+@override final  String country;
+@override final  String? state;
+@override final  String? postalCode;
+@override final  double? latitude;
+@override final  double? longitude;
 
-  @override
-  String toString() {
-    return 'Address(street: $street, city: $city, country: $country, state: $state, postalCode: $postalCode, latitude: $latitude, longitude: $longitude)';
-  }
+/// Create a copy of Address
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AddressCopyWith<_Address> get copyWith => __$AddressCopyWithImpl<_Address>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$AddressImpl &&
-            (identical(other.street, street) || other.street == street) &&
-            (identical(other.city, city) || other.city == city) &&
-            (identical(other.country, country) || other.country == country) &&
-            (identical(other.state, state) || other.state == state) &&
-            (identical(other.postalCode, postalCode) ||
-                other.postalCode == postalCode) &&
-            (identical(other.latitude, latitude) ||
-                other.latitude == latitude) &&
-            (identical(other.longitude, longitude) ||
-                other.longitude == longitude));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, street, city, country, state,
-      postalCode, latitude, longitude);
-
-  /// Create a copy of Address
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$AddressImplCopyWith<_$AddressImpl> get copyWith =>
-      __$$AddressImplCopyWithImpl<_$AddressImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$AddressImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$AddressToJson(this, );
 }
 
-abstract class _Address extends Address {
-  const factory _Address(
-      {required final String street,
-      required final String city,
-      required final String country,
-      final String? state,
-      final String? postalCode,
-      final double? latitude,
-      final double? longitude}) = _$AddressImpl;
-  const _Address._() : super._();
-
-  factory _Address.fromJson(Map<String, dynamic> json) = _$AddressImpl.fromJson;
-
-  @override
-  String get street;
-  @override
-  String get city;
-  @override
-  String get country;
-  @override
-  String? get state;
-  @override
-  String? get postalCode;
-  @override
-  double? get latitude;
-  @override
-  double? get longitude;
-
-  /// Create a copy of Address
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$AddressImplCopyWith<_$AddressImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Address&&(identical(other.street, street) || other.street == street)&&(identical(other.city, city) || other.city == city)&&(identical(other.country, country) || other.country == country)&&(identical(other.state, state) || other.state == state)&&(identical(other.postalCode, postalCode) || other.postalCode == postalCode)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude));
 }
 
-ContactInfo _$ContactInfoFromJson(Map<String, dynamic> json) {
-  return _ContactInfo.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,street,city,country,state,postalCode,latitude,longitude);
+
+@override
+String toString() {
+  return 'Address(street: $street, city: $city, country: $country, state: $state, postalCode: $postalCode, latitude: $latitude, longitude: $longitude)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AddressCopyWith<$Res> implements $AddressCopyWith<$Res> {
+  factory _$AddressCopyWith(_Address value, $Res Function(_Address) _then) = __$AddressCopyWithImpl;
+@override @useResult
+$Res call({
+ String street, String city, String country, String? state, String? postalCode, double? latitude, double? longitude
+});
+
+
+
+
+}
+/// @nodoc
+class __$AddressCopyWithImpl<$Res>
+    implements _$AddressCopyWith<$Res> {
+  __$AddressCopyWithImpl(this._self, this._then);
+
+  final _Address _self;
+  final $Res Function(_Address) _then;
+
+/// Create a copy of Address
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? street = null,Object? city = null,Object? country = null,Object? state = freezed,Object? postalCode = freezed,Object? latitude = freezed,Object? longitude = freezed,}) {
+  return _then(_Address(
+street: null == street ? _self.street : street // ignore: cast_nullable_to_non_nullable
+as String,city: null == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
+as String,country: null == country ? _self.country : country // ignore: cast_nullable_to_non_nullable
+as String,state: freezed == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
+as String?,postalCode: freezed == postalCode ? _self.postalCode : postalCode // ignore: cast_nullable_to_non_nullable
+as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$ContactInfo {
-  String get contactName => throw _privateConstructorUsedError;
-  String get companyName => throw _privateConstructorUsedError;
-  PhoneNumber? get phone => throw _privateConstructorUsedError;
-  EmailAddress? get email => throw _privateConstructorUsedError;
-  Address? get address => throw _privateConstructorUsedError;
+
+ String get contactName; String get companyName; PhoneNumber? get phone; EmailAddress? get email; Address? get address;
+/// Create a copy of ContactInfo
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ContactInfoCopyWith<ContactInfo> get copyWith => _$ContactInfoCopyWithImpl<ContactInfo>(this as ContactInfo, _$identity);
 
   /// Serializes this ContactInfo to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of ContactInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ContactInfoCopyWith<ContactInfo> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContactInfo&&(identical(other.contactName, contactName) || other.contactName == contactName)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.email, email) || other.email == email)&&(identical(other.address, address) || other.address == address));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,contactName,companyName,phone,email,address);
+
+@override
+String toString() {
+  return 'ContactInfo(contactName: $contactName, companyName: $companyName, phone: $phone, email: $email, address: $address)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ContactInfoCopyWith<$Res> {
-  factory $ContactInfoCopyWith(
-          ContactInfo value, $Res Function(ContactInfo) then) =
-      _$ContactInfoCopyWithImpl<$Res, ContactInfo>;
-  @useResult
-  $Res call(
-      {String contactName,
-      String companyName,
-      PhoneNumber? phone,
-      EmailAddress? email,
-      Address? address});
+abstract mixin class $ContactInfoCopyWith<$Res>  {
+  factory $ContactInfoCopyWith(ContactInfo value, $Res Function(ContactInfo) _then) = _$ContactInfoCopyWithImpl;
+@useResult
+$Res call({
+ String contactName, String companyName, PhoneNumber? phone, EmailAddress? email, Address? address
+});
 
-  $PhoneNumberCopyWith<$Res>? get phone;
-  $EmailAddressCopyWith<$Res>? get email;
-  $AddressCopyWith<$Res>? get address;
+
+$PhoneNumberCopyWith<$Res>? get phone;$EmailAddressCopyWith<$Res>? get email;$AddressCopyWith<$Res>? get address;
+
 }
-
 /// @nodoc
-class _$ContactInfoCopyWithImpl<$Res, $Val extends ContactInfo>
+class _$ContactInfoCopyWithImpl<$Res>
     implements $ContactInfoCopyWith<$Res> {
-  _$ContactInfoCopyWithImpl(this._value, this._then);
+  _$ContactInfoCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final ContactInfo _self;
+  final $Res Function(ContactInfo) _then;
 
-  /// Create a copy of ContactInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? contactName = null,
-    Object? companyName = null,
-    Object? phone = freezed,
-    Object? email = freezed,
-    Object? address = freezed,
-  }) {
-    return _then(_value.copyWith(
-      contactName: null == contactName
-          ? _value.contactName
-          : contactName // ignore: cast_nullable_to_non_nullable
-              as String,
-      companyName: null == companyName
-          ? _value.companyName
-          : companyName // ignore: cast_nullable_to_non_nullable
-              as String,
-      phone: freezed == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as PhoneNumber?,
-      email: freezed == email
-          ? _value.email
-          : email // ignore: cast_nullable_to_non_nullable
-              as EmailAddress?,
-      address: freezed == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as Address?,
-    ) as $Val);
+/// Create a copy of ContactInfo
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? contactName = null,Object? companyName = null,Object? phone = freezed,Object? email = freezed,Object? address = freezed,}) {
+  return _then(_self.copyWith(
+contactName: null == contactName ? _self.contactName : contactName // ignore: cast_nullable_to_non_nullable
+as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
+as String,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as PhoneNumber?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as EmailAddress?,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as Address?,
+  ));
+}
+/// Create a copy of ContactInfo
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PhoneNumberCopyWith<$Res>? get phone {
+    if (_self.phone == null) {
+    return null;
   }
 
-  /// Create a copy of ContactInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $PhoneNumberCopyWith<$Res>? get phone {
-    if (_value.phone == null) {
-      return null;
-    }
-
-    return $PhoneNumberCopyWith<$Res>(_value.phone!, (value) {
-      return _then(_value.copyWith(phone: value) as $Val);
-    });
+  return $PhoneNumberCopyWith<$Res>(_self.phone!, (value) {
+    return _then(_self.copyWith(phone: value));
+  });
+}/// Create a copy of ContactInfo
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$EmailAddressCopyWith<$Res>? get email {
+    if (_self.email == null) {
+    return null;
   }
 
-  /// Create a copy of ContactInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $EmailAddressCopyWith<$Res>? get email {
-    if (_value.email == null) {
-      return null;
-    }
-
-    return $EmailAddressCopyWith<$Res>(_value.email!, (value) {
-      return _then(_value.copyWith(email: value) as $Val);
-    });
+  return $EmailAddressCopyWith<$Res>(_self.email!, (value) {
+    return _then(_self.copyWith(email: value));
+  });
+}/// Create a copy of ContactInfo
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AddressCopyWith<$Res>? get address {
+    if (_self.address == null) {
+    return null;
   }
 
-  /// Create a copy of ContactInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $AddressCopyWith<$Res>? get address {
-    if (_value.address == null) {
-      return null;
-    }
-
-    return $AddressCopyWith<$Res>(_value.address!, (value) {
-      return _then(_value.copyWith(address: value) as $Val);
-    });
-  }
+  return $AddressCopyWith<$Res>(_self.address!, (value) {
+    return _then(_self.copyWith(address: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$ContactInfoImplCopyWith<$Res>
-    implements $ContactInfoCopyWith<$Res> {
-  factory _$$ContactInfoImplCopyWith(
-          _$ContactInfoImpl value, $Res Function(_$ContactInfoImpl) then) =
-      __$$ContactInfoImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String contactName,
-      String companyName,
-      PhoneNumber? phone,
-      EmailAddress? email,
-      Address? address});
-
-  @override
-  $PhoneNumberCopyWith<$Res>? get phone;
-  @override
-  $EmailAddressCopyWith<$Res>? get email;
-  @override
-  $AddressCopyWith<$Res>? get address;
-}
-
-/// @nodoc
-class __$$ContactInfoImplCopyWithImpl<$Res>
-    extends _$ContactInfoCopyWithImpl<$Res, _$ContactInfoImpl>
-    implements _$$ContactInfoImplCopyWith<$Res> {
-  __$$ContactInfoImplCopyWithImpl(
-      _$ContactInfoImpl _value, $Res Function(_$ContactInfoImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of ContactInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? contactName = null,
-    Object? companyName = null,
-    Object? phone = freezed,
-    Object? email = freezed,
-    Object? address = freezed,
-  }) {
-    return _then(_$ContactInfoImpl(
-      contactName: null == contactName
-          ? _value.contactName
-          : contactName // ignore: cast_nullable_to_non_nullable
-              as String,
-      companyName: null == companyName
-          ? _value.companyName
-          : companyName // ignore: cast_nullable_to_non_nullable
-              as String,
-      phone: freezed == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as PhoneNumber?,
-      email: freezed == email
-          ? _value.email
-          : email // ignore: cast_nullable_to_non_nullable
-              as EmailAddress?,
-      address: freezed == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as Address?,
-    ));
-  }
-}
 
 /// @nodoc
 @JsonSerializable()
-class _$ContactInfoImpl extends _ContactInfo {
-  const _$ContactInfoImpl(
-      {required this.contactName,
-      required this.companyName,
-      this.phone,
-      this.email,
-      this.address})
-      : super._();
 
-  factory _$ContactInfoImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ContactInfoImplFromJson(json);
+class _ContactInfo extends ContactInfo {
+  const _ContactInfo({required this.contactName, required this.companyName, this.phone, this.email, this.address}): super._();
+  factory _ContactInfo.fromJson(Map<String, dynamic> json) => _$ContactInfoFromJson(json);
 
-  @override
-  final String contactName;
-  @override
-  final String companyName;
-  @override
-  final PhoneNumber? phone;
-  @override
-  final EmailAddress? email;
-  @override
-  final Address? address;
+@override final  String contactName;
+@override final  String companyName;
+@override final  PhoneNumber? phone;
+@override final  EmailAddress? email;
+@override final  Address? address;
 
-  @override
-  String toString() {
-    return 'ContactInfo(contactName: $contactName, companyName: $companyName, phone: $phone, email: $email, address: $address)';
-  }
+/// Create a copy of ContactInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ContactInfoCopyWith<_ContactInfo> get copyWith => __$ContactInfoCopyWithImpl<_ContactInfo>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ContactInfoImpl &&
-            (identical(other.contactName, contactName) ||
-                other.contactName == contactName) &&
-            (identical(other.companyName, companyName) ||
-                other.companyName == companyName) &&
-            (identical(other.phone, phone) || other.phone == phone) &&
-            (identical(other.email, email) || other.email == email) &&
-            (identical(other.address, address) || other.address == address));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, contactName, companyName, phone, email, address);
-
-  /// Create a copy of ContactInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ContactInfoImplCopyWith<_$ContactInfoImpl> get copyWith =>
-      __$$ContactInfoImplCopyWithImpl<_$ContactInfoImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ContactInfoImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$ContactInfoToJson(this, );
 }
 
-abstract class _ContactInfo extends ContactInfo {
-  const factory _ContactInfo(
-      {required final String contactName,
-      required final String companyName,
-      final PhoneNumber? phone,
-      final EmailAddress? email,
-      final Address? address}) = _$ContactInfoImpl;
-  const _ContactInfo._() : super._();
-
-  factory _ContactInfo.fromJson(Map<String, dynamic> json) =
-      _$ContactInfoImpl.fromJson;
-
-  @override
-  String get contactName;
-  @override
-  String get companyName;
-  @override
-  PhoneNumber? get phone;
-  @override
-  EmailAddress? get email;
-  @override
-  Address? get address;
-
-  /// Create a copy of ContactInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ContactInfoImplCopyWith<_$ContactInfoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ContactInfo&&(identical(other.contactName, contactName) || other.contactName == contactName)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.email, email) || other.email == email)&&(identical(other.address, address) || other.address == address));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,contactName,companyName,phone,email,address);
+
+@override
+String toString() {
+  return 'ContactInfo(contactName: $contactName, companyName: $companyName, phone: $phone, email: $email, address: $address)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ContactInfoCopyWith<$Res> implements $ContactInfoCopyWith<$Res> {
+  factory _$ContactInfoCopyWith(_ContactInfo value, $Res Function(_ContactInfo) _then) = __$ContactInfoCopyWithImpl;
+@override @useResult
+$Res call({
+ String contactName, String companyName, PhoneNumber? phone, EmailAddress? email, Address? address
+});
+
+
+@override $PhoneNumberCopyWith<$Res>? get phone;@override $EmailAddressCopyWith<$Res>? get email;@override $AddressCopyWith<$Res>? get address;
+
+}
+/// @nodoc
+class __$ContactInfoCopyWithImpl<$Res>
+    implements _$ContactInfoCopyWith<$Res> {
+  __$ContactInfoCopyWithImpl(this._self, this._then);
+
+  final _ContactInfo _self;
+  final $Res Function(_ContactInfo) _then;
+
+/// Create a copy of ContactInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? contactName = null,Object? companyName = null,Object? phone = freezed,Object? email = freezed,Object? address = freezed,}) {
+  return _then(_ContactInfo(
+contactName: null == contactName ? _self.contactName : contactName // ignore: cast_nullable_to_non_nullable
+as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
+as String,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as PhoneNumber?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as EmailAddress?,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as Address?,
+  ));
+}
+
+/// Create a copy of ContactInfo
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PhoneNumberCopyWith<$Res>? get phone {
+    if (_self.phone == null) {
+    return null;
+  }
+
+  return $PhoneNumberCopyWith<$Res>(_self.phone!, (value) {
+    return _then(_self.copyWith(phone: value));
+  });
+}/// Create a copy of ContactInfo
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$EmailAddressCopyWith<$Res>? get email {
+    if (_self.email == null) {
+    return null;
+  }
+
+  return $EmailAddressCopyWith<$Res>(_self.email!, (value) {
+    return _then(_self.copyWith(email: value));
+  });
+}/// Create a copy of ContactInfo
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AddressCopyWith<$Res>? get address {
+    if (_self.address == null) {
+    return null;
+  }
+
+  return $AddressCopyWith<$Res>(_self.address!, (value) {
+    return _then(_self.copyWith(address: value));
+  });
+}
+}
+
+// dart format on

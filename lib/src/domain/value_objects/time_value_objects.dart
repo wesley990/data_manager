@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'time_value_objects.freezed.dart';
 
 @freezed
-class TimeWindow with _$TimeWindow {
+sealed class TimeWindow with _$TimeWindow {
   const factory TimeWindow({
     required DateTime start,
     required DateTime end,
@@ -18,7 +18,7 @@ class TimeWindow with _$TimeWindow {
 }
 
 @freezed
-class Schedule with _$Schedule {
+sealed class Schedule with _$Schedule {
   const factory Schedule({
     required TimeWindow window,
     @Default([]) List<DateTime> breakTimes,

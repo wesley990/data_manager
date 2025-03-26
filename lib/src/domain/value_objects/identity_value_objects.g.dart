@@ -6,36 +6,28 @@ part of 'identity_value_objects.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$EntityIdImpl _$$EntityIdImplFromJson(Map<String, dynamic> json) =>
-    _$EntityIdImpl(
-      json['value'] as String,
-    );
+_EntityId _$EntityIdFromJson(Map<String, dynamic> json) =>
+    _EntityId(json['value'] as String);
 
-Map<String, dynamic> _$$EntityIdImplToJson(_$EntityIdImpl instance) =>
-    <String, dynamic>{
-      'value': instance.value,
-    };
+Map<String, dynamic> _$EntityIdToJson(_EntityId instance) => <String, dynamic>{
+  'value': instance.value,
+};
 
-_$EventIdImpl _$$EventIdImplFromJson(Map<String, dynamic> json) =>
-    _$EventIdImpl(
-      json['value'] as String,
-    );
+_EventId _$EventIdFromJson(Map<String, dynamic> json) =>
+    _EventId(json['value'] as String);
 
-Map<String, dynamic> _$$EventIdImplToJson(_$EventIdImpl instance) =>
-    <String, dynamic>{
-      'value': instance.value,
-    };
+Map<String, dynamic> _$EventIdToJson(_EventId instance) => <String, dynamic>{
+  'value': instance.value,
+};
 
-_$ReferenceNumberImpl _$$ReferenceNumberImplFromJson(
-        Map<String, dynamic> json) =>
-    _$ReferenceNumberImpl(
+_ReferenceNumber _$ReferenceNumberFromJson(Map<String, dynamic> json) =>
+    _ReferenceNumber(
       prefix: json['prefix'] as String,
       sequence: (json['sequence'] as num).toInt(),
       suffix: json['suffix'] as String?,
     );
 
-Map<String, dynamic> _$$ReferenceNumberImplToJson(
-        _$ReferenceNumberImpl instance) =>
+Map<String, dynamic> _$ReferenceNumberToJson(_ReferenceNumber instance) =>
     <String, dynamic>{
       'prefix': instance.prefix,
       'sequence': instance.sequence,

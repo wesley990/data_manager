@@ -76,7 +76,7 @@ abstract class LockConfig {
 
 /// Represents hierarchy information for an entity including tree structure and relationships
 @freezed
-class EntityHierarchy with _$EntityHierarchy {
+sealed class EntityHierarchy with _$EntityHierarchy {
   /// Creates a new EntityHierarchy instance
   const factory EntityHierarchy({
     /// Full path in the entity tree
@@ -107,7 +107,7 @@ class EntityHierarchy with _$EntityHierarchy {
 
 /// Manages security and access control aspects of an entity
 @freezed
-class EntitySecurity with _$EntitySecurity {
+sealed class EntitySecurity with _$EntitySecurity {
   /// Creates a new EntitySecurity instance
   const factory EntitySecurity({
     /// User who last accessed the entity
@@ -138,7 +138,7 @@ class EntitySecurity with _$EntitySecurity {
 
 /// Handles classification, tagging and workflow status of an entity
 @freezed
-class EntityClassification with _$EntityClassification {
+sealed class EntityClassification with _$EntityClassification {
   /// Creates a new EntityClassification instance
   const factory EntityClassification({
     /// List of searchable tags associated with the entity
@@ -160,7 +160,7 @@ class EntityClassification with _$EntityClassification {
 
 /// Manages versioning and history tracking for an entity
 @freezed
-class EntityVersioning with _$EntityVersioning {
+sealed class EntityVersioning with _$EntityVersioning {
   /// Creates a new EntityVersioning instance
   const factory EntityVersioning({
     /// Metadata for synchronization purposes
@@ -203,7 +203,7 @@ class EntityVersioning with _$EntityVersioning {
 
 /// Stores AI-related data and metadata for an entity
 @freezed
-class EntityAI with _$EntityAI {
+sealed class EntityAI with _$EntityAI {
   /// Creates a new EntityAI instance
   const factory EntityAI({
     /// Vector embeddings for AI operations
@@ -231,7 +231,7 @@ class EntityAI with _$EntityAI {
 
 /// Manages distributed locking for concurrent access control
 @freezed
-class EntityLocking with _$EntityLocking {
+sealed class EntityLocking with _$EntityLocking {
   /// Creates a new EntityLocking instance
   const factory EntityLocking({
     /// Distributed lock identifier
@@ -262,7 +262,7 @@ class EntityLocking with _$EntityLocking {
 
 /// Main entity model that composes all entity components with a generic data payload
 @Freezed(genericArgumentFactories: true)
-class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
+sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   const BaseEntityModel._();
 
   /// Creates a new BaseEntityModel instance with all its component parts
@@ -392,10 +392,7 @@ class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
         treePath: id.value,
         isHierarchyRoot: true,
         isHierarchyLeaf: true,
-        hierarchyMeta: {
-          'created': now.toIso8601String(),
-          'pathType': 'root',
-        },
+        hierarchyMeta: {'created': now.toIso8601String(), 'pathType': 'root'},
       ),
       security: const EntitySecurity(),
       classification: const EntityClassification(),
@@ -422,7 +419,7 @@ class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
 
 /// Data transfer object for entity metadata
 @freezed
-class EntityMetadataDto with _$EntityMetadataDto {
+sealed class EntityMetadataDto with _$EntityMetadataDto {
   const EntityMetadataDto._();
 
   /// Creates a new EntityMetadataDto instance

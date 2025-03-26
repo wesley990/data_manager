@@ -4,7 +4,7 @@ part 'contact_value_objects.freezed.dart';
 part 'contact_value_objects.g.dart';
 
 @freezed
-class EmailAddress with _$EmailAddress {
+sealed class EmailAddress with _$EmailAddress {
   const factory EmailAddress(String value) = _EmailAddress;
 
   const EmailAddress._();
@@ -17,7 +17,7 @@ class EmailAddress with _$EmailAddress {
 }
 
 @freezed
-class PhoneNumber with _$PhoneNumber {
+sealed class PhoneNumber with _$PhoneNumber {
   const factory PhoneNumber({
     required String number,
     String? countryCode,
@@ -34,7 +34,7 @@ class PhoneNumber with _$PhoneNumber {
 }
 
 @freezed
-class Address with _$Address {
+sealed class Address with _$Address {
   const factory Address({
     required String street,
     required String city,
@@ -55,7 +55,7 @@ class Address with _$Address {
 }
 
 @freezed
-class ContactInfo with _$ContactInfo {
+sealed class ContactInfo with _$ContactInfo {
   const factory ContactInfo({
     required String contactName,
     required String companyName,

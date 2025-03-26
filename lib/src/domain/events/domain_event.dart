@@ -28,7 +28,7 @@ abstract class EventSchemaConfig {
 
 /// Event schema structure definition
 @freezed
-class EventSchema with _$EventSchema {
+sealed class EventSchema with _$EventSchema {
   const factory EventSchema({
     required String version,
     required String eventType,
@@ -43,7 +43,7 @@ class EventSchema with _$EventSchema {
 }
 
 @freezed
-class DomainEventModel with _$DomainEventModel {
+sealed class DomainEventModel with _$DomainEventModel {
   const DomainEventModel._();
 
   const factory DomainEventModel({

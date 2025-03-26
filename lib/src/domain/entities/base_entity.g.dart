@@ -6,23 +6,23 @@ part of 'base_entity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$EntityMetadataDtoImpl _$$EntityMetadataDtoImplFromJson(
-        Map<String, dynamic> json) =>
-    _$EntityMetadataDtoImpl(
+_EntityMetadataDto _$EntityMetadataDtoFromJson(Map<String, dynamic> json) =>
+    _EntityMetadataDto(
       displayName: json['displayName'] as String,
       entityType: json['entityType'] as String,
       description: json['description'] as String?,
-      lastNameUpdate: json['lastNameUpdate'] == null
-          ? null
-          : DateTime.parse(json['lastNameUpdate'] as String),
-      searchTerms: (json['searchTerms'] as Map<String, dynamic>?)?.map(
+      lastNameUpdate:
+          json['lastNameUpdate'] == null
+              ? null
+              : DateTime.parse(json['lastNameUpdate'] as String),
+      searchTerms:
+          (json['searchTerms'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as String),
           ) ??
           const {},
     );
 
-Map<String, dynamic> _$$EntityMetadataDtoImplToJson(
-        _$EntityMetadataDtoImpl instance) =>
+Map<String, dynamic> _$EntityMetadataDtoToJson(_EntityMetadataDto instance) =>
     <String, dynamic>{
       'displayName': instance.displayName,
       'entityType': instance.entityType,

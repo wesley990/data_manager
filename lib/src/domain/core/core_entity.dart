@@ -42,7 +42,8 @@ class TypedMetadata {
     } catch (e) {
       // More informative error message including both expected and actual types
       debugPrint(
-          'Type error for key "$key": Expected $T but got ${value.runtimeType}. Error: $e');
+        'Type error for key "$key": Expected $T but got ${value.runtimeType}. Error: $e',
+      );
       return null;
     }
   }
@@ -98,7 +99,7 @@ class TypedMetadata {
 }
 
 @Freezed(genericArgumentFactories: true)
-class CoreEntity<T extends Object> with _$CoreEntity<T> {
+sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   const CoreEntity._();
 
   /// Creates a new CoreEntity instance
@@ -126,8 +127,7 @@ class CoreEntity<T extends Object> with _$CoreEntity<T> {
   factory CoreEntity.fromJson(
     Map<String, Object> json,
     T Function(Object? json) fromJsonT,
-  ) =>
-      _$CoreEntityFromJson(json, fromJsonT);
+  ) => _$CoreEntityFromJson(json, fromJsonT);
 
   /// Unique identifier string derived from the entity ID
   String get uid => id.value;
@@ -185,7 +185,8 @@ class CoreEntity<T extends Object> with _$CoreEntity<T> {
       throw TypeError();
     } catch (e) {
       debugPrint(
-          'Type cast error for key "$key": Expected $R but got ${value.runtimeType}. Error: $e');
+        'Type cast error for key "$key": Expected $R but got ${value.runtimeType}. Error: $e',
+      );
       return null;
     }
   }
