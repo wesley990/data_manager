@@ -185,25 +185,51 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
     }
   }
 
-  /// Access entity properties and metadata by key
-  ///
-  /// This provides a unified interface to access both entity properties
-  /// and metadata with a map-like syntax
-  Object? operator [](String key) {
-    return switch (key) {
-      'entityId' => id.value,
-      'entityName' => name,
-      'entityDescription' => description,
-      'status' => status,
-      'createdAt' => createdAt,
-      'updatedAt' => updatedAt,
-      'schemaVer' => schemaVer,
-      'owner' => owner,
-      'creator' => creator,
-      'modifier' => modifier,
-      'data' => data,
-      'meta' => meta,
-      _ => meta[key],
-    };
+  /// Gets a domain property by name
+  Object? getProperty(String key) {
+    switch (key) {
+      case 'id':
+        return id;
+      case 'name':
+        return name;
+      case 'description':
+        return description;
+      case 'createdAt':
+        return createdAt;
+      case 'updatedAt':
+        return updatedAt;
+      case 'schemaVer':
+        return schemaVer;
+      case 'status':
+        return status;
+      case 'owner':
+        return owner;
+      case 'creator':
+        return creator;
+      case 'modifier':
+        return modifier;
+      case 'data':
+        return data;
+      default:
+        return null;
+    }
+  }
+
+  /// Gets a metadata value by key
+  Object? getMetadata(String key) {
+    return meta[key];
+  }
+
+  /// Operator to access either domain properties or metadata
+  /// First tries to access domain properties, then falls back to metadata
+  operator [](String key) {
+    // Try domain properties first
+    final propertyValue = getProperty(key);
+    if (propertyValue != null) {
+      return propertyValue;
+    }
+    
+    // Fall back to metadata
+    return getMetadata(key);
   }
 }
