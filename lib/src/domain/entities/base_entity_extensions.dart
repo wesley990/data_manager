@@ -1,19 +1,15 @@
 import 'package:data_manager/data_manager.dart';
-import 'package:data_manager/src/services/ai_service.dart';
 import 'package:data_manager/src/services/hierarchy_service.dart';
-import 'package:data_manager/src/services/lock_service.dart';
 import 'package:data_manager/src/services/path_service.dart';
 import 'package:data_manager/src/services/version_service.dart';
 
 /// Shared service instances for BaseEntityModel extensions.
 ///
 /// These service instances handle various aspects of entity management like
-/// path handling, hierarchy relationships, locking, versioning, and AI processing.
+/// path handling, hierarchy relationships, and versioning.
 final _pathService = PathService(config: EntityConfig());
 final _hierarchyService = HierarchyService(config: EntityConfig());
-final _lockService = LockService(config: EntityConfig());
 final _versionService = VersionService();
-final _aiService = AIService();
 
 /// Extension for path sanitization and validation operations.
 ///
@@ -119,7 +115,10 @@ extension HierarchyValidationExtension<T extends Object> on BaseEntityModel<T> {
   ///
   /// Returns true if a circular reference is detected.
   bool hasCircularReference() => _hierarchyService.hasCircularReference(
-      id, hierarchy.parentId, hierarchy.ancestors);
+    id,
+    hierarchy.parentId,
+    hierarchy.ancestors,
+  );
 
   /// Updates the hierarchy information for this entity.
   ///
@@ -168,8 +167,10 @@ extension HierarchyManagementExtension<T extends Object> on BaseEntityModel<T> {
   /// [childId] - The ID of the child entity to add.
   /// Returns an updated entity with the new child added.
   BaseEntityModel<T> addChild(EntityId childId) {
-    final updatedChildren =
-        _hierarchyService.addChild(hierarchy.childIds, childId);
+    final updatedChildren = _hierarchyService.addChild(
+      hierarchy.childIds,
+      childId,
+    );
     if (updatedChildren == hierarchy.childIds) return this;
 
     return copyWith(
@@ -190,8 +191,10 @@ extension HierarchyManagementExtension<T extends Object> on BaseEntityModel<T> {
   /// [childId] - The ID of the child entity to remove.
   /// Returns an updated entity with the child removed.
   BaseEntityModel<T> removeChild(EntityId childId) {
-    final updatedChildren =
-        _hierarchyService.removeChild(hierarchy.childIds, childId);
+    final updatedChildren = _hierarchyService.removeChild(
+      hierarchy.childIds,
+      childId,
+    );
     if (updatedChildren.length == hierarchy.childIds.length) return this;
 
     return copyWith(
@@ -228,126 +231,6 @@ extension HierarchyIndexingExtension<T extends Object> on BaseEntityModel<T> {
   }
 }
 
-/// AI embeddings and scoring extension
-///
-/// Provides getters and methods to access AI-related data.
-extension AIEmbeddingExtension<T extends Object> on BaseEntityModel<T> {
-  /// Whether this entity has any AI embeddings.
-  bool get hasEmbeddings => ai.aiVectors.isNotEmpty;
-
-  /// Whether this entity has any AI scores.
-  bool get hasScores => ai.aiScores.isNotEmpty;
-
-  /// Whether this entity has a valid AI version.
-  bool get hasValidAiVersion => ai.aiVer != null && ai.aiVer!.isNotEmpty;
-
-  /// Gets the AI score for a specific model.
-  ///
-  /// [modelId] - The ID of the AI model.
-  /// Returns the score for the specified model, or null if not found.
-  double? getScore(String modelId) => ai.aiScores[modelId];
-
-  /// Gets the embedding vector for a specific model.
-  ///
-  /// [modelId] - The ID of the AI model.
-  /// Returns the vector for the specified model, or null if not found.
-  List<double>? getVector(String modelId) => ai.aiVectors[modelId];
-
-  /// Checks if this entity has data for a specific AI model.
-  ///
-  /// [modelId] - The ID of the AI model to check.
-  /// Returns true if the entity has embeddings for the specified model.
-  bool hasModel(String modelId) => ai.aiVectors.containsKey(modelId);
-}
-
-/// AI processing and model execution extension
-///
-/// Provides methods to process entities with AI models and store results.
-extension AIProcessingExtension<T extends Object> on BaseEntityModel<T> {
-  /// Applies AI processing results to this entity.
-  ///
-  /// [modelId] - The ID of the AI model used.
-  /// [input] - The input data provided to the AI model.
-  /// [output] - The output data from the AI model.
-  /// [embeddings] - Optional embedding vectors to store.
-  /// [confidence] - Optional confidence score from the AI model.
-  /// [useCache] - Whether to use/update the result cache (default: true).
-  /// Returns an updated entity with the AI processing results.
-  BaseEntityModel<T> applyAIProcessing({
-    required String modelId,
-    required Map<String, dynamic> input,
-    required Map<String, dynamic> output,
-    List<double>? embeddings,
-    double? confidence,
-    bool useCache = true,
-  }) {
-    final timestamp = DateTime.now();
-
-    // More concise handling of embeddings
-    final newEmbeddings = embeddings == null
-        ? ai.aiVectors
-        : {...ai.aiVectors, modelId: embeddings};
-
-    final newMeta = _aiService.getProcessingMeta(
-      currentMeta: ai.aiMeta,
-      modelId: modelId,
-      input: input,
-      output: output,
-      timestamp: timestamp,
-      confidence: confidence,
-      modelVersion: ai.aiVer,
-      useCache: useCache,
-    );
-
-    return copyWith(
-      ai: ai.copyWith(
-        aiVectors: newEmbeddings,
-        aiMeta: newMeta.map((key, value) => MapEntry(key, value.toString())),
-        aiScores: {
-          ...ai.aiScores,
-          if (confidence != null) modelId: confidence,
-        },
-        aiLastRun: timestamp,
-      ),
-    );
-  }
-}
-
-/// AI result caching extension
-///
-/// Provides methods to check and retrieve cached AI results.
-extension AICacheExtension<T extends Object> on BaseEntityModel<T> {
-  /// Checks if a cached result exists for the given model and input.
-  ///
-  /// [modelId] - The ID of the AI model.
-  /// [input] - The input data to check for cached results.
-  /// Returns true if a cached result exists.
-  bool hasCachedResult(String modelId, Map<String, dynamic> input) {
-    final cacheKey = _aiService.generateCacheKey(modelId, input.toString());
-    return _aiService.hasCachedResult(ai.aiMeta, cacheKey);
-  }
-
-  /// Gets a cached result for the given model and input.
-  ///
-  /// [modelId] - The ID of the AI model.
-  /// [input] - The input data to retrieve cached results for.
-  /// [requireLatestVersion] - Whether to only return results from the latest model version.
-  /// Returns the cached result, or null if not found.
-  Map<String, dynamic>? getCachedResult({
-    required String modelId,
-    required Map<String, dynamic> input,
-    bool requireLatestVersion = false,
-  }) {
-    final cacheKey = _aiService.generateCacheKey(modelId, input.toString());
-    return _aiService.getCachedResult(
-      ai.aiMeta,
-      cacheKey,
-      ai.aiVer,
-      requireLatestVersion: requireLatestVersion,
-    );
-  }
-}
-
 /// History tracking extension
 ///
 /// Provides methods to record and manage entity action history.
@@ -360,8 +243,10 @@ extension HistoryExtension<T extends Object> on BaseEntityModel<T> {
   /// [action] - The user action to record.
   /// [isAccessAction] - Whether this is an access action (vs. modification).
   /// Returns an updated entity with the action recorded in history.
-  BaseEntityModel<T> recordAction(UserAction action,
-      {bool isAccessAction = false}) {
+  BaseEntityModel<T> recordAction(
+    UserAction action, {
+    bool isAccessAction = false,
+  }) {
     final history = isAccessAction ? security.accessLog : security.modHistory;
     final updatedHistory = [action, ...history.take(_historyMaxSize - 1)];
 
@@ -406,16 +291,11 @@ extension EntityVersionExtension<T extends Object> on BaseEntityModel<T> {
   /// [isStructural] - Whether this is a structural change (vs. data-only).
   /// [nodeId] - Optional ID of the node making the change.
   /// Returns an updated entity with incremented version numbers.
-  BaseEntityModel<T> incrementVersion(
-      {bool isStructural = false, String? nodeId}) {
+  BaseEntityModel<T> incrementVersion({bool isStructural = false}) {
     return copyWith(
       versioning: version.copyWith(
         dataVer: isStructural ? version.dataVer : version.dataVer + 1,
         structVer: isStructural ? version.structVer + 1 : version.structVer,
-        verVectors: {
-          ...version.verVectors,
-          'node-${nodeId ?? "local"}': version.dataVer + 1,
-        },
       ),
     );
   }
@@ -470,64 +350,4 @@ extension VersionConflictExtension<T extends Object> on BaseEntityModel<T> {
     }
     return this;
   }
-}
-
-/// Core locking functionality extension
-///
-/// Provides methods to lock and unlock entities.
-extension LockingExtension<T extends Object> on BaseEntityModel<T> {
-  /// Whether this entity is currently locked.
-  bool get isLocked => _lockService.isLocked(lock.lockOwner, lock.lockExpiry);
-
-  /// Normalizes a lock duration to ensure it's within acceptable bounds.
-  ///
-  /// [duration] - The requested lock duration.
-  /// Returns a duration that is within the allowed minimum and maximum.
-  Duration normalizeLockDuration(Duration duration) =>
-      _lockService.normalizeLockDuration(duration);
-
-  /// Acquires a lock on this entity.
-  ///
-  /// [user] - The user acquiring the lock.
-  /// [duration] - Optional lock duration (defaults to LockConfig.defaultTimeout).
-  /// [isDistributed] - Whether this is a distributed lock across nodes.
-  /// [nodeId] - Optional ID of the node acquiring the lock (for distributed locks).
-  /// Returns an updated entity with the lock in place.
-  BaseEntityModel<T> acquireLock(
-    UserAction user, {
-    Duration? duration,
-    bool isDistributed = false,
-    String? nodeId,
-  }) {
-    final lockDuration = normalizeLockDuration(
-      duration ?? LockConfig.defaultTimeout,
-    );
-
-    final distLockId = _lockService.generateDistributedLockId(
-      id,
-      nodeId,
-      isDistributed,
-    );
-
-    return copyWith(
-      locking: lock.copyWith(
-        lockOwner: user,
-        lockExpiry: DateTime.now().add(lockDuration),
-        distLockId: distLockId,
-        distLockNode: isDistributed ? nodeId : null,
-      ),
-    );
-  }
-}
-
-/// Distributed lock coordination extension
-///
-/// Provides methods to coordinate locks across distributed systems.
-extension DistributedLockExtension<T extends Object> on BaseEntityModel<T> {
-  /// Checks if there is a lock conflict with another entity.
-  ///
-  /// [other] - The other entity to check for lock conflicts.
-  /// Returns true if a lock conflict is detected.
-  bool hasLockConflict(BaseEntityModel<T> other) =>
-      _lockService.hasLockConflict(lock.distLockId, other.lock.distLockId);
 }

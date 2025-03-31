@@ -24,14 +24,6 @@ class EntityCreateConfig<T extends Object> {
   final DateTime? expiryDate;
   final bool? isPublic;
 
-  // AI features
-  final Map<String, List<double>>? aiVectors;
-  final Map<String, double>? aiScores;
-  final Map<String, String>? aiMeta;
-  final List<String>? aiTags;
-  final Map<String, Object>? aiNotes;
-  final String? aiVer;
-
   EntityCreateConfig({
     required this.name,
     required this.user,
@@ -47,12 +39,6 @@ class EntityCreateConfig<T extends Object> {
     this.stage,
     this.expiryDate,
     this.isPublic,
-    this.aiVectors,
-    this.aiScores,
-    this.aiMeta,
-    this.aiTags,
-    this.aiNotes,
-    this.aiVer,
   });
 }
 
@@ -86,7 +72,8 @@ class EntityFactory {
   };
 
   static BaseEntityModel<T> create<T extends Object>(
-      EntityCreateConfig<T> config) {
+    EntityCreateConfig<T> config,
+  ) {
     if (!_validTypes.contains(T)) {
       throw ArgumentError('Invalid type: ${T.toString()}');
     }
@@ -132,16 +119,6 @@ class EntityFactory {
         expiryDate: config.expiryDate,
       ),
       versioning: const EntityVersioning(),
-      ai: EntityAI(
-        aiVectors: config.aiVectors ?? {},
-        aiScores: config.aiScores ?? {},
-        aiMeta: config.aiMeta ?? {},
-        aiTags: config.aiTags ?? [],
-        aiNotes: config.aiNotes ?? {},
-        aiLastRun: now,
-        aiVer: config.aiVer,
-      ),
-      locking: const EntityLocking(),
     );
 
     // Use extension methods for validation and path processing
@@ -167,14 +144,13 @@ class EntityFactory {
         treePath: entity.sanitizePath(entity.hierarchy.treePath),
         treeDepth: entity.hierarchy.ancestors.length,
       ),
-      versioning: entity.version.copyWith(
-        searchIndex: searchIndex,
-      ),
+      versioning: entity.version.copyWith(searchIndex: searchIndex),
     );
   }
 
   static BaseEntityModel<T> clone<T extends Object>(
-      EntityCloneConfig<T> config) {
+    EntityCloneConfig<T> config,
+  ) {
     final now = DateTime.now();
     final userAction = UserAction.fromAuthUser(config.user);
     final id = EntityId(const Uuid().v4());
@@ -210,15 +186,14 @@ class EntityFactory {
       ),
       classification: EntityClassification(
         tags: config.newTags ?? List<String>.from(source.classification.tags),
-        labels: config.newLabels ??
+        labels:
+            config.newLabels ??
             Map<String, String>.from(source.classification.labels),
         priority: source.classification.priority,
         stage: source.classification.stage,
         expiryDate: source.classification.expiryDate,
       ),
       versioning: source.version,
-      ai: source.ai,
-      locking: const EntityLocking(),
     );
 
     final searchIndex = entity.buildHierarchyIndex();
@@ -227,9 +202,7 @@ class EntityFactory {
         treePath: entity.sanitizePath(entity.hierarchy.treePath),
         treeDepth: entity.hierarchy.ancestors.length,
       ),
-      versioning: entity.version.copyWith(
-        searchIndex: searchIndex,
-      ),
+      versioning: entity.version.copyWith(searchIndex: searchIndex),
     );
   }
 }

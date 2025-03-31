@@ -225,10 +225,7 @@ $EntityIdCopyWith<$Res>? get parentId {
 mixin _$EntitySecurity {
 
 /// User who last accessed the entity
- UserAction? get lastAccessor;/// User who currently has a lock on the entity
- UserAction? get lockOwner;/// When the current lock expires
- DateTime? get lockExpiry;/// User who marked the entity as removed
- UserAction? get remover;/// History of entity modifications
+ UserAction? get lastAccessor;/// History of entity modifications
  List<UserAction> get modHistory;/// Log of entity access events
  List<UserAction> get accessLog;/// Whether the entity is publicly accessible
  bool get isPublic;/// Number of times the entity has been accessed
@@ -243,16 +240,16 @@ $EntitySecurityCopyWith<EntitySecurity> get copyWith => _$EntitySecurityCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntitySecurity&&(identical(other.lastAccessor, lastAccessor) || other.lastAccessor == lastAccessor)&&(identical(other.lockOwner, lockOwner) || other.lockOwner == lockOwner)&&(identical(other.lockExpiry, lockExpiry) || other.lockExpiry == lockExpiry)&&(identical(other.remover, remover) || other.remover == remover)&&const DeepCollectionEquality().equals(other.modHistory, modHistory)&&const DeepCollectionEquality().equals(other.accessLog, accessLog)&&(identical(other.isPublic, isPublic) || other.isPublic == isPublic)&&(identical(other.accessCount, accessCount) || other.accessCount == accessCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntitySecurity&&(identical(other.lastAccessor, lastAccessor) || other.lastAccessor == lastAccessor)&&const DeepCollectionEquality().equals(other.modHistory, modHistory)&&const DeepCollectionEquality().equals(other.accessLog, accessLog)&&(identical(other.isPublic, isPublic) || other.isPublic == isPublic)&&(identical(other.accessCount, accessCount) || other.accessCount == accessCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,lastAccessor,lockOwner,lockExpiry,remover,const DeepCollectionEquality().hash(modHistory),const DeepCollectionEquality().hash(accessLog),isPublic,accessCount);
+int get hashCode => Object.hash(runtimeType,lastAccessor,const DeepCollectionEquality().hash(modHistory),const DeepCollectionEquality().hash(accessLog),isPublic,accessCount);
 
 @override
 String toString() {
-  return 'EntitySecurity(lastAccessor: $lastAccessor, lockOwner: $lockOwner, lockExpiry: $lockExpiry, remover: $remover, modHistory: $modHistory, accessLog: $accessLog, isPublic: $isPublic, accessCount: $accessCount)';
+  return 'EntitySecurity(lastAccessor: $lastAccessor, modHistory: $modHistory, accessLog: $accessLog, isPublic: $isPublic, accessCount: $accessCount)';
 }
 
 
@@ -263,11 +260,11 @@ abstract mixin class $EntitySecurityCopyWith<$Res>  {
   factory $EntitySecurityCopyWith(EntitySecurity value, $Res Function(EntitySecurity) _then) = _$EntitySecurityCopyWithImpl;
 @useResult
 $Res call({
- UserAction? lastAccessor, UserAction? lockOwner, DateTime? lockExpiry, UserAction? remover, List<UserAction> modHistory, List<UserAction> accessLog, bool isPublic, int accessCount
+ UserAction? lastAccessor, List<UserAction> modHistory, List<UserAction> accessLog, bool isPublic, int accessCount
 });
 
 
-$UserActionCopyWith<$Res>? get lastAccessor;$UserActionCopyWith<$Res>? get lockOwner;$UserActionCopyWith<$Res>? get remover;
+$UserActionCopyWith<$Res>? get lastAccessor;
 
 }
 /// @nodoc
@@ -280,12 +277,9 @@ class _$EntitySecurityCopyWithImpl<$Res>
 
 /// Create a copy of EntitySecurity
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? lastAccessor = freezed,Object? lockOwner = freezed,Object? lockExpiry = freezed,Object? remover = freezed,Object? modHistory = null,Object? accessLog = null,Object? isPublic = null,Object? accessCount = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? lastAccessor = freezed,Object? modHistory = null,Object? accessLog = null,Object? isPublic = null,Object? accessCount = null,}) {
   return _then(_self.copyWith(
 lastAccessor: freezed == lastAccessor ? _self.lastAccessor : lastAccessor // ignore: cast_nullable_to_non_nullable
-as UserAction?,lockOwner: freezed == lockOwner ? _self.lockOwner : lockOwner // ignore: cast_nullable_to_non_nullable
-as UserAction?,lockExpiry: freezed == lockExpiry ? _self.lockExpiry : lockExpiry // ignore: cast_nullable_to_non_nullable
-as DateTime?,remover: freezed == remover ? _self.remover : remover // ignore: cast_nullable_to_non_nullable
 as UserAction?,modHistory: null == modHistory ? _self.modHistory : modHistory // ignore: cast_nullable_to_non_nullable
 as List<UserAction>,accessLog: null == accessLog ? _self.accessLog : accessLog // ignore: cast_nullable_to_non_nullable
 as List<UserAction>,isPublic: null == isPublic ? _self.isPublic : isPublic // ignore: cast_nullable_to_non_nullable
@@ -305,30 +299,6 @@ $UserActionCopyWith<$Res>? get lastAccessor {
   return $UserActionCopyWith<$Res>(_self.lastAccessor!, (value) {
     return _then(_self.copyWith(lastAccessor: value));
   });
-}/// Create a copy of EntitySecurity
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserActionCopyWith<$Res>? get lockOwner {
-    if (_self.lockOwner == null) {
-    return null;
-  }
-
-  return $UserActionCopyWith<$Res>(_self.lockOwner!, (value) {
-    return _then(_self.copyWith(lockOwner: value));
-  });
-}/// Create a copy of EntitySecurity
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserActionCopyWith<$Res>? get remover {
-    if (_self.remover == null) {
-    return null;
-  }
-
-  return $UserActionCopyWith<$Res>(_self.remover!, (value) {
-    return _then(_self.copyWith(remover: value));
-  });
 }
 }
 
@@ -337,17 +307,11 @@ $UserActionCopyWith<$Res>? get remover {
 
 
 class _EntitySecurity implements EntitySecurity {
-  const _EntitySecurity({this.lastAccessor, this.lockOwner, this.lockExpiry, this.remover, final  List<UserAction> modHistory = const [], final  List<UserAction> accessLog = const [], this.isPublic = EntityDefaults.isPublic, this.accessCount = EntityDefaults.accessCount}): _modHistory = modHistory,_accessLog = accessLog;
+  const _EntitySecurity({this.lastAccessor, final  List<UserAction> modHistory = const [], final  List<UserAction> accessLog = const [], this.isPublic = EntityDefaults.isPublic, this.accessCount = EntityDefaults.accessCount}): _modHistory = modHistory,_accessLog = accessLog;
   
 
 /// User who last accessed the entity
 @override final  UserAction? lastAccessor;
-/// User who currently has a lock on the entity
-@override final  UserAction? lockOwner;
-/// When the current lock expires
-@override final  DateTime? lockExpiry;
-/// User who marked the entity as removed
-@override final  UserAction? remover;
 /// History of entity modifications
  final  List<UserAction> _modHistory;
 /// History of entity modifications
@@ -381,16 +345,16 @@ _$EntitySecurityCopyWith<_EntitySecurity> get copyWith => __$EntitySecurityCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntitySecurity&&(identical(other.lastAccessor, lastAccessor) || other.lastAccessor == lastAccessor)&&(identical(other.lockOwner, lockOwner) || other.lockOwner == lockOwner)&&(identical(other.lockExpiry, lockExpiry) || other.lockExpiry == lockExpiry)&&(identical(other.remover, remover) || other.remover == remover)&&const DeepCollectionEquality().equals(other._modHistory, _modHistory)&&const DeepCollectionEquality().equals(other._accessLog, _accessLog)&&(identical(other.isPublic, isPublic) || other.isPublic == isPublic)&&(identical(other.accessCount, accessCount) || other.accessCount == accessCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntitySecurity&&(identical(other.lastAccessor, lastAccessor) || other.lastAccessor == lastAccessor)&&const DeepCollectionEquality().equals(other._modHistory, _modHistory)&&const DeepCollectionEquality().equals(other._accessLog, _accessLog)&&(identical(other.isPublic, isPublic) || other.isPublic == isPublic)&&(identical(other.accessCount, accessCount) || other.accessCount == accessCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,lastAccessor,lockOwner,lockExpiry,remover,const DeepCollectionEquality().hash(_modHistory),const DeepCollectionEquality().hash(_accessLog),isPublic,accessCount);
+int get hashCode => Object.hash(runtimeType,lastAccessor,const DeepCollectionEquality().hash(_modHistory),const DeepCollectionEquality().hash(_accessLog),isPublic,accessCount);
 
 @override
 String toString() {
-  return 'EntitySecurity(lastAccessor: $lastAccessor, lockOwner: $lockOwner, lockExpiry: $lockExpiry, remover: $remover, modHistory: $modHistory, accessLog: $accessLog, isPublic: $isPublic, accessCount: $accessCount)';
+  return 'EntitySecurity(lastAccessor: $lastAccessor, modHistory: $modHistory, accessLog: $accessLog, isPublic: $isPublic, accessCount: $accessCount)';
 }
 
 
@@ -401,11 +365,11 @@ abstract mixin class _$EntitySecurityCopyWith<$Res> implements $EntitySecurityCo
   factory _$EntitySecurityCopyWith(_EntitySecurity value, $Res Function(_EntitySecurity) _then) = __$EntitySecurityCopyWithImpl;
 @override @useResult
 $Res call({
- UserAction? lastAccessor, UserAction? lockOwner, DateTime? lockExpiry, UserAction? remover, List<UserAction> modHistory, List<UserAction> accessLog, bool isPublic, int accessCount
+ UserAction? lastAccessor, List<UserAction> modHistory, List<UserAction> accessLog, bool isPublic, int accessCount
 });
 
 
-@override $UserActionCopyWith<$Res>? get lastAccessor;@override $UserActionCopyWith<$Res>? get lockOwner;@override $UserActionCopyWith<$Res>? get remover;
+@override $UserActionCopyWith<$Res>? get lastAccessor;
 
 }
 /// @nodoc
@@ -418,12 +382,9 @@ class __$EntitySecurityCopyWithImpl<$Res>
 
 /// Create a copy of EntitySecurity
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? lastAccessor = freezed,Object? lockOwner = freezed,Object? lockExpiry = freezed,Object? remover = freezed,Object? modHistory = null,Object? accessLog = null,Object? isPublic = null,Object? accessCount = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? lastAccessor = freezed,Object? modHistory = null,Object? accessLog = null,Object? isPublic = null,Object? accessCount = null,}) {
   return _then(_EntitySecurity(
 lastAccessor: freezed == lastAccessor ? _self.lastAccessor : lastAccessor // ignore: cast_nullable_to_non_nullable
-as UserAction?,lockOwner: freezed == lockOwner ? _self.lockOwner : lockOwner // ignore: cast_nullable_to_non_nullable
-as UserAction?,lockExpiry: freezed == lockExpiry ? _self.lockExpiry : lockExpiry // ignore: cast_nullable_to_non_nullable
-as DateTime?,remover: freezed == remover ? _self.remover : remover // ignore: cast_nullable_to_non_nullable
 as UserAction?,modHistory: null == modHistory ? _self._modHistory : modHistory // ignore: cast_nullable_to_non_nullable
 as List<UserAction>,accessLog: null == accessLog ? _self._accessLog : accessLog // ignore: cast_nullable_to_non_nullable
 as List<UserAction>,isPublic: null == isPublic ? _self.isPublic : isPublic // ignore: cast_nullable_to_non_nullable
@@ -443,30 +404,6 @@ $UserActionCopyWith<$Res>? get lastAccessor {
 
   return $UserActionCopyWith<$Res>(_self.lastAccessor!, (value) {
     return _then(_self.copyWith(lastAccessor: value));
-  });
-}/// Create a copy of EntitySecurity
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserActionCopyWith<$Res>? get lockOwner {
-    if (_self.lockOwner == null) {
-    return null;
-  }
-
-  return $UserActionCopyWith<$Res>(_self.lockOwner!, (value) {
-    return _then(_self.copyWith(lockOwner: value));
-  });
-}/// Create a copy of EntitySecurity
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserActionCopyWith<$Res>? get remover {
-    if (_self.remover == null) {
-    return null;
-  }
-
-  return $UserActionCopyWith<$Res>(_self.remover!, (value) {
-    return _then(_self.copyWith(remover: value));
   });
 }
 }
@@ -854,402 +791,6 @@ as Map<String, int>,
 }
 
 /// @nodoc
-mixin _$EntityAI {
-
-/// Vector embeddings for AI operations
- Map<String, List<double>> get aiVectors;/// Scores from AI evaluations
- Map<String, double> get aiScores;/// General AI-related metadata
- Map<String, String> get aiMeta;/// AI-generated or AI-specific tags
- List<String> get aiTags;/// Additional AI-related notes or data
- Map<String, Object> get aiNotes;/// When AI processing was last performed
- DateTime? get aiLastRun;/// Version of AI model/system used
- String? get aiVer;
-/// Create a copy of EntityAI
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$EntityAICopyWith<EntityAI> get copyWith => _$EntityAICopyWithImpl<EntityAI>(this as EntityAI, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntityAI&&const DeepCollectionEquality().equals(other.aiVectors, aiVectors)&&const DeepCollectionEquality().equals(other.aiScores, aiScores)&&const DeepCollectionEquality().equals(other.aiMeta, aiMeta)&&const DeepCollectionEquality().equals(other.aiTags, aiTags)&&const DeepCollectionEquality().equals(other.aiNotes, aiNotes)&&(identical(other.aiLastRun, aiLastRun) || other.aiLastRun == aiLastRun)&&(identical(other.aiVer, aiVer) || other.aiVer == aiVer));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(aiVectors),const DeepCollectionEquality().hash(aiScores),const DeepCollectionEquality().hash(aiMeta),const DeepCollectionEquality().hash(aiTags),const DeepCollectionEquality().hash(aiNotes),aiLastRun,aiVer);
-
-@override
-String toString() {
-  return 'EntityAI(aiVectors: $aiVectors, aiScores: $aiScores, aiMeta: $aiMeta, aiTags: $aiTags, aiNotes: $aiNotes, aiLastRun: $aiLastRun, aiVer: $aiVer)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $EntityAICopyWith<$Res>  {
-  factory $EntityAICopyWith(EntityAI value, $Res Function(EntityAI) _then) = _$EntityAICopyWithImpl;
-@useResult
-$Res call({
- Map<String, List<double>> aiVectors, Map<String, double> aiScores, Map<String, String> aiMeta, List<String> aiTags, Map<String, Object> aiNotes, DateTime? aiLastRun, String? aiVer
-});
-
-
-
-
-}
-/// @nodoc
-class _$EntityAICopyWithImpl<$Res>
-    implements $EntityAICopyWith<$Res> {
-  _$EntityAICopyWithImpl(this._self, this._then);
-
-  final EntityAI _self;
-  final $Res Function(EntityAI) _then;
-
-/// Create a copy of EntityAI
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? aiVectors = null,Object? aiScores = null,Object? aiMeta = null,Object? aiTags = null,Object? aiNotes = null,Object? aiLastRun = freezed,Object? aiVer = freezed,}) {
-  return _then(_self.copyWith(
-aiVectors: null == aiVectors ? _self.aiVectors : aiVectors // ignore: cast_nullable_to_non_nullable
-as Map<String, List<double>>,aiScores: null == aiScores ? _self.aiScores : aiScores // ignore: cast_nullable_to_non_nullable
-as Map<String, double>,aiMeta: null == aiMeta ? _self.aiMeta : aiMeta // ignore: cast_nullable_to_non_nullable
-as Map<String, String>,aiTags: null == aiTags ? _self.aiTags : aiTags // ignore: cast_nullable_to_non_nullable
-as List<String>,aiNotes: null == aiNotes ? _self.aiNotes : aiNotes // ignore: cast_nullable_to_non_nullable
-as Map<String, Object>,aiLastRun: freezed == aiLastRun ? _self.aiLastRun : aiLastRun // ignore: cast_nullable_to_non_nullable
-as DateTime?,aiVer: freezed == aiVer ? _self.aiVer : aiVer // ignore: cast_nullable_to_non_nullable
-as String?,
-  ));
-}
-
-}
-
-
-/// @nodoc
-
-
-class _EntityAI implements EntityAI {
-  const _EntityAI({final  Map<String, List<double>> aiVectors = const {}, final  Map<String, double> aiScores = const {}, final  Map<String, String> aiMeta = const {}, final  List<String> aiTags = const [], final  Map<String, Object> aiNotes = const {}, this.aiLastRun, this.aiVer}): _aiVectors = aiVectors,_aiScores = aiScores,_aiMeta = aiMeta,_aiTags = aiTags,_aiNotes = aiNotes;
-  
-
-/// Vector embeddings for AI operations
- final  Map<String, List<double>> _aiVectors;
-/// Vector embeddings for AI operations
-@override@JsonKey() Map<String, List<double>> get aiVectors {
-  if (_aiVectors is EqualUnmodifiableMapView) return _aiVectors;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_aiVectors);
-}
-
-/// Scores from AI evaluations
- final  Map<String, double> _aiScores;
-/// Scores from AI evaluations
-@override@JsonKey() Map<String, double> get aiScores {
-  if (_aiScores is EqualUnmodifiableMapView) return _aiScores;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_aiScores);
-}
-
-/// General AI-related metadata
- final  Map<String, String> _aiMeta;
-/// General AI-related metadata
-@override@JsonKey() Map<String, String> get aiMeta {
-  if (_aiMeta is EqualUnmodifiableMapView) return _aiMeta;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_aiMeta);
-}
-
-/// AI-generated or AI-specific tags
- final  List<String> _aiTags;
-/// AI-generated or AI-specific tags
-@override@JsonKey() List<String> get aiTags {
-  if (_aiTags is EqualUnmodifiableListView) return _aiTags;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_aiTags);
-}
-
-/// Additional AI-related notes or data
- final  Map<String, Object> _aiNotes;
-/// Additional AI-related notes or data
-@override@JsonKey() Map<String, Object> get aiNotes {
-  if (_aiNotes is EqualUnmodifiableMapView) return _aiNotes;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_aiNotes);
-}
-
-/// When AI processing was last performed
-@override final  DateTime? aiLastRun;
-/// Version of AI model/system used
-@override final  String? aiVer;
-
-/// Create a copy of EntityAI
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$EntityAICopyWith<_EntityAI> get copyWith => __$EntityAICopyWithImpl<_EntityAI>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntityAI&&const DeepCollectionEquality().equals(other._aiVectors, _aiVectors)&&const DeepCollectionEquality().equals(other._aiScores, _aiScores)&&const DeepCollectionEquality().equals(other._aiMeta, _aiMeta)&&const DeepCollectionEquality().equals(other._aiTags, _aiTags)&&const DeepCollectionEquality().equals(other._aiNotes, _aiNotes)&&(identical(other.aiLastRun, aiLastRun) || other.aiLastRun == aiLastRun)&&(identical(other.aiVer, aiVer) || other.aiVer == aiVer));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_aiVectors),const DeepCollectionEquality().hash(_aiScores),const DeepCollectionEquality().hash(_aiMeta),const DeepCollectionEquality().hash(_aiTags),const DeepCollectionEquality().hash(_aiNotes),aiLastRun,aiVer);
-
-@override
-String toString() {
-  return 'EntityAI(aiVectors: $aiVectors, aiScores: $aiScores, aiMeta: $aiMeta, aiTags: $aiTags, aiNotes: $aiNotes, aiLastRun: $aiLastRun, aiVer: $aiVer)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$EntityAICopyWith<$Res> implements $EntityAICopyWith<$Res> {
-  factory _$EntityAICopyWith(_EntityAI value, $Res Function(_EntityAI) _then) = __$EntityAICopyWithImpl;
-@override @useResult
-$Res call({
- Map<String, List<double>> aiVectors, Map<String, double> aiScores, Map<String, String> aiMeta, List<String> aiTags, Map<String, Object> aiNotes, DateTime? aiLastRun, String? aiVer
-});
-
-
-
-
-}
-/// @nodoc
-class __$EntityAICopyWithImpl<$Res>
-    implements _$EntityAICopyWith<$Res> {
-  __$EntityAICopyWithImpl(this._self, this._then);
-
-  final _EntityAI _self;
-  final $Res Function(_EntityAI) _then;
-
-/// Create a copy of EntityAI
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? aiVectors = null,Object? aiScores = null,Object? aiMeta = null,Object? aiTags = null,Object? aiNotes = null,Object? aiLastRun = freezed,Object? aiVer = freezed,}) {
-  return _then(_EntityAI(
-aiVectors: null == aiVectors ? _self._aiVectors : aiVectors // ignore: cast_nullable_to_non_nullable
-as Map<String, List<double>>,aiScores: null == aiScores ? _self._aiScores : aiScores // ignore: cast_nullable_to_non_nullable
-as Map<String, double>,aiMeta: null == aiMeta ? _self._aiMeta : aiMeta // ignore: cast_nullable_to_non_nullable
-as Map<String, String>,aiTags: null == aiTags ? _self._aiTags : aiTags // ignore: cast_nullable_to_non_nullable
-as List<String>,aiNotes: null == aiNotes ? _self._aiNotes : aiNotes // ignore: cast_nullable_to_non_nullable
-as Map<String, Object>,aiLastRun: freezed == aiLastRun ? _self.aiLastRun : aiLastRun // ignore: cast_nullable_to_non_nullable
-as DateTime?,aiVer: freezed == aiVer ? _self.aiVer : aiVer // ignore: cast_nullable_to_non_nullable
-as String?,
-  ));
-}
-
-
-}
-
-/// @nodoc
-mixin _$EntityLocking {
-
-/// Distributed lock identifier
- String? get distLockId;/// When the distributed lock expires
- DateTime? get distLockExpiry;/// Node/server holding the distributed lock
- String? get distLockNode;/// Additional lock-related metadata
- Map<String, dynamic> get lockMeta;/// Version vectors for distributed coordination
- Map<String, int> get verVectors;/// Duration before lock automatically expires
- Duration get lockTimeout;/// User who owns the lock
- UserAction? get lockOwner;/// When the current lock expires
- DateTime? get lockExpiry;
-/// Create a copy of EntityLocking
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$EntityLockingCopyWith<EntityLocking> get copyWith => _$EntityLockingCopyWithImpl<EntityLocking>(this as EntityLocking, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntityLocking&&(identical(other.distLockId, distLockId) || other.distLockId == distLockId)&&(identical(other.distLockExpiry, distLockExpiry) || other.distLockExpiry == distLockExpiry)&&(identical(other.distLockNode, distLockNode) || other.distLockNode == distLockNode)&&const DeepCollectionEquality().equals(other.lockMeta, lockMeta)&&const DeepCollectionEquality().equals(other.verVectors, verVectors)&&(identical(other.lockTimeout, lockTimeout) || other.lockTimeout == lockTimeout)&&(identical(other.lockOwner, lockOwner) || other.lockOwner == lockOwner)&&(identical(other.lockExpiry, lockExpiry) || other.lockExpiry == lockExpiry));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,distLockId,distLockExpiry,distLockNode,const DeepCollectionEquality().hash(lockMeta),const DeepCollectionEquality().hash(verVectors),lockTimeout,lockOwner,lockExpiry);
-
-@override
-String toString() {
-  return 'EntityLocking(distLockId: $distLockId, distLockExpiry: $distLockExpiry, distLockNode: $distLockNode, lockMeta: $lockMeta, verVectors: $verVectors, lockTimeout: $lockTimeout, lockOwner: $lockOwner, lockExpiry: $lockExpiry)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $EntityLockingCopyWith<$Res>  {
-  factory $EntityLockingCopyWith(EntityLocking value, $Res Function(EntityLocking) _then) = _$EntityLockingCopyWithImpl;
-@useResult
-$Res call({
- String? distLockId, DateTime? distLockExpiry, String? distLockNode, Map<String, dynamic> lockMeta, Map<String, int> verVectors, Duration lockTimeout, UserAction? lockOwner, DateTime? lockExpiry
-});
-
-
-$UserActionCopyWith<$Res>? get lockOwner;
-
-}
-/// @nodoc
-class _$EntityLockingCopyWithImpl<$Res>
-    implements $EntityLockingCopyWith<$Res> {
-  _$EntityLockingCopyWithImpl(this._self, this._then);
-
-  final EntityLocking _self;
-  final $Res Function(EntityLocking) _then;
-
-/// Create a copy of EntityLocking
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? distLockId = freezed,Object? distLockExpiry = freezed,Object? distLockNode = freezed,Object? lockMeta = null,Object? verVectors = null,Object? lockTimeout = null,Object? lockOwner = freezed,Object? lockExpiry = freezed,}) {
-  return _then(_self.copyWith(
-distLockId: freezed == distLockId ? _self.distLockId : distLockId // ignore: cast_nullable_to_non_nullable
-as String?,distLockExpiry: freezed == distLockExpiry ? _self.distLockExpiry : distLockExpiry // ignore: cast_nullable_to_non_nullable
-as DateTime?,distLockNode: freezed == distLockNode ? _self.distLockNode : distLockNode // ignore: cast_nullable_to_non_nullable
-as String?,lockMeta: null == lockMeta ? _self.lockMeta : lockMeta // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,verVectors: null == verVectors ? _self.verVectors : verVectors // ignore: cast_nullable_to_non_nullable
-as Map<String, int>,lockTimeout: null == lockTimeout ? _self.lockTimeout : lockTimeout // ignore: cast_nullable_to_non_nullable
-as Duration,lockOwner: freezed == lockOwner ? _self.lockOwner : lockOwner // ignore: cast_nullable_to_non_nullable
-as UserAction?,lockExpiry: freezed == lockExpiry ? _self.lockExpiry : lockExpiry // ignore: cast_nullable_to_non_nullable
-as DateTime?,
-  ));
-}
-/// Create a copy of EntityLocking
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserActionCopyWith<$Res>? get lockOwner {
-    if (_self.lockOwner == null) {
-    return null;
-  }
-
-  return $UserActionCopyWith<$Res>(_self.lockOwner!, (value) {
-    return _then(_self.copyWith(lockOwner: value));
-  });
-}
-}
-
-
-/// @nodoc
-
-
-class _EntityLocking implements EntityLocking {
-  const _EntityLocking({this.distLockId, this.distLockExpiry, this.distLockNode, final  Map<String, dynamic> lockMeta = const {}, final  Map<String, int> verVectors = const {}, this.lockTimeout = LockConfig.defaultTimeout, this.lockOwner, this.lockExpiry}): _lockMeta = lockMeta,_verVectors = verVectors;
-  
-
-/// Distributed lock identifier
-@override final  String? distLockId;
-/// When the distributed lock expires
-@override final  DateTime? distLockExpiry;
-/// Node/server holding the distributed lock
-@override final  String? distLockNode;
-/// Additional lock-related metadata
- final  Map<String, dynamic> _lockMeta;
-/// Additional lock-related metadata
-@override@JsonKey() Map<String, dynamic> get lockMeta {
-  if (_lockMeta is EqualUnmodifiableMapView) return _lockMeta;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_lockMeta);
-}
-
-/// Version vectors for distributed coordination
- final  Map<String, int> _verVectors;
-/// Version vectors for distributed coordination
-@override@JsonKey() Map<String, int> get verVectors {
-  if (_verVectors is EqualUnmodifiableMapView) return _verVectors;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_verVectors);
-}
-
-/// Duration before lock automatically expires
-@override@JsonKey() final  Duration lockTimeout;
-/// User who owns the lock
-@override final  UserAction? lockOwner;
-/// When the current lock expires
-@override final  DateTime? lockExpiry;
-
-/// Create a copy of EntityLocking
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$EntityLockingCopyWith<_EntityLocking> get copyWith => __$EntityLockingCopyWithImpl<_EntityLocking>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntityLocking&&(identical(other.distLockId, distLockId) || other.distLockId == distLockId)&&(identical(other.distLockExpiry, distLockExpiry) || other.distLockExpiry == distLockExpiry)&&(identical(other.distLockNode, distLockNode) || other.distLockNode == distLockNode)&&const DeepCollectionEquality().equals(other._lockMeta, _lockMeta)&&const DeepCollectionEquality().equals(other._verVectors, _verVectors)&&(identical(other.lockTimeout, lockTimeout) || other.lockTimeout == lockTimeout)&&(identical(other.lockOwner, lockOwner) || other.lockOwner == lockOwner)&&(identical(other.lockExpiry, lockExpiry) || other.lockExpiry == lockExpiry));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,distLockId,distLockExpiry,distLockNode,const DeepCollectionEquality().hash(_lockMeta),const DeepCollectionEquality().hash(_verVectors),lockTimeout,lockOwner,lockExpiry);
-
-@override
-String toString() {
-  return 'EntityLocking(distLockId: $distLockId, distLockExpiry: $distLockExpiry, distLockNode: $distLockNode, lockMeta: $lockMeta, verVectors: $verVectors, lockTimeout: $lockTimeout, lockOwner: $lockOwner, lockExpiry: $lockExpiry)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$EntityLockingCopyWith<$Res> implements $EntityLockingCopyWith<$Res> {
-  factory _$EntityLockingCopyWith(_EntityLocking value, $Res Function(_EntityLocking) _then) = __$EntityLockingCopyWithImpl;
-@override @useResult
-$Res call({
- String? distLockId, DateTime? distLockExpiry, String? distLockNode, Map<String, dynamic> lockMeta, Map<String, int> verVectors, Duration lockTimeout, UserAction? lockOwner, DateTime? lockExpiry
-});
-
-
-@override $UserActionCopyWith<$Res>? get lockOwner;
-
-}
-/// @nodoc
-class __$EntityLockingCopyWithImpl<$Res>
-    implements _$EntityLockingCopyWith<$Res> {
-  __$EntityLockingCopyWithImpl(this._self, this._then);
-
-  final _EntityLocking _self;
-  final $Res Function(_EntityLocking) _then;
-
-/// Create a copy of EntityLocking
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? distLockId = freezed,Object? distLockExpiry = freezed,Object? distLockNode = freezed,Object? lockMeta = null,Object? verVectors = null,Object? lockTimeout = null,Object? lockOwner = freezed,Object? lockExpiry = freezed,}) {
-  return _then(_EntityLocking(
-distLockId: freezed == distLockId ? _self.distLockId : distLockId // ignore: cast_nullable_to_non_nullable
-as String?,distLockExpiry: freezed == distLockExpiry ? _self.distLockExpiry : distLockExpiry // ignore: cast_nullable_to_non_nullable
-as DateTime?,distLockNode: freezed == distLockNode ? _self.distLockNode : distLockNode // ignore: cast_nullable_to_non_nullable
-as String?,lockMeta: null == lockMeta ? _self._lockMeta : lockMeta // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,verVectors: null == verVectors ? _self._verVectors : verVectors // ignore: cast_nullable_to_non_nullable
-as Map<String, int>,lockTimeout: null == lockTimeout ? _self.lockTimeout : lockTimeout // ignore: cast_nullable_to_non_nullable
-as Duration,lockOwner: freezed == lockOwner ? _self.lockOwner : lockOwner // ignore: cast_nullable_to_non_nullable
-as UserAction?,lockExpiry: freezed == lockExpiry ? _self.lockExpiry : lockExpiry // ignore: cast_nullable_to_non_nullable
-as DateTime?,
-  ));
-}
-
-/// Create a copy of EntityLocking
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserActionCopyWith<$Res>? get lockOwner {
-    if (_self.lockOwner == null) {
-    return null;
-  }
-
-  return $UserActionCopyWith<$Res>(_self.lockOwner!, (value) {
-    return _then(_self.copyWith(lockOwner: value));
-  });
-}
-}
-
-/// @nodoc
 mixin _$BaseEntityModel<T extends Object> {
 
 /// Core entity data containing essential properties
@@ -1257,9 +798,7 @@ mixin _$BaseEntityModel<T extends Object> {
  EntityHierarchy get hierarchy;/// Component for access control and security
  EntitySecurity get security;/// Component for organization and workflow
  EntityClassification get classification;/// Component for change tracking and history
- EntityVersioning get versioning;/// Component for AI-related features
- EntityAI get ai;/// Component for concurrent access control
- EntityLocking get locking;/// Optional extra data of type T
+ EntityVersioning get versioning;/// Optional extra data of type T
  T? get extraData;
 /// Create a copy of BaseEntityModel
 /// with the given fields replaced by the non-null parameter values.
@@ -1271,16 +810,16 @@ $BaseEntityModelCopyWith<T, BaseEntityModel<T>> get copyWith => _$BaseEntityMode
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BaseEntityModel<T>&&(identical(other.core, core) || other.core == core)&&(identical(other.hierarchy, hierarchy) || other.hierarchy == hierarchy)&&(identical(other.security, security) || other.security == security)&&(identical(other.classification, classification) || other.classification == classification)&&(identical(other.versioning, versioning) || other.versioning == versioning)&&(identical(other.ai, ai) || other.ai == ai)&&(identical(other.locking, locking) || other.locking == locking)&&const DeepCollectionEquality().equals(other.extraData, extraData));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BaseEntityModel<T>&&(identical(other.core, core) || other.core == core)&&(identical(other.hierarchy, hierarchy) || other.hierarchy == hierarchy)&&(identical(other.security, security) || other.security == security)&&(identical(other.classification, classification) || other.classification == classification)&&(identical(other.versioning, versioning) || other.versioning == versioning)&&const DeepCollectionEquality().equals(other.extraData, extraData));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,core,hierarchy,security,classification,versioning,ai,locking,const DeepCollectionEquality().hash(extraData));
+int get hashCode => Object.hash(runtimeType,core,hierarchy,security,classification,versioning,const DeepCollectionEquality().hash(extraData));
 
 @override
 String toString() {
-  return 'BaseEntityModel<$T>(core: $core, hierarchy: $hierarchy, security: $security, classification: $classification, versioning: $versioning, ai: $ai, locking: $locking, extraData: $extraData)';
+  return 'BaseEntityModel<$T>(core: $core, hierarchy: $hierarchy, security: $security, classification: $classification, versioning: $versioning, extraData: $extraData)';
 }
 
 
@@ -1291,11 +830,11 @@ abstract mixin class $BaseEntityModelCopyWith<T extends Object,$Res>  {
   factory $BaseEntityModelCopyWith(BaseEntityModel<T> value, $Res Function(BaseEntityModel<T>) _then) = _$BaseEntityModelCopyWithImpl;
 @useResult
 $Res call({
- CoreEntity<T> core, EntityHierarchy hierarchy, EntitySecurity security, EntityClassification classification, EntityVersioning versioning, EntityAI ai, EntityLocking locking, T? extraData
+ CoreEntity<T> core, EntityHierarchy hierarchy, EntitySecurity security, EntityClassification classification, EntityVersioning versioning, T? extraData
 });
 
 
-$CoreEntityCopyWith<T, $Res> get core;$EntityHierarchyCopyWith<$Res> get hierarchy;$EntitySecurityCopyWith<$Res> get security;$EntityClassificationCopyWith<$Res> get classification;$EntityVersioningCopyWith<$Res> get versioning;$EntityAICopyWith<$Res> get ai;$EntityLockingCopyWith<$Res> get locking;
+$CoreEntityCopyWith<T, $Res> get core;$EntityHierarchyCopyWith<$Res> get hierarchy;$EntitySecurityCopyWith<$Res> get security;$EntityClassificationCopyWith<$Res> get classification;$EntityVersioningCopyWith<$Res> get versioning;
 
 }
 /// @nodoc
@@ -1308,16 +847,14 @@ class _$BaseEntityModelCopyWithImpl<T extends Object,$Res>
 
 /// Create a copy of BaseEntityModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? core = null,Object? hierarchy = null,Object? security = null,Object? classification = null,Object? versioning = null,Object? ai = null,Object? locking = null,Object? extraData = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? core = null,Object? hierarchy = null,Object? security = null,Object? classification = null,Object? versioning = null,Object? extraData = freezed,}) {
   return _then(_self.copyWith(
 core: null == core ? _self.core : core // ignore: cast_nullable_to_non_nullable
 as CoreEntity<T>,hierarchy: null == hierarchy ? _self.hierarchy : hierarchy // ignore: cast_nullable_to_non_nullable
 as EntityHierarchy,security: null == security ? _self.security : security // ignore: cast_nullable_to_non_nullable
 as EntitySecurity,classification: null == classification ? _self.classification : classification // ignore: cast_nullable_to_non_nullable
 as EntityClassification,versioning: null == versioning ? _self.versioning : versioning // ignore: cast_nullable_to_non_nullable
-as EntityVersioning,ai: null == ai ? _self.ai : ai // ignore: cast_nullable_to_non_nullable
-as EntityAI,locking: null == locking ? _self.locking : locking // ignore: cast_nullable_to_non_nullable
-as EntityLocking,extraData: freezed == extraData ? _self.extraData : extraData // ignore: cast_nullable_to_non_nullable
+as EntityVersioning,extraData: freezed == extraData ? _self.extraData : extraData // ignore: cast_nullable_to_non_nullable
 as T?,
   ));
 }
@@ -1366,24 +903,6 @@ $EntityVersioningCopyWith<$Res> get versioning {
   return $EntityVersioningCopyWith<$Res>(_self.versioning, (value) {
     return _then(_self.copyWith(versioning: value));
   });
-}/// Create a copy of BaseEntityModel
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$EntityAICopyWith<$Res> get ai {
-  
-  return $EntityAICopyWith<$Res>(_self.ai, (value) {
-    return _then(_self.copyWith(ai: value));
-  });
-}/// Create a copy of BaseEntityModel
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$EntityLockingCopyWith<$Res> get locking {
-  
-  return $EntityLockingCopyWith<$Res>(_self.locking, (value) {
-    return _then(_self.copyWith(locking: value));
-  });
 }
 }
 
@@ -1392,7 +911,7 @@ $EntityLockingCopyWith<$Res> get locking {
 
 
 class _BaseEntityModel<T extends Object> extends BaseEntityModel<T> {
-  const _BaseEntityModel({required this.core, required this.hierarchy, required this.security, required this.classification, required this.versioning, required this.ai, required this.locking, this.extraData}): super._();
+  const _BaseEntityModel({required this.core, required this.hierarchy, required this.security, required this.classification, required this.versioning, this.extraData}): super._();
   
 
 /// Core entity data containing essential properties
@@ -1405,10 +924,6 @@ class _BaseEntityModel<T extends Object> extends BaseEntityModel<T> {
 @override final  EntityClassification classification;
 /// Component for change tracking and history
 @override final  EntityVersioning versioning;
-/// Component for AI-related features
-@override final  EntityAI ai;
-/// Component for concurrent access control
-@override final  EntityLocking locking;
 /// Optional extra data of type T
 @override final  T? extraData;
 
@@ -1422,16 +937,16 @@ _$BaseEntityModelCopyWith<T, _BaseEntityModel<T>> get copyWith => __$BaseEntityM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BaseEntityModel<T>&&(identical(other.core, core) || other.core == core)&&(identical(other.hierarchy, hierarchy) || other.hierarchy == hierarchy)&&(identical(other.security, security) || other.security == security)&&(identical(other.classification, classification) || other.classification == classification)&&(identical(other.versioning, versioning) || other.versioning == versioning)&&(identical(other.ai, ai) || other.ai == ai)&&(identical(other.locking, locking) || other.locking == locking)&&const DeepCollectionEquality().equals(other.extraData, extraData));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BaseEntityModel<T>&&(identical(other.core, core) || other.core == core)&&(identical(other.hierarchy, hierarchy) || other.hierarchy == hierarchy)&&(identical(other.security, security) || other.security == security)&&(identical(other.classification, classification) || other.classification == classification)&&(identical(other.versioning, versioning) || other.versioning == versioning)&&const DeepCollectionEquality().equals(other.extraData, extraData));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,core,hierarchy,security,classification,versioning,ai,locking,const DeepCollectionEquality().hash(extraData));
+int get hashCode => Object.hash(runtimeType,core,hierarchy,security,classification,versioning,const DeepCollectionEquality().hash(extraData));
 
 @override
 String toString() {
-  return 'BaseEntityModel<$T>(core: $core, hierarchy: $hierarchy, security: $security, classification: $classification, versioning: $versioning, ai: $ai, locking: $locking, extraData: $extraData)';
+  return 'BaseEntityModel<$T>(core: $core, hierarchy: $hierarchy, security: $security, classification: $classification, versioning: $versioning, extraData: $extraData)';
 }
 
 
@@ -1442,11 +957,11 @@ abstract mixin class _$BaseEntityModelCopyWith<T extends Object,$Res> implements
   factory _$BaseEntityModelCopyWith(_BaseEntityModel<T> value, $Res Function(_BaseEntityModel<T>) _then) = __$BaseEntityModelCopyWithImpl;
 @override @useResult
 $Res call({
- CoreEntity<T> core, EntityHierarchy hierarchy, EntitySecurity security, EntityClassification classification, EntityVersioning versioning, EntityAI ai, EntityLocking locking, T? extraData
+ CoreEntity<T> core, EntityHierarchy hierarchy, EntitySecurity security, EntityClassification classification, EntityVersioning versioning, T? extraData
 });
 
 
-@override $CoreEntityCopyWith<T, $Res> get core;@override $EntityHierarchyCopyWith<$Res> get hierarchy;@override $EntitySecurityCopyWith<$Res> get security;@override $EntityClassificationCopyWith<$Res> get classification;@override $EntityVersioningCopyWith<$Res> get versioning;@override $EntityAICopyWith<$Res> get ai;@override $EntityLockingCopyWith<$Res> get locking;
+@override $CoreEntityCopyWith<T, $Res> get core;@override $EntityHierarchyCopyWith<$Res> get hierarchy;@override $EntitySecurityCopyWith<$Res> get security;@override $EntityClassificationCopyWith<$Res> get classification;@override $EntityVersioningCopyWith<$Res> get versioning;
 
 }
 /// @nodoc
@@ -1459,16 +974,14 @@ class __$BaseEntityModelCopyWithImpl<T extends Object,$Res>
 
 /// Create a copy of BaseEntityModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? core = null,Object? hierarchy = null,Object? security = null,Object? classification = null,Object? versioning = null,Object? ai = null,Object? locking = null,Object? extraData = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? core = null,Object? hierarchy = null,Object? security = null,Object? classification = null,Object? versioning = null,Object? extraData = freezed,}) {
   return _then(_BaseEntityModel<T>(
 core: null == core ? _self.core : core // ignore: cast_nullable_to_non_nullable
 as CoreEntity<T>,hierarchy: null == hierarchy ? _self.hierarchy : hierarchy // ignore: cast_nullable_to_non_nullable
 as EntityHierarchy,security: null == security ? _self.security : security // ignore: cast_nullable_to_non_nullable
 as EntitySecurity,classification: null == classification ? _self.classification : classification // ignore: cast_nullable_to_non_nullable
 as EntityClassification,versioning: null == versioning ? _self.versioning : versioning // ignore: cast_nullable_to_non_nullable
-as EntityVersioning,ai: null == ai ? _self.ai : ai // ignore: cast_nullable_to_non_nullable
-as EntityAI,locking: null == locking ? _self.locking : locking // ignore: cast_nullable_to_non_nullable
-as EntityLocking,extraData: freezed == extraData ? _self.extraData : extraData // ignore: cast_nullable_to_non_nullable
+as EntityVersioning,extraData: freezed == extraData ? _self.extraData : extraData // ignore: cast_nullable_to_non_nullable
 as T?,
   ));
 }
@@ -1517,24 +1030,6 @@ $EntityVersioningCopyWith<$Res> get versioning {
   
   return $EntityVersioningCopyWith<$Res>(_self.versioning, (value) {
     return _then(_self.copyWith(versioning: value));
-  });
-}/// Create a copy of BaseEntityModel
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$EntityAICopyWith<$Res> get ai {
-  
-  return $EntityAICopyWith<$Res>(_self.ai, (value) {
-    return _then(_self.copyWith(ai: value));
-  });
-}/// Create a copy of BaseEntityModel
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$EntityLockingCopyWith<$Res> get locking {
-  
-  return $EntityLockingCopyWith<$Res>(_self.locking, (value) {
-    return _then(_self.copyWith(locking: value));
   });
 }
 }

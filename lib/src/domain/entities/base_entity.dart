@@ -6,7 +6,6 @@ part 'base_entity.g.dart';
 
 /// Global type aliases for improved readability and maintenance
 typedef EntityVersionVector = Map<String, int>;
-typedef EntityLockMetadata = Map<String, dynamic>;
 typedef EntityEventMeta = Map<String, Object>;
 typedef EntitySearchIndex = Map<String, Object>;
 
@@ -59,21 +58,6 @@ abstract class EntityDefaults {
   static const String invalidPathChars = r'[<>:"|?*\x00-\x1F]';
 }
 
-/// Configuration settings for entity locking mechanisms
-abstract class LockConfig {
-  /// Default timeout duration for locks
-  static const Duration defaultTimeout = Duration(minutes: 15);
-
-  /// Standard extension period when renewing locks
-  static const Duration extensionPeriod = Duration(minutes: 5);
-
-  /// Minimum allowed lock duration
-  static const Duration minimumDuration = Duration(seconds: 30);
-
-  /// Maximum allowed lock duration
-  static const Duration maximumDuration = Duration(hours: 24);
-}
-
 /// Represents hierarchy information for an entity including tree structure and relationships
 @freezed
 sealed class EntityHierarchy with _$EntityHierarchy {
@@ -112,15 +96,6 @@ sealed class EntitySecurity with _$EntitySecurity {
   const factory EntitySecurity({
     /// User who last accessed the entity
     UserAction? lastAccessor,
-
-    /// User who currently has a lock on the entity
-    UserAction? lockOwner,
-
-    /// When the current lock expires
-    DateTime? lockExpiry,
-
-    /// User who marked the entity as removed
-    UserAction? remover,
 
     /// History of entity modifications
     @Default([]) List<UserAction> modHistory,
@@ -201,79 +176,18 @@ sealed class EntityVersioning with _$EntityVersioning {
   }) = _EntityVersioning;
 }
 
-/// Stores AI-related data and metadata for an entity
-@freezed
-sealed class EntityAI with _$EntityAI {
-  /// Creates a new EntityAI instance
-  const factory EntityAI({
-    /// Vector embeddings for AI operations
-    @Default({}) Map<String, List<double>> aiVectors,
-
-    /// Scores from AI evaluations
-    @Default({}) Map<String, double> aiScores,
-
-    /// General AI-related metadata
-    @Default({}) Map<String, String> aiMeta,
-
-    /// AI-generated or AI-specific tags
-    @Default([]) List<String> aiTags,
-
-    /// Additional AI-related notes or data
-    @Default({}) Map<String, Object> aiNotes,
-
-    /// When AI processing was last performed
-    DateTime? aiLastRun,
-
-    /// Version of AI model/system used
-    String? aiVer,
-  }) = _EntityAI;
-}
-
-/// Manages distributed locking for concurrent access control
-@freezed
-sealed class EntityLocking with _$EntityLocking {
-  /// Creates a new EntityLocking instance
-  const factory EntityLocking({
-    /// Distributed lock identifier
-    String? distLockId,
-
-    /// When the distributed lock expires
-    DateTime? distLockExpiry,
-
-    /// Node/server holding the distributed lock
-    String? distLockNode,
-
-    /// Additional lock-related metadata
-    @Default({}) Map<String, dynamic> lockMeta,
-
-    /// Version vectors for distributed coordination
-    @Default({}) Map<String, int> verVectors,
-
-    /// Duration before lock automatically expires
-    @Default(LockConfig.defaultTimeout) Duration lockTimeout,
-
-    /// User who owns the lock
-    UserAction? lockOwner,
-
-    /// When the current lock expires
-    DateTime? lockExpiry,
-  }) = _EntityLocking;
-}
-
 /// Main entity model that composes all entity components with a generic data payload
 @Freezed(genericArgumentFactories: true)
 sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   const BaseEntityModel._();
 
-  /// Creates a new BaseEntityModel instance with all its component parts
+  /// Creates a new BaseEntityModel instance with its component parts
   ///
   /// [core] - Core entity properties and data
   /// [hierarchy] - Tree structure and relationships
   /// [security] - Access control and permissions
   /// [classification] - Tags, categories and workflow information
   /// [versioning] - Version control and history tracking
-  /// [ai] - AI-related data and metadata
-  /// [locking] - Concurrency control
   /// [extraData] - Optional additional typed data
   const factory BaseEntityModel({
     /// Core entity data containing essential properties
@@ -290,12 +204,6 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
 
     /// Component for change tracking and history
     required EntityVersioning versioning,
-
-    /// Component for AI-related features
-    required EntityAI ai,
-
-    /// Component for concurrent access control
-    required EntityLocking locking,
 
     /// Optional extra data of type T
     T? extraData,
@@ -338,9 +246,6 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   // Component-based property getters
   /// Access to versioning component
   EntityVersioning get version => versioning;
-
-  /// Access to locking component
-  EntityLocking get lock => locking;
 
   // Core helpers
   /// String representation of the entity ID
@@ -397,8 +302,6 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
       security: const EntitySecurity(),
       classification: const EntityClassification(),
       versioning: const EntityVersioning(),
-      ai: const EntityAI(),
-      locking: const EntityLocking(),
     );
   }
 
