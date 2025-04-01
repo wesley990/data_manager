@@ -322,25 +322,25 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
 
 /// Data transfer object for entity metadata
 @freezed
-sealed class EntityMetadataDto with _$EntityMetadataDto {
-  const EntityMetadataDto._();
+sealed class EntityMetadata with _$EntityMetadata {
+  const EntityMetadata._();
 
-  /// Creates a new EntityMetadataDto instance
+  /// Creates a new EntityMetadata instance
   ///
   /// [displayName] - Human-readable display name
   /// [entityType] - Type classification of the entity
   /// [description] - Optional description text
   /// [lastNameUpdate] - When the name was last changed
   /// [searchTerms] - Key-value pairs for enhanced searching
-  const factory EntityMetadataDto({
+  const factory EntityMetadata({
     required String displayName,
     required String entityType,
     String? description,
     DateTime? lastNameUpdate,
     @Default({}) Map<String, String> searchTerms,
-  }) = _EntityMetadataDto;
+  }) = _EntityMetadata;
 
-  /// Creates EntityMetadataDto from a JSON map
-  factory EntityMetadataDto.fromJson(Map<String, Object> json) =>
-      _$EntityMetadataDtoFromJson(json);
+  /// Creates EntityMetadata from a JSON map
+  factory EntityMetadata.fromJson(Map<String, Object> json) =>
+      _$EntityMetadataFromJson(json);
 }

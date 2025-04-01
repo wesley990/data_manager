@@ -1036,22 +1036,22 @@ $EntityVersioningCopyWith<$Res> get versioning {
 
 
 /// @nodoc
-mixin _$EntityMetadataDto {
+mixin _$EntityMetadata {
 
  String get displayName; String get entityType; String? get description; DateTime? get lastNameUpdate; Map<String, String> get searchTerms;
-/// Create a copy of EntityMetadataDto
+/// Create a copy of EntityMetadata
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$EntityMetadataDtoCopyWith<EntityMetadataDto> get copyWith => _$EntityMetadataDtoCopyWithImpl<EntityMetadataDto>(this as EntityMetadataDto, _$identity);
+$EntityMetadataCopyWith<EntityMetadata> get copyWith => _$EntityMetadataCopyWithImpl<EntityMetadata>(this as EntityMetadata, _$identity);
 
-  /// Serializes this EntityMetadataDto to a JSON map.
+  /// Serializes this EntityMetadata to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntityMetadataDto&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.entityType, entityType) || other.entityType == entityType)&&(identical(other.description, description) || other.description == description)&&(identical(other.lastNameUpdate, lastNameUpdate) || other.lastNameUpdate == lastNameUpdate)&&const DeepCollectionEquality().equals(other.searchTerms, searchTerms));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntityMetadata&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.entityType, entityType) || other.entityType == entityType)&&(identical(other.description, description) || other.description == description)&&(identical(other.lastNameUpdate, lastNameUpdate) || other.lastNameUpdate == lastNameUpdate)&&const DeepCollectionEquality().equals(other.searchTerms, searchTerms));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1060,15 +1060,15 @@ int get hashCode => Object.hash(runtimeType,displayName,entityType,description,l
 
 @override
 String toString() {
-  return 'EntityMetadataDto(displayName: $displayName, entityType: $entityType, description: $description, lastNameUpdate: $lastNameUpdate, searchTerms: $searchTerms)';
+  return 'EntityMetadata(displayName: $displayName, entityType: $entityType, description: $description, lastNameUpdate: $lastNameUpdate, searchTerms: $searchTerms)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $EntityMetadataDtoCopyWith<$Res>  {
-  factory $EntityMetadataDtoCopyWith(EntityMetadataDto value, $Res Function(EntityMetadataDto) _then) = _$EntityMetadataDtoCopyWithImpl;
+abstract mixin class $EntityMetadataCopyWith<$Res>  {
+  factory $EntityMetadataCopyWith(EntityMetadata value, $Res Function(EntityMetadata) _then) = _$EntityMetadataCopyWithImpl;
 @useResult
 $Res call({
  String displayName, String entityType, String? description, DateTime? lastNameUpdate, Map<String, String> searchTerms
@@ -1079,14 +1079,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$EntityMetadataDtoCopyWithImpl<$Res>
-    implements $EntityMetadataDtoCopyWith<$Res> {
-  _$EntityMetadataDtoCopyWithImpl(this._self, this._then);
+class _$EntityMetadataCopyWithImpl<$Res>
+    implements $EntityMetadataCopyWith<$Res> {
+  _$EntityMetadataCopyWithImpl(this._self, this._then);
 
-  final EntityMetadataDto _self;
-  final $Res Function(EntityMetadataDto) _then;
+  final EntityMetadata _self;
+  final $Res Function(EntityMetadata) _then;
 
-/// Create a copy of EntityMetadataDto
+/// Create a copy of EntityMetadata
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? displayName = null,Object? entityType = null,Object? description = freezed,Object? lastNameUpdate = freezed,Object? searchTerms = null,}) {
   return _then(_self.copyWith(
@@ -1105,9 +1105,9 @@ as Map<String, String>,
 /// @nodoc
 @JsonSerializable()
 
-class _EntityMetadataDto extends EntityMetadataDto {
-  const _EntityMetadataDto({required this.displayName, required this.entityType, this.description, this.lastNameUpdate, final  Map<String, String> searchTerms = const {}}): _searchTerms = searchTerms,super._();
-  factory _EntityMetadataDto.fromJson(Map<String, dynamic> json) => _$EntityMetadataDtoFromJson(json);
+class _EntityMetadata extends EntityMetadata {
+  const _EntityMetadata({required this.displayName, required this.entityType, this.description, this.lastNameUpdate, final  Map<String, String> searchTerms = const {}}): _searchTerms = searchTerms,super._();
+  factory _EntityMetadata.fromJson(Map<String, dynamic> json) => _$EntityMetadataFromJson(json);
 
 @override final  String displayName;
 @override final  String entityType;
@@ -1121,20 +1121,20 @@ class _EntityMetadataDto extends EntityMetadataDto {
 }
 
 
-/// Create a copy of EntityMetadataDto
+/// Create a copy of EntityMetadata
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$EntityMetadataDtoCopyWith<_EntityMetadataDto> get copyWith => __$EntityMetadataDtoCopyWithImpl<_EntityMetadataDto>(this, _$identity);
+_$EntityMetadataCopyWith<_EntityMetadata> get copyWith => __$EntityMetadataCopyWithImpl<_EntityMetadata>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$EntityMetadataDtoToJson(this, );
+  return _$EntityMetadataToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntityMetadataDto&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.entityType, entityType) || other.entityType == entityType)&&(identical(other.description, description) || other.description == description)&&(identical(other.lastNameUpdate, lastNameUpdate) || other.lastNameUpdate == lastNameUpdate)&&const DeepCollectionEquality().equals(other._searchTerms, _searchTerms));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntityMetadata&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.entityType, entityType) || other.entityType == entityType)&&(identical(other.description, description) || other.description == description)&&(identical(other.lastNameUpdate, lastNameUpdate) || other.lastNameUpdate == lastNameUpdate)&&const DeepCollectionEquality().equals(other._searchTerms, _searchTerms));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1143,15 +1143,15 @@ int get hashCode => Object.hash(runtimeType,displayName,entityType,description,l
 
 @override
 String toString() {
-  return 'EntityMetadataDto(displayName: $displayName, entityType: $entityType, description: $description, lastNameUpdate: $lastNameUpdate, searchTerms: $searchTerms)';
+  return 'EntityMetadata(displayName: $displayName, entityType: $entityType, description: $description, lastNameUpdate: $lastNameUpdate, searchTerms: $searchTerms)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$EntityMetadataDtoCopyWith<$Res> implements $EntityMetadataDtoCopyWith<$Res> {
-  factory _$EntityMetadataDtoCopyWith(_EntityMetadataDto value, $Res Function(_EntityMetadataDto) _then) = __$EntityMetadataDtoCopyWithImpl;
+abstract mixin class _$EntityMetadataCopyWith<$Res> implements $EntityMetadataCopyWith<$Res> {
+  factory _$EntityMetadataCopyWith(_EntityMetadata value, $Res Function(_EntityMetadata) _then) = __$EntityMetadataCopyWithImpl;
 @override @useResult
 $Res call({
  String displayName, String entityType, String? description, DateTime? lastNameUpdate, Map<String, String> searchTerms
@@ -1162,17 +1162,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$EntityMetadataDtoCopyWithImpl<$Res>
-    implements _$EntityMetadataDtoCopyWith<$Res> {
-  __$EntityMetadataDtoCopyWithImpl(this._self, this._then);
+class __$EntityMetadataCopyWithImpl<$Res>
+    implements _$EntityMetadataCopyWith<$Res> {
+  __$EntityMetadataCopyWithImpl(this._self, this._then);
 
-  final _EntityMetadataDto _self;
-  final $Res Function(_EntityMetadataDto) _then;
+  final _EntityMetadata _self;
+  final $Res Function(_EntityMetadata) _then;
 
-/// Create a copy of EntityMetadataDto
+/// Create a copy of EntityMetadata
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? displayName = null,Object? entityType = null,Object? description = freezed,Object? lastNameUpdate = freezed,Object? searchTerms = null,}) {
-  return _then(_EntityMetadataDto(
+  return _then(_EntityMetadata(
 displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String,entityType: null == entityType ? _self.entityType : entityType // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
