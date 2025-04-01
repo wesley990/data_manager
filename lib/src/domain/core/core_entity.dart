@@ -1,4 +1,3 @@
-import '../entities/base_entity.dart';
 import '../value_objects/enum_objects.dart';
 import '../value_objects/identity_value_objects.dart';
 import '../value_objects/user_action.dart';
