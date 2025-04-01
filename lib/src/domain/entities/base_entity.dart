@@ -218,10 +218,10 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
 
   // Core helpers
   /// String representation of the entity ID
-  String get uid => id.value;
+  String get uid => core.uid;
 
   /// Type name of the entity data
-  String get type => T.toString();
+  String get type => core.type;
 
   /// Retrieve metadata by key
   dynamic getMeta(String key) => meta[key];
