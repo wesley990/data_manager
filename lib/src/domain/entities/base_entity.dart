@@ -27,37 +27,6 @@ abstract class SystemLimits {
   static const int historyDefault = 50;
 }
 
-/// Entity-specific default values and configurations
-abstract class EntityDefaults {
-  /// Default schema version for new entities
-  static const String version = '1.0.0';
-
-  /// Default status for new entities
-  static const EntityStatus status = EntityStatus.active;
-
-  /// Default priority level for new entities
-  static const EntityPriority priority = EntityPriority.medium;
-
-  /// Default workflow stage for new entities
-  static const EntityStage stage = EntityStage.draft;
-
-  /// Default public visibility setting
-  static const bool isPublic = true;
-
-  /// Default access count for new entities
-  static const int accessCount = 0;
-
-  // Path related defaults
-  /// Standard path separator character
-  static const String pathSeparator = '/';
-
-  /// URL-encoded path separator
-  static const String encodedPathSeparator = '%2F';
-
-  /// Regular expression pattern for invalid path characters
-  static const String invalidPathChars = r'[<>:"|?*\x00-\x1F]';
-}
-
 /// Represents hierarchy information for an entity including tree structure and relationships
 @freezed
 sealed class EntityHierarchy with _$EntityHierarchy {

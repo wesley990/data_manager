@@ -7,6 +7,37 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'core_entity.freezed.dart';
 part 'core_entity.g.dart';
 
+/// Entity-specific default values and configurations
+abstract class EntityDefaults {
+  /// Default schema version for new entities
+  static const String version = '1.0.0';
+
+  /// Default status for new entities
+  static const EntityStatus status = EntityStatus.active;
+
+  /// Default priority level for new entities
+  static const EntityPriority priority = EntityPriority.medium;
+
+  /// Default workflow stage for new entities
+  static const EntityStage stage = EntityStage.draft;
+
+  /// Default public visibility setting
+  static const bool isPublic = true;
+
+  /// Default access count for new entities
+  static const int accessCount = 0;
+
+  // Path related defaults
+  /// Standard path separator character
+  static const String pathSeparator = '/';
+
+  /// URL-encoded path separator
+  static const String encodedPathSeparator = '%2F';
+
+  /// Regular expression pattern for invalid path characters
+  static const String invalidPathChars = r'[<>:"|?*\x00-\x1F]';
+}
+
 /// A class that provides type-safe access to common metadata fields
 class TypedMetadata {
   final Map<String, Object> _meta;
@@ -228,7 +259,7 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
     if (propertyValue != null) {
       return propertyValue;
     }
-    
+
     // Fall back to metadata
     return getMetadata(key);
   }
