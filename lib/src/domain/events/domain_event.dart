@@ -1,8 +1,92 @@
+import 'package:data_manager/src/domain/value_objects/identity_value_objects.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:data_manager/data_manager.dart';
+
+import '../value_objects/user_action.dart';
 
 part 'domain_event.freezed.dart';
 part 'domain_event.g.dart';
+
+/// Domain Event System
+/// ===================
+///
+/// This module provides a structured approach to domain events in a clean architecture.
+/// Domain events represent something significant that happened in the domain and allow
+/// for decoupled communication between components.
+///
+/// ## Usage Examples
+///
+/// ### Creating Events
+///
+/// ```dart
+/// // Create an entity creation event
+/// final creationEvent = DomainEventModel.entityCreated(
+///   id: EventId.generate(),
+///   entityId: EntityId.generate(),
+///   entityType: 'Product',
+///   action: UserAction(
+///     userId: 'user-123',
+///     timestamp: DateTime.now(),
+///     actionType: 'create',
+///   ),
+///   initialData: {
+///     'name': 'Premium Widget',
+///     'price': 29.99,
+///     'category': 'Electronics',
+///   },
+/// );
+///
+/// // Create an entity update event
+/// final updateEvent = DomainEventModel.entityUpdated(
+///   id: EventId.generate(),
+///   entityId: EntityId.fromString('product-456'),
+///   entityType: 'Product',
+///   action: UserAction(
+///     userId: 'user-123',
+///     timestamp: DateTime.now(),
+///     actionType: 'update',
+///   ),
+///   changes: {
+///     'price': 24.99,
+///     'isOnSale': true,
+///   },
+/// );
+/// ```
+///
+/// ### Event Schema Migration
+///
+/// Schema migrations are implemented in the application layer:
+///
+/// ```dart
+/// import 'package:data_manager/src/application/providers/event_service_provider.dart';
+/// import 'package:data_manager/src/application/extensions/domain_event_extensions.dart';
+///
+/// // Create a service provider
+/// final eventProvider = EventServiceProvider();
+///
+/// // Option 1: Using the provider directly
+/// final migratedEvent = eventProvider.migrateEventSchema(originalEvent, '1.1.0');
+///
+/// // Option 2: Using the extension method (recommended)
+/// final migratedEvent = originalEvent.migrate('1.1.0', eventProvider);
+/// ```
+///
+/// ### Event Persistence
+///
+/// ```dart
+/// import 'package:data_manager/src/infrastructure/repositories/event_repository.dart';
+///
+/// // Store events
+/// await eventRepository.saveEvent(creationEvent);
+///
+/// // Fetch events for an entity
+/// final events = await eventRepository.getEventsForEntity(entityId);
+///
+/// // Reconstruct entity state from events
+/// final entityState = events.fold(
+///   <String, dynamic>{},
+///   (state, event) => eventReducer.applyEvent(state, event),
+/// );
+/// ```
 
 /// System-wide event defaults
 abstract class EventDefaults {
@@ -16,11 +100,9 @@ abstract class EventSchemaConfig {
   static const currentVersion = '1.0.0';
   static const minVersion = '1.0.0';
   static const maxBackwardsCompatible = '1.0.0';
-  
-  static final supportedVersions = <String>{
-    '1.0.0'
-  };
-  
+
+  static final supportedVersions = <String>{'1.0.0'};
+
   static final migrationPaths = {
     '1.0.0': {'1.0.0': null}, // No migration needed for same version
   };
@@ -39,7 +121,7 @@ sealed class EventSchema with _$EventSchema {
   }) = _EventSchema;
 
   factory EventSchema.fromJson(Map<String, Object> json) =>
-    _$EventSchemaFromJson(json);
+      _$EventSchemaFromJson(json);
 }
 
 @freezed
@@ -54,21 +136,21 @@ sealed class DomainEventModel with _$DomainEventModel {
     required DateTime timestamp,
     required UserAction initiator,
     required Map<String, Object> changes,
-    
+
     // Entity context
     String? entityType,
     EntityId? aggregateId,
-    
+
     // Metadata
     Map<String, Object>? metadata,
     @Default(EventDefaults.isAsync) bool isAsync,
     @Default(EventDefaults.tags) List<String> tags,
-    
+
     // Event chain
     EventId? correlationId,
     EventId? causationId,
     @Default(EventDefaults.version) int version,
-    
+
     // Status
     String? status,
 
@@ -76,10 +158,9 @@ sealed class DomainEventModel with _$DomainEventModel {
     @Default(EventSchemaConfig.currentVersion) String schemaVersion,
     Map<String, Object>? schemaChanges,
     String? previousSchemaVersion,
-    
+
     // Version vectors for distributed events
     @Default({}) Map<String, int> schemaVectors,
-    
   }) = _DomainEventModel;
 
   factory DomainEventModel.fromJson(Map<String, Object> json) =>
@@ -159,10 +240,7 @@ sealed class DomainEventModel with _$DomainEventModel {
       eventType: EventType.statusChanged.name,
       timestamp: action.timestamp,
       initiator: action,
-      changes: {
-        'oldStatus': oldStatus,
-        'newStatus': newStatus,
-      },
+      changes: {'oldStatus': oldStatus, 'newStatus': newStatus},
       status: newStatus,
     );
   }
@@ -214,14 +292,14 @@ sealed class DomainEventModel with _$DomainEventModel {
   }
   */
 
-  /// Schema validation and migration
+  /// Schema validation
   bool hasValidSchema() {
     return EventSchemaConfig.supportedVersions.contains(schemaVersion);
   }
 
   bool isBackwardsCompatible() {
     final minVer = EventSchemaConfig.maxBackwardsCompatible;
-    return schemaVersion.compareTo(minVer) >= 0;  
+    return schemaVersion.compareTo(minVer) >= 0;
   }
 
   String? getMigrationPath(String targetVersion) {
@@ -229,34 +307,21 @@ sealed class DomainEventModel with _$DomainEventModel {
     return paths?[targetVersion];
   }
 
+  /// Domain event interface method for schema migration
+  /// Actual implementation is moved to application layer
   DomainEventModel migrateSchema(String targetVersion) {
-    if (schemaVersion == targetVersion) return this;
-    
-    final path = getMigrationPath(targetVersion);
-    if (path == null) {
-      throw StateError('No migration path from $schemaVersion to $targetVersion');
-    }
-
-    // Apply migration logic based on path
-    final migrated = copyWith(
-      schemaVersion: targetVersion,
-      previousSchemaVersion: schemaVersion,
-      schemaChanges: {
-        'from': schemaVersion,
-        'to': targetVersion,
-        'path': path,
-        'timestamp': DateTime.now().toIso8601String(),
-      }
+    throw UnimplementedError(
+      'Schema migration implementation should be provided by the application layer',
     );
-
-    return migrated;
   }
 
   /// Schema version vector operations
   bool hasVectorConflict(Map<String, int> otherVectors) {
-    return otherVectors.entries.any((entry) =>
-      schemaVectors[entry.key] != null && 
-      schemaVectors[entry.key]! > entry.value);
+    return otherVectors.entries.any(
+      (entry) =>
+          schemaVectors[entry.key] != null &&
+          schemaVectors[entry.key]! > entry.value,
+    );
   }
 
   DomainEventModel incrementVector(String node) {
@@ -284,7 +349,7 @@ enum EventType {
   updated,
   deleted,
 
-  // Status management 
+  // Status management
   locked,
   unlocked,
   statusChanged,
@@ -321,5 +386,5 @@ enum EventType {
 
   // Versioning
   versionCreated,
-  versionMerged
+  versionMerged,
 }
