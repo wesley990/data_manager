@@ -172,6 +172,11 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
     return _getValueWithType<R>(key);
   }
 
+  /// Retrieve metadata by key with a simplified interface
+  ///
+  /// Returns the value from metadata or null if not found
+  dynamic getMeta(String key) => meta[key];
+
   /// Check if metadata contains a specific key
   bool hasMetadata(String key) => meta.containsKey(key);
 

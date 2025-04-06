@@ -223,9 +223,6 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   /// Type name of the entity data
   String get type => core.type;
 
-  /// Retrieve metadata by key
-  dynamic getMeta(String key) => meta[key];
-
   // Short accessors to reduce verbosity
   /// Whether this entity is at the root of a hierarchy
   bool get isRoot => hierarchy.isHierarchyRoot;
@@ -272,20 +269,6 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
       classification: const EntityClassification(),
       versioning: const EntityVersioning(),
     );
-  }
-
-  /// Access entity properties and metadata by key
-  ///
-  /// Provides a unified interface to access entity properties using
-  /// a string-based key, falling back to metadata for custom fields
-  dynamic operator [](String key) {
-    return switch (key) {
-      'entityId' => id,
-      'entityName' => name,
-      'entityDescription' => description,
-      'status' => status,
-      _ => meta[key],
-    };
   }
 }
 
