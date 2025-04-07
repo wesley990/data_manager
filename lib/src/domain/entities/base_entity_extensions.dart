@@ -26,6 +26,32 @@ extension PathSanitizationExtension<T extends Object> on BaseEntityModel<T> {
   /// [path] - The path string to validate.
   /// Returns true if the path is valid, false otherwise.
   bool isPathValid(String? path) => _pathService.isValidPath(path);
+
+  /// Ensures a tree path conforms to the expected format rules
+  ///
+  /// - Validates path format (starts with /, uses correct separators)
+  /// - Checks path length against [SystemLimits.pathMaxLength]
+  /// - Validates each segment against [SystemLimits.pathMaxSegment]
+  /// - Verifies path depth doesn't exceed [SystemLimits.hierarchyDepthMax]
+  ///
+  /// Returns true if the path is valid, false otherwise
+  bool isValidTreePath(String? path) {
+    if (path == null || path.isEmpty) return false;
+    if (path.length > SystemLimits.pathMaxLength) return false;
+
+    // Path must start with slash
+    if (!path.startsWith('/')) return false;
+
+    final parts = path.split('/').where((p) => p.isNotEmpty).toList();
+    if (parts.length > SystemLimits.hierarchyDepthMax) return false;
+
+    // Validate each segment
+    for (final part in parts) {
+      if (part.length > SystemLimits.pathMaxSegment) return false;
+    }
+
+    return true;
+  }
 }
 
 /// Extension for path navigation and resolution operations.

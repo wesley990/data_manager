@@ -34,6 +34,14 @@ sealed class EntityHierarchy with _$EntityHierarchy {
   /// Creates a new EntityHierarchy instance
   const factory EntityHierarchy({
     /// Full path in the entity tree
+    ///
+    /// Format: '/parent_id/grandparent_id/entity_id'
+    /// - Paths use forward slashes as separators
+    /// - Paths start with a leading slash
+    /// - Path segments are entity IDs in reverse ancestry order
+    /// - Root entities have path equal to their ID or '/' + ID
+    /// - Maximum path length is limited to [SystemLimits.pathMaxLength]
+    /// - Maximum segment length is limited to [SystemLimits.pathMaxSegment]
     String? treePath,
 
     /// Depth level in the hierarchy (0 = root)
