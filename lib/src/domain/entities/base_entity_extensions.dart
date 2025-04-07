@@ -62,6 +62,51 @@ extension PathNavigationExtension<T extends Object> on BaseEntityModel<T> {
       _pathService.getAbsolutePath(hierarchy.treePath, id.value);
 }
 
+/// Extension methods for safe hierarchy operations
+extension EntityHierarchyOperations<T extends Object> on EntityHierarchy {
+  /// Adds a child entity ID, automatically updating leaf status
+  EntityHierarchy addChild(EntityId childId) {
+    if (childIds.contains(childId)) return this;
+
+    final updatedChildIds = List<EntityId>.from(childIds)..add(childId);
+    return copyWith(
+      childIds: updatedChildIds,
+      isHierarchyLeaf: false,
+      hierarchyMeta: {
+        ...hierarchyMeta,
+        'children_count': updatedChildIds.length,
+        'last_child_added': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  /// Removes a child entity ID, automatically updating leaf status
+  EntityHierarchy removeChild(EntityId childId) {
+    if (!childIds.contains(childId)) return this;
+
+    final updatedChildIds = List<EntityId>.from(childIds)
+      ..removeWhere((id) => id == childId);
+
+    return copyWith(
+      childIds: updatedChildIds,
+      isHierarchyLeaf: updatedChildIds.isEmpty,
+      hierarchyMeta: {
+        ...hierarchyMeta,
+        'children_count': updatedChildIds.length,
+        'last_child_removed': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  /// Recalculates and corrects the leaf status based on child IDs
+  EntityHierarchy validateLeafStatus() {
+    final shouldBeLeaf = childIds.isEmpty;
+    if (isHierarchyLeaf == shouldBeLeaf) return this;
+
+    return copyWith(isHierarchyLeaf: shouldBeLeaf);
+  }
+}
+
 /// Extension for hierarchy navigation and relationship operations.
 ///
 /// Provides methods to navigate and determine relationships between entities in hierarchies.

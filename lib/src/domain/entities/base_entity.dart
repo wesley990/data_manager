@@ -1,4 +1,5 @@
 import 'package:data_manager/data_manager.dart';
+import 'package:data_manager/src/domain/entities/base_entity_extensions.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'base_entity.freezed.dart';
@@ -232,6 +233,42 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
 
   /// Path to the parent entity, if any
   String? get parentPath => hierarchy.parentId?.value;
+
+  /// Updates a child entity relationship, ensuring hierarchy consistency
+  ///
+  /// This method safely adds a child entity ID to this entity while automatically
+  /// maintaining the [isHierarchyLeaf] property.
+  ///
+  /// [childId] - The ID of the child entity to add
+  /// Returns an updated entity with the child added and leaf status updated
+  BaseEntityModel<T> addChildEntity(EntityId childId) {
+    if (hierarchy.childIds.contains(childId)) return this;
+
+    return copyWith(hierarchy: hierarchy.addChild(childId));
+  }
+
+  /// Removes a child entity relationship, ensuring hierarchy consistency
+  ///
+  /// This method safely removes a child entity ID from this entity while automatically
+  /// updating the [isHierarchyLeaf] property based on remaining children.
+  ///
+  /// [childId] - The ID of the child entity to remove
+  /// Returns an updated entity with the child removed and leaf status updated
+  BaseEntityModel<T> removeChildEntity(EntityId childId) {
+    if (!hierarchy.childIds.contains(childId)) return this;
+
+    return copyWith(hierarchy: hierarchy.removeChild(childId));
+  }
+
+  /// Validates and corrects the hierarchy leaf status if needed
+  ///
+  /// This method ensures that the [isHierarchyLeaf] property correctly reflects
+  /// whether the entity has children or not.
+  ///
+  /// Returns an updated entity with corrected leaf status
+  BaseEntityModel<T> validateHierarchyLeafStatus() {
+    return copyWith(hierarchy: hierarchy.validateLeafStatus());
+  }
 
   /// Creates a new entity with standard configuration
   ///
