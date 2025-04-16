@@ -47,19 +47,17 @@ class TypedMetadata {
   bool containsKey(String key) => _meta.containsKey(key);
 
   /// Get a value with a specific type, with proper error handling
+  ///
+  /// Note: Null is always allowed and will be returned if the key is missing or the value is null.
   T? _getTyped<T>(String key) {
     if (!_meta.containsKey(key)) return null;
 
     final value = _meta[key];
 
     try {
-      // Handle null case differently from wrong type case
       if (value == null) {
-        // Only allowed if T is nullable
-        if (T == dynamic || T.toString().endsWith('?')) {
-          return null as T?;
-        }
-        throw TypeError();
+        // Always allow null
+        return null;
       }
 
       // Special handling for DateTime
