@@ -16,6 +16,14 @@ T _$identity<T>(T value) => value;
 mixin _$EntityHierarchy {
 
 /// Full path in the entity tree
+///
+/// Format: '/parent_id/grandparent_id/entity_id'
+/// - Paths use forward slashes as separators
+/// - Paths start with a leading slash
+/// - Path segments are entity IDs in reverse ancestry order
+/// - Root entities have path equal to their ID or '/' + ID
+/// - Maximum path length is limited to [SystemLimits.pathMaxLength]
+/// - Maximum segment length is limited to [SystemLimits.pathMaxSegment]
  String? get treePath;/// Depth level in the hierarchy (0 = root)
  int get treeDepth;/// List of ancestor entity IDs in order from root to parent
  List<EntityId> get ancestors;/// Direct parent entity ID
@@ -108,6 +116,14 @@ class _EntityHierarchy implements EntityHierarchy {
   
 
 /// Full path in the entity tree
+///
+/// Format: '/parent_id/grandparent_id/entity_id'
+/// - Paths use forward slashes as separators
+/// - Paths start with a leading slash
+/// - Path segments are entity IDs in reverse ancestry order
+/// - Root entities have path equal to their ID or '/' + ID
+/// - Maximum path length is limited to [SystemLimits.pathMaxLength]
+/// - Maximum segment length is limited to [SystemLimits.pathMaxSegment]
 @override final  String? treePath;
 /// Depth level in the hierarchy (0 = root)
 @override@JsonKey() final  int treeDepth;
