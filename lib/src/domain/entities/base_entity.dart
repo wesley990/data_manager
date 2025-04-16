@@ -63,6 +63,11 @@ sealed class EntityHierarchy with _$EntityHierarchy {
     @Default(true) bool isHierarchyLeaf,
 
     /// Additional hierarchy-related metadata
+    ///
+    /// Expected keys:
+    ///   - 'created': String (ISO8601 timestamp)
+    ///   - 'pathType': String (e.g., 'root', 'branch', etc.)
+    ///   - Add more as needed for your application
     @Default({}) Map<String, Object> hierarchyMeta,
   }) = _EntityHierarchy;
 }
@@ -117,12 +122,22 @@ sealed class EntityVersioning with _$EntityVersioning {
   /// Creates a new EntityVersioning instance
   const factory EntityVersioning({
     /// Metadata for synchronization purposes
+    ///
+    /// Expected keys:
+    ///   - 'lastSync': DateTime or String (ISO8601)
+    ///   - 'syncSource': String
+    ///   - Add more as needed for your application
     @Default({}) Map<String, Object> syncMeta,
 
     /// Synchronization version identifier
     String? syncVer,
 
     /// Search index for efficient queries
+    ///
+    /// Expected keys:
+    ///   - 'keywords': List<String>
+    ///   - 'category': String
+    ///   - Add more as needed for your application
     @Default({}) Map<String, Object> searchIndex,
 
     /// Event version counter
@@ -132,6 +147,11 @@ sealed class EntityVersioning with _$EntityVersioning {
     @Default([]) List<String> pendingEvents,
 
     /// Additional event-related metadata
+    ///
+    /// Expected keys:
+    ///   - 'eventType': String
+    ///   - 'eventSource': String
+    ///   - Add more as needed for your application
     @Default({}) Map<String, Object> eventMeta,
 
     /// Maximum number of history entries to maintain
@@ -312,12 +332,17 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
         modifier: owner,
         data: data,
       ),
-      hierarchy: hierarchy ?? EntityHierarchy(
-        treePath: id.value,
-        isHierarchyRoot: true,
-        isHierarchyLeaf: true,
-        hierarchyMeta: {'created': now.toIso8601String(), 'pathType': 'root'},
-      ),
+      hierarchy:
+          hierarchy ??
+          EntityHierarchy(
+            treePath: id.value,
+            isHierarchyRoot: true,
+            isHierarchyLeaf: true,
+            hierarchyMeta: {
+              'created': now.toIso8601String(),
+              'pathType': 'root',
+            },
+          ),
       security: security ?? const EntitySecurity(),
       classification: classification ?? const EntityClassification(),
       versioning: versioning ?? const EntityVersioning(),
