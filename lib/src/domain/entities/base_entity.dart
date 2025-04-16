@@ -259,8 +259,19 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   /// Whether this entity is a leaf node (has no children)
   bool get isLeaf => hierarchy.isHierarchyLeaf;
 
-  /// Path to the parent entity, if any
+  /// Path to the parent entity, if any (just the parent ID)
   String? get parentPath => hierarchy.parentId?.value;
+
+  /// Full path to the parent entity in the hierarchy (excluding this entity's ID)
+  /// Returns null if this entity is root or treePath is not set.
+  String? get parentFullPath {
+    final path = hierarchy.treePath;
+    if (path == null || !path.contains('/')) return null;
+    final segments = path.split('/').where((s) => s.isNotEmpty).toList();
+    if (segments.length <= 1) return null;
+    // Remove the last segment (this entity's ID)
+    return '/${segments.sublist(0, segments.length - 1).join('/')}';
+  }
 
   /// Updates a child entity relationship, ensuring hierarchy consistency
   ///
