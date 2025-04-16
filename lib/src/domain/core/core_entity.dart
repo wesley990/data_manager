@@ -1,7 +1,7 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import '../value_objects/enum_objects.dart';
 import '../value_objects/identity_value_objects.dart';
 import '../value_objects/user_action.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'core_entity.freezed.dart';
 part 'core_entity.g.dart';
@@ -48,7 +48,7 @@ DateTime? _tryParseDateTime(Object value) {
 class TypedMetadata {
   final Map<String, Object> _meta;
 
-  TypedMetadata(this._meta);
+  const TypedMetadata(this._meta);
 
   /// Returns whether the metadata contains a specific key
   bool containsKey(String key) => _meta.containsKey(key);
