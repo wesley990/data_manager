@@ -273,25 +273,25 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
     return '/${segments.sublist(0, segments.length - 1).join('/')}';
   }
 
-  /// Updates a child entity relationship, ensuring hierarchy consistency
+  /// Adds a child entity relationship, ensuring hierarchy consistency.
   ///
   /// This method safely adds a child entity ID to this entity while automatically
   /// maintaining the [isHierarchyLeaf] property.
   ///
-  /// [childId] - The ID of the child entity to add
-  /// Returns an updated entity with the child added and leaf status updated
+  /// [childId] - The ID of the child entity to add.
+  /// Returns an updated entity with the child added and leaf status updated.
   BaseEntityModel<T> _addChildEntity(EntityId childId) {
     if (hierarchy.childIds.contains(childId)) return this;
     return copyWith(hierarchy: hierarchy.addChild(childId));
   }
 
-  /// Removes a child entity relationship, ensuring hierarchy consistency
+  /// Removes a child entity relationship, ensuring hierarchy consistency.
   ///
   /// This method safely removes a child entity ID from this entity while automatically
   /// updating the [isHierarchyLeaf] property based on remaining children.
   ///
-  /// [childId] - The ID of the child entity to remove
-  /// Returns an updated entity with the child removed and leaf status updated
+  /// [childId] - The ID of the child entity to remove.
+  /// Returns an updated entity with the child removed and leaf status updated.
   BaseEntityModel<T> _removeChildEntity(EntityId childId) {
     if (!hierarchy.childIds.contains(childId)) return this;
     return copyWith(hierarchy: hierarchy.removeChild(childId));
@@ -359,6 +359,7 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   }
 
   /// Adds a child to a parent and updates both entities' hierarchy fields for consistency.
+  ///
   /// Returns a Dart 3 record (updatedParent, updatedChild).
   static (BaseEntityModel<T>, BaseEntityModel<T>) addChildAndUpdateChild<T extends Object>(
     BaseEntityModel<T> parent,
@@ -380,6 +381,7 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   }
 
   /// Removes a child from a parent and updates both entities' hierarchy fields for consistency.
+  ///
   /// Returns a Dart 3 record (updatedParent, updatedChild).
   static (BaseEntityModel<T>, BaseEntityModel<T>) removeChildAndUpdateChild<T extends Object>(
     BaseEntityModel<T> parent,
