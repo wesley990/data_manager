@@ -254,7 +254,9 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   }
 
   /// Operator to access either domain properties or metadata
-  /// First tries to access domain properties, then falls back to metadata
+  ///
+  /// If a key matches both a domain property and a metadata key, the domain property takes precedence.
+  /// First tries to access domain properties, then falls back to metadata.
   operator [](String key) {
     // Try domain properties first
     final propertyValue = getProperty(key);
