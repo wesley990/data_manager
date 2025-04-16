@@ -278,19 +278,27 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
     return copyWith(hierarchy: hierarchy.validateLeafStatus());
   }
 
-  /// Creates a new entity with standard configuration
+  /// Creates a new entity with standard configuration or custom components
   ///
   /// [id] - Unique identifier for the entity
   /// [name] - Display name for the entity
   /// [owner] - User who owns the entity
   /// [data] - Typed payload data
   /// [config] - Optional configuration parameters
+  /// [hierarchy] - Optional custom hierarchy component
+  /// [security] - Optional custom security component
+  /// [classification] - Optional custom classification component
+  /// [versioning] - Optional custom versioning component
   factory BaseEntityModel.create({
     required EntityId id,
     required String name,
     required UserAction owner,
     required T data,
     EntityConfig? config,
+    EntityHierarchy? hierarchy,
+    EntitySecurity? security,
+    EntityClassification? classification,
+    EntityVersioning? versioning,
   }) {
     final now = DateTime.now();
     return BaseEntityModel(
@@ -304,15 +312,15 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
         modifier: owner,
         data: data,
       ),
-      hierarchy: EntityHierarchy(
+      hierarchy: hierarchy ?? EntityHierarchy(
         treePath: id.value,
         isHierarchyRoot: true,
         isHierarchyLeaf: true,
         hierarchyMeta: {'created': now.toIso8601String(), 'pathType': 'root'},
       ),
-      security: const EntitySecurity(),
-      classification: const EntityClassification(),
-      versioning: const EntityVersioning(),
+      security: security ?? const EntitySecurity(),
+      classification: classification ?? const EntityClassification(),
+      versioning: versioning ?? const EntityVersioning(),
     );
   }
 }
