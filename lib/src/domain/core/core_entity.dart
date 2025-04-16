@@ -37,7 +37,14 @@ abstract class EntityDefaults {
   static const String invalidPathChars = r'[<>:"|?*\x00-\x1F]';
 }
 
-/// A class that provides type-safe access to common metadata fields
+/// Utility function to safely parse DateTime from a String
+DateTime? _tryParseDateTime(Object value) {
+  if (value is String) {
+    return DateTime.tryParse(value);
+  }
+  return null;
+}
+
 class TypedMetadata {
   final Map<String, Object> _meta;
 
@@ -61,8 +68,8 @@ class TypedMetadata {
       }
 
       // Special handling for DateTime
-      if (T == DateTime && value is String) {
-        final dateTime = DateTime.tryParse(value);
+      if (T == DateTime) {
+        final dateTime = _tryParseDateTime(value);
         if (dateTime != null) return dateTime as T;
         throw FormatException('Invalid DateTime string: $value');
       }
@@ -201,8 +208,8 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
 
     try {
       // Special case for DateTime conversion from String
-      if (R == DateTime && value is String) {
-        final dateTime = DateTime.tryParse(value);
+      if (R == DateTime) {
+        final dateTime = _tryParseDateTime(value);
         if (dateTime != null) return dateTime as R;
         throw FormatException('Invalid DateTime string: $value');
       }
