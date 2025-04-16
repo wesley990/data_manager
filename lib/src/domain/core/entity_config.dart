@@ -61,6 +61,11 @@ sealed class EntityConfig with _$EntityConfig {
     @Default('/') String pathSeparator,
 
     /// Regular expression pattern defining invalid characters in paths.
+    ///
+    /// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).
+    /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
+    ///
+    /// Default: `[<>:"|?*\x00-\x1F]`
     @Default(r'[<>:"|?*\x00-\x1F]') String invalidPathChars,
   }) = _EntityConfig;
 
