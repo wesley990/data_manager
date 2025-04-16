@@ -280,9 +280,8 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   ///
   /// [childId] - The ID of the child entity to add
   /// Returns an updated entity with the child added and leaf status updated
-  BaseEntityModel<T> addChildEntity(EntityId childId) {
+  BaseEntityModel<T> _addChildEntity(EntityId childId) {
     if (hierarchy.childIds.contains(childId)) return this;
-
     return copyWith(hierarchy: hierarchy.addChild(childId));
   }
 
@@ -293,9 +292,8 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   ///
   /// [childId] - The ID of the child entity to remove
   /// Returns an updated entity with the child removed and leaf status updated
-  BaseEntityModel<T> removeChildEntity(EntityId childId) {
+  BaseEntityModel<T> _removeChildEntity(EntityId childId) {
     if (!hierarchy.childIds.contains(childId)) return this;
-
     return copyWith(hierarchy: hierarchy.removeChild(childId));
   }
 
@@ -358,6 +356,46 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
       classification: classification ?? const EntityClassification(),
       versioning: versioning ?? const EntityVersioning(),
     );
+  }
+
+  /// Adds a child to a parent and updates both entities' hierarchy fields for consistency.
+  /// Returns a Dart 3 record (updatedParent, updatedChild).
+  static (BaseEntityModel<T>, BaseEntityModel<T>) addChildAndUpdateChild<T extends Object>(
+    BaseEntityModel<T> parent,
+    BaseEntityModel<T> child,
+  ) {
+    final updatedParent = parent._addChildEntity(child.id);
+    final updatedChild = child.copyWith(
+      hierarchy: child.hierarchy.copyWith(
+        parentId: parent.id,
+        ancestors: [...parent.hierarchy.ancestors, parent.id],
+        treePath: parent.hierarchy.treePath == null
+            ? '/${parent.id.value}/${child.id.value}'
+            : '${parent.hierarchy.treePath}/${child.id.value}',
+        treeDepth: parent.hierarchy.treeDepth + 1,
+        isHierarchyRoot: false,
+      ),
+    );
+    return (updatedParent, updatedChild);
+  }
+
+  /// Removes a child from a parent and updates both entities' hierarchy fields for consistency.
+  /// Returns a Dart 3 record (updatedParent, updatedChild).
+  static (BaseEntityModel<T>, BaseEntityModel<T>) removeChildAndUpdateChild<T extends Object>(
+    BaseEntityModel<T> parent,
+    BaseEntityModel<T> child,
+  ) {
+    final updatedParent = parent._removeChildEntity(child.id);
+    final updatedChild = child.copyWith(
+      hierarchy: child.hierarchy.copyWith(
+        parentId: null,
+        ancestors: [],
+        treePath: '/${child.id.value}',
+        treeDepth: 0,
+        isHierarchyRoot: true,
+      ),
+    );
+    return (updatedParent, updatedChild);
   }
 }
 
