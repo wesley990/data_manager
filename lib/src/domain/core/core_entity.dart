@@ -173,7 +173,7 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   /// Retrieve metadata by key with a simplified interface
   ///
   /// Returns the value from metadata or null if not found
-  dynamic getMeta(String key) => meta[key];
+  Object? getMetadata(String key) => meta[key];
 
   /// Check if metadata contains a specific key
   bool hasMetadata(String key) => meta.containsKey(key);
@@ -246,11 +246,6 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
       default:
         return null;
     }
-  }
-
-  /// Gets a metadata value by key
-  Object? getMetadata(String key) {
-    return meta[key];
   }
 
   /// Operator to access either domain properties or metadata
