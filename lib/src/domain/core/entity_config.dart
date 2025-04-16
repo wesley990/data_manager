@@ -93,6 +93,75 @@ sealed class EntityConfig with _$EntityConfig {
     );
   }
 
+  /// Creates a new instance of [EntityConfig] with custom overrides.
+  ///
+  /// This factory allows you to define configuration settings for any environment (e.g., staging, testing, CI)
+  /// by overriding only the fields you need. All unspecified fields will use the default values.
+  ///
+  /// Example:
+  /// ```dart
+  /// final stagingConfig = EntityConfig.custom(
+  ///   maxPathLength: 1500,
+  ///   defaultIsPublic: false,
+  /// );
+  /// ```
+  ///
+  /// [maxPathLength] - Maximum length of an entity path in characters.
+  /// [maxPathSegment] - Maximum length of a single path segment in characters.
+  /// [maxHierarchyDepth] - Maximum allowed depth of entity hierarchies.
+  /// [maxHistorySize] - Maximum number of history entries to retain per entity.
+  /// [defaultHistorySize] - Default number of history entries to show in views.
+  /// [defaultLockTimeout] - Default duration before an entity lock expires.
+  /// [lockExtensionPeriod] - Duration by which a lock can be extended.
+  /// [minLockDuration] - Minimum duration for which an entity can be locked.
+  /// [maxLockDuration] - Maximum duration for which an entity can be locked.
+  /// [defaultVersion] - Default version string for new entities.
+  /// [defaultIsPublic] - Whether entities are public by default.
+  /// [defaultPriority] - Default priority level for new entities.
+  /// [defaultStage] - Default workflow stage for new entities.
+  /// [pathSeparator] - Character used to separate path segments.
+  /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.
+  factory EntityConfig.custom({
+    int? maxPathLength,
+    int? maxPathSegment,
+    int? maxHierarchyDepth,
+    int? maxHistorySize,
+    int? defaultHistorySize,
+    Duration? defaultLockTimeout,
+    Duration? lockExtensionPeriod,
+    Duration? minLockDuration,
+    Duration? maxLockDuration,
+    String? defaultVersion,
+    bool? defaultIsPublic,
+    EntityPriority? defaultPriority,
+    EntityStage? defaultStage,
+    String? pathSeparator,
+    String? invalidPathChars,
+  }) {
+    return EntityConfig(
+      maxPathLength: maxPathLength ?? const EntityConfig().maxPathLength,
+      maxPathSegment: maxPathSegment ?? const EntityConfig().maxPathSegment,
+      maxHierarchyDepth:
+          maxHierarchyDepth ?? const EntityConfig().maxHierarchyDepth,
+      maxHistorySize: maxHistorySize ?? const EntityConfig().maxHistorySize,
+      defaultHistorySize:
+          defaultHistorySize ?? const EntityConfig().defaultHistorySize,
+      defaultLockTimeout:
+          defaultLockTimeout ?? const EntityConfig().defaultLockTimeout,
+      lockExtensionPeriod:
+          lockExtensionPeriod ?? const EntityConfig().lockExtensionPeriod,
+      minLockDuration: minLockDuration ?? const EntityConfig().minLockDuration,
+      maxLockDuration: maxLockDuration ?? const EntityConfig().maxLockDuration,
+      defaultVersion: defaultVersion ?? const EntityConfig().defaultVersion,
+      defaultIsPublic: defaultIsPublic ?? const EntityConfig().defaultIsPublic,
+      defaultPriority: defaultPriority ?? const EntityConfig().defaultPriority,
+      defaultStage: defaultStage ?? const EntityConfig().defaultStage,
+      pathSeparator: pathSeparator ?? const EntityConfig().pathSeparator,
+      invalidPathChars:
+          invalidPathChars ?? const EntityConfig().invalidPathChars,
+    );
+  }
+
   factory EntityConfig.fromJson(Map<String, Object?> json) =>
       _$EntityConfigFromJson(json);
 }
