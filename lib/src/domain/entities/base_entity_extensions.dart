@@ -68,12 +68,12 @@ extension PathNavigationExtension<T extends Object> on BaseEntityModel<T> {
   ///
   /// Returns a standardized path string combining the tree path and entity ID.
   String get canonicalPath =>
-      _pathService.getCanonicalPath(hierarchy.treePath, id.value);
+      _pathService.getCanonicalPath(hierarchy.treePath ?? '', id.value);
 
   /// Gets the individual components of this entity's tree path.
   ///
   /// Returns a list of path parts from the entity's tree path.
-  List<String> get pathParts => _pathService.splitPath(hierarchy.treePath);
+  List<String> get pathParts => _pathService.splitPath(hierarchy.treePath ?? '');
 
   /// Builds a list of ancestor paths from this entity's tree path.
   ///
@@ -85,7 +85,7 @@ extension PathNavigationExtension<T extends Object> on BaseEntityModel<T> {
   ///
   /// Returns a fully qualified path string.
   String get absolutePath =>
-      _pathService.getAbsolutePath(hierarchy.treePath, id.value);
+      _pathService.getAbsolutePath(hierarchy.treePath ?? '', id.value);
 }
 
 /// Extension methods for safe hierarchy operations
@@ -162,14 +162,6 @@ extension HierarchyNavigationExtension<T extends Object> on BaseEntityModel<T> {
   bool isDescendantOf(BaseEntityModel<T> other) =>
       _hierarchyService.isDescendantOf(id, other.hierarchy.ancestors);
 
-  /// Checks if this entity is related to another entity.
-  ///
-  /// Two entities are related if one is an ancestor of the other.
-  /// [other] - The entity to check against.
-  /// Returns true if the entities are related.
-  bool isRelatedTo(BaseEntityModel<T> other) =>
-      isAncestorOf(other) || isDescendantOf(other);
-
   /// Gets the depth between this entity and an ancestor.
   ///
   /// [ancestor] - The ancestor entity.
@@ -208,7 +200,7 @@ extension HierarchyValidationExtension<T extends Object> on BaseEntityModel<T> {
       _hierarchyService.validateHierarchyDepth(newAncestors);
     }
 
-    final updatedPath = newPath ?? hierarchy.treePath;
+    final updatedPath = newPath ?? hierarchy.treePath ?? '';
     final updatedAncestors = newAncestors ?? hierarchy.ancestors;
     final updatedMeta = _hierarchyService.getUpdatedHierarchyMeta(
       hierarchy.hierarchyMeta,
