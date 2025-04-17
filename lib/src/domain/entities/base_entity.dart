@@ -135,7 +135,7 @@ sealed class EntityVersioning with _$EntityVersioning {
     /// Search index for efficient queries
     ///
     /// Expected keys:
-    ///   - 'keywords': List<String>
+    ///   - 'keywords': `List<String>`
     ///   - 'category': String
     ///   - Add more as needed for your application
     @Default({}) Map<String, Object> searchIndex,
