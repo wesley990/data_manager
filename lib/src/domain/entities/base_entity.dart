@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'package:data_manager/data_manager.dart';
 import 'package:data_manager/src/domain/entities/base_entity_extensions.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -397,6 +398,31 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
       ),
     );
     return (updatedParent, updatedChild);
+  }
+
+  /// Records a user action in the entity's history efficiently.
+  ///
+  /// [action] - The user action to record.
+  /// [isAccessAction] - Whether this is an access action (vs. modification).
+  /// Returns an updated entity with the action recorded in history.
+  BaseEntityModel<T> recordAction(
+    UserAction action, {
+    bool isAccessAction = false,
+  }) {
+    final maxSize = versioning.historyLimit;
+    final history = isAccessAction ? security.accessLog : security.modHistory;
+    // Use Queue for efficient prepending and trimming
+    final queue = ListQueue<UserAction>.from(history);
+    queue.addFirst(action);
+    while (queue.length > maxSize) {
+      queue.removeLast();
+    }
+    final updatedHistory = queue.toList(growable: false);
+    return copyWith(
+      security: isAccessAction
+          ? security.copyWith(accessLog: updatedHistory)
+          : security.copyWith(modHistory: updatedHistory),
+    );
   }
 }
 
