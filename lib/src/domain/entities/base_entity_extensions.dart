@@ -73,7 +73,8 @@ extension PathNavigationExtension<T extends Object> on BaseEntityModel<T> {
   /// Gets the individual components of this entity's tree path.
   ///
   /// Returns a list of path parts from the entity's tree path.
-  List<String> get pathParts => _pathService.splitPath(hierarchy.treePath ?? '');
+  List<String> get pathParts =>
+      _pathService.splitPath(hierarchy.treePath ?? '');
 
   /// Builds a list of ancestor paths from this entity's tree path.
   ///
@@ -237,46 +238,6 @@ extension HierarchyIndexingExtension<T extends Object> on BaseEntityModel<T> {
       isLeaf: hierarchy.isHierarchyLeaf,
       isRoot: hierarchy.isHierarchyRoot,
       meta: hierarchy.hierarchyMeta,
-    );
-  }
-}
-
-/// History tracking extension
-///
-/// Provides methods to record and manage entity action history.
-extension HistoryExtension<T extends Object> on BaseEntityModel<T> {
-  /// Maximum number of history entries to keep.
-  static const _historyMaxSize = 50;
-
-  /// Records a user action in the entity's history.
-  ///
-  /// [action] - The user action to record.
-  /// [isAccessAction] - Whether this is an access action (vs. modification).
-  /// Returns an updated entity with the action recorded in history.
-  BaseEntityModel<T> recordAction(
-    UserAction action, {
-    bool isAccessAction = false,
-  }) {
-    final history = isAccessAction ? security.accessLog : security.modHistory;
-    final updatedHistory = [action, ...history.take(_historyMaxSize - 1)];
-
-    return copyWith(
-      security: security.copyWith(
-        accessLog: isAccessAction ? updatedHistory : security.accessLog,
-        modHistory: isAccessAction ? security.modHistory : updatedHistory,
-      ),
-    );
-  }
-
-  /// Prunes the entity's history to the maximum size.
-  ///
-  /// Returns an updated entity with history trimmed to the maximum allowed size.
-  BaseEntityModel<T> pruneHistory() {
-    return copyWith(
-      security: security.copyWith(
-        accessLog: security.accessLog.take(_historyMaxSize).toList(),
-        modHistory: security.modHistory.take(_historyMaxSize).toList(),
-      ),
     );
   }
 }
