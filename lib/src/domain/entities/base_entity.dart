@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'package:data_manager/data_manager.dart';
-import 'package:data_manager/src/domain/entities/base_entity_extensions.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'base_entity.freezed.dart';
@@ -71,6 +70,186 @@ sealed class EntityHierarchy with _$EntityHierarchy {
     ///   - Add more as needed for your application
     @Default({}) Map<String, Object> hierarchyMeta,
   }) = _EntityHierarchy;
+
+  /// Adds a child entity ID, automatically updating leaf status and meta
+  EntityHierarchy addChild(EntityId childId) {
+    if (childIds.contains(childId)) return this;
+    final updatedChildIds = List<EntityId>.from(childIds)..add(childId);
+    return copyWith(
+      childIds: updatedChildIds,
+      isHierarchyLeaf: false,
+      hierarchyMeta: {
+        ...hierarchyMeta,
+        'children_count': updatedChildIds.length,
+        'last_child_added': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  /// Removes a child entity ID, automatically updating leaf status and meta
+  EntityHierarchy removeChild(EntityId childId) {
+    if (!childIds.contains(childId)) return this;
+    final updatedChildIds = List<EntityId>.from(childIds)
+      ..removeWhere((id) => id == childId);
+    return copyWith(
+      childIds: updatedChildIds,
+      isHierarchyLeaf: updatedChildIds.isEmpty,
+      hierarchyMeta: {
+        ...hierarchyMeta,
+        'children_count': updatedChildIds.length,
+        'last_child_removed': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  /// Recalculates and corrects the leaf status based on child IDs
+  EntityHierarchy validateLeafStatus() {
+    final shouldBeLeaf = childIds.isEmpty;
+    if (isHierarchyLeaf == shouldBeLeaf) return this;
+    return copyWith(isHierarchyLeaf: shouldBeLeaf);
+  }
+}
+
+extension BaseEntityModelPathAndHierarchy<T extends Object>
+    on BaseEntityModel<T> {
+  // Path sanitization and validation
+  String sanitizePath(
+    String? rawPath, {
+    EntityConfig? config,
+    bool leadingSlash = true,
+    bool trailingSlash = false,
+  }) {
+    if (rawPath == null || rawPath.isEmpty) return '';
+    final c = config ?? EntityConfig();
+    final decodedPath = Uri.decodeFull(rawPath);
+    if (decodedPath.length > c.maxPathLength) return '';
+    final segments =
+        decodedPath
+            .split(c.pathSeparator)
+            .where((s) => s.isNotEmpty)
+            .map((s) => s.replaceAll(RegExp(c.invalidPathChars), '').trim())
+            .where((s) => s.isNotEmpty)
+            .toList();
+    if (segments.any((s) => s.length > c.maxPathSegment)) return '';
+    var path = segments.join(c.pathSeparator);
+    if (leadingSlash) path = c.pathSeparator + path;
+    if (trailingSlash && !path.endsWith(c.pathSeparator)) {
+      path += c.pathSeparator;
+    }
+    return path;
+  }
+
+  /// Unified path validation: checks both format and length constraints
+  bool isValidPath(
+    String? path, {
+    EntityConfig? config,
+    bool requireLeadingSlash = true,
+  }) {
+    if (path == null || path.isEmpty) return false;
+    final c = config ?? EntityConfig();
+    if (path.length > c.maxPathLength) return false;
+    if (requireLeadingSlash && !path.startsWith(c.pathSeparator)) return false;
+    final segments =
+        path.split(c.pathSeparator).where((s) => s.isNotEmpty).toList();
+    if (segments.length > SystemLimits.hierarchyDepthMax) return false;
+    if (segments.any((s) => s.length > c.maxPathSegment)) return false;
+    return true;
+  }
+
+  // Path navigation
+  List<String> splitPath(String? path, {EntityConfig? config}) {
+    final c = config ?? EntityConfig();
+    return sanitizePath(
+      path,
+      config: c,
+      leadingSlash: false,
+      trailingSlash: false,
+    ).split(c.pathSeparator).where((s) => s.isNotEmpty).toList();
+  }
+
+  String get canonicalPath =>
+      sanitizePath(
+        hierarchy.treePath,
+        leadingSlash: true,
+        trailingSlash: false,
+      ).toLowerCase();
+  List<String> get pathSegments => splitPath(hierarchy.treePath);
+
+  /// Returns a list of ancestor paths, each as a string up to that ancestor
+  List<String> get ancestorPaths {
+    final segments = pathSegments;
+    final paths = <String>[];
+    for (var i = 0; i < segments.length; i++) {
+      paths.add('/${segments.sublist(0, i + 1).join('/')}');
+    }
+    return paths;
+  }
+
+  /// Returns the absolute path for this entity (including its own ID)
+  String get absolutePath => sanitizePath(
+    '${hierarchy.treePath ?? ''}/${id.value}',
+    trailingSlash: false,
+  );
+
+  // Hierarchy navigation
+  List<String> get ancestorIds =>
+      hierarchy.ancestors.map((a) => a.value).toList();
+  String get fullPath => hierarchy.treePath ?? id.value;
+  bool isAncestorOf(BaseEntityModel<T> other) =>
+      other.hierarchy.ancestors.contains(id);
+  bool isDescendantOf(BaseEntityModel<T> other) =>
+      hierarchy.ancestors.contains(other.id);
+  int getDepthTo(BaseEntityModel<T> ancestor) {
+    final index = hierarchy.ancestors.indexOf(ancestor.id);
+    if (index == -1) return -1;
+    return hierarchy.ancestors.length - index;
+  }
+
+  bool hasCircularReference() => hierarchy.ancestors.contains(id);
+
+  BaseEntityModel<T> updateHierarchy({
+    required EntityId? newParentId,
+    String? newPath,
+    List<EntityId>? newAncestors,
+    bool validateDepth = true,
+  }) {
+    final ancestors = newAncestors ?? hierarchy.ancestors;
+    if (validateDepth && ancestors.length > SystemLimits.hierarchyDepthMax) {
+      throw Exception('Hierarchy depth exceeded');
+    }
+    final updatedPath = newPath ?? hierarchy.treePath ?? '';
+    final updatedMeta = {
+      ...hierarchy.hierarchyMeta,
+      'last_hierarchy_update': DateTime.now().toIso8601String(),
+      'parent_history': [
+        ...(hierarchy.hierarchyMeta['parent_history'] as List<String>? ?? []),
+        newParentId?.value ?? 'root',
+      ],
+    };
+    return copyWith(
+      hierarchy: hierarchy.copyWith(
+        parentId: newParentId,
+        treePath: updatedPath,
+        ancestors: ancestors,
+        treeDepth: ancestors.length,
+        isHierarchyRoot: newParentId == null,
+        isHierarchyLeaf: hierarchy.childIds.isEmpty,
+        hierarchyMeta: updatedMeta,
+      ),
+    );
+  }
+
+  Map<String, Object> buildHierarchyIndex() {
+    return {
+      'depth_level': hierarchy.treeDepth,
+      'parent_type': hierarchy.parentId?.value ?? 'root',
+      'ancestry_path': hierarchy.ancestors.map((a) => a.value).join('|'),
+      'child_count': hierarchy.childIds.length,
+      'is_leaf': hierarchy.isHierarchyLeaf,
+      'is_root': hierarchy.isHierarchyRoot,
+      ...hierarchy.hierarchyMeta,
+    };
+  }
 }
 
 /// Manages security and access control aspects of an entity

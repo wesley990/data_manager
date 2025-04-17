@@ -1,7 +1,6 @@
 import 'package:uuid/uuid.dart';
 import 'package:authentication/authentication.dart';
 import 'package:data_manager/data_manager.dart';
-import 'base_entity_extensions.dart';
 
 /// Configuration object for creating new entities.
 /// Contains all parameters needed to construct a complete entity.
