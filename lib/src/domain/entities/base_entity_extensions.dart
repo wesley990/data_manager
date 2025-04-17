@@ -1,7 +1,6 @@
 import 'package:data_manager/data_manager.dart';
 import 'package:data_manager/src/services/hierarchy_service.dart';
 import 'package:data_manager/src/services/path_service.dart';
-import 'package:data_manager/src/services/version_service.dart';
 
 /// Shared service instances for BaseEntityModel extensions.
 ///
@@ -9,7 +8,6 @@ import 'package:data_manager/src/services/version_service.dart';
 /// path handling, hierarchy relationships, and versioning.
 final _pathService = PathService(config: EntityConfig());
 final _hierarchyService = HierarchyService(config: EntityConfig());
-final _versionService = VersionService();
 
 /// Extension for path sanitization and validation operations.
 ///
