@@ -419,9 +419,24 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
     }
     final updatedHistory = queue.toList(growable: false);
     return copyWith(
-      security: isAccessAction
-          ? security.copyWith(accessLog: updatedHistory)
-          : security.copyWith(modHistory: updatedHistory),
+      security:
+          isAccessAction
+              ? security.copyWith(accessLog: updatedHistory)
+              : security.copyWith(modHistory: updatedHistory),
+    );
+  }
+
+  /// Increments the entity's version.
+  ///
+  /// [isStructural] - Whether this is a structural change (vs. data-only).
+  /// Returns an updated entity with incremented version numbers.
+  BaseEntityModel<T> incrementVersion({bool isStructural = false}) {
+    return copyWith(
+      versioning: versioning.copyWith(
+        dataVer: versioning.dataVer + 1,
+        structVer:
+            isStructural ? versioning.structVer + 1 : versioning.structVer,
+      ),
     );
   }
 }
