@@ -229,59 +229,6 @@ extension HierarchyValidationExtension<T extends Object> on BaseEntityModel<T> {
   }
 }
 
-/// Child management extension for adding and removing child entities.
-///
-/// Provides methods to manipulate the child relationships of an entity.
-extension HierarchyManagementExtension<T extends Object> on BaseEntityModel<T> {
-  /// Adds a child entity to this entity.
-  ///
-  /// [childId] - The ID of the child entity to add.
-  /// Returns an updated entity with the new child added.
-  BaseEntityModel<T> addChild(EntityId childId) {
-    final updatedChildren = _hierarchyService.addChild(
-      hierarchy.childIds,
-      childId,
-    );
-    if (updatedChildren == hierarchy.childIds) return this;
-
-    return copyWith(
-      hierarchy: hierarchy.copyWith(
-        childIds: updatedChildren,
-        isHierarchyLeaf: false,
-        hierarchyMeta: {
-          ...hierarchy.hierarchyMeta,
-          'children_count': updatedChildren.length,
-          'last_child_added': DateTime.now().toIso8601String(),
-        },
-      ),
-    );
-  }
-
-  /// Removes a child entity from this entity.
-  ///
-  /// [childId] - The ID of the child entity to remove.
-  /// Returns an updated entity with the child removed.
-  BaseEntityModel<T> removeChild(EntityId childId) {
-    final updatedChildren = _hierarchyService.removeChild(
-      hierarchy.childIds,
-      childId,
-    );
-    if (updatedChildren.length == hierarchy.childIds.length) return this;
-
-    return copyWith(
-      hierarchy: hierarchy.copyWith(
-        childIds: updatedChildren,
-        isHierarchyLeaf: updatedChildren.isEmpty,
-        hierarchyMeta: {
-          ...hierarchy.hierarchyMeta,
-          'children_count': updatedChildren.length,
-          'last_child_removed': DateTime.now().toIso8601String(),
-        },
-      ),
-    );
-  }
-}
-
 /// Hierarchy indexing and search extension
 ///
 /// Provides methods to build search indices for hierarchical data.
