@@ -382,7 +382,7 @@ class EntityFactory {
     );
 
     // Use extension methods for validation and path processing
-    if (!entity.isPathValid(entity.hierarchy.treePath)) {
+    if (!entity.isValidPath(entity.hierarchy.treePath)) {
       throw PathValidationException(
         message: 'Invalid path format',
         path: entity.hierarchy.treePath,
