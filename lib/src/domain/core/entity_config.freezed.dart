@@ -36,6 +36,11 @@ mixin _$EntityConfig {
  EntityStage get defaultStage;// Path settings
 /// Character used to separate path segments.
  String get pathSeparator;/// Regular expression pattern defining invalid characters in paths.
+///
+/// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).
+/// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
+///
+/// Default: `[<>:"|?*\x00-\x1F]`
  String get invalidPathChars;
 /// Create a copy of EntityConfig
 /// with the given fields replaced by the non-null parameter values.
@@ -151,6 +156,11 @@ class _EntityConfig implements EntityConfig {
 /// Character used to separate path segments.
 @override@JsonKey() final  String pathSeparator;
 /// Regular expression pattern defining invalid characters in paths.
+///
+/// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).
+/// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
+///
+/// Default: `[<>:"|?*\x00-\x1F]`
 @override@JsonKey() final  String invalidPathChars;
 
 /// Create a copy of EntityConfig

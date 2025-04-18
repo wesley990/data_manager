@@ -31,6 +31,11 @@ mixin _$EntityHierarchy {
  List<EntityId> get childIds;/// Indicates if this entity is a root node in a hierarchy
  bool get isHierarchyRoot;/// Indicates if this entity is a leaf node (has no children)
  bool get isHierarchyLeaf;/// Additional hierarchy-related metadata
+///
+/// Expected keys:
+///   - 'created': String (ISO8601 timestamp)
+///   - 'pathType': String (e.g., 'root', 'branch', etc.)
+///   - Add more as needed for your application
  Map<String, Object> get hierarchyMeta;
 /// Create a copy of EntityHierarchy
 /// with the given fields replaced by the non-null parameter values.
@@ -112,7 +117,7 @@ $EntityIdCopyWith<$Res>? get parentId {
 
 
 class _EntityHierarchy implements EntityHierarchy {
-  const _EntityHierarchy({this.treePath, this.treeDepth = 0, final  List<EntityId> ancestors = const [], this.parentId, final  List<EntityId> childIds = const [], this.isHierarchyRoot = true, this.isHierarchyLeaf = true, final  Map<String, Object> hierarchyMeta = const {}}): _ancestors = ancestors,_childIds = childIds,_hierarchyMeta = hierarchyMeta;
+  const _EntityHierarchy({this.treePath, this.treeDepth = 0, final  List<EntityId> ancestors = const <EntityId>[], this.parentId, final  List<EntityId> childIds = const <EntityId>[], this.isHierarchyRoot = true, this.isHierarchyLeaf = true, final  Map<String, Object> hierarchyMeta = const {}}): _ancestors = ancestors,_childIds = childIds,_hierarchyMeta = hierarchyMeta;
   
 
 /// Full path in the entity tree
@@ -152,8 +157,18 @@ class _EntityHierarchy implements EntityHierarchy {
 /// Indicates if this entity is a leaf node (has no children)
 @override@JsonKey() final  bool isHierarchyLeaf;
 /// Additional hierarchy-related metadata
+///
+/// Expected keys:
+///   - 'created': String (ISO8601 timestamp)
+///   - 'pathType': String (e.g., 'root', 'branch', etc.)
+///   - Add more as needed for your application
  final  Map<String, Object> _hierarchyMeta;
 /// Additional hierarchy-related metadata
+///
+/// Expected keys:
+///   - 'created': String (ISO8601 timestamp)
+///   - 'pathType': String (e.g., 'root', 'branch', etc.)
+///   - Add more as needed for your application
 @override@JsonKey() Map<String, Object> get hierarchyMeta {
   if (_hierarchyMeta is EqualUnmodifiableMapView) return _hierarchyMeta;
   // ignore: implicit_dynamic_type
@@ -591,11 +606,26 @@ as DateTime?,
 mixin _$EntityVersioning {
 
 /// Metadata for synchronization purposes
+///
+/// Expected keys:
+///   - 'lastSync': DateTime or String (ISO8601)
+///   - 'syncSource': String
+///   - Add more as needed for your application
  Map<String, Object> get syncMeta;/// Synchronization version identifier
  String? get syncVer;/// Search index for efficient queries
+///
+/// Expected keys:
+///   - 'keywords': `List<String>`
+///   - 'category': String
+///   - Add more as needed for your application
  Map<String, Object> get searchIndex;/// Event version counter
  int get eventVer;/// List of event IDs that haven't been processed
  List<String> get pendingEvents;/// Additional event-related metadata
+///
+/// Expected keys:
+///   - 'eventType': String
+///   - 'eventSource': String
+///   - Add more as needed for your application
  Map<String, Object> get eventMeta;/// Maximum number of history entries to maintain
  int get historyLimit;/// Data format version
  int get dataVer;/// Structure version
@@ -679,8 +709,18 @@ class _EntityVersioning implements EntityVersioning {
   
 
 /// Metadata for synchronization purposes
+///
+/// Expected keys:
+///   - 'lastSync': DateTime or String (ISO8601)
+///   - 'syncSource': String
+///   - Add more as needed for your application
  final  Map<String, Object> _syncMeta;
 /// Metadata for synchronization purposes
+///
+/// Expected keys:
+///   - 'lastSync': DateTime or String (ISO8601)
+///   - 'syncSource': String
+///   - Add more as needed for your application
 @override@JsonKey() Map<String, Object> get syncMeta {
   if (_syncMeta is EqualUnmodifiableMapView) return _syncMeta;
   // ignore: implicit_dynamic_type
@@ -690,8 +730,18 @@ class _EntityVersioning implements EntityVersioning {
 /// Synchronization version identifier
 @override final  String? syncVer;
 /// Search index for efficient queries
+///
+/// Expected keys:
+///   - 'keywords': `List<String>`
+///   - 'category': String
+///   - Add more as needed for your application
  final  Map<String, Object> _searchIndex;
 /// Search index for efficient queries
+///
+/// Expected keys:
+///   - 'keywords': `List<String>`
+///   - 'category': String
+///   - Add more as needed for your application
 @override@JsonKey() Map<String, Object> get searchIndex {
   if (_searchIndex is EqualUnmodifiableMapView) return _searchIndex;
   // ignore: implicit_dynamic_type
@@ -710,8 +760,18 @@ class _EntityVersioning implements EntityVersioning {
 }
 
 /// Additional event-related metadata
+///
+/// Expected keys:
+///   - 'eventType': String
+///   - 'eventSource': String
+///   - Add more as needed for your application
  final  Map<String, Object> _eventMeta;
 /// Additional event-related metadata
+///
+/// Expected keys:
+///   - 'eventType': String
+///   - 'eventSource': String
+///   - Add more as needed for your application
 @override@JsonKey() Map<String, Object> get eventMeta {
   if (_eventMeta is EqualUnmodifiableMapView) return _eventMeta;
   // ignore: implicit_dynamic_type

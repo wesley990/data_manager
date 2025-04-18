@@ -70,7 +70,10 @@ sealed class EntityHierarchy with _$EntityHierarchy {
     ///   - Add more as needed for your application
     @Default({}) Map<String, Object> hierarchyMeta,
   }) = _EntityHierarchy;
+}
 
+/// Extension methods for EntityHierarchy operations
+extension EntityHierarchyOperations on EntityHierarchy {
   /// Adds a child entity ID, automatically updating leaf status and meta
   EntityHierarchy addChild(EntityId childId) {
     if (childIds.contains(childId)) return this;
