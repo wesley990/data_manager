@@ -118,8 +118,8 @@ as String,
 /// @nodoc
 @JsonSerializable()
 
-class _EntityConfig implements EntityConfig {
-  const _EntityConfig({this.maxPathLength = 1024, this.maxPathSegment = 255, this.maxHierarchyDepth = 10, this.maxHistorySize = 50, this.defaultHistorySize = 50, this.defaultLockTimeout = const Duration(minutes: 15), this.lockExtensionPeriod = const Duration(minutes: 5), this.minLockDuration = const Duration(seconds: 30), this.maxLockDuration = const Duration(hours: 24), this.defaultVersion = '1.0.0', this.defaultIsPublic = true, this.defaultPriority = EntityPriority.medium, this.defaultStage = EntityStage.draft, this.pathSeparator = '/', this.invalidPathChars = r'[<>:"|?*\x00-\x1F]'});
+class _EntityConfig extends EntityConfig {
+  const _EntityConfig({this.maxPathLength = 1024, this.maxPathSegment = 255, this.maxHierarchyDepth = 10, this.maxHistorySize = 50, this.defaultHistorySize = 50, this.defaultLockTimeout = const Duration(minutes: 15), this.lockExtensionPeriod = const Duration(minutes: 5), this.minLockDuration = const Duration(seconds: 30), this.maxLockDuration = const Duration(hours: 24), this.defaultVersion = '1.0.0', this.defaultIsPublic = true, this.defaultPriority = EntityPriority.medium, this.defaultStage = EntityStage.draft, this.pathSeparator = '/', this.invalidPathChars = r'[<>:"|?*\x00-\x1F]'}): super._();
   factory _EntityConfig.fromJson(Map<String, dynamic> json) => _$EntityConfigFromJson(json);
 
 // Path limits
