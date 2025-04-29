@@ -9,6 +9,7 @@ part of 'entity_config.dart';
 _EntityConfig _$EntityConfigFromJson(
   Map<String, dynamic> json,
 ) => _EntityConfig(
+  configVersion: json['configVersion'] as String? ?? '1.0.0',
   maxPathLength: (json['maxPathLength'] as num?)?.toInt() ?? 1024,
   maxPathSegment: (json['maxPathSegment'] as num?)?.toInt() ?? 255,
   maxHierarchyDepth: (json['maxHierarchyDepth'] as num?)?.toInt() ?? 10,
@@ -47,6 +48,7 @@ _EntityConfig _$EntityConfigFromJson(
 
 Map<String, dynamic> _$EntityConfigToJson(_EntityConfig instance) =>
     <String, dynamic>{
+      'configVersion': instance.configVersion,
       'maxPathLength': instance.maxPathLength,
       'maxPathSegment': instance.maxPathSegment,
       'maxHierarchyDepth': instance.maxHierarchyDepth,

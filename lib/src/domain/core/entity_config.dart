@@ -17,6 +17,13 @@ sealed class EntityConfig with _$EntityConfig {
   const EntityConfig._(); // Private constructor for implementing instance methods
 
   const factory EntityConfig({
+    /// Configuration schema version for tracking changes to the configuration format itself.
+    /// This version follows semantic versioning and should be incremented when:
+    /// - MAJOR: Breaking changes to configuration structure
+    /// - MINOR: New backward-compatible fields added
+    /// - PATCH: Bug fixes that don't affect configuration structure
+    @Default('1.0.0') String configVersion,
+
     // Path limits
     /// Maximum length of an entity path in characters.
     @Default(1024) int maxPathLength,
@@ -78,6 +85,7 @@ sealed class EntityConfig with _$EntityConfig {
   /// This configuration has more permissive settings than the default.
   factory EntityConfig.development() {
     return const EntityConfig(
+      configVersion: '1.0.0',
       maxPathLength: 2048,
       maxHistorySize: 100,
       defaultLockTimeout: Duration(hours: 1),
@@ -91,6 +99,7 @@ sealed class EntityConfig with _$EntityConfig {
   /// This configuration has more restrictive settings than the default.
   factory EntityConfig.production() {
     return const EntityConfig(
+      configVersion: '1.0.0',
       maxPathLength: 512,
       maxPathSegment: 128,
       maxHierarchyDepth: 8,
@@ -131,6 +140,7 @@ sealed class EntityConfig with _$EntityConfig {
   /// [pathSeparator] - Character used to separate path segments.
   /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.
   factory EntityConfig.custom({
+    String? configVersion,
     int? maxPathLength,
     int? maxPathSegment,
     int? maxHierarchyDepth,
@@ -147,27 +157,27 @@ sealed class EntityConfig with _$EntityConfig {
     String? pathSeparator,
     String? invalidPathChars,
   }) {
+    const defaultConfig = EntityConfig();
     return EntityConfig(
-      maxPathLength: maxPathLength ?? const EntityConfig().maxPathLength,
-      maxPathSegment: maxPathSegment ?? const EntityConfig().maxPathSegment,
-      maxHierarchyDepth:
-          maxHierarchyDepth ?? const EntityConfig().maxHierarchyDepth,
-      maxHistorySize: maxHistorySize ?? const EntityConfig().maxHistorySize,
+      configVersion: configVersion ?? defaultConfig.configVersion,
+      maxPathLength: maxPathLength ?? defaultConfig.maxPathLength,
+      maxPathSegment: maxPathSegment ?? defaultConfig.maxPathSegment,
+      maxHierarchyDepth: maxHierarchyDepth ?? defaultConfig.maxHierarchyDepth,
+      maxHistorySize: maxHistorySize ?? defaultConfig.maxHistorySize,
       defaultHistorySize:
-          defaultHistorySize ?? const EntityConfig().defaultHistorySize,
+          defaultHistorySize ?? defaultConfig.defaultHistorySize,
       defaultLockTimeout:
-          defaultLockTimeout ?? const EntityConfig().defaultLockTimeout,
+          defaultLockTimeout ?? defaultConfig.defaultLockTimeout,
       lockExtensionPeriod:
-          lockExtensionPeriod ?? const EntityConfig().lockExtensionPeriod,
-      minLockDuration: minLockDuration ?? const EntityConfig().minLockDuration,
-      maxLockDuration: maxLockDuration ?? const EntityConfig().maxLockDuration,
-      defaultVersion: defaultVersion ?? const EntityConfig().defaultVersion,
-      defaultIsPublic: defaultIsPublic ?? const EntityConfig().defaultIsPublic,
-      defaultPriority: defaultPriority ?? const EntityConfig().defaultPriority,
-      defaultStage: defaultStage ?? const EntityConfig().defaultStage,
-      pathSeparator: pathSeparator ?? const EntityConfig().pathSeparator,
-      invalidPathChars:
-          invalidPathChars ?? const EntityConfig().invalidPathChars,
+          lockExtensionPeriod ?? defaultConfig.lockExtensionPeriod,
+      minLockDuration: minLockDuration ?? defaultConfig.minLockDuration,
+      maxLockDuration: maxLockDuration ?? defaultConfig.maxLockDuration,
+      defaultVersion: defaultVersion ?? defaultConfig.defaultVersion,
+      defaultIsPublic: defaultIsPublic ?? defaultConfig.defaultIsPublic,
+      defaultPriority: defaultPriority ?? defaultConfig.defaultPriority,
+      defaultStage: defaultStage ?? defaultConfig.defaultStage,
+      pathSeparator: pathSeparator ?? defaultConfig.pathSeparator,
+      invalidPathChars: invalidPathChars ?? defaultConfig.invalidPathChars,
     );
   }
 
@@ -428,6 +438,14 @@ sealed class EntityConfig with _$EntityConfig {
   Map<String, Map<String, Object>> compareWith(EntityConfig other) {
     final differences = <String, Map<String, Object>>{};
 
+    // Compare versions
+    if (defaultVersion != other.defaultVersion) {
+      differences['version'] = {
+        'this': defaultVersion,
+        'other': other.defaultVersion,
+      };
+    }
+
     // Compare path limits
     if (maxPathLength != other.maxPathLength) {
       differences['maxPathLength'] = {
@@ -659,5 +677,90 @@ sealed class EntityConfig with _$EntityConfig {
       // If parsing fails, fall back to string comparison
       return v1.compareTo(v2);
     }
+  }
+
+  /// Checks if this configuration version is compatible with another version.
+  ///
+  /// Follows semantic versioning principles:
+  /// - Major versions must match (breaking changes)
+  /// - If this is being used with data created by otherVersion, this.minor >= other.minor
+  ///
+  /// [otherVersion] - Version string to check compatibility with (e.g., "1.2.3")
+  /// [thisVersion] - Optional version to check, defaults to this config's version
+  ///
+  /// Returns true if versions are compatible.
+  bool isVersionCompatible(String otherVersion, [String? thisVersion]) {
+    final version = thisVersion ?? defaultVersion;
+
+    // If versions are identical, they're compatible
+    if (version == otherVersion) return true;
+
+    try {
+      final vParts = version.split('.').map(int.parse).toList();
+      final otherParts = otherVersion.split('.').map(int.parse).toList();
+
+      // Major versions must match (breaking changes)
+      if (vParts.isNotEmpty &&
+          otherParts.isNotEmpty &&
+          vParts[0] != otherParts[0]) {
+        return false;
+      }
+
+      // Minor version: this config must be same or newer than data version
+      if (vParts.length > 1 && otherParts.length > 1) {
+        if (vParts[1] < otherParts[1]) return false;
+      }
+
+      // Patch versions don't affect compatibility
+      return true;
+    } catch (e) {
+      // If parsing fails, fall back to string equality
+      return version == otherVersion;
+    }
+  }
+
+  /// Creates a new configuration with an incremented version.
+  ///
+  /// [increment] - Which part to increment: "major", "minor", or "patch"
+  /// [baseVersion] - Optional base version, defaults to this config's version
+  ///
+  /// Returns a new version string following semantic versioning.
+  String incrementVersion(String increment, [String? baseVersion]) {
+    final version = baseVersion ?? defaultVersion;
+
+    try {
+      final parts = version.split('.').map(int.parse).toList();
+
+      if (parts.length != 3) {
+        // If parsing fails, append to the version
+        return '$version.1';
+      }
+
+      switch (increment.toLowerCase()) {
+        case 'major':
+          return '${parts[0] + 1}.0.0';
+        case 'minor':
+          return '${parts[0]}.${parts[1] + 1}.0';
+        case 'patch':
+        default:
+          return '${parts[0]}.${parts[1]}.${parts[2] + 1}';
+      }
+    } catch (e) {
+      // If parsing fails, append to the version
+      return '$version.1';
+    }
+  }
+
+  /// Creates a new config with the version number incremented.
+  ///
+  /// This creates a new configuration with an updated version while
+  /// preserving all other settings.
+  ///
+  /// [increment] - Which part to increment: "major", "minor", or "patch"
+  ///
+  /// Returns a new EntityConfig with the updated version.
+  EntityConfig withIncrementedVersion(String increment) {
+    final newVersion = incrementVersion(increment);
+    return copyWith(defaultVersion: newVersion);
   }
 }

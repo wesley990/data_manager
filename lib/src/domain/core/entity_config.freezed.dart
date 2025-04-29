@@ -16,7 +16,12 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EntityConfig {
 
-// Path limits
+/// Configuration schema version for tracking changes to the configuration format itself.
+/// This version follows semantic versioning and should be incremented when:
+/// - MAJOR: Breaking changes to configuration structure
+/// - MINOR: New backward-compatible fields added
+/// - PATCH: Bug fixes that don't affect configuration structure
+ String get configVersion;// Path limits
 /// Maximum length of an entity path in characters.
  int get maxPathLength;/// Maximum length of a single path segment in characters.
  int get maxPathSegment;/// Maximum allowed depth of entity hierarchies.
@@ -54,16 +59,16 @@ $EntityConfigCopyWith<EntityConfig> get copyWith => _$EntityConfigCopyWithImpl<E
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntityConfig&&(identical(other.maxPathLength, maxPathLength) || other.maxPathLength == maxPathLength)&&(identical(other.maxPathSegment, maxPathSegment) || other.maxPathSegment == maxPathSegment)&&(identical(other.maxHierarchyDepth, maxHierarchyDepth) || other.maxHierarchyDepth == maxHierarchyDepth)&&(identical(other.maxHistorySize, maxHistorySize) || other.maxHistorySize == maxHistorySize)&&(identical(other.defaultHistorySize, defaultHistorySize) || other.defaultHistorySize == defaultHistorySize)&&(identical(other.defaultLockTimeout, defaultLockTimeout) || other.defaultLockTimeout == defaultLockTimeout)&&(identical(other.lockExtensionPeriod, lockExtensionPeriod) || other.lockExtensionPeriod == lockExtensionPeriod)&&(identical(other.minLockDuration, minLockDuration) || other.minLockDuration == minLockDuration)&&(identical(other.maxLockDuration, maxLockDuration) || other.maxLockDuration == maxLockDuration)&&(identical(other.defaultVersion, defaultVersion) || other.defaultVersion == defaultVersion)&&(identical(other.defaultIsPublic, defaultIsPublic) || other.defaultIsPublic == defaultIsPublic)&&(identical(other.defaultPriority, defaultPriority) || other.defaultPriority == defaultPriority)&&(identical(other.defaultStage, defaultStage) || other.defaultStage == defaultStage)&&(identical(other.pathSeparator, pathSeparator) || other.pathSeparator == pathSeparator)&&(identical(other.invalidPathChars, invalidPathChars) || other.invalidPathChars == invalidPathChars));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntityConfig&&(identical(other.configVersion, configVersion) || other.configVersion == configVersion)&&(identical(other.maxPathLength, maxPathLength) || other.maxPathLength == maxPathLength)&&(identical(other.maxPathSegment, maxPathSegment) || other.maxPathSegment == maxPathSegment)&&(identical(other.maxHierarchyDepth, maxHierarchyDepth) || other.maxHierarchyDepth == maxHierarchyDepth)&&(identical(other.maxHistorySize, maxHistorySize) || other.maxHistorySize == maxHistorySize)&&(identical(other.defaultHistorySize, defaultHistorySize) || other.defaultHistorySize == defaultHistorySize)&&(identical(other.defaultLockTimeout, defaultLockTimeout) || other.defaultLockTimeout == defaultLockTimeout)&&(identical(other.lockExtensionPeriod, lockExtensionPeriod) || other.lockExtensionPeriod == lockExtensionPeriod)&&(identical(other.minLockDuration, minLockDuration) || other.minLockDuration == minLockDuration)&&(identical(other.maxLockDuration, maxLockDuration) || other.maxLockDuration == maxLockDuration)&&(identical(other.defaultVersion, defaultVersion) || other.defaultVersion == defaultVersion)&&(identical(other.defaultIsPublic, defaultIsPublic) || other.defaultIsPublic == defaultIsPublic)&&(identical(other.defaultPriority, defaultPriority) || other.defaultPriority == defaultPriority)&&(identical(other.defaultStage, defaultStage) || other.defaultStage == defaultStage)&&(identical(other.pathSeparator, pathSeparator) || other.pathSeparator == pathSeparator)&&(identical(other.invalidPathChars, invalidPathChars) || other.invalidPathChars == invalidPathChars));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,maxPathLength,maxPathSegment,maxHierarchyDepth,maxHistorySize,defaultHistorySize,defaultLockTimeout,lockExtensionPeriod,minLockDuration,maxLockDuration,defaultVersion,defaultIsPublic,defaultPriority,defaultStage,pathSeparator,invalidPathChars);
+int get hashCode => Object.hash(runtimeType,configVersion,maxPathLength,maxPathSegment,maxHierarchyDepth,maxHistorySize,defaultHistorySize,defaultLockTimeout,lockExtensionPeriod,minLockDuration,maxLockDuration,defaultVersion,defaultIsPublic,defaultPriority,defaultStage,pathSeparator,invalidPathChars);
 
 @override
 String toString() {
-  return 'EntityConfig(maxPathLength: $maxPathLength, maxPathSegment: $maxPathSegment, maxHierarchyDepth: $maxHierarchyDepth, maxHistorySize: $maxHistorySize, defaultHistorySize: $defaultHistorySize, defaultLockTimeout: $defaultLockTimeout, lockExtensionPeriod: $lockExtensionPeriod, minLockDuration: $minLockDuration, maxLockDuration: $maxLockDuration, defaultVersion: $defaultVersion, defaultIsPublic: $defaultIsPublic, defaultPriority: $defaultPriority, defaultStage: $defaultStage, pathSeparator: $pathSeparator, invalidPathChars: $invalidPathChars)';
+  return 'EntityConfig(configVersion: $configVersion, maxPathLength: $maxPathLength, maxPathSegment: $maxPathSegment, maxHierarchyDepth: $maxHierarchyDepth, maxHistorySize: $maxHistorySize, defaultHistorySize: $defaultHistorySize, defaultLockTimeout: $defaultLockTimeout, lockExtensionPeriod: $lockExtensionPeriod, minLockDuration: $minLockDuration, maxLockDuration: $maxLockDuration, defaultVersion: $defaultVersion, defaultIsPublic: $defaultIsPublic, defaultPriority: $defaultPriority, defaultStage: $defaultStage, pathSeparator: $pathSeparator, invalidPathChars: $invalidPathChars)';
 }
 
 
@@ -74,7 +79,7 @@ abstract mixin class $EntityConfigCopyWith<$Res>  {
   factory $EntityConfigCopyWith(EntityConfig value, $Res Function(EntityConfig) _then) = _$EntityConfigCopyWithImpl;
 @useResult
 $Res call({
- int maxPathLength, int maxPathSegment, int maxHierarchyDepth, int maxHistorySize, int defaultHistorySize, Duration defaultLockTimeout, Duration lockExtensionPeriod, Duration minLockDuration, Duration maxLockDuration, String defaultVersion, bool defaultIsPublic, EntityPriority defaultPriority, EntityStage defaultStage, String pathSeparator, String invalidPathChars
+ String configVersion, int maxPathLength, int maxPathSegment, int maxHierarchyDepth, int maxHistorySize, int defaultHistorySize, Duration defaultLockTimeout, Duration lockExtensionPeriod, Duration minLockDuration, Duration maxLockDuration, String defaultVersion, bool defaultIsPublic, EntityPriority defaultPriority, EntityStage defaultStage, String pathSeparator, String invalidPathChars
 });
 
 
@@ -91,9 +96,10 @@ class _$EntityConfigCopyWithImpl<$Res>
 
 /// Create a copy of EntityConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? maxPathLength = null,Object? maxPathSegment = null,Object? maxHierarchyDepth = null,Object? maxHistorySize = null,Object? defaultHistorySize = null,Object? defaultLockTimeout = null,Object? lockExtensionPeriod = null,Object? minLockDuration = null,Object? maxLockDuration = null,Object? defaultVersion = null,Object? defaultIsPublic = null,Object? defaultPriority = null,Object? defaultStage = null,Object? pathSeparator = null,Object? invalidPathChars = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? configVersion = null,Object? maxPathLength = null,Object? maxPathSegment = null,Object? maxHierarchyDepth = null,Object? maxHistorySize = null,Object? defaultHistorySize = null,Object? defaultLockTimeout = null,Object? lockExtensionPeriod = null,Object? minLockDuration = null,Object? maxLockDuration = null,Object? defaultVersion = null,Object? defaultIsPublic = null,Object? defaultPriority = null,Object? defaultStage = null,Object? pathSeparator = null,Object? invalidPathChars = null,}) {
   return _then(_self.copyWith(
-maxPathLength: null == maxPathLength ? _self.maxPathLength : maxPathLength // ignore: cast_nullable_to_non_nullable
+configVersion: null == configVersion ? _self.configVersion : configVersion // ignore: cast_nullable_to_non_nullable
+as String,maxPathLength: null == maxPathLength ? _self.maxPathLength : maxPathLength // ignore: cast_nullable_to_non_nullable
 as int,maxPathSegment: null == maxPathSegment ? _self.maxPathSegment : maxPathSegment // ignore: cast_nullable_to_non_nullable
 as int,maxHierarchyDepth: null == maxHierarchyDepth ? _self.maxHierarchyDepth : maxHierarchyDepth // ignore: cast_nullable_to_non_nullable
 as int,maxHistorySize: null == maxHistorySize ? _self.maxHistorySize : maxHistorySize // ignore: cast_nullable_to_non_nullable
@@ -119,9 +125,15 @@ as String,
 @JsonSerializable()
 
 class _EntityConfig extends EntityConfig {
-  const _EntityConfig({this.maxPathLength = 1024, this.maxPathSegment = 255, this.maxHierarchyDepth = 10, this.maxHistorySize = 50, this.defaultHistorySize = 50, this.defaultLockTimeout = const Duration(minutes: 15), this.lockExtensionPeriod = const Duration(minutes: 5), this.minLockDuration = const Duration(seconds: 30), this.maxLockDuration = const Duration(hours: 24), this.defaultVersion = '1.0.0', this.defaultIsPublic = true, this.defaultPriority = EntityPriority.medium, this.defaultStage = EntityStage.draft, this.pathSeparator = '/', this.invalidPathChars = r'[<>:"|?*\x00-\x1F]'}): super._();
+  const _EntityConfig({this.configVersion = '1.0.0', this.maxPathLength = 1024, this.maxPathSegment = 255, this.maxHierarchyDepth = 10, this.maxHistorySize = 50, this.defaultHistorySize = 50, this.defaultLockTimeout = const Duration(minutes: 15), this.lockExtensionPeriod = const Duration(minutes: 5), this.minLockDuration = const Duration(seconds: 30), this.maxLockDuration = const Duration(hours: 24), this.defaultVersion = '1.0.0', this.defaultIsPublic = true, this.defaultPriority = EntityPriority.medium, this.defaultStage = EntityStage.draft, this.pathSeparator = '/', this.invalidPathChars = r'[<>:"|?*\x00-\x1F]'}): super._();
   factory _EntityConfig.fromJson(Map<String, dynamic> json) => _$EntityConfigFromJson(json);
 
+/// Configuration schema version for tracking changes to the configuration format itself.
+/// This version follows semantic versioning and should be incremented when:
+/// - MAJOR: Breaking changes to configuration structure
+/// - MINOR: New backward-compatible fields added
+/// - PATCH: Bug fixes that don't affect configuration structure
+@override@JsonKey() final  String configVersion;
 // Path limits
 /// Maximum length of an entity path in characters.
 @override@JsonKey() final  int maxPathLength;
@@ -176,16 +188,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntityConfig&&(identical(other.maxPathLength, maxPathLength) || other.maxPathLength == maxPathLength)&&(identical(other.maxPathSegment, maxPathSegment) || other.maxPathSegment == maxPathSegment)&&(identical(other.maxHierarchyDepth, maxHierarchyDepth) || other.maxHierarchyDepth == maxHierarchyDepth)&&(identical(other.maxHistorySize, maxHistorySize) || other.maxHistorySize == maxHistorySize)&&(identical(other.defaultHistorySize, defaultHistorySize) || other.defaultHistorySize == defaultHistorySize)&&(identical(other.defaultLockTimeout, defaultLockTimeout) || other.defaultLockTimeout == defaultLockTimeout)&&(identical(other.lockExtensionPeriod, lockExtensionPeriod) || other.lockExtensionPeriod == lockExtensionPeriod)&&(identical(other.minLockDuration, minLockDuration) || other.minLockDuration == minLockDuration)&&(identical(other.maxLockDuration, maxLockDuration) || other.maxLockDuration == maxLockDuration)&&(identical(other.defaultVersion, defaultVersion) || other.defaultVersion == defaultVersion)&&(identical(other.defaultIsPublic, defaultIsPublic) || other.defaultIsPublic == defaultIsPublic)&&(identical(other.defaultPriority, defaultPriority) || other.defaultPriority == defaultPriority)&&(identical(other.defaultStage, defaultStage) || other.defaultStage == defaultStage)&&(identical(other.pathSeparator, pathSeparator) || other.pathSeparator == pathSeparator)&&(identical(other.invalidPathChars, invalidPathChars) || other.invalidPathChars == invalidPathChars));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntityConfig&&(identical(other.configVersion, configVersion) || other.configVersion == configVersion)&&(identical(other.maxPathLength, maxPathLength) || other.maxPathLength == maxPathLength)&&(identical(other.maxPathSegment, maxPathSegment) || other.maxPathSegment == maxPathSegment)&&(identical(other.maxHierarchyDepth, maxHierarchyDepth) || other.maxHierarchyDepth == maxHierarchyDepth)&&(identical(other.maxHistorySize, maxHistorySize) || other.maxHistorySize == maxHistorySize)&&(identical(other.defaultHistorySize, defaultHistorySize) || other.defaultHistorySize == defaultHistorySize)&&(identical(other.defaultLockTimeout, defaultLockTimeout) || other.defaultLockTimeout == defaultLockTimeout)&&(identical(other.lockExtensionPeriod, lockExtensionPeriod) || other.lockExtensionPeriod == lockExtensionPeriod)&&(identical(other.minLockDuration, minLockDuration) || other.minLockDuration == minLockDuration)&&(identical(other.maxLockDuration, maxLockDuration) || other.maxLockDuration == maxLockDuration)&&(identical(other.defaultVersion, defaultVersion) || other.defaultVersion == defaultVersion)&&(identical(other.defaultIsPublic, defaultIsPublic) || other.defaultIsPublic == defaultIsPublic)&&(identical(other.defaultPriority, defaultPriority) || other.defaultPriority == defaultPriority)&&(identical(other.defaultStage, defaultStage) || other.defaultStage == defaultStage)&&(identical(other.pathSeparator, pathSeparator) || other.pathSeparator == pathSeparator)&&(identical(other.invalidPathChars, invalidPathChars) || other.invalidPathChars == invalidPathChars));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,maxPathLength,maxPathSegment,maxHierarchyDepth,maxHistorySize,defaultHistorySize,defaultLockTimeout,lockExtensionPeriod,minLockDuration,maxLockDuration,defaultVersion,defaultIsPublic,defaultPriority,defaultStage,pathSeparator,invalidPathChars);
+int get hashCode => Object.hash(runtimeType,configVersion,maxPathLength,maxPathSegment,maxHierarchyDepth,maxHistorySize,defaultHistorySize,defaultLockTimeout,lockExtensionPeriod,minLockDuration,maxLockDuration,defaultVersion,defaultIsPublic,defaultPriority,defaultStage,pathSeparator,invalidPathChars);
 
 @override
 String toString() {
-  return 'EntityConfig(maxPathLength: $maxPathLength, maxPathSegment: $maxPathSegment, maxHierarchyDepth: $maxHierarchyDepth, maxHistorySize: $maxHistorySize, defaultHistorySize: $defaultHistorySize, defaultLockTimeout: $defaultLockTimeout, lockExtensionPeriod: $lockExtensionPeriod, minLockDuration: $minLockDuration, maxLockDuration: $maxLockDuration, defaultVersion: $defaultVersion, defaultIsPublic: $defaultIsPublic, defaultPriority: $defaultPriority, defaultStage: $defaultStage, pathSeparator: $pathSeparator, invalidPathChars: $invalidPathChars)';
+  return 'EntityConfig(configVersion: $configVersion, maxPathLength: $maxPathLength, maxPathSegment: $maxPathSegment, maxHierarchyDepth: $maxHierarchyDepth, maxHistorySize: $maxHistorySize, defaultHistorySize: $defaultHistorySize, defaultLockTimeout: $defaultLockTimeout, lockExtensionPeriod: $lockExtensionPeriod, minLockDuration: $minLockDuration, maxLockDuration: $maxLockDuration, defaultVersion: $defaultVersion, defaultIsPublic: $defaultIsPublic, defaultPriority: $defaultPriority, defaultStage: $defaultStage, pathSeparator: $pathSeparator, invalidPathChars: $invalidPathChars)';
 }
 
 
@@ -196,7 +208,7 @@ abstract mixin class _$EntityConfigCopyWith<$Res> implements $EntityConfigCopyWi
   factory _$EntityConfigCopyWith(_EntityConfig value, $Res Function(_EntityConfig) _then) = __$EntityConfigCopyWithImpl;
 @override @useResult
 $Res call({
- int maxPathLength, int maxPathSegment, int maxHierarchyDepth, int maxHistorySize, int defaultHistorySize, Duration defaultLockTimeout, Duration lockExtensionPeriod, Duration minLockDuration, Duration maxLockDuration, String defaultVersion, bool defaultIsPublic, EntityPriority defaultPriority, EntityStage defaultStage, String pathSeparator, String invalidPathChars
+ String configVersion, int maxPathLength, int maxPathSegment, int maxHierarchyDepth, int maxHistorySize, int defaultHistorySize, Duration defaultLockTimeout, Duration lockExtensionPeriod, Duration minLockDuration, Duration maxLockDuration, String defaultVersion, bool defaultIsPublic, EntityPriority defaultPriority, EntityStage defaultStage, String pathSeparator, String invalidPathChars
 });
 
 
@@ -213,9 +225,10 @@ class __$EntityConfigCopyWithImpl<$Res>
 
 /// Create a copy of EntityConfig
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? maxPathLength = null,Object? maxPathSegment = null,Object? maxHierarchyDepth = null,Object? maxHistorySize = null,Object? defaultHistorySize = null,Object? defaultLockTimeout = null,Object? lockExtensionPeriod = null,Object? minLockDuration = null,Object? maxLockDuration = null,Object? defaultVersion = null,Object? defaultIsPublic = null,Object? defaultPriority = null,Object? defaultStage = null,Object? pathSeparator = null,Object? invalidPathChars = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? configVersion = null,Object? maxPathLength = null,Object? maxPathSegment = null,Object? maxHierarchyDepth = null,Object? maxHistorySize = null,Object? defaultHistorySize = null,Object? defaultLockTimeout = null,Object? lockExtensionPeriod = null,Object? minLockDuration = null,Object? maxLockDuration = null,Object? defaultVersion = null,Object? defaultIsPublic = null,Object? defaultPriority = null,Object? defaultStage = null,Object? pathSeparator = null,Object? invalidPathChars = null,}) {
   return _then(_EntityConfig(
-maxPathLength: null == maxPathLength ? _self.maxPathLength : maxPathLength // ignore: cast_nullable_to_non_nullable
+configVersion: null == configVersion ? _self.configVersion : configVersion // ignore: cast_nullable_to_non_nullable
+as String,maxPathLength: null == maxPathLength ? _self.maxPathLength : maxPathLength // ignore: cast_nullable_to_non_nullable
 as int,maxPathSegment: null == maxPathSegment ? _self.maxPathSegment : maxPathSegment // ignore: cast_nullable_to_non_nullable
 as int,maxHierarchyDepth: null == maxHierarchyDepth ? _self.maxHierarchyDepth : maxHierarchyDepth // ignore: cast_nullable_to_non_nullable
 as int,maxHistorySize: null == maxHistorySize ? _self.maxHistorySize : maxHistorySize // ignore: cast_nullable_to_non_nullable
