@@ -64,9 +64,6 @@ def create_codebase_snapshot(project_path, output_file="snapshot.md", json_outpu
         output_file: Path where markdown output will be written
         json_output: Path where JSON index will be written
     """
-    """
-    Generate a structured markdown snapshot of the codebase for AI consumption.
-    """
     # Filter out generated files
     all_dart_files = glob.glob(f"{project_path}/**/*.dart", recursive=True)
     dart_files = [f for f in all_dart_files 
@@ -956,5 +953,5 @@ classDiagram
     return domain_diagram + repo_diagram + event_diagram + value_diagram
 
 if __name__ == "__main__":
-    project_path = "/Users/wesley/projects/data_manager"
+    project_path = "$HOME/projects/data_manager"
     create_codebase_snapshot(project_path)
