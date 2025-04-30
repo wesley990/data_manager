@@ -4,11 +4,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'entity_types.freezed.dart';
 part 'entity_types.g.dart';
 
-// Entity-specific classes
+/// Domain-specific data models for business entities
 @freezed
 sealed class OwnerData with _$OwnerData {
-  const OwnerData._(); // Add private constructor for methods
+  const OwnerData._(); // Private constructor for methods
 
+  /// Entity owner data model representing an organization or individual
+  ///
+  /// Stores contact information and site references
   const factory OwnerData({
     // Core info
     required ContactInfo contact,
@@ -23,12 +26,21 @@ sealed class OwnerData with _$OwnerData {
       _$OwnerDataFromJson(json);
 
   // Computed properties
+  /// Whether this owner has associated sites
   bool get hasSites => siteIds.isNotEmpty;
+
+  /// Whether owner has multiple sites
   bool get hasMultipleSites => siteIds.length > 1;
+
+  /// Whether valid contact information exists
   bool get hasValidContact => contact.email != null || contact.phone != null;
+
+  /// Human-readable name for display
   String get displayName => contact.displayName;
 
-  // Event handling
+  /// Applies domain event and returns updated state
+  ///
+  /// Processes event data to create new entity state without mutation
   OwnerData applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'SITE_ADDED' => copyWith(
@@ -52,6 +64,12 @@ sealed class OwnerData with _$OwnerData {
 sealed class SiteData with _$SiteData {
   const SiteData._();
 
+  /// Data model for physical location or site
+  ///
+  /// [name] - Name of the site
+  /// [ownerId] - Reference to the owner of the site
+  /// [address] - Optional physical address
+  /// [equipmentIds] - Equipment installed at this site
   const factory SiteData({
     // Core info
     required String name,
@@ -77,14 +95,18 @@ sealed class SiteData with _$SiteData {
   factory SiteData.fromJson(Map<String, Object> json) =>
       _$SiteDataFromJson(json);
 
-  // Location methods
+  /// Whether site has valid geolocation coordinates
   bool get hasLocation => latitude != null && longitude != null;
+
+  /// Formatted location coordinates string
   String get locationCoords => hasLocation ? '$latitude,$longitude' : '';
 
-  // Equipment methods
+  /// Whether site has associated equipment
   bool get hasEquipment => equipmentIds.isNotEmpty;
 
-  // Event handling
+  /// Handles domain events by generating new state
+  ///
+  /// Returns updated SiteData reflecting the applied event
   SiteData applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'EQUIPMENT_ADDED' => copyWith(
@@ -112,6 +134,14 @@ sealed class SiteData with _$SiteData {
 sealed class EquipmentData with _$EquipmentData {
   const EquipmentData._();
 
+  /// Data model for physical equipment or machinery
+  ///
+  /// [name] - Name of the equipment
+  /// [siteId] - Site where equipment is installed
+  /// [type] - Equipment type classification
+  /// [serialNum] - Optional manufacturer serial number
+  /// [parentId] - Optional parent equipment for hierarchical structures
+  /// [childIds] - Sub-components of this equipment
   const factory EquipmentData({
     // Core info
     required String name,
@@ -143,24 +173,33 @@ sealed class EquipmentData with _$EquipmentData {
   factory EquipmentData.fromJson(Map<String, Object> json) =>
       _$EquipmentDataFromJson(json);
 
-  // Maintenance methods
+  /// Whether equipment requires maintenance (over 180 days since last)
   bool get needsMaintenance =>
       lastMaintDate?.isBefore(
         DateTime.now().subtract(const Duration(days: 180)),
       ) ??
       true;
 
+  /// Whether equipment was installed in the last 30 days
   bool get isNewInstall =>
       installDate?.isAfter(DateTime.now().subtract(const Duration(days: 30))) ??
       false;
 
-  // Hierarchy methods
+  /// Whether equipment has child components
   bool get hasChildren => childIds.isNotEmpty;
+
+  /// Whether equipment is a child/sub-component
   bool get isChild => parentId != null;
+
+  /// Whether equipment is a root component (not a child)
   bool get isRoot => parentId == null;
+
+  /// Whether equipment has sub-components
   bool get hasSubComponents => childIds.isNotEmpty;
 
-  // Event handling
+  /// Handles domain events by generating new state
+  ///
+  /// Returns updated EquipmentData reflecting the applied event
   EquipmentData applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'MAINTENANCE_PERFORMED' => copyWith(
@@ -189,6 +228,12 @@ sealed class EquipmentData with _$EquipmentData {
 sealed class VendorData with _$VendorData {
   const VendorData._();
 
+  /// Data model for external service providers or vendors
+  ///
+  /// [contact] - Main contact information for the vendor
+  /// [staffIds] - Personnel working for this vendor
+  /// [services] - Types of services offered
+  /// [certifications] - Professional certifications held
   const factory VendorData({
     // Core info
     required ContactInfo contact,
@@ -204,13 +249,21 @@ sealed class VendorData with _$VendorData {
   factory VendorData.fromJson(Map<String, Object> json) =>
       _$VendorDataFromJson(json);
 
-  // Business methods
+  /// Whether vendor has associated staff members
   bool get hasStaff => staffIds.isNotEmpty;
+
+  /// Whether vendor provides services
   bool get hasServices => services.isNotEmpty;
+
+  /// Human-readable name for display
   String get displayName => contact.displayName;
+
+  /// Whether valid contact information exists
   bool get hasValidContact => contact.email != null || contact.phone != null;
 
-  // Event handling
+  /// Handles domain events by generating new state
+  ///
+  /// Returns updated VendorData reflecting the applied event
   VendorData applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'PERSONNEL_ADDED' => copyWith(
@@ -234,6 +287,14 @@ sealed class VendorData with _$VendorData {
 sealed class PersonnelData with _$PersonnelData {
   const PersonnelData._();
 
+  /// Data model for individuals providing services
+  ///
+  /// [name] - Name of the person
+  /// [vendorId] - Associated vendor/employer
+  /// [skillLevel] - Numeric rating of skill (1-10)
+  /// [certs] - Professional certifications
+  /// [specs] - Areas of specialization
+  /// [certDates] - Expiration dates for certifications
   const factory PersonnelData({
     // Core info
     required String name,
@@ -259,16 +320,27 @@ sealed class PersonnelData with _$PersonnelData {
   factory PersonnelData.fromJson(Map<String, Object> json) =>
       _$PersonnelDataFromJson(json);
 
-  // Qualification methods
+  /// Whether person holds certifications
   bool get isCertified => certs.isNotEmpty;
+
+  /// Whether person has specialized skills
   bool get isSpecialized => specs.isNotEmpty;
+
+  /// Whether valid contact information exists
   bool get hasValidContact => email != null || phone != null;
+
+  /// Primary certification, if any
   String? get primaryCert => certs.isNotEmpty ? certs.first : null;
+
+  /// Whether certifications are valid and have dates
   bool get hasValidCerts => certs.isNotEmpty && certDates.isNotEmpty;
 
+  /// Gets the expiration date for a specific certification
   DateTime? getCertExpiry(String cert) => certDates[cert];
 
-  // Event handling
+  /// Handles domain events by generating new state
+  ///
+  /// Returns updated PersonnelData reflecting the applied event
   PersonnelData applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'CERTIFICATION_ADDED' => copyWith(
@@ -288,7 +360,7 @@ sealed class PersonnelData with _$PersonnelData {
   }
 }
 
-// Type aliases for entity-specific BaseEntity instances
+/// Type aliases for entity-specific BaseEntity instances
 typedef OwnerEntityModel = BaseEntityModel<OwnerData>;
 typedef SiteEntityModel = BaseEntityModel<SiteData>;
 typedef EquipmentEntityModel = BaseEntityModel<EquipmentData>;
