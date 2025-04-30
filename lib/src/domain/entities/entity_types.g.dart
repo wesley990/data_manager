@@ -6,7 +6,7 @@ part of 'entity_types.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_OwnerModel _$OwnerModelFromJson(Map<String, dynamic> json) => _OwnerModel(
+_OwnerData _$OwnerDataFromJson(Map<String, dynamic> json) => _OwnerData(
   contact: ContactInfo.fromJson(
     (json['contact'] as Map<String, dynamic>).map(
       (k, e) => MapEntry(k, e as Object),
@@ -33,7 +33,7 @@ _OwnerModel _$OwnerModelFromJson(Map<String, dynamic> json) => _OwnerModel(
   ),
 );
 
-Map<String, dynamic> _$OwnerModelToJson(_OwnerModel instance) =>
+Map<String, dynamic> _$OwnerDataToJson(_OwnerData instance) =>
     <String, dynamic>{
       'contact': instance.contact,
       'siteIds': instance.siteIds,
@@ -41,7 +41,7 @@ Map<String, dynamic> _$OwnerModelToJson(_OwnerModel instance) =>
       'customData': instance.customData,
     };
 
-_SiteModel _$SiteModelFromJson(Map<String, dynamic> json) => _SiteModel(
+_SiteData _$SiteDataFromJson(Map<String, dynamic> json) => _SiteData(
   name: json['name'] as String,
   ownerId: EntityId.fromJson(
     (json['ownerId'] as Map<String, dynamic>).map(
@@ -82,22 +82,21 @@ _SiteModel _$SiteModelFromJson(Map<String, dynamic> json) => _SiteModel(
       const {},
 );
 
-Map<String, dynamic> _$SiteModelToJson(_SiteModel instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'ownerId': instance.ownerId,
-      'address': instance.address,
-      'latitude': instance.latitude,
-      'longitude': instance.longitude,
-      'equipmentIds': instance.equipmentIds,
-      'siteInfo': instance.siteInfo,
-      'customData': instance.customData,
-      'meta': instance.meta,
-      'contactInfo': instance.contactInfo,
-    };
+Map<String, dynamic> _$SiteDataToJson(_SiteData instance) => <String, dynamic>{
+  'name': instance.name,
+  'ownerId': instance.ownerId,
+  'address': instance.address,
+  'latitude': instance.latitude,
+  'longitude': instance.longitude,
+  'equipmentIds': instance.equipmentIds,
+  'siteInfo': instance.siteInfo,
+  'customData': instance.customData,
+  'meta': instance.meta,
+  'contactInfo': instance.contactInfo,
+};
 
-_EquipmentModel _$EquipmentModelFromJson(Map<String, dynamic> json) =>
-    _EquipmentModel(
+_EquipmentData _$EquipmentDataFromJson(Map<String, dynamic> json) =>
+    _EquipmentData(
       name: json['name'] as String,
       siteId: EntityId.fromJson(
         (json['siteId'] as Map<String, dynamic>).map(
@@ -155,7 +154,7 @@ _EquipmentModel _$EquipmentModelFromJson(Map<String, dynamic> json) =>
           const {},
     );
 
-Map<String, dynamic> _$EquipmentModelToJson(_EquipmentModel instance) =>
+Map<String, dynamic> _$EquipmentDataToJson(_EquipmentData instance) =>
     <String, dynamic>{
       'name': instance.name,
       'siteId': instance.siteId,
@@ -182,7 +181,7 @@ const _$EquipmentTypeEnumMap = {
   EquipmentType.cell: 'cell',
 };
 
-_VendorModel _$VendorModelFromJson(Map<String, dynamic> json) => _VendorModel(
+_VendorData _$VendorDataFromJson(Map<String, dynamic> json) => _VendorData(
   contact: ContactInfo.fromJson(
     (json['contact'] as Map<String, dynamic>).map(
       (k, e) => MapEntry(k, e as Object),
@@ -217,7 +216,7 @@ _VendorModel _$VendorModelFromJson(Map<String, dynamic> json) => _VendorModel(
       const {},
 );
 
-Map<String, dynamic> _$VendorModelToJson(_VendorModel instance) =>
+Map<String, dynamic> _$VendorDataToJson(_VendorData instance) =>
     <String, dynamic>{
       'contact': instance.contact,
       'staffIds': instance.staffIds,
@@ -227,8 +226,8 @@ Map<String, dynamic> _$VendorModelToJson(_VendorModel instance) =>
       'certifications': instance.certifications,
     };
 
-_PersonnelModel _$PersonnelModelFromJson(Map<String, dynamic> json) =>
-    _PersonnelModel(
+_PersonnelData _$PersonnelDataFromJson(Map<String, dynamic> json) =>
+    _PersonnelData(
       name: json['name'] as String,
       vendorId: EntityId.fromJson(
         (json['vendorId'] as Map<String, dynamic>).map(
@@ -265,7 +264,7 @@ _PersonnelModel _$PersonnelModelFromJson(Map<String, dynamic> json) =>
           const {},
     );
 
-Map<String, dynamic> _$PersonnelModelToJson(_PersonnelModel instance) =>
+Map<String, dynamic> _$PersonnelDataToJson(_PersonnelData instance) =>
     <String, dynamic>{
       'name': instance.name,
       'vendorId': instance.vendorId,

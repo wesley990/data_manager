@@ -6,10 +6,10 @@ part 'entity_types.g.dart';
 
 // Entity-specific classes
 @freezed
-sealed class OwnerModel with _$OwnerModel {
-  const OwnerModel._(); // Add private constructor for methods
+sealed class OwnerData with _$OwnerData {
+  const OwnerData._(); // Add private constructor for methods
 
-  const factory OwnerModel({
+  const factory OwnerData({
     // Core info
     required ContactInfo contact,
     @Default([]) List<EntityId> siteIds,
@@ -17,10 +17,10 @@ sealed class OwnerModel with _$OwnerModel {
     // Metadata
     @Default({}) Map<String, Object> meta,
     Map<String, Object>? customData,
-  }) = _OwnerModel;
+  }) = _OwnerData;
 
-  factory OwnerModel.fromJson(Map<String, Object> json) =>
-      _$OwnerModelFromJson(json);
+  factory OwnerData.fromJson(Map<String, Object> json) =>
+      _$OwnerDataFromJson(json);
 
   // Computed properties
   bool get hasSites => siteIds.isNotEmpty;
@@ -29,29 +29,30 @@ sealed class OwnerModel with _$OwnerModel {
   String get displayName => contact.displayName;
 
   // Event handling
-  OwnerModel applyEvent(DomainEventModel event) {
+  OwnerData applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'SITE_ADDED' => copyWith(
-          siteIds: [...siteIds, event.changes['siteId'] as EntityId],
-        ),
+        siteIds: [...siteIds, event.changes['siteId'] as EntityId],
+      ),
       'SITE_REMOVED' => copyWith(
-          siteIds: siteIds
-              .where((id) => id != event.changes['siteId'] as EntityId)
-              .toList(),
-        ),
+        siteIds:
+            siteIds
+                .where((id) => id != event.changes['siteId'] as EntityId)
+                .toList(),
+      ),
       'METADATA_UPDATED' => copyWith(
-          meta: {...meta, ...event.changes['metadata'] as Map<String, Object>},
-        ),
+        meta: {...meta, ...event.changes['metadata'] as Map<String, Object>},
+      ),
       _ => this,
     };
   }
 }
 
 @freezed
-sealed class SiteModel with _$SiteModel {
-  const SiteModel._();
+sealed class SiteData with _$SiteData {
+  const SiteData._();
 
-  const factory SiteModel({
+  const factory SiteData({
     // Core info
     required String name,
     required EntityId ownerId,
@@ -71,10 +72,10 @@ sealed class SiteModel with _$SiteModel {
     Map<String, Object>? customData,
     @Default({}) Map<String, Object> meta,
     @Default({}) Map<String, String> contactInfo,
-  }) = _SiteModel;
+  }) = _SiteData;
 
-  factory SiteModel.fromJson(Map<String, Object> json) =>
-      _$SiteModelFromJson(json);
+  factory SiteData.fromJson(Map<String, Object> json) =>
+      _$SiteDataFromJson(json);
 
   // Location methods
   bool get hasLocation => latitude != null && longitude != null;
@@ -84,33 +85,34 @@ sealed class SiteModel with _$SiteModel {
   bool get hasEquipment => equipmentIds.isNotEmpty;
 
   // Event handling
-  SiteModel applyEvent(DomainEventModel event) {
+  SiteData applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'EQUIPMENT_ADDED' => copyWith(
-          equipmentIds: [
-            ...equipmentIds,
-            event.changes['equipmentId'] as EntityId
-          ],
-        ),
+        equipmentIds: [
+          ...equipmentIds,
+          event.changes['equipmentId'] as EntityId,
+        ],
+      ),
       'EQUIPMENT_REMOVED' => copyWith(
-          equipmentIds: equipmentIds
-              .where((id) => id != event.changes['equipmentId'] as EntityId)
-              .toList(),
-        ),
+        equipmentIds:
+            equipmentIds
+                .where((id) => id != event.changes['equipmentId'] as EntityId)
+                .toList(),
+      ),
       'LOCATION_UPDATED' => copyWith(
-          latitude: event.changes['latitude'] as double?,
-          longitude: event.changes['longitude'] as double?,
-        ),
+        latitude: event.changes['latitude'] as double?,
+        longitude: event.changes['longitude'] as double?,
+      ),
       _ => this,
     };
   }
 }
 
 @freezed
-sealed class EquipmentModel with _$EquipmentModel {
-  const EquipmentModel._();
+sealed class EquipmentData with _$EquipmentData {
+  const EquipmentData._();
 
-  const factory EquipmentModel({
+  const factory EquipmentData({
     // Core info
     required String name,
     required EntityId siteId,
@@ -136,15 +138,16 @@ sealed class EquipmentModel with _$EquipmentModel {
     Map<String, Object>? customData,
     @Default({}) Map<String, Object> meta,
     @Default({}) Map<String, String> maintContacts,
-  }) = _EquipmentModel;
+  }) = _EquipmentData;
 
-  factory EquipmentModel.fromJson(Map<String, Object> json) =>
-      _$EquipmentModelFromJson(json);
+  factory EquipmentData.fromJson(Map<String, Object> json) =>
+      _$EquipmentDataFromJson(json);
 
   // Maintenance methods
   bool get needsMaintenance =>
-      lastMaintDate
-          ?.isBefore(DateTime.now().subtract(const Duration(days: 180))) ??
+      lastMaintDate?.isBefore(
+        DateTime.now().subtract(const Duration(days: 180)),
+      ) ??
       true;
 
   bool get isNewInstall =>
@@ -158,34 +161,35 @@ sealed class EquipmentModel with _$EquipmentModel {
   bool get hasSubComponents => childIds.isNotEmpty;
 
   // Event handling
-  EquipmentModel applyEvent(DomainEventModel event) {
+  EquipmentData applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'MAINTENANCE_PERFORMED' => copyWith(
-          lastMaintDate: event.timestamp,
-          meta: {
-            ...meta,
-            'lastMaintenanceBy': event.changes['performedBy'] ?? 'unknown',
-            'maintenanceNotes': event.changes['notes'] ?? '',
-          },
-        ),
+        lastMaintDate: event.timestamp,
+        meta: {
+          ...meta,
+          'lastMaintenanceBy': event.changes['performedBy'] ?? 'unknown',
+          'maintenanceNotes': event.changes['notes'] ?? '',
+        },
+      ),
       'CHILD_ADDED' => copyWith(
-          childIds: [...childIds, event.changes['childId'] as EntityId],
-        ),
+        childIds: [...childIds, event.changes['childId'] as EntityId],
+      ),
       'CHILD_REMOVED' => copyWith(
-          childIds: childIds
-              .where((id) => id != event.changes['childId'] as EntityId)
-              .toList(),
-        ),
+        childIds:
+            childIds
+                .where((id) => id != event.changes['childId'] as EntityId)
+                .toList(),
+      ),
       _ => this,
     };
   }
 }
 
 @freezed
-sealed class VendorModel with _$VendorModel {
-  const VendorModel._();
+sealed class VendorData with _$VendorData {
+  const VendorData._();
 
-  const factory VendorModel({
+  const factory VendorData({
     // Core info
     required ContactInfo contact,
     @Default([]) List<EntityId> staffIds,
@@ -195,10 +199,10 @@ sealed class VendorModel with _$VendorModel {
     @Default({}) Map<String, Object> meta,
     Map<String, Object>? customData,
     @Default({}) Map<String, Object> certifications,
-  }) = _VendorModel;
+  }) = _VendorData;
 
-  factory VendorModel.fromJson(Map<String, Object> json) =>
-      _$VendorModelFromJson(json);
+  factory VendorData.fromJson(Map<String, Object> json) =>
+      _$VendorDataFromJson(json);
 
   // Business methods
   bool get hasStaff => staffIds.isNotEmpty;
@@ -207,29 +211,30 @@ sealed class VendorModel with _$VendorModel {
   bool get hasValidContact => contact.email != null || contact.phone != null;
 
   // Event handling
-  VendorModel applyEvent(DomainEventModel event) {
+  VendorData applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'PERSONNEL_ADDED' => copyWith(
-          staffIds: [...staffIds, event.changes['personnelId'] as EntityId],
-        ),
+        staffIds: [...staffIds, event.changes['personnelId'] as EntityId],
+      ),
       'PERSONNEL_REMOVED' => copyWith(
-          staffIds: staffIds
-              .where((id) => id != event.changes['personnelId'] as EntityId)
-              .toList(),
-        ),
+        staffIds:
+            staffIds
+                .where((id) => id != event.changes['personnelId'] as EntityId)
+                .toList(),
+      ),
       'SERVICE_CATEGORY_ADDED' => copyWith(
-          services: [...services, event.changes['category'] as String],
-        ),
+        services: [...services, event.changes['category'] as String],
+      ),
       _ => this,
     };
   }
 }
 
 @freezed
-sealed class PersonnelModel with _$PersonnelModel {
-  const PersonnelModel._();
+sealed class PersonnelData with _$PersonnelData {
+  const PersonnelData._();
 
-  const factory PersonnelModel({
+  const factory PersonnelData({
     // Core info
     required String name,
     required EntityId vendorId,
@@ -249,10 +254,10 @@ sealed class PersonnelModel with _$PersonnelModel {
     @Default({}) Map<String, Object> meta,
     @Default({}) Map<String, Object> schedule,
     @Default({}) Map<String, DateTime> certDates,
-  }) = _PersonnelModel;
+  }) = _PersonnelData;
 
-  factory PersonnelModel.fromJson(Map<String, Object> json) =>
-      _$PersonnelModelFromJson(json);
+  factory PersonnelData.fromJson(Map<String, Object> json) =>
+      _$PersonnelDataFromJson(json);
 
   // Qualification methods
   bool get isCertified => certs.isNotEmpty;
@@ -264,30 +269,28 @@ sealed class PersonnelModel with _$PersonnelModel {
   DateTime? getCertExpiry(String cert) => certDates[cert];
 
   // Event handling
-  PersonnelModel applyEvent(DomainEventModel event) {
+  PersonnelData applyEvent(DomainEventModel event) {
     return switch (event.eventType) {
       'CERTIFICATION_ADDED' => copyWith(
-          certs: [...certs, event.changes['cert'] as String],
-          certDates: {
-            ...certDates,
-            event.changes['cert'] as String:
-                event.changes['expiry'] as DateTime,
-          },
-        ),
+        certs: [...certs, event.changes['cert'] as String],
+        certDates: {
+          ...certDates,
+          event.changes['cert'] as String: event.changes['expiry'] as DateTime,
+        },
+      ),
       'CERTIFICATION_EXPIRED' => copyWith(
-          certs:
-              certs.where((c) => c != event.changes['cert'] as String).toList(),
-          certDates: Map.from(certDates)
-            ..remove(event.changes['cert'] as String),
-        ),
+        certs:
+            certs.where((c) => c != event.changes['cert'] as String).toList(),
+        certDates: Map.from(certDates)..remove(event.changes['cert'] as String),
+      ),
       _ => this,
     };
   }
 }
 
 // Type aliases for entity-specific BaseEntity instances
-typedef OwnerEntity = BaseEntityModel<OwnerModel>;
-typedef SiteEntity = BaseEntityModel<SiteModel>;
-typedef EquipmentEntity = BaseEntityModel<EquipmentModel>;
-typedef VendorEntity = BaseEntityModel<VendorModel>;
-typedef PersonnelEntity = BaseEntityModel<PersonnelModel>;
+typedef OwnerEntityModel = BaseEntityModel<OwnerData>;
+typedef SiteEntityModel = BaseEntityModel<SiteData>;
+typedef EquipmentEntityModel = BaseEntityModel<EquipmentData>;
+typedef VendorEntityModel = BaseEntityModel<VendorData>;
+typedef PersonnelEntityModel = BaseEntityModel<PersonnelData>;

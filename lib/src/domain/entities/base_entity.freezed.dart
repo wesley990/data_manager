@@ -18,12 +18,8 @@ mixin _$EntityHierarchy {
 /// Full path in the entity tree
 ///
 /// Format: '/parent_id/grandparent_id/entity_id'
-/// - Paths use forward slashes as separators
-/// - Paths start with a leading slash
-/// - Path segments are entity IDs in reverse ancestry order
-/// - Root entities have path equal to their ID or '/' + ID
-/// - Maximum path length is limited to [EntityLimits.pathMaxLength]
-/// - Maximum segment length is limited to [EntityLimits.pathMaxSegment]
+/// Paths use forward slashes as separators and start with a leading slash
+/// Path segments are entity IDs in reverse ancestry order
  String? get treePath;/// Depth level in the hierarchy (0 = root)
  int get treeDepth;/// List of ancestor entity IDs in order from root to parent
  List<EntityId> get ancestors;/// Direct parent entity ID
@@ -31,11 +27,6 @@ mixin _$EntityHierarchy {
  List<EntityId> get childIds;/// Indicates if this entity is a root node in a hierarchy
  bool get isHierarchyRoot;/// Indicates if this entity is a leaf node (has no children)
  bool get isHierarchyLeaf;/// Additional hierarchy-related metadata
-///
-/// Expected keys:
-///   - 'created': String (ISO8601 timestamp)
-///   - 'pathType': String (e.g., 'root', 'branch', etc.)
-///   - Add more as needed for your application
  Map<String, Object> get hierarchyMeta;
 /// Create a copy of EntityHierarchy
 /// with the given fields replaced by the non-null parameter values.
@@ -123,12 +114,8 @@ class _EntityHierarchy extends EntityHierarchy {
 /// Full path in the entity tree
 ///
 /// Format: '/parent_id/grandparent_id/entity_id'
-/// - Paths use forward slashes as separators
-/// - Paths start with a leading slash
-/// - Path segments are entity IDs in reverse ancestry order
-/// - Root entities have path equal to their ID or '/' + ID
-/// - Maximum path length is limited to [EntityLimits.pathMaxLength]
-/// - Maximum segment length is limited to [EntityLimits.pathMaxSegment]
+/// Paths use forward slashes as separators and start with a leading slash
+/// Path segments are entity IDs in reverse ancestry order
 @override final  String? treePath;
 /// Depth level in the hierarchy (0 = root)
 @override@JsonKey() final  int treeDepth;
@@ -157,18 +144,8 @@ class _EntityHierarchy extends EntityHierarchy {
 /// Indicates if this entity is a leaf node (has no children)
 @override@JsonKey() final  bool isHierarchyLeaf;
 /// Additional hierarchy-related metadata
-///
-/// Expected keys:
-///   - 'created': String (ISO8601 timestamp)
-///   - 'pathType': String (e.g., 'root', 'branch', etc.)
-///   - Add more as needed for your application
  final  Map<String, Object> _hierarchyMeta;
 /// Additional hierarchy-related metadata
-///
-/// Expected keys:
-///   - 'created': String (ISO8601 timestamp)
-///   - 'pathType': String (e.g., 'root', 'branch', etc.)
-///   - Add more as needed for your application
 @override@JsonKey() Map<String, Object> get hierarchyMeta {
   if (_hierarchyMeta is EqualUnmodifiableMapView) return _hierarchyMeta;
   // ignore: implicit_dynamic_type
