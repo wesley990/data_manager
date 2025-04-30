@@ -29,7 +29,7 @@ Total Classes: 74
 Total Interfaces: 9
 Total Enums: 12
 Total Typedefs: 8
-Total Functions: 77
+Total Functions: 78
 
 Domain Components:
   Entities: 33
@@ -263,9 +263,9 @@ class EventServiceProvider {...
 - `lib/src/application/services/event_migration_service.dart` - Service responsible for handling domain event schema migrations
 class EventMigrationService {
   /// ...
-- `lib/src/domain/core/core_entity.dart` - Entity-specific default values and configurations
+- `lib/src/domain/core/core_entity.dart` - Default values and configurations for entities
 abstract class EntityDefaults {
-  /// Default sche...
+  /// Schema version ...
 - `lib/src/domain/core/entity_config.dart` - Defines configuration settings for entities within the data manager.
 - `lib/src/domain/core/exceptions.dart` - Base exception class for all data manager errors
 abstract class DataManagerException implements Exce...
@@ -789,8 +789,7 @@ sealed class UserAction with _$UserActi...
 
 **Properties:**
 
-- `final updatedMeta` - Creates a new CoreEntity instance
-  ///
+- `final updatedMeta` - Base entity class containing core properties and metadata
   /// [id] - Unique identifier for this entity
   /// [name] - Human-readable name for this entity
   /// [createdAt] - Timestamp of entity creation
@@ -816,75 +815,58 @@ sealed class UserAction with _$UserActi...
     T Function(Object? json) fromJsonT,
   ) => _$CoreEntityFromJson(json, fromJsonT);
 
-  /// Unique identifier string derived from the entity ID
+  /// Unique identifier string from entity ID
   String get uid => id.value;
 
-  /// Runtime type of the entity data
+  /// Runtime type of entity data
   String get type => data?.runtimeType.toString() ?? T.toString();
 
-  /// Access metadata with type safety
+  /// Type-safe metadata accessor
   TypedMetadata get typedMeta => TypedMetadata(meta);
 
-  /// Get a value from meta with an expected type
-  ///
-  /// Returns null if the key doesn't exist or there's a type conversion error
-  /// This is an alias for getMetadata<R>(key) for more concise syntax
-  R? get<R>(String key) => getMetadata<R>(key);
+  /// Gets typed value from metadata
+  R? getMetadataAs<R>(String key) => getMetadata<R>(key);
 
-  /// Retrieve metadata by key with a simplified interface
-  ///
-  /// Returns the value from metadata with the specified type or null if not found
-  /// For untyped access, use getMetadata<Object?>(key)
-  R? getMetadata<R>(String key) => _getValueWithType<R>(key);
+  /// Gets typed value from metadata
+  R? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
 
-  /// Retrieve untyped metadata by key (backward compatibility)
-  ///
-  /// Returns the raw value from metadata or null if not found
-  Object? getRawMetadata(String key) => meta[key];
+  /// Gets raw value from metadata
+  Object? getMetadataValue(String key) => meta[key];
 
-  /// Check if metadata contains a specific key
+  /// Checks if metadata contains a key
   bool hasMetadata(String key) => meta.containsKey(key);
 
-  /// Get metadata with type safety, providing a default value if not present
-  ///
+  /// Gets typed metadata with default fallback
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
   R getMetadataOrDefault<R>(String key, R defaultValue) {
-    return _getValueWithType<R>(key) ?? defaultValue;
+    return _getMetadataTyped<R>(key) ?? defaultValue;
   }
-  
-  /// Filter metadata based on a predicate
-  /// 
-  /// Returns a new Map containing only the metadata entries for which the predicate returns true
+
+  /// Returns filtered metadata based on predicate
   /// [predicate] - Function that tests each key and value
-  Map<String, Object> filterMetadata(bool Function(String key, Object value) predicate) {
+  Map<String, Object> filterMetadata(
+    bool Function(String key, Object value) predicate,
+  ) {
     return Map.fromEntries(
-      meta.entries.where((entry) => predicate(entry.key, entry.value))
+      meta.entries.where((entry) => predicate(entry.key, entry.value)),
     );
   }
-  
-  /// Creates a new instance of CoreEntity with updated metadata
-  /// 
-  /// This method allows for bulk updates to metadata without changing other properties
+
+  /// Creates new instance with updated metadata
   /// [updates] - Map of key-value pairs to add or update in metadata
   /// [removeKeys] - Optional list of keys to remove from metadata
-  CoreEntity<T> withUpdatedMetadata(
+  CoreEntity<T> updateMetadata(
     Map<String, Object> updates, {
     List<String>? removeKeys,
   }) {
-    // Start with the existing metadata
-- `return id` - Try to retrieve a typed value from metadata
-  ///
-  /// This method tries to safely cast the value to the expected type.
-  /// Returns null if the key doesn't exist or if the type conversion fails.
-  R? _getValueWithType<R>(String key) {
+- `return id` - Gets typed value from metadata safely
+  R? _getMetadataTyped<R>(String key) {
     if (!meta.containsKey(key)) return null;
-
-    // Delegate the type conversion to the TypedMetadata implementation
-    return typedMeta._safeConvert<R>(meta[key]);
+    return typedMeta._convertSafely<R>(meta[key]);
   }
 
-  /// Gets a domain property by name
+  /// Gets a core property by name
   Object? getProperty(String key) {
     switch (key) {
       case 'id':
@@ -899,15 +881,9 @@ sealed class UserAction with _$UserActi...
 - `return modifier`
 - `return data`
 - `return null`
-- `final propertyValue` - Operator to access either domain properties or metadata
-  ///
-  /// If a key matches both a domain property and a metadata key, the domain property takes precedence.
-  /// First tries to access domain properties, then falls back to metadata.
-  /// 
-  /// Note: This provides convenient access but performs multiple lookups. For performance-critical
-  /// code, consider using getProperty() or getMetadata<R>() directly when you know the source.
+- `final propertyValue` - Provides unified access to properties and metadata
+  /// Properties take precedence over metadata with same key
   operator [](String key) {
-    // Try domain properties first
 - `return propertyValue`
 
 **Methods:**
@@ -929,57 +905,43 @@ sealed class UserAction with _$UserActi...
 
   factory CoreEntity.fromJson(
     Map<String, Object> json,
-    T Function(Object? json) fromJsonT,)` - Creates a new CoreEntity instance
-  ///
+    T Function(Object? json) fromJsonT,)` - Base entity class containing core properties and metadata
   /// [id] - Unique identifier for this entity
   /// [name] - Human-readable name for this entity
   /// [createdAt] - Timestamp of entity creation
   /// [updatedAt] - Timestamp of last update
   /// [data] - Optional typed payload data
-- `hasMetadata(String key)` - Unique identifier string derived from the entity ID
+- `hasMetadata(String key)` - Unique identifier string from entity ID
   String get uid => id.value;
 
-  /// Runtime type of the entity data
+  /// Runtime type of entity data
   String get type => data?.runtimeType.toString() ?? T.toString();
 
-  /// Access metadata with type safety
+  /// Type-safe metadata accessor
   TypedMetadata get typedMeta => TypedMetadata(meta);
 
-  /// Get a value from meta with an expected type
-  ///
-  /// Returns null if the key doesn't exist or there's a type conversion error
-  /// This is an alias for getMetadata<R>(key) for more concise syntax
-  R? get<R>(String key) => getMetadata<R>(key);
+  /// Gets typed value from metadata
+  R? getMetadataAs<R>(String key) => getMetadata<R>(key);
 
-  /// Retrieve metadata by key with a simplified interface
-  ///
-  /// Returns the value from metadata with the specified type or null if not found
-  /// For untyped access, use getMetadata<Object?>(key)
-  R? getMetadata<R>(String key) => _getValueWithType<R>(key);
+  /// Gets typed value from metadata
+  R? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
 
-  /// Retrieve untyped metadata by key (backward compatibility)
-  ///
-  /// Returns the raw value from metadata or null if not found
-  Object? getRawMetadata(String key) => meta[key];
+  /// Gets raw value from metadata
+  Object? getMetadataValue(String key) => meta[key];
 
-  /// Check if metadata contains a specific key
-- `filterMetadata(bool Function(String key, Object value) predicate)` - Get metadata with type safety, providing a default value if not present
-  ///
+  /// Checks if metadata contains a key
+- `filterMetadata(bool Function(String key, Object value) predicate,)` - Gets typed metadata with default fallback
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
   R getMetadataOrDefault<R>(String key, R defaultValue) {
-    return _getValueWithType<R>(key) ?? defaultValue;
+    return _getMetadataTyped<R>(key) ?? defaultValue;
   }
-  
-  /// Filter metadata based on a predicate
-  /// 
-  /// Returns a new Map containing only the metadata entries for which the predicate returns true
+
+  /// Returns filtered metadata based on predicate
   /// [predicate] - Function that tests each key and value
-- `withUpdatedMetadata(Map<String, Object> updates, {
+- `updateMetadata(Map<String, Object> updates, {
     List<String>? removeKeys,
-  })` - Creates a new instance of CoreEntity with updated metadata
-  /// 
-  /// This method allows for bulk updates to metadata without changing other properties
+  })` - Creates new instance with updated metadata
   /// [updates] - Map of key-value pairs to add or update in metadata
   /// [removeKeys] - Optional list of keys to remove from metadata
 - `if(removeKeys != null)`
@@ -987,29 +949,18 @@ sealed class UserAction with _$UserActi...
 - `copyWith(meta: updatedMeta);
   }
 
-  /// Try to retrieve a typed value from metadata
-  ///
-  /// This method tries to safely cast the value to the expected type.
-  /// Returns null if the key doesn't exist or if the type conversion fails.
-  R? _getValueWithType<R>(String key)`
+  /// Gets typed value from metadata safely
+  R? _getMetadataTyped<R>(String key)`
 - `if(!meta.containsKey(key)) return null;
-
-    // Delegate the type conversion to the TypedMetadata implementation
-    return typedMeta._safeConvert<R>(meta[key]);
+    return typedMeta._convertSafely<R>(meta[key]);
   }
 
-  /// Gets a domain property by name
+  /// Gets a core property by name
   Object? getProperty(String key)`
 - `switch(key)`
-- `if(propertyValue != null)` - Operator to access either domain properties or metadata
-  ///
-  /// If a key matches both a domain property and a metadata key, the domain property takes precedence.
-  /// First tries to access domain properties, then falls back to metadata.
-  /// 
-  /// Note: This provides convenient access but performs multiple lookups. For performance-critical
-  /// code, consider using getProperty() or getMetadata<R>() directly when you know the source.
+- `if(propertyValue != null)` - Provides unified access to properties and metadata
+  /// Properties take precedence over metadata with same key
   operator [](String key) {
-    // Try domain properties first
     final propertyValue = getProperty(key);
 
 ### `DataManagerException`
@@ -2267,15 +2218,15 @@ sealed class UserAction with _$UserActi...
 
 **Properties:**
 
-- `String version` - Default schema version for new entities
-- `EntityStatus status` - Default status for new entities
-- `EntityPriority priority` - Default priority level for new entities
-- `EntityStage stage` - Default workflow stage for new entities
-- `bool isPublic` - Default public visibility setting
-- `int accessCount` - Default access count for new entities
-- `String pathSeparator` - Standard path separator character
+- `String version` - Schema version for new entities
+- `EntityStatus status` - Status for new entities
+- `EntityPriority priority` - Priority level for new entities
+- `EntityStage stage` - Workflow stage for new entities
+- `bool isPublic` - Public visibility setting
+- `int accessCount` - Access count for new entities
+- `String pathSeparator` - Path separator character
 - `String encodedPathSeparator` - URL-encoded path separator
-- `String invalidPathChars` - Regular expression pattern for invalid path characters
+- `String invalidPathChars` - Regex pattern for invalid path characters
 
 ### `EntityFactory`
 
@@ -3233,51 +3184,47 @@ sealed class UserAction with _$UserActi...
 **Properties:**
 
 - `Map<String, Object> _meta`
-- `return null` - Returns whether the metadata contains a specific key
+- `return null` - Checks if metadata contains a key
   bool containsKey(String key) => _meta.containsKey(key);
 
-  /// Safely convert a value to the specified type with proper error handling
-  /// 
-  /// This is a central conversion method used by all type-specific getters.
-  /// Returns null if conversion fails.
-  T? _safeConvert<T>(Object? value) {
+  /// Converts value to specified type with error handling
+  /// Returns null if conversion fails
+  T? _convertSafely<T>(Object? value) {
     try {
       if (value == null) {
 - `final dateTime`
 - `return null`
-- `final value` - Get a value with a specific type, with proper error handling
-  ///
-  /// Note: Null is always allowed and will be returned if the key is missing or the value is null.
-  T? _getTyped<T>(String key) {
+- `final value` - Gets typed value from metadata
+  T? _getValueTyped<T>(String key) {
     if (!_meta.containsKey(key)) return null;
-    return _safeConvert<T>(_meta[key]);
+    return _convertSafely<T>(_meta[key]);
   }
 
-  /// Get a string value from metadata
-  String? getString(String key) => _getTyped<String?>(key);
+  /// Gets string value from metadata
+  String? getString(String key) => _getValueTyped<String?>(key);
 
-  /// Get an integer value from metadata
-  int? getInt(String key) => _getTyped<int?>(key);
+  /// Gets integer value from metadata
+  int? getInt(String key) => _getValueTyped<int?>(key);
 
-  /// Get a double value from metadata
-  double? getDouble(String key) => _getTyped<double?>(key);
+  /// Gets double value from metadata
+  double? getDouble(String key) => _getValueTyped<double?>(key);
 
-  /// Get a boolean value from metadata
-  bool? getBool(String key) => _getTyped<bool?>(key);
+  /// Gets boolean value from metadata
+  bool? getBool(String key) => _getValueTyped<bool?>(key);
 
-  /// Get a DateTime value from metadata
-  DateTime? getDateTime(String key) => _getTyped<DateTime?>(key);
+  /// Gets DateTime value from metadata
+  DateTime? getDateTime(String key) => _getValueTyped<DateTime?>(key);
 
-  /// Get a list value from metadata
-  Object? getList<R>(String key) => _getCollectionValue<List, R>(key);
+  /// Gets typed list from metadata
+  List<R>? getListAs<R>(String key) =>
+      _getCollectionTyped<List, R>(key) as List<R>?;
 
-  /// Get a map value from metadata
-  Map<K, V>? getMap<K, V>(String key) => _getCollectionValue<Map, V>(key) as Map<K, V>?;
-  
-  /// Generic method to handle collection types (List, Map)
-  ///
-  /// Centralizes the error handling for collection type conversions
-  Object? _getCollectionValue<C, V>(String key) {
+  /// Gets typed map from metadata
+  Map<K, V>? getMapAs<K, V>(String key) =>
+      _getCollectionTyped<Map, V>(key) as Map<K, V>?;
+
+  /// Handles collection types with error handling
+  Object? _getCollectionTyped<C, V>(String key) {
 - `return value`
 - `return null`
 - `return null`
@@ -3286,13 +3233,11 @@ sealed class UserAction with _$UserActi...
 
 - `TypedMetadata(this._meta);
 
-  /// Returns whether the metadata contains a specific key
+  /// Checks if metadata contains a key
   bool containsKey(String key)`
-- `if(value == null)` - Safely convert a value to the specified type with proper error handling
-  /// 
-  /// This is a central conversion method used by all type-specific getters.
-  /// Returns null if conversion fails.
-  T? _safeConvert<T>(Object? value) {
+- `if(value == null)` - Converts value to specified type with error handling
+  /// Returns null if conversion fails
+  T? _convertSafely<T>(Object? value) {
     try {
 - `if(T == DateTime)`
 - `if(dateTime != null) return dateTime as T;
@@ -3303,38 +3248,36 @@ sealed class UserAction with _$UserActi...
 - `TypeError();
     } catch (e)`
 - `if(!_meta.containsKey(key)) return null;
-    return _safeConvert<T>(_meta[key]);
+    return _convertSafely<T>(_meta[key]);
   }
 
-  /// Get a string value from metadata
-  String? getString(String key)` - Get a value with a specific type, with proper error handling
-  ///
-  /// Note: Null is always allowed and will be returned if the key is missing or the value is null.
-  T? _getTyped<T>(String key) {
+  /// Gets string value from metadata
+  String? getString(String key)` - Gets typed value from metadata
+  T? _getValueTyped<T>(String key) {
 - `if(!_meta.containsKey(key) || value == null) return null;
-    
-    if (value is C)` - Get an integer value from metadata
-  int? getInt(String key) => _getTyped<int?>(key);
 
-  /// Get a double value from metadata
-  double? getDouble(String key) => _getTyped<double?>(key);
+    if (value is C)` - Gets integer value from metadata
+  int? getInt(String key) => _getValueTyped<int?>(key);
 
-  /// Get a boolean value from metadata
-  bool? getBool(String key) => _getTyped<bool?>(key);
+  /// Gets double value from metadata
+  double? getDouble(String key) => _getValueTyped<double?>(key);
 
-  /// Get a DateTime value from metadata
-  DateTime? getDateTime(String key) => _getTyped<DateTime?>(key);
+  /// Gets boolean value from metadata
+  bool? getBool(String key) => _getValueTyped<bool?>(key);
 
-  /// Get a list value from metadata
-  Object? getList<R>(String key) => _getCollectionValue<List, R>(key);
+  /// Gets DateTime value from metadata
+  DateTime? getDateTime(String key) => _getValueTyped<DateTime?>(key);
 
-  /// Get a map value from metadata
-  Map<K, V>? getMap<K, V>(String key) => _getCollectionValue<Map, V>(key) as Map<K, V>?;
-  
-  /// Generic method to handle collection types (List, Map)
-  ///
-  /// Centralizes the error handling for collection type conversions
-  Object? _getCollectionValue<C, V>(String key) {
+  /// Gets typed list from metadata
+  List<R>? getListAs<R>(String key) =>
+      _getCollectionTyped<List, R>(key) as List<R>?;
+
+  /// Gets typed map from metadata
+  Map<K, V>? getMapAs<K, V>(String key) =>
+      _getCollectionTyped<Map, V>(key) as Map<K, V>?;
+
+  /// Handles collection types with error handling
+  Object? _getCollectionTyped<C, V>(String key) {
     final value = _meta[key];
 - `if(C == List) return (value as List).cast<V>() as C;
         if (C == Map) return (value as Map).cast<String, V>() as C;
@@ -4283,6 +4226,19 @@ class EventServiceProvider {
 **Signature:** `TypeError();
     } catch (e)`
 
+### `TypedMetadata`
+
+**File:** `lib/src/domain/core/core_entity.dart`
+
+**Description:** Provides type-safe access to metadata values
+class TypedMetadata {
+  final Map<String, Object> _meta;
+
+**Signature:** `TypedMetadata(this._meta);
+
+  /// Checks if metadata contains a key
+  bool containsKey(String key)`
+
 ### `UnimplementedError`
 
 **File:** `lib/src/domain/events/domain_event.dart`
@@ -4499,11 +4455,8 @@ extension EntityHierarchyOperations on EntityHierarchy {
 **Signature:** `copyWith(meta: updatedMeta);
   }
 
-  /// Try to retrieve a typed value from metadata
-  ///
-  /// This method tries to safely cast the value to the expected type.
-  /// Returns null if the key doesn't exist or if the type conversion fails.
-  R? _getValueWithType<R>(String key)`
+  /// Gets typed value from metadata safely
+  R? _getMetadataTyped<R>(String key)`
 
 ### `draft`
 
@@ -4542,20 +4495,17 @@ enum EntityStage {
 
 **File:** `lib/src/domain/core/core_entity.dart`
 
-**Description:** Get metadata with type safety, providing a default value if not present
-  ///
+**Description:** Gets typed metadata with default fallback
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
   R getMetadataOrDefault<R>(String key, R defaultValue) {
-    return _getValueWithType<R>(key) ?? defaultValue;
+    return _getMetadataTyped<R>(key) ?? defaultValue;
   }
-  
-  /// Filter metadata based on a predicate
-  /// 
-  /// Returns a new Map containing only the metadata entries for which the predicate returns true
+
+  /// Returns filtered metadata based on predicate
   /// [predicate] - Function that tests each key and value
 
-**Signature:** `filterMetadata(bool Function(String key, Object value) predicate)`
+**Signature:** `filterMetadata(bool Function(String key, Object value) predicate,)`
 
 ### `for`
 
@@ -4590,33 +4540,25 @@ enum EntityStage {
 
 **File:** `lib/src/domain/core/core_entity.dart`
 
-**Description:** Unique identifier string derived from the entity ID
+**Description:** Unique identifier string from entity ID
   String get uid => id.value;
 
-  /// Runtime type of the entity data
+  /// Runtime type of entity data
   String get type => data?.runtimeType.toString() ?? T.toString();
 
-  /// Access metadata with type safety
+  /// Type-safe metadata accessor
   TypedMetadata get typedMeta => TypedMetadata(meta);
 
-  /// Get a value from meta with an expected type
-  ///
-  /// Returns null if the key doesn't exist or there's a type conversion error
-  /// This is an alias for getMetadata<R>(key) for more concise syntax
-  R? get<R>(String key) => getMetadata<R>(key);
+  /// Gets typed value from metadata
+  R? getMetadataAs<R>(String key) => getMetadata<R>(key);
 
-  /// Retrieve metadata by key with a simplified interface
-  ///
-  /// Returns the value from metadata with the specified type or null if not found
-  /// For untyped access, use getMetadata<Object?>(key)
-  R? getMetadata<R>(String key) => _getValueWithType<R>(key);
+  /// Gets typed value from metadata
+  R? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
 
-  /// Retrieve untyped metadata by key (backward compatibility)
-  ///
-  /// Returns the raw value from metadata or null if not found
-  Object? getRawMetadata(String key) => meta[key];
+  /// Gets raw value from metadata
+  Object? getMetadataValue(String key) => meta[key];
 
-  /// Check if metadata contains a specific key
+  /// Checks if metadata contains a key
 
 **Signature:** `hasMetadata(String key)`
 
@@ -5029,6 +4971,18 @@ class EventQuery {
     bool validateDepth = true,
   })`
 
+### `updateMetadata`
+
+**File:** `lib/src/domain/core/core_entity.dart`
+
+**Description:** Creates new instance with updated metadata
+  /// [updates] - Map of key-value pairs to add or update in metadata
+  /// [removeKeys] - Optional list of keys to remove from metadata
+
+**Signature:** `updateMetadata(Map<String, Object> updates, {
+    List<String>? removeKeys,
+  })`
+
 ### `while`
 
 **File:** `lib/src/domain/entities/base_entity.dart`
@@ -5127,20 +5081,6 @@ class EventQuery {
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
 **Signature:** `withTags(List<String> newTags)`
-
-### `withUpdatedMetadata`
-
-**File:** `lib/src/domain/core/core_entity.dart`
-
-**Description:** Creates a new instance of CoreEntity with updated metadata
-  /// 
-  /// This method allows for bulk updates to metadata without changing other properties
-  /// [updates] - Map of key-value pairs to add or update in metadata
-  /// [removeKeys] - Optional list of keys to remove from metadata
-
-**Signature:** `withUpdatedMetadata(Map<String, Object> updates, {
-    List<String>? removeKeys,
-  })`
 
 ### `withUser`
 
@@ -8007,6 +7947,7 @@ No imports.
 - `ReferenceNumber` - `lib/src/domain/value_objects/identity_value_objects.dart`
 - `StateError` - `lib/src/domain/repositories/event_aware_repository.dart`
 - `TypeError` - `lib/src/domain/core/core_entity.dart`
+- `TypedMetadata` - `lib/src/domain/core/core_entity.dart`
 - `UnimplementedError` - `lib/src/domain/events/domain_event.dart`
 - `UnsupportedError` - `lib/src/application/services/event_migration_service.dart`
 - `UserAction` - `lib/src/domain/value_objects/user_action.dart`
@@ -8053,6 +7994,7 @@ No imports.
 - `store` - `lib/src/domain/repositories/event/i_event_store.dart`
 - `switch` - `lib/src/domain/core/entity_config.dart`
 - `updateHierarchy` - `lib/src/domain/entities/base_entity.dart`
+- `updateMetadata` - `lib/src/domain/core/core_entity.dart`
 - `while` - `lib/src/domain/entities/base_entity.dart`
 - `withAncestors` - `lib/src/domain/entities/entity_factory.dart`
 - `withData` - `lib/src/domain/entities/entity_factory.dart`
@@ -8068,6 +8010,5 @@ No imports.
 - `withPriority` - `lib/src/domain/entities/entity_factory.dart`
 - `withStage` - `lib/src/domain/entities/entity_factory.dart`
 - `withTags` - `lib/src/domain/entities/entity_factory.dart`
-- `withUpdatedMetadata` - `lib/src/domain/core/core_entity.dart`
 - `withUser` - `lib/src/domain/entities/entity_factory.dart`
 
