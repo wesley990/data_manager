@@ -11,7 +11,7 @@ typedef EntityEventMeta = Map<String, Object>;
 typedef EntitySearchIndex = Map<String, Object>;
 
 /// System-wide constants for entity limitations and boundaries
-abstract class SystemLimits {
+abstract class EntityLimits {
   /// Maximum length of a path in characters
   static const int pathMaxLength = 1024;
 
@@ -31,6 +31,8 @@ abstract class SystemLimits {
 /// Represents hierarchy information for an entity including tree structure and relationships
 @freezed
 sealed class EntityHierarchy with _$EntityHierarchy {
+  const EntityHierarchy._(); // This private constructor already exists
+
   /// Creates a new EntityHierarchy instance
   const factory EntityHierarchy({
     /// Full path in the entity tree
@@ -40,8 +42,8 @@ sealed class EntityHierarchy with _$EntityHierarchy {
     /// - Paths start with a leading slash
     /// - Path segments are entity IDs in reverse ancestry order
     /// - Root entities have path equal to their ID or '/' + ID
-    /// - Maximum path length is limited to [SystemLimits.pathMaxLength]
-    /// - Maximum segment length is limited to [SystemLimits.pathMaxSegment]
+    /// - Maximum path length is limited to [EntityLimits.pathMaxLength]
+    /// - Maximum segment length is limited to [EntityLimits.pathMaxSegment]
     String? treePath,
 
     /// Depth level in the hierarchy (0 = root)
@@ -70,6 +72,23 @@ sealed class EntityHierarchy with _$EntityHierarchy {
     ///   - Add more as needed for your application
     @Default({}) Map<String, Object> hierarchyMeta,
   }) = _EntityHierarchy;
+
+  /// Creates a new root EntityHierarchy instance for a specific entity ID
+  ///
+  /// This factory conveniently sets up all properties for a root entity
+  factory EntityHierarchy.root(String entityId) {
+    final now = DateTime.now();
+    return EntityHierarchy(
+      treePath: '/$entityId',
+      treeDepth: 0,
+      ancestors: const [],
+      parentId: null,
+      childIds: const [],
+      isHierarchyRoot: true,
+      isHierarchyLeaf: true,
+      hierarchyMeta: {'created': now.toIso8601String(), 'pathType': 'root'},
+    );
+  }
 }
 
 /// Extension methods for EntityHierarchy operations
@@ -154,7 +173,7 @@ extension BaseEntityModelPathAndHierarchy<T extends Object>
     if (requireLeadingSlash && !path.startsWith(c.pathSeparator)) return false;
     final segments =
         path.split(c.pathSeparator).where((s) => s.isNotEmpty).toList();
-    if (segments.length > SystemLimits.hierarchyDepthMax) return false;
+    if (segments.length > EntityLimits.hierarchyDepthMax) return false;
     if (segments.any((s) => s.length > c.maxPathSegment)) return false;
     return true;
   }
@@ -217,7 +236,7 @@ extension BaseEntityModelPathAndHierarchy<T extends Object>
     bool validateDepth = true,
   }) {
     final ancestors = newAncestors ?? hierarchy.ancestors;
-    if (validateDepth && ancestors.length > SystemLimits.hierarchyDepthMax) {
+    if (validateDepth && ancestors.length > EntityLimits.hierarchyDepthMax) {
       throw Exception('Hierarchy depth exceeded');
     }
     final updatedPath = newPath ?? hierarchy.treePath ?? '';
@@ -258,6 +277,8 @@ extension BaseEntityModelPathAndHierarchy<T extends Object>
 /// Manages security and access control aspects of an entity
 @freezed
 sealed class EntitySecurity with _$EntitySecurity {
+  const EntitySecurity._(); // Add private constructor for instance methods
+
   /// Creates a new EntitySecurity instance
   const factory EntitySecurity({
     /// User who last accessed the entity
@@ -280,6 +301,8 @@ sealed class EntitySecurity with _$EntitySecurity {
 /// Handles classification, tagging and workflow status of an entity
 @freezed
 sealed class EntityClassification with _$EntityClassification {
+  const EntityClassification._(); // Add private constructor for instance methods
+
   /// Creates a new EntityClassification instance
   const factory EntityClassification({
     /// List of searchable tags associated with the entity
@@ -302,6 +325,8 @@ sealed class EntityClassification with _$EntityClassification {
 /// Manages versioning and history tracking for an entity
 @freezed
 sealed class EntityVersioning with _$EntityVersioning {
+  const EntityVersioning._(); // Add private constructor for instance methods
+
   /// Creates a new EntityVersioning instance
   const factory EntityVersioning({
     /// Metadata for synchronization purposes
@@ -338,7 +363,7 @@ sealed class EntityVersioning with _$EntityVersioning {
     @Default({}) Map<String, Object> eventMeta,
 
     /// Maximum number of history entries to maintain
-    @Default(SystemLimits.historyDefault) int historyLimit,
+    @Default(EntityLimits.historyDefault) int historyLimit,
 
     /// Data format version
     @Default(1) int dataVer,
@@ -480,6 +505,12 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
     return copyWith(hierarchy: hierarchy.removeChild(childId));
   }
 
+  /// Validates and corrects the hierarchy leaf status if needed
+  ///
+  /// This method ensures that the [isHierarchyLeaf] property correctly reflects
+  /// whether the entity has children or not.
+  ///
+  /// Returns an updated entity with corrected leaf status
   /// Validates and corrects the hierarchy leaf status if needed
   ///
   /// This method ensures that the [isHierarchyLeaf] property correctly reflects

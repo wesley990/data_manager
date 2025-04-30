@@ -16,11 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EntityConfig {
 
-/// Configuration schema version for tracking changes to the configuration format itself.
-/// This version follows semantic versioning and should be incremented when:
-/// - MAJOR: Breaking changes to configuration structure
-/// - MINOR: New backward-compatible fields added
-/// - PATCH: Bug fixes that don't affect configuration structure
+/// Configuration schema version for tracking changes to the configuration format itself
  String get configVersion;// Path limits
 /// Maximum length of an entity path in characters.
  int get maxPathLength;/// Maximum length of a single path segment in characters.
@@ -41,11 +37,6 @@ mixin _$EntityConfig {
  EntityStage get defaultStage;// Path settings
 /// Character used to separate path segments.
  String get pathSeparator;/// Regular expression pattern defining invalid characters in paths.
-///
-/// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).
-/// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
-///
-/// Default: `[<>:"|?*\x00-\x1F]`
  String get invalidPathChars;
 /// Create a copy of EntityConfig
 /// with the given fields replaced by the non-null parameter values.
@@ -128,11 +119,7 @@ class _EntityConfig extends EntityConfig {
   const _EntityConfig({this.configVersion = EntityConfigDefaults.configVersion, this.maxPathLength = EntityConfigDefaults.maxPathLength, this.maxPathSegment = EntityConfigDefaults.maxPathSegment, this.maxHierarchyDepth = EntityConfigDefaults.maxHierarchyDepth, this.maxHistorySize = EntityConfigDefaults.maxHistorySize, this.defaultHistorySize = EntityConfigDefaults.defaultHistorySize, this.defaultLockTimeout = EntityConfigDefaults.defaultLockTimeout, this.lockExtensionPeriod = EntityConfigDefaults.lockExtensionPeriod, this.minLockDuration = EntityConfigDefaults.minLockDuration, this.maxLockDuration = EntityConfigDefaults.maxLockDuration, this.defaultVersion = EntityConfigDefaults.defaultVersion, this.defaultIsPublic = EntityConfigDefaults.defaultIsPublic, this.defaultPriority = EntityConfigDefaults.defaultPriority, this.defaultStage = EntityConfigDefaults.defaultStage, this.pathSeparator = EntityConfigDefaults.pathSeparator, this.invalidPathChars = EntityConfigDefaults.invalidPathChars}): super._();
   factory _EntityConfig.fromJson(Map<String, dynamic> json) => _$EntityConfigFromJson(json);
 
-/// Configuration schema version for tracking changes to the configuration format itself.
-/// This version follows semantic versioning and should be incremented when:
-/// - MAJOR: Breaking changes to configuration structure
-/// - MINOR: New backward-compatible fields added
-/// - PATCH: Bug fixes that don't affect configuration structure
+/// Configuration schema version for tracking changes to the configuration format itself
 @override@JsonKey() final  String configVersion;
 // Path limits
 /// Maximum length of an entity path in characters.
@@ -168,11 +155,6 @@ class _EntityConfig extends EntityConfig {
 /// Character used to separate path segments.
 @override@JsonKey() final  String pathSeparator;
 /// Regular expression pattern defining invalid characters in paths.
-///
-/// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).
-/// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
-///
-/// Default: `[<>:"|?*\x00-\x1F]`
 @override@JsonKey() final  String invalidPathChars;
 
 /// Create a copy of EntityConfig

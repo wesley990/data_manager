@@ -22,8 +22,8 @@ mixin _$EntityHierarchy {
 /// - Paths start with a leading slash
 /// - Path segments are entity IDs in reverse ancestry order
 /// - Root entities have path equal to their ID or '/' + ID
-/// - Maximum path length is limited to [SystemLimits.pathMaxLength]
-/// - Maximum segment length is limited to [SystemLimits.pathMaxSegment]
+/// - Maximum path length is limited to [EntityLimits.pathMaxLength]
+/// - Maximum segment length is limited to [EntityLimits.pathMaxSegment]
  String? get treePath;/// Depth level in the hierarchy (0 = root)
  int get treeDepth;/// List of ancestor entity IDs in order from root to parent
  List<EntityId> get ancestors;/// Direct parent entity ID
@@ -116,8 +116,8 @@ $EntityIdCopyWith<$Res>? get parentId {
 /// @nodoc
 
 
-class _EntityHierarchy implements EntityHierarchy {
-  const _EntityHierarchy({this.treePath, this.treeDepth = 0, final  List<EntityId> ancestors = const <EntityId>[], this.parentId, final  List<EntityId> childIds = const <EntityId>[], this.isHierarchyRoot = true, this.isHierarchyLeaf = true, final  Map<String, Object> hierarchyMeta = const {}}): _ancestors = ancestors,_childIds = childIds,_hierarchyMeta = hierarchyMeta;
+class _EntityHierarchy extends EntityHierarchy {
+  const _EntityHierarchy({this.treePath, this.treeDepth = 0, final  List<EntityId> ancestors = const <EntityId>[], this.parentId, final  List<EntityId> childIds = const <EntityId>[], this.isHierarchyRoot = true, this.isHierarchyLeaf = true, final  Map<String, Object> hierarchyMeta = const {}}): _ancestors = ancestors,_childIds = childIds,_hierarchyMeta = hierarchyMeta,super._();
   
 
 /// Full path in the entity tree
@@ -127,8 +127,8 @@ class _EntityHierarchy implements EntityHierarchy {
 /// - Paths start with a leading slash
 /// - Path segments are entity IDs in reverse ancestry order
 /// - Root entities have path equal to their ID or '/' + ID
-/// - Maximum path length is limited to [SystemLimits.pathMaxLength]
-/// - Maximum segment length is limited to [SystemLimits.pathMaxSegment]
+/// - Maximum path length is limited to [EntityLimits.pathMaxLength]
+/// - Maximum segment length is limited to [EntityLimits.pathMaxSegment]
 @override final  String? treePath;
 /// Depth level in the hierarchy (0 = root)
 @override@JsonKey() final  int treeDepth;
@@ -337,8 +337,8 @@ $UserActionCopyWith<$Res>? get lastAccessor {
 /// @nodoc
 
 
-class _EntitySecurity implements EntitySecurity {
-  const _EntitySecurity({this.lastAccessor, final  List<UserAction> modHistory = const [], final  List<UserAction> accessLog = const [], this.isPublic = EntityDefaults.isPublic, this.accessCount = EntityDefaults.accessCount}): _modHistory = modHistory,_accessLog = accessLog;
+class _EntitySecurity extends EntitySecurity {
+  const _EntitySecurity({this.lastAccessor, final  List<UserAction> modHistory = const [], final  List<UserAction> accessLog = const [], this.isPublic = EntityDefaults.isPublic, this.accessCount = EntityDefaults.accessCount}): _modHistory = modHistory,_accessLog = accessLog,super._();
   
 
 /// User who last accessed the entity
@@ -512,8 +512,8 @@ as DateTime?,
 /// @nodoc
 
 
-class _EntityClassification implements EntityClassification {
-  const _EntityClassification({final  List<String> tags = const [], final  Map<String, String> labels = const {}, this.priority = EntityDefaults.priority, this.stage = EntityDefaults.stage, this.expiryDate}): _tags = tags,_labels = labels;
+class _EntityClassification extends EntityClassification {
+  const _EntityClassification({final  List<String> tags = const [], final  Map<String, String> labels = const {}, this.priority = EntityDefaults.priority, this.stage = EntityDefaults.stage, this.expiryDate}): _tags = tags,_labels = labels,super._();
   
 
 /// List of searchable tags associated with the entity
@@ -704,8 +704,8 @@ as Map<String, int>,
 /// @nodoc
 
 
-class _EntityVersioning implements EntityVersioning {
-  const _EntityVersioning({final  Map<String, Object> syncMeta = const {}, this.syncVer, final  Map<String, Object> searchIndex = const {}, this.eventVer = 0, final  List<String> pendingEvents = const [], final  Map<String, Object> eventMeta = const {}, this.historyLimit = SystemLimits.historyDefault, this.dataVer = 1, this.structVer = 1, this.lastVer, this.schemaVer = EntityDefaults.version, final  Map<String, int> verVectors = const {}}): _syncMeta = syncMeta,_searchIndex = searchIndex,_pendingEvents = pendingEvents,_eventMeta = eventMeta,_verVectors = verVectors;
+class _EntityVersioning extends EntityVersioning {
+  const _EntityVersioning({final  Map<String, Object> syncMeta = const {}, this.syncVer, final  Map<String, Object> searchIndex = const {}, this.eventVer = 0, final  List<String> pendingEvents = const [], final  Map<String, Object> eventMeta = const {}, this.historyLimit = EntityLimits.historyDefault, this.dataVer = 1, this.structVer = 1, this.lastVer, this.schemaVer = EntityDefaults.version, final  Map<String, int> verVectors = const {}}): _syncMeta = syncMeta,_searchIndex = searchIndex,_pendingEvents = pendingEvents,_eventMeta = eventMeta,_verVectors = verVectors,super._();
   
 
 /// Metadata for synchronization purposes
