@@ -9,41 +9,56 @@ part of 'entity_config.dart';
 _EntityConfig _$EntityConfigFromJson(
   Map<String, dynamic> json,
 ) => _EntityConfig(
-  configVersion: json['configVersion'] as String? ?? '1.0.0',
-  maxPathLength: (json['maxPathLength'] as num?)?.toInt() ?? 1024,
-  maxPathSegment: (json['maxPathSegment'] as num?)?.toInt() ?? 255,
-  maxHierarchyDepth: (json['maxHierarchyDepth'] as num?)?.toInt() ?? 10,
-  maxHistorySize: (json['maxHistorySize'] as num?)?.toInt() ?? 50,
-  defaultHistorySize: (json['defaultHistorySize'] as num?)?.toInt() ?? 50,
+  configVersion:
+      json['configVersion'] as String? ?? EntityConfigDefaults.configVersion,
+  maxPathLength:
+      (json['maxPathLength'] as num?)?.toInt() ??
+      EntityConfigDefaults.maxPathLength,
+  maxPathSegment:
+      (json['maxPathSegment'] as num?)?.toInt() ??
+      EntityConfigDefaults.maxPathSegment,
+  maxHierarchyDepth:
+      (json['maxHierarchyDepth'] as num?)?.toInt() ??
+      EntityConfigDefaults.maxHierarchyDepth,
+  maxHistorySize:
+      (json['maxHistorySize'] as num?)?.toInt() ??
+      EntityConfigDefaults.maxHistorySize,
+  defaultHistorySize:
+      (json['defaultHistorySize'] as num?)?.toInt() ??
+      EntityConfigDefaults.defaultHistorySize,
   defaultLockTimeout:
       json['defaultLockTimeout'] == null
-          ? const Duration(minutes: 15)
+          ? EntityConfigDefaults.defaultLockTimeout
           : Duration(microseconds: (json['defaultLockTimeout'] as num).toInt()),
   lockExtensionPeriod:
       json['lockExtensionPeriod'] == null
-          ? const Duration(minutes: 5)
+          ? EntityConfigDefaults.lockExtensionPeriod
           : Duration(
             microseconds: (json['lockExtensionPeriod'] as num).toInt(),
           ),
   minLockDuration:
       json['minLockDuration'] == null
-          ? const Duration(seconds: 30)
+          ? EntityConfigDefaults.minLockDuration
           : Duration(microseconds: (json['minLockDuration'] as num).toInt()),
   maxLockDuration:
       json['maxLockDuration'] == null
-          ? const Duration(hours: 24)
+          ? EntityConfigDefaults.maxLockDuration
           : Duration(microseconds: (json['maxLockDuration'] as num).toInt()),
-  defaultVersion: json['defaultVersion'] as String? ?? '1.0.0',
-  defaultIsPublic: json['defaultIsPublic'] as bool? ?? true,
+  defaultVersion:
+      json['defaultVersion'] as String? ?? EntityConfigDefaults.defaultVersion,
+  defaultIsPublic:
+      json['defaultIsPublic'] as bool? ?? EntityConfigDefaults.defaultIsPublic,
   defaultPriority:
       $enumDecodeNullable(_$EntityPriorityEnumMap, json['defaultPriority']) ??
-      EntityPriority.medium,
+      EntityConfigDefaults.defaultPriority,
   defaultStage:
       $enumDecodeNullable(_$EntityStageEnumMap, json['defaultStage']) ??
-      EntityStage.draft,
-  pathSeparator: json['pathSeparator'] as String? ?? '/',
+      EntityConfigDefaults.defaultStage,
+  pathSeparator:
+      json['pathSeparator'] as String? ?? EntityConfigDefaults.pathSeparator,
   invalidPathChars:
-      json['invalidPathChars'] as String? ?? r'[<>:"|?*\x00-\x1F]',
+      json['invalidPathChars'] as String? ??
+      EntityConfigDefaults.invalidPathChars,
 );
 
 Map<String, dynamic> _$EntityConfigToJson(_EntityConfig instance) =>

@@ -7,6 +7,62 @@ import '../../domain/value_objects/enum_objects.dart';
 part 'entity_config.freezed.dart';
 part 'entity_config.g.dart';
 
+/// Default values and configurations for config entities
+abstract class EntityConfigDefaults {
+  /// Configuration schema version for tracking changes
+  static const String configVersion = '1.0.0';
+
+  // Path limits
+  /// Maximum length of an entity path in characters
+  static const int maxPathLength = 1024;
+
+  /// Maximum length of a single path segment
+  static const int maxPathSegment = 255;
+
+  /// Maximum allowed depth of entity hierarchies
+  static const int maxHierarchyDepth = 10;
+
+  // History limits
+  /// Maximum number of history entries to retain
+  static const int maxHistorySize = 50;
+
+  /// Default number of history entries to show in views
+  static const int defaultHistorySize = 50;
+
+  // Lock settings
+  /// Default duration before a lock expires
+  static const Duration defaultLockTimeout = Duration(minutes: 15);
+
+  /// Duration by which a lock can be extended
+  static const Duration lockExtensionPeriod = Duration(minutes: 5);
+
+  /// Minimum duration for which an entity can be locked
+  static const Duration minLockDuration = Duration(seconds: 30);
+
+  /// Maximum duration for which an entity can be locked
+  static const Duration maxLockDuration = Duration(hours: 24);
+
+  // Entity defaults
+  /// Default version string for new entities
+  static const String defaultVersion = '1.0.0';
+
+  /// Default public visibility setting
+  static const bool defaultIsPublic = true;
+
+  /// Default priority level for new entities
+  static const EntityPriority defaultPriority = EntityPriority.medium;
+
+  /// Default workflow stage for new entities
+  static const EntityStage defaultStage = EntityStage.draft;
+
+  // Path settings
+  /// Character used to separate path segments
+  static const String pathSeparator = '/';
+
+  /// Regular expression pattern for invalid path characters
+  static const String invalidPathChars = r'[<>:"|?*\x00-\x1F]';
+}
+
 /// Defines configuration settings for entities within the data manager.
 ///
 /// This immutable configuration class provides default settings for various
@@ -22,54 +78,57 @@ sealed class EntityConfig with _$EntityConfig {
     /// - MAJOR: Breaking changes to configuration structure
     /// - MINOR: New backward-compatible fields added
     /// - PATCH: Bug fixes that don't affect configuration structure
-    @Default('1.0.0') String configVersion,
+    @Default(EntityConfigDefaults.configVersion) String configVersion,
 
     // Path limits
     /// Maximum length of an entity path in characters.
-    @Default(1024) int maxPathLength,
+    @Default(EntityConfigDefaults.maxPathLength) int maxPathLength,
 
     /// Maximum length of a single path segment in characters.
-    @Default(255) int maxPathSegment,
+    @Default(EntityConfigDefaults.maxPathSegment) int maxPathSegment,
 
     /// Maximum allowed depth of entity hierarchies.
-    @Default(10) int maxHierarchyDepth,
+    @Default(EntityConfigDefaults.maxHierarchyDepth) int maxHierarchyDepth,
 
     // History limits
     /// Maximum number of history entries to retain per entity.
-    @Default(50) int maxHistorySize,
+    @Default(EntityConfigDefaults.maxHistorySize) int maxHistorySize,
 
     /// Default number of history entries to show in views.
-    @Default(50) int defaultHistorySize,
+    @Default(EntityConfigDefaults.defaultHistorySize) int defaultHistorySize,
 
     // Lock settings
     /// Default duration before an entity lock expires.
-    @Default(Duration(minutes: 15)) Duration defaultLockTimeout,
+    @Default(EntityConfigDefaults.defaultLockTimeout)
+    Duration defaultLockTimeout,
 
     /// Duration by which a lock can be extended.
-    @Default(Duration(minutes: 5)) Duration lockExtensionPeriod,
+    @Default(EntityConfigDefaults.lockExtensionPeriod)
+    Duration lockExtensionPeriod,
 
     /// Minimum duration for which an entity can be locked.
-    @Default(Duration(seconds: 30)) Duration minLockDuration,
+    @Default(EntityConfigDefaults.minLockDuration) Duration minLockDuration,
 
     /// Maximum duration for which an entity can be locked.
-    @Default(Duration(hours: 24)) Duration maxLockDuration,
+    @Default(EntityConfigDefaults.maxLockDuration) Duration maxLockDuration,
 
     // Entity defaults
     /// Default version string for new entities.
-    @Default('1.0.0') String defaultVersion,
+    @Default(EntityConfigDefaults.defaultVersion) String defaultVersion,
 
     /// Whether entities are public by default.
-    @Default(true) bool defaultIsPublic,
+    @Default(EntityConfigDefaults.defaultIsPublic) bool defaultIsPublic,
 
     /// Default priority level for new entities.
-    @Default(EntityPriority.medium) EntityPriority defaultPriority,
+    @Default(EntityConfigDefaults.defaultPriority)
+    EntityPriority defaultPriority,
 
     /// Default workflow stage for new entities.
-    @Default(EntityStage.draft) EntityStage defaultStage,
+    @Default(EntityConfigDefaults.defaultStage) EntityStage defaultStage,
 
     // Path settings
     /// Character used to separate path segments.
-    @Default('/') String pathSeparator,
+    @Default(EntityConfigDefaults.pathSeparator) String pathSeparator,
 
     /// Regular expression pattern defining invalid characters in paths.
     ///
@@ -77,7 +136,7 @@ sealed class EntityConfig with _$EntityConfig {
     /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
     ///
     /// Default: `[<>:"|?*\x00-\x1F]`
-    @Default(r'[<>:"|?*\x00-\x1F]') String invalidPathChars,
+    @Default(EntityConfigDefaults.invalidPathChars) String invalidPathChars,
   }) = _EntityConfig;
 
   /// Creates a new instance of [EntityConfig] with configuration optimized for development.
