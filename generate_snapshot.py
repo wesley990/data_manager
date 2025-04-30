@@ -49,7 +49,10 @@ import re
 import glob
 import json
 import logging
+import subprocess
+import tempfile
 from collections import defaultdict
+from pathlib import Path
 
 # Configure logging
 logging.basicConfig(
@@ -81,7 +84,7 @@ def debug_regex(pattern, text, file_path=None, pattern_name="unnamed"):
         logger.error(f"Regex error with pattern '{pattern_name}': {e}")
         return []
 
-def create_codebase_snapshot(project_path, output_file="snapshot.md", json_output="snapshot.json"):
+def create_codebase_snapshot(project_path, output_file="snapshot.md", json_output="snapshot.json", use_analyzer=False):
     """
     Generate a structured markdown snapshot of the codebase for AI consumption.
     
@@ -94,11 +97,26 @@ def create_codebase_snapshot(project_path, output_file="snapshot.md", json_outpu
         project_path: Root path of the project to scan
         output_file: Path where markdown output will be written
         json_output: Path where JSON index will be written
+        use_analyzer: Whether to use Dart analyzer for more accurate parsing
     """
+    print(f"Generating codebase snapshot for {project_path}")
+    print(f"Writing markdown to {output_file} and JSON to {json_output}")
+    
+    if use_analyzer:
+        if is_dart_analyzer_available():
+            print("Using Dart analyzer for more accurate parsing (this may be slower)")
+        else:
+            print("Dart analyzer not available, falling back to regex-based parsing")
+            use_analyzer = False
+    else:
+        print("Using regex-based parsing (faster but may miss complex code structures)")
+    
     # Filter out generated files
     all_dart_files = glob.glob(f"{project_path}/**/*.dart", recursive=True)
     dart_files = [f for f in all_dart_files 
                  if not (f.endswith('.g.dart') or f.endswith('.freezed.dart'))]
+    
+    print(f"Found {len(dart_files)} Dart files (excluded generated files)")
     
     # Data structures to collect information
     classes = {}
@@ -116,177 +134,42 @@ def create_codebase_snapshot(project_path, output_file="snapshot.md", json_outpu
     services = {}
     value_objects = {}
     
-    for file_path in dart_files:
+    # Process each file
+    for i, file_path in enumerate(dart_files):
+        if i % 10 == 0:
+            print(f"Processing file {i+1}/{len(dart_files)}...")
+            
         rel_path = os.path.relpath(file_path, project_path)
-        with open(file_path, 'r', encoding='utf-8') as f:
-            try:
-                content = f.read()
+        try:
+            # Use combined approach for parsing
+            file_classes, file_interfaces, file_enums, file_typedefs, file_functions, category, file_summary, imports = parse_dart_file(
+                file_path, rel_path, use_analyzer
+            )
+            
+            # Store file-level information
+            file_summaries[rel_path] = file_summary
+            file_imports[rel_path] = imports
+            file_descriptions[rel_path] = extract_file_description(file_path, rel_path)
+            
+            # Add extracted components to the main collections
+            classes.update(file_classes)
+            interfaces.update(file_interfaces)
+            enums.update(file_enums)
+            typedefs.update(file_typedefs)
+            functions.update(file_functions)
+            
+            # Categorize classes based on detected category
+            for class_name, class_info in file_classes.items():
+                if category == 'entity':
+                    entities[class_name] = class_info
+                elif category == 'repository':
+                    repositories[class_name] = class_info
+                elif category == 'service':
+                    services[class_name] = class_info
+                elif category == 'value_object':
+                    value_objects[class_name] = class_info
                 
-                # Extract file-level documentation
-                file_doc = re.search(r'\/\/\/\s*(.*?)(?=\n\n|\nimport)', content, re.DOTALL)
-                file_summary = file_doc.group(1).strip() if file_doc else "No documentation"
-                file_summaries[rel_path] = file_summary
-                
-                # Extract a brief description for the file
-                file_descriptions[rel_path] = extract_file_description(file_path, rel_path)
-                
-                # Extract imports
-                imports = re.findall(r'import\s+[\'"]([^\'"]+)[\'"]', content)
-                file_imports[rel_path] = imports
-                
-                # Categorize file based on path
-                category = 'other'
-                if '/entities/' in rel_path:
-                    category = 'entity'
-                elif '/repositories/' in rel_path:
-                    category = 'repository'  
-                elif '/services/' in rel_path:
-                    category = 'service'
-                elif '/value_objects/' in rel_path:
-                    category = 'value_object'
-                
-                # Extract classes with their methods and properties
-                class_pattern = r'(?:abstract |sealed )?class\s+(\w+)(?:<[^>]+>)?(?:\s+with\s+[^{]+)?(?:\s+implements\s+[^{]+)?(?:\s+extends\s+[^{]+)?\s*{(.*?)(?:^\})'
-                class_matches = debug_regex(
-                    class_pattern, 
-                    content, 
-                    file_path=file_path, 
-                    pattern_name="class_definition"
-                )
-                
-                for match in class_matches:
-                    class_name = match.group(1)
-                    class_body = match.group(2)
-                    
-                    # Extract methods
-                    methods = re.finditer(
-                        r'(?:\/\/\/\s*(.*?))?(?=\n\s*(?:@\w+\s+)*)(?:\s*@\w+\s+)*\s*(?:static\s+)?(?:final\s+)?(?:const\s+)?(?:\w+(?:<[^>]+>)?\s+)?(\w+)\s*\((.*?)\)(?:\s*=>\s*[^;]+|\s*\{)',
-                        class_body,
-                        re.DOTALL
-                    )
-                    
-                    methods_info = []
-                    for method in methods:
-                        doc = method.group(1).strip() if method.group(1) else ""
-                        method_name = method.group(2)
-                        params = method.group(3).strip()
-                        methods_info.append({
-                            "name": method_name,
-                            "params": params,
-                            "doc": doc
-                        })
-                    
-                    # Extract properties
-                    properties = re.finditer(
-                        r'(?:\/\/\/\s*(.*?))?(?=\n\s*(?:@\w+\s+)*)(?:\s*@\w+\s+)*\s*(?:final\s+)?(?:static\s+)?(?:const\s+)?(\w+(?:<[^>]+>)?)\s+(\w+)(?:\s*=\s*[^;]+)?;',
-                        class_body,
-                        re.DOTALL
-                    )
-                    
-                    properties_info = []
-                    for prop in properties:
-                        doc = prop.group(1).strip() if prop.group(1) else ""
-                        prop_type = prop.group(2)
-                        prop_name = prop.group(3)
-                        properties_info.append({
-                            "name": prop_name,
-                            "type": prop_type,
-                            "doc": doc
-                        })
-                    
-                    classes[class_name] = {
-                        "file": rel_path,
-                        "methods": methods_info,
-                        "properties": properties_info
-                    }
-                    
-                    # Categorize class based on path
-                    if category == 'entity':
-                        entities[class_name] = classes[class_name]
-                    elif category == 'repository':
-                        repositories[class_name] = classes[class_name]
-                    elif category == 'service':
-                        services[class_name] = classes[class_name]
-                    elif category == 'value_object':
-                        value_objects[class_name] = classes[class_name]
-                
-                # Extract interfaces (abstract classes)
-                interface_matches = re.finditer(
-                    r'abstract\s+class\s+(\w+)(?:<[^>]+>)?(?:\s+implements\s+[^{]+)?\s*{(.*?)(?:^\})', 
-                    content, 
-                    re.DOTALL | re.MULTILINE
-                )
-                
-                for match in interface_matches:
-                    interface_name = match.group(1)
-                    interface_body = match.group(2)
-                    
-                    # Extract methods
-                    methods = re.finditer(
-                        r'(?:\/\/\/\s*(.*?))?(?=\n\s*(?:@\w+\s+)*)(?:\s*@\w+\s+)*\s*(?:Future<[^>]+>\s+|\w+(?:<[^>]+>)?\s+)?(\w+)\s*\((.*?)\)(?:\s*;\s*|\s*\{)',
-                        interface_body,
-                        re.DOTALL
-                    )
-                    
-                    methods_info = []
-                    for method in methods:
-                        doc = method.group(1).strip() if method.group(1) else ""
-                        method_name = method.group(2)
-                        params = method.group(3).strip()
-                        methods_info.append({
-                            "name": method_name,
-                            "params": params,
-                            "doc": doc
-                        })
-                    
-                    interfaces[interface_name] = {
-                        "file": rel_path,
-                        "methods": methods_info
-                    }
-                
-                # Extract typedefs
-                typedef_matches = re.finditer(r'typedef\s+(\w+)(?:<[^>]+>)?\s*=\s*([^;]+);', content)
-                for match in typedef_matches:
-                    typedef_name = match.group(1)
-                    typedef_type = match.group(2).strip()
-                    typedefs[typedef_name] = {
-                        "file": rel_path,
-                        "type": typedef_type
-                    }
-                
-                # Extract enums
-                enum_matches = re.finditer(r'enum\s+(\w+)\s*{([^}]+)}', content)
-                for match in enum_matches:
-                    enum_name = match.group(1)
-                    enum_values = [v.strip() for v in match.group(2).split(",") if v.strip()]
-                    enums[enum_name] = {
-                        "file": rel_path,
-                        "values": enum_values
-                    }
-                
-                # Extract top-level functions
-                func_matches = re.finditer(
-                    r'(?:\/\/\/\s*(.*?))?(?=\n\s*(?:@\w+\s+)*)(?:\s*@\w+\s+)*\s*(?:Future<[^>]+>\s+|\w+(?:<[^>]+>)?\s+)?(\w+)\s*\((.*?)\)(?:\s*=>\s*[^;]+|\s*\{)',
-                    content,
-                    re.DOTALL
-                )
-                
-                for match in func_matches:
-                    # Skip if this looks like it's inside a class
-                    if re.search(r'class\s+\w+[^{]*{[^}]*' + re.escape(match.group(0)), content, re.DOTALL):
-                        continue
-                    
-                    doc = match.group(1).strip() if match.group(1) else ""
-                    func_name = match.group(2)
-                    params = match.group(3).strip()
-                    
-                    functions[func_name] = {
-                        "file": rel_path,
-                        "params": params,
-                        "doc": doc
-                    }
-                
-            except Exception as e:
+        except Exception as e:
                 print(f"Error processing {file_path}: {e}")
     
     # Collect statistics
@@ -1038,13 +921,232 @@ def test_regex_patterns(file_path):
             if i != j and start1 < end2 and start2 < end1:
                 print(f"  Classes overlap: {name1} and {name2}")
 
+def is_dart_analyzer_available():
+    """
+    Check if the Dart analyzer is available on the system.
+    
+    Returns:
+        bool: True if the Dart analyzer is available, False otherwise.
+    """
+    try:
+        # Run a simple command to check if dart analyzer is available
+        result = subprocess.run(
+            ["dart", "analyze", "--help"], 
+            capture_output=True, 
+            text=True, 
+            timeout=5
+        )
+        
+        # If the command returns successfully, the analyzer is available
+        return result.returncode == 0
+    except (subprocess.SubprocessError, FileNotFoundError):
+        # If the command fails or dart is not installed, return False
+        return False
+
+def parse_dart_file(file_path, rel_path, use_analyzer=False):
+    """
+    Parse a Dart file to extract its components using regex or analyzer.
+    
+    Args:
+        file_path: Path to the Dart file
+        rel_path: Relative path from project root
+        use_analyzer: Whether to use Dart analyzer
+        
+    Returns:
+        tuple: Classes, interfaces, enums, typedefs, functions, category, summary, imports
+    """
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Extract file documentation
+        file_doc = re.search(r'\/\/\/\s*(.*?)(?=\n\n|\nimport)', content, re.DOTALL)
+        file_summary = file_doc.group(1).strip() if file_doc else "No documentation"
+        
+        # Extract imports
+        imports = re.findall(r'import\s+[\'"]([^\'"]+)[\'"]', content)
+        
+        # Determine category based on path
+        category = 'other'
+        if '/entity' in rel_path or '/entities' in rel_path:
+            category = 'entity'
+        elif '/repository' in rel_path or '/repositories' in rel_path:
+            category = 'repository'
+        elif '/service' in rel_path or '/services' in rel_path:
+            category = 'service'
+        elif '/value_object' in rel_path or '/value_objects' in rel_path:
+            category = 'value_object'
+        
+        # Initialize empty collections
+        file_classes = {}
+        file_interfaces = {}
+        file_enums = {}
+        file_typedefs = {}
+        file_functions = {}
+        
+        # Extract classes with their methods and properties
+        class_pattern = r'(?:abstract |sealed )?class\s+(\w+)(?:<[^>]+>)?(?:\s+with\s+[^{]+)?(?:\s+implements\s+[^{]+)?(?:\s+extends\s+[^{]+)?\s*{(.*?)(?:^\})'
+        class_matches = debug_regex(
+            class_pattern, 
+            content, 
+            file_path=file_path, 
+            pattern_name="class_definition"
+        )
+        
+        for match in class_matches:
+            class_name = match.group(1)
+            class_body = match.group(2)
+            
+            # Extract methods
+            methods = re.finditer(
+                r'(?:\/\/\/\s*(.*?))?(?=\n\s*(?:@\w+\s+)*)(?:\s*@\w+\s+)*\s*(?:static\s+)?(?:final\s+)?(?:const\s+)?(?:\w+(?:<[^>]+>)?\s+)?(\w+)\s*\((.*?)\)(?:\s*=>\s*[^;]+|\s*\{)',
+                class_body,
+                re.DOTALL
+            )
+            
+            methods_info = []
+            for method in methods:
+                doc = method.group(1).strip() if method.group(1) else ""
+                method_name = method.group(2)
+                params = method.group(3).strip()
+                methods_info.append({
+                    "name": method_name,
+                    "params": params,
+                    "doc": doc
+                })
+            
+            # Extract properties
+            properties = re.finditer(
+                r'(?:\/\/\/\s*(.*?))?(?=\n\s*(?:@\w+\s+)*)(?:\s*@\w+\s+)*\s*(?:final\s+)?(?:static\s+)?(?:const\s+)?(\w+(?:<[^>]+>)?)\s+(\w+)(?:\s*=\s*[^;]+)?;',
+                class_body,
+                re.DOTALL
+            )
+            
+            properties_info = []
+            for prop in properties:
+                doc = prop.group(1).strip() if prop.group(1) else ""
+                prop_type = prop.group(2)
+                prop_name = prop.group(3)
+                properties_info.append({
+                    "name": prop_name,
+                    "type": prop_type,
+                    "doc": doc
+                })
+            
+            file_classes[class_name] = {
+                "file": rel_path,
+                "methods": methods_info,
+                "properties": properties_info
+            }
+        
+        # Extract interfaces (abstract classes)
+        interface_matches = re.finditer(
+            r'abstract\s+class\s+(\w+)(?:<[^>]+>)?(?:\s+implements\s+[^{]+)?\s*{(.*?)(?:^\})', 
+            content, 
+            re.DOTALL | re.MULTILINE
+        )
+        
+        for match in interface_matches:
+            interface_name = match.group(1)
+            interface_body = match.group(2)
+            
+            # Extract methods
+            methods = re.finditer(
+                r'(?:\/\/\/\s*(.*?))?(?=\n\s*(?:@\w+\s+)*)(?:\s*@\w+\s+)*\s*(?:Future<[^>]+>\s+|\w+(?:<[^>]+>)?\s+)?(\w+)\s*\((.*?)\)(?:\s*;\s*|\s*\{)',
+                interface_body,
+                re.DOTALL
+            )
+            
+            methods_info = []
+            for method in methods:
+                doc = method.group(1).strip() if method.group(1) else ""
+                method_name = method.group(2)
+                params = method.group(3).strip()
+                methods_info.append({
+                    "name": method_name,
+                    "params": params,
+                    "doc": doc
+                })
+            
+            file_interfaces[interface_name] = {
+                "file": rel_path,
+                "methods": methods_info
+            }
+        
+        # Extract typedefs
+        typedef_matches = re.finditer(r'typedef\s+(\w+)(?:<[^>]+>)?\s*=\s*([^;]+);', content)
+        for match in typedef_matches:
+            typedef_name = match.group(1)
+            typedef_type = match.group(2).strip()
+            file_typedefs[typedef_name] = {
+                "file": rel_path,
+                "type": typedef_type
+            }
+        
+        # Extract enums
+        enum_matches = re.finditer(r'enum\s+(\w+)\s*{([^}]+)}', content)
+        for match in enum_matches:
+            enum_name = match.group(1)
+            enum_values = [v.strip() for v in match.group(2).split(",") if v.strip()]
+            file_enums[enum_name] = {
+                "file": rel_path,
+                "values": enum_values
+            }
+        
+        # Extract top-level functions
+        func_matches = re.finditer(
+            r'(?:\/\/\/\s*(.*?))?(?=\n\s*(?:@\w+\s+)*)(?:\s*@\w+\s+)*\s*(?:Future<[^>]+>\s+|\w+(?:<[^>]+>)?\s+)?(\w+)\s*\((.*?)\)(?:\s*=>\s*[^;]+|\s*\{)',
+            content,
+            re.DOTALL
+        )
+        
+        for match in func_matches:
+            # Skip if this looks like it's inside a class
+            if re.search(r'class\s+\w+[^{]*{[^}]*' + re.escape(match.group(0)), content, re.DOTALL):
+                continue
+            
+            doc = match.group(1).strip() if match.group(1) else ""
+            func_name = match.group(2)
+            params = match.group(3).strip()
+            
+            file_functions[func_name] = {
+                "file": rel_path,
+                "params": params,
+                "doc": doc
+            }
+        
+        return (file_classes, file_interfaces, file_enums, file_typedefs, 
+                file_functions, category, file_summary, imports)
+        
+    except Exception as e:
+        logger.error(f"Error in parse_dart_file for {file_path}: {e}")
+        print(f"Error processing file {file_path}: {str(e)}")
+        return ({}, {}, {}, {}, {}, 'other', f"Error: {str(e)}", [])
+    
 if __name__ == "__main__":
     import sys
-    if len(sys.argv) > 1 and sys.argv[1] == "--test-regex":
-        if len(sys.argv) > 2:
-            test_regex_patterns(sys.argv[2])
-        else:
-            print("Please provide a file path to test")
+    import argparse
+    
+    parser = argparse.ArgumentParser(description="Generate codebase snapshot for a Dart project")
+    parser.add_argument("--project-path", default=os.path.expandvars("$HOME/projects/data_manager"),
+                      help="Path to the project root")
+    parser.add_argument("--output", default="snapshot.md",
+                      help="Path for the markdown output file")
+    parser.add_argument("--json", default="snapshot.json",
+                      help="Path for the JSON output file")
+    parser.add_argument("--use-analyzer", action="store_true",
+                      help="Use Dart analyzer for more accurate parsing (slower)")
+    parser.add_argument("--test-regex", metavar="FILE_PATH",
+                      help="Test regex patterns on a specific file")
+    
+    args = parser.parse_args()
+    
+    if args.test_regex:
+        test_regex_patterns(args.test_regex)
     else:
-        project_path = os.path.expandvars("$HOME/projects/data_manager")
-        create_codebase_snapshot(project_path)
+        create_codebase_snapshot(
+            args.project_path, 
+            args.output, 
+            args.json, 
+            args.use_analyzer
+        )
