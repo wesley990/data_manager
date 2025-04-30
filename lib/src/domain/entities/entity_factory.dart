@@ -305,11 +305,11 @@ class EntityCloneBuilder<T extends Object> {
 class EntityFactory {
   /// Valid entity types that can be created with this factory
   static final _validTypes = <Type>{
-    OwnerModel,
-    SiteModel,
-    EquipmentModel,
-    VendorModel,
-    PersonnelModel,
+    OwnerData,
+    SiteData,
+    EquipmentData,
+    VendorData,
+    PersonnelData,
   };
 
   /// Creates a new entity from the provided configuration.
