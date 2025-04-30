@@ -7,19 +7,19 @@ import '../../domain/value_objects/enum_objects.dart';
 part 'entity_config.freezed.dart';
 part 'entity_config.g.dart';
 
-/// Default values and configurations for config entities
+/// Default values and configurations for entity configs
 abstract class EntityConfigDefaults {
-  /// Configuration schema version for tracking changes
+  /// Schema version for config entities
   static const String configVersion = '1.0.0';
 
   // Path limits
-  /// Maximum length of an entity path in characters
+  /// Maximum length of entity path in characters
   static const int maxPathLength = 1024;
 
-  /// Maximum length of a single path segment
+  /// Maximum length of path segment
   static const int maxPathSegment = 255;
 
-  /// Maximum allowed depth of entity hierarchies
+  /// Maximum depth of entity hierarchies
   static const int maxHierarchyDepth = 10;
 
   // History limits
@@ -63,21 +63,15 @@ abstract class EntityConfigDefaults {
   static const String invalidPathChars = r'[<>:"|?*\x00-\x1F]';
 }
 
-/// Defines configuration settings for entities within the data manager.
+/// Configuration settings for entities within the data manager
 ///
-/// This immutable configuration class provides default settings for various
-/// entity-related operations including path handling, history tracking,
-/// locking behavior, and entity state defaults.
+/// Controls path handling, history limits, locking behavior and entity defaults
 @freezed
 sealed class EntityConfig with _$EntityConfig {
   const EntityConfig._(); // Private constructor for implementing instance methods
 
   const factory EntityConfig({
-    /// Configuration schema version for tracking changes to the configuration format itself.
-    /// This version follows semantic versioning and should be incremented when:
-    /// - MAJOR: Breaking changes to configuration structure
-    /// - MINOR: New backward-compatible fields added
-    /// - PATCH: Bug fixes that don't affect configuration structure
+    /// Configuration schema version for tracking changes to the configuration format itself
     @Default(EntityConfigDefaults.configVersion) String configVersion,
 
     // Path limits
@@ -131,17 +125,12 @@ sealed class EntityConfig with _$EntityConfig {
     @Default(EntityConfigDefaults.pathSeparator) String pathSeparator,
 
     /// Regular expression pattern defining invalid characters in paths.
-    ///
-    /// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).
-    /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
-    ///
-    /// Default: `[<>:"|?*\x00-\x1F]`
     @Default(EntityConfigDefaults.invalidPathChars) String invalidPathChars,
   }) = _EntityConfig;
 
-  /// Creates a new instance of [EntityConfig] with configuration optimized for development.
+  /// Creates a new instance of [EntityConfig] with configuration optimized for development
   ///
-  /// This configuration has more permissive settings than the default.
+  /// This configuration has more permissive settings than the default
   factory EntityConfig.development() {
     return const EntityConfig(
       configVersion: '1.0.0',
@@ -153,9 +142,9 @@ sealed class EntityConfig with _$EntityConfig {
     );
   }
 
-  /// Creates a new instance of [EntityConfig] with configuration optimized for production.
+  /// Creates a new instance of [EntityConfig] with configuration optimized for production
   ///
-  /// This configuration has more restrictive settings than the default.
+  /// This configuration has more restrictive settings than the default
   factory EntityConfig.production() {
     return const EntityConfig(
       configVersion: '1.0.0',
@@ -182,22 +171,6 @@ sealed class EntityConfig with _$EntityConfig {
   ///   defaultIsPublic: false,
   /// );
   /// ```
-  ///
-  /// [maxPathLength] - Maximum length of an entity path in characters.
-  /// [maxPathSegment] - Maximum length of a single path segment in characters.
-  /// [maxHierarchyDepth] - Maximum allowed depth of entity hierarchies.
-  /// [maxHistorySize] - Maximum number of history entries to retain per entity.
-  /// [defaultHistorySize] - Default number of history entries to show in views.
-  /// [defaultLockTimeout] - Default duration before an entity lock expires.
-  /// [lockExtensionPeriod] - Duration by which a lock can be extended.
-  /// [minLockDuration] - Minimum duration for which an entity can be locked.
-  /// [maxLockDuration] - Maximum duration for which an entity can be locked.
-  /// [defaultVersion] - Default version string for new entities.
-  /// [defaultIsPublic] - Whether entities are public by default.
-  /// [defaultPriority] - Default priority level for new entities.
-  /// [defaultStage] - Default workflow stage for new entities.
-  /// [pathSeparator] - Character used to separate path segments.
-  /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.
   factory EntityConfig.custom({
     String? configVersion,
     int? maxPathLength,
@@ -243,15 +216,9 @@ sealed class EntityConfig with _$EntityConfig {
   factory EntityConfig.fromJson(Map<String, Object?> json) =>
       _$EntityConfigFromJson(json);
 
-  /// Validates if a path string conforms to the configuration constraints.
+  /// Validates if a path string conforms to the configuration constraints
   ///
-  /// Checks if the path:
-  /// - Does not exceed the maximum path length
-  /// - Does not exceed the maximum hierarchy depth
-  /// - Does not contain invalid characters
-  /// - Does not have segments that exceed the maximum segment length
-  ///
-  /// Returns true if the path is valid according to all constraints.
+  /// Returns true if the path is valid according to all path constraints
   bool isValidPath(String path) {
     // Check total path length
     if (path.length > maxPathLength) return false;
@@ -380,10 +347,7 @@ sealed class EntityConfig with _$EntityConfig {
     return lockDuration;
   }
 
-  /// Normalizes a path by:
-  /// 1. Removing redundant separators
-  /// 2. Removing trailing separators
-  /// 3. Ensuring the path conforms to configuration constraints
+  /// Normalizes a path by removing redundant separators and ensuring constraints
   ///
   /// Returns a normalized path string.
   String normalizePath(String path) {
@@ -460,9 +424,6 @@ sealed class EntityConfig with _$EntityConfig {
   }
 
   /// Validates configuration values to ensure they are reasonable and consistent.
-  ///
-  /// This can be called during initialization to check that the configuration
-  /// doesn't have contradictory or invalid settings.
   ///
   /// Returns true if the configuration is valid.
   bool validate() {
@@ -633,11 +594,11 @@ sealed class EntityConfig with _$EntityConfig {
     return true;
   }
 
-  /// Creates a merged configuration using the most permissive values from both configurations.
+  /// Creates a merged configuration using the most permissive values from both configurations
   ///
-  /// This is useful when you need to ensure compatibility between two environments.
+  /// This is useful when you need to ensure compatibility between two environments
   ///
-  /// Returns a new EntityConfig that will be compatible with both source configurations.
+  /// Returns a new EntityConfig that will be compatible with both source configurations
   EntityConfig mergeWith(EntityConfig other) {
     return EntityConfig(
       // Take the larger value for limits
@@ -740,10 +701,6 @@ sealed class EntityConfig with _$EntityConfig {
 
   /// Checks if this configuration version is compatible with another version.
   ///
-  /// Follows semantic versioning principles:
-  /// - Major versions must match (breaking changes)
-  /// - If this is being used with data created by otherVersion, this.minor >= other.minor
-  ///
   /// [otherVersion] - Version string to check compatibility with (e.g., "1.2.3")
   /// [thisVersion] - Optional version to check, defaults to this config's version
   ///
@@ -778,12 +735,10 @@ sealed class EntityConfig with _$EntityConfig {
     }
   }
 
-  /// Creates a new configuration with an incremented version.
+  /// Creates a new version string following semantic versioning.
   ///
   /// [increment] - Which part to increment: "major", "minor", or "patch"
   /// [baseVersion] - Optional base version, defaults to this config's version
-  ///
-  /// Returns a new version string following semantic versioning.
   String incrementVersion(String increment, [String? baseVersion]) {
     final version = baseVersion ?? defaultVersion;
 
