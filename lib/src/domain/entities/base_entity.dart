@@ -5,12 +5,12 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'base_entity.freezed.dart';
 part 'base_entity.g.dart';
 
-/// Global type aliases for improved readability and maintenance
+/// Type aliases for improved code readability
 typedef EntityVersionVector = Map<String, int>;
 typedef EntityEventMeta = Map<String, Object>;
 typedef EntitySearchIndex = Map<String, Object>;
 
-/// System-wide constants for entity limitations and boundaries
+/// Constants defining entity system boundaries and limitations
 abstract class EntityLimits {
   /// Maximum length of a path in characters
   static const int pathMaxLength = 1024;
@@ -38,12 +38,8 @@ sealed class EntityHierarchy with _$EntityHierarchy {
     /// Full path in the entity tree
     ///
     /// Format: '/parent_id/grandparent_id/entity_id'
-    /// - Paths use forward slashes as separators
-    /// - Paths start with a leading slash
-    /// - Path segments are entity IDs in reverse ancestry order
-    /// - Root entities have path equal to their ID or '/' + ID
-    /// - Maximum path length is limited to [EntityLimits.pathMaxLength]
-    /// - Maximum segment length is limited to [EntityLimits.pathMaxSegment]
+    /// Paths use forward slashes as separators and start with a leading slash
+    /// Path segments are entity IDs in reverse ancestry order
     String? treePath,
 
     /// Depth level in the hierarchy (0 = root)
@@ -65,17 +61,10 @@ sealed class EntityHierarchy with _$EntityHierarchy {
     @Default(true) bool isHierarchyLeaf,
 
     /// Additional hierarchy-related metadata
-    ///
-    /// Expected keys:
-    ///   - 'created': String (ISO8601 timestamp)
-    ///   - 'pathType': String (e.g., 'root', 'branch', etc.)
-    ///   - Add more as needed for your application
     @Default({}) Map<String, Object> hierarchyMeta,
   }) = _EntityHierarchy;
 
-  /// Creates a new root EntityHierarchy instance for a specific entity ID
-  ///
-  /// This factory conveniently sets up all properties for a root entity
+  /// Creates a new root EntityHierarchy instance
   factory EntityHierarchy.root(String entityId) {
     final now = DateTime.now();
     return EntityHierarchy(
@@ -93,7 +82,7 @@ sealed class EntityHierarchy with _$EntityHierarchy {
 
 /// Extension methods for EntityHierarchy operations
 extension EntityHierarchyOperations on EntityHierarchy {
-  /// Adds a child entity ID, automatically updating leaf status and meta
+  /// Adds a child entity ID, updating leaf status and metadata
   EntityHierarchy addChild(EntityId childId) {
     if (childIds.contains(childId)) return this;
     final updatedChildIds = List<EntityId>.from(childIds)..add(childId);
@@ -132,9 +121,12 @@ extension EntityHierarchyOperations on EntityHierarchy {
   }
 }
 
+/// Extension methods for path handling and hierarchy operations
 extension BaseEntityModelPathAndHierarchy<T extends Object>
     on BaseEntityModel<T> {
-  // Path sanitization and validation
+  /// Sanitizes a path string according to entity configuration
+  ///
+  /// Returns a sanitized path string or empty string if invalid
   String sanitizePath(
     String? rawPath, {
     EntityConfig? config,
@@ -481,22 +473,16 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
     return '/${segments.sublist(0, segments.length - 1).join('/')}';
   }
 
-  /// Adds a child entity relationship, ensuring hierarchy consistency.
+  /// Adds a child entity relationship, ensuring hierarchy consistency
   ///
-  /// This method safely adds a child entity ID to this entity while automatically
-  /// maintaining the [isHierarchyLeaf] property.
-  ///
-  /// [childId] - The ID of the child entity to add.
-  /// Returns an updated entity with the child added and leaf status updated.
+  /// [childId] - The ID of the child entity to add
+  /// Returns an updated entity with the child added and leaf status updated
   BaseEntityModel<T> _addChildEntity(EntityId childId) {
     if (hierarchy.childIds.contains(childId)) return this;
     return copyWith(hierarchy: hierarchy.addChild(childId));
   }
 
   /// Removes a child entity relationship, ensuring hierarchy consistency.
-  ///
-  /// This method safely removes a child entity ID from this entity while automatically
-  /// updating the [isHierarchyLeaf] property based on remaining children.
   ///
   /// [childId] - The ID of the child entity to remove.
   /// Returns an updated entity with the child removed and leaf status updated.
@@ -505,12 +491,6 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
     return copyWith(hierarchy: hierarchy.removeChild(childId));
   }
 
-  /// Validates and corrects the hierarchy leaf status if needed
-  ///
-  /// This method ensures that the [isHierarchyLeaf] property correctly reflects
-  /// whether the entity has children or not.
-  ///
-  /// Returns an updated entity with corrected leaf status
   /// Validates and corrects the hierarchy leaf status if needed
   ///
   /// This method ensures that the [isHierarchyLeaf] property correctly reflects

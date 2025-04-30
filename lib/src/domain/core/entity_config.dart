@@ -246,12 +246,10 @@ sealed class EntityConfig with _$EntityConfig {
 
   /// Sanitizes a path to conform to configuration constraints.
   ///
-  /// This method:
-  /// - Replaces invalid characters with underscores
-  /// - Truncates paths that exceed maximum length
-  /// - Truncates segments that exceed maximum length
+  /// This method removes invalid characters, truncates paths and segments
+  /// that exceed maximum length.
   ///
-  /// Returns a sanitized path that conforms to all path constraints.
+  /// Returns a sanitized path that conforms to configuration constraints.
   String sanitizePath(String path) {
     // Start with the original path
     String result = path;
