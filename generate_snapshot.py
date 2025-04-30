@@ -48,7 +48,38 @@ import os
 import re
 import glob
 import json
+import logging
 from collections import defaultdict
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    filename='snapshot_generator.log'
+)
+logger = logging.getLogger('snapshot_generator')
+
+def debug_regex(pattern, text, file_path=None, pattern_name="unnamed"):
+    """Helper function to debug regex patterns with detailed logging"""
+    try:
+        if isinstance(pattern, str):
+            compiled = re.compile(pattern, re.DOTALL | re.MULTILINE)
+        else:
+            compiled = pattern
+        
+        matches = list(compiled.finditer(text))
+        if matches:
+            logger.debug(f"Found {len(matches)} matches for pattern '{pattern_name}' in {file_path or 'text'}")
+            for i, match in enumerate(matches[:2]):  # Log details for first 2 matches only
+                logger.debug(f"Match {i+1}: {match.groups()}")
+                
+            return matches
+        else:
+            logger.debug(f"No matches for pattern '{pattern_name}' in {file_path or 'text'}")
+            return []
+    except Exception as e:
+        logger.error(f"Regex error with pattern '{pattern_name}': {e}")
+        return []
 
 def create_codebase_snapshot(project_path, output_file="snapshot.md", json_output="snapshot.json"):
     """
@@ -115,10 +146,12 @@ def create_codebase_snapshot(project_path, output_file="snapshot.md", json_outpu
                     category = 'value_object'
                 
                 # Extract classes with their methods and properties
-                class_matches = re.finditer(
-                    r'(?:abstract |sealed )?class\s+(\w+)(?:<[^>]+>)?(?:\s+with\s+[^{]+)?(?:\s+implements\s+[^{]+)?(?:\s+extends\s+[^{]+)?\s*{(.*?)(?:^\})', 
+                class_pattern = r'(?:abstract |sealed )?class\s+(\w+)(?:<[^>]+>)?(?:\s+with\s+[^{]+)?(?:\s+implements\s+[^{]+)?(?:\s+extends\s+[^{]+)?\s*{(.*?)(?:^\})'
+                class_matches = debug_regex(
+                    class_pattern, 
                     content, 
-                    re.DOTALL | re.MULTILINE
+                    file_path=file_path, 
+                    pattern_name="class_definition"
                 )
                 
                 for match in class_matches:
@@ -952,6 +985,66 @@ classDiagram
     
     return domain_diagram + repo_diagram + event_diagram + value_diagram
 
+def test_regex_patterns(file_path):
+    """
+    Test all regex patterns on a specific file and output detailed debug information.
+    
+    This function is used to debug regex patterns that might miss edge cases
+    in complex Dart code. Run it on files that are known to cause issues.
+    
+    Args:
+        file_path: Path to the Dart file to test regex patterns against
+    """
+    print(f"Testing regex patterns on {file_path}")
+    
+    with open(file_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    patterns = {
+        "class_definition": r'(?:abstract |sealed )?class\s+(\w+)(?:<[^>]+>)?(?:\s+with\s+[^{]+)?(?:\s+implements\s+[^{]+)?(?:\s+extends\s+[^{]+)?\s*{(.*?)(?:^\})',
+        "method_extraction": r'(?:\/\/\/\s*(.*?))?(?=\n\s*(?:@\w+\s+)*)(?:\s*@\w+\s+)*\s*(?:static\s+)?(?:final\s+)?(?:const\s+)?(?:\w+(?:<[^>]+>)?\s+)?(\w+)\s*\((.*?)\)(?:\s*=>\s*[^;]+|\s*\{)',
+        "property_extraction": r'(?:\/\/\/\s*(.*?))?(?=\n\s*(?:@\w+\s+)*)(?:\s*@\w+\s+)*\s*(?:final\s+)?(?:static\s+)?(?:const\s+)?(\w+(?:<[^>]+>)?)\s+(\w+)(?:\s*=\s*[^;]+)?;',
+        "interface_definition": r'abstract\s+class\s+(\w+)(?:<[^>]+>)?(?:\s+implements\s+[^{]+)?\s*{(.*?)(?:^\})',
+        "typedef_definition": r'typedef\s+(\w+)(?:<[^>]+>)?\s*=\s*([^;]+);',
+        "enum_definition": r'enum\s+(\w+)\s*{([^}]+)}'
+    }
+    
+    for name, pattern in patterns.items():
+        print(f"\nTesting pattern: {name}")
+        try:
+            compiled = re.compile(pattern, re.DOTALL | re.MULTILINE)
+            matches = list(compiled.finditer(content))
+            print(f"  Found {len(matches)} matches")
+            
+            for i, match in enumerate(matches[:3]):  # Show first 3 matches
+                print(f"  Match {i+1}:")
+                for j, group in enumerate(match.groups()):
+                    # Truncate group output to prevent huge output
+                    group_text = str(group)
+                    if len(group_text) > 100:
+                        group_text = group_text[:97] + "..."
+                    print(f"    Group {j+1}: {group_text}")
+                    
+        except Exception as e:
+            print(f"  Error testing {name}: {e}")
+    
+    # Additional test for overlapping matches, which is a common issue
+    print("\nChecking for overlapping matches:")
+    class_matches = re.finditer(patterns["class_definition"], content, re.DOTALL | re.MULTILINE)
+    class_positions = [(m.start(), m.end(), m.group(1)) for m in class_matches]
+    
+    for i, (start1, end1, name1) in enumerate(class_positions):
+        for j, (start2, end2, name2) in enumerate(class_positions):
+            if i != j and start1 < end2 and start2 < end1:
+                print(f"  Classes overlap: {name1} and {name2}")
+
 if __name__ == "__main__":
-    project_path = "$HOME/projects/data_manager"
-    create_codebase_snapshot(project_path)
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "--test-regex":
+        if len(sys.argv) > 2:
+            test_regex_patterns(sys.argv[2])
+        else:
+            print("Please provide a file path to test")
+    else:
+        project_path = os.path.expandvars("$HOME/projects/data_manager")
+        create_codebase_snapshot(project_path)
