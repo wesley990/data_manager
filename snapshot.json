@@ -5,9 +5,9 @@
     "total_interfaces": 9,
     "total_enums": 12,
     "total_typedefs": 8,
-    "total_functions": 65,
-    "entities_count": 17,
-    "repositories_count": 21,
+    "total_functions": 77,
+    "entities_count": 33,
+    "repositories_count": 6,
     "services_count": 1,
     "value_objects_count": 14
   },
@@ -121,644 +121,6 @@
         }
       ]
     },
-    "EntityConfig": {
-      "file": "lib/src/domain/core/entity_config.dart",
-      "methods": [
-        {
-          "name": "EntityConfig",
-          "params": "{\n    // Path limits\n    /// Maximum length of an entity path in characters.\n    @Default(1024) int maxPathLength,\n\n    /// Maximum length of a single path segment in characters.\n    @Default(255) int maxPathSegment,\n\n    /// Maximum allowed depth of entity hierarchies.\n    @Default(10) int maxHierarchyDepth,\n\n    // History limits\n    /// Maximum number of history entries to retain per entity.\n    @Default(50) int maxHistorySize,\n\n    /// Default number of history entries to show in views.\n    @Default(50) int defaultHistorySize,\n\n    // Lock settings\n    /// Default duration before an entity lock expires.\n    @Default(Duration(minutes: 15)) Duration defaultLockTimeout,\n\n    /// Duration by which a lock can be extended.\n    @Default(Duration(minutes: 5)) Duration lockExtensionPeriod,\n\n    /// Minimum duration for which an entity can be locked.\n    @Default(Duration(seconds: 30)) Duration minLockDuration,\n\n    /// Maximum duration for which an entity can be locked.\n    @Default(Duration(hours: 24)) Duration maxLockDuration,\n\n    // Entity defaults\n    /// Default version string for new entities.\n    @Default('1.0.0') String defaultVersion,\n\n    /// Whether entities are public by default.\n    @Default(true) bool defaultIsPublic,\n\n    /// Default priority level for new entities.\n    @Default(EntityPriority.medium) EntityPriority defaultPriority,\n\n    /// Default workflow stage for new entities.\n    @Default(EntityStage.draft) EntityStage defaultStage,\n\n    // Path settings\n    /// Character used to separate path segments.\n    @Default('/') String pathSeparator,\n\n    /// Regular expression pattern defining invalid characters in paths.\n    ///\n    /// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).\n    /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.\n    ///\n    /// Default: `[<>:\"|?*\\x00-\\x1F]`\n    @Default(r'[<>:\"|?*\\x00-\\x1F]') String invalidPathChars,\n  }) = _EntityConfig;\n\n  /// Creates a new instance of [EntityConfig] with configuration optimized for development.\n  ///\n  /// This configuration has more permissive settings than the default.\n  factory EntityConfig.development(",
-          "doc": ""
-        },
-        {
-          "name": "EntityConfig",
-          "params": "maxPathLength: maxPathLength ?? const EntityConfig().maxPathLength,\n      maxPathSegment: maxPathSegment ?? const EntityConfig().maxPathSegment,\n      maxHierarchyDepth:\n          maxHierarchyDepth ?? const EntityConfig().maxHierarchyDepth,\n      maxHistorySize: maxHistorySize ?? const EntityConfig().maxHistorySize,\n      defaultHistorySize:\n          defaultHistorySize ?? const EntityConfig().defaultHistorySize,\n      defaultLockTimeout:\n          defaultLockTimeout ?? const EntityConfig().defaultLockTimeout,\n      lockExtensionPeriod:\n          lockExtensionPeriod ?? const EntityConfig().lockExtensionPeriod,\n      minLockDuration: minLockDuration ?? const EntityConfig().minLockDuration,\n      maxLockDuration: maxLockDuration ?? const EntityConfig().maxLockDuration,\n      defaultVersion: defaultVersion ?? const EntityConfig().defaultVersion,\n      defaultIsPublic: defaultIsPublic ?? const EntityConfig().defaultIsPublic,\n      defaultPriority: defaultPriority ?? const EntityConfig().defaultPriority,\n      defaultStage: defaultStage ?? const EntityConfig().defaultStage,\n      pathSeparator: pathSeparator ?? const EntityConfig().pathSeparator,\n      invalidPathChars:\n          invalidPathChars ?? const EntityConfig().invalidPathChars,\n    );\n  }\n\n  factory EntityConfig.fromJson(Map<String, Object?> json",
-          "doc": "Creates a new instance of [EntityConfig] with configuration optimized for production.\n  ///\n  /// This configuration has more restrictive settings than the default.\n  factory EntityConfig.production() {\n    return const EntityConfig(\n      maxPathLength: 512,\n      maxPathSegment: 128,\n      maxHierarchyDepth: 8,\n      maxHistorySize: 25,\n      defaultHistorySize: 10,\n      defaultLockTimeout: Duration(minutes: 10),\n      maxLockDuration: Duration(hours: 12),\n      defaultIsPublic: false,\n    );\n  }\n\n  /// Creates a new instance of [EntityConfig] with custom overrides.\n  ///\n  /// This factory allows you to define configuration settings for any environment (e.g., staging, testing, CI)\n  /// by overriding only the fields you need. All unspecified fields will use the default values.\n  ///\n  /// Example:\n  /// ```dart\n  /// final stagingConfig = EntityConfig.custom(\n  ///   maxPathLength: 1500,\n  ///   defaultIsPublic: false,\n  /// );\n  /// ```\n  ///\n  /// [maxPathLength] - Maximum length of an entity path in characters.\n  /// [maxPathSegment] - Maximum length of a single path segment in characters.\n  /// [maxHierarchyDepth] - Maximum allowed depth of entity hierarchies.\n  /// [maxHistorySize] - Maximum number of history entries to retain per entity.\n  /// [defaultHistorySize] - Default number of history entries to show in views.\n  /// [defaultLockTimeout] - Default duration before an entity lock expires.\n  /// [lockExtensionPeriod] - Duration by which a lock can be extended.\n  /// [minLockDuration] - Minimum duration for which an entity can be locked.\n  /// [maxLockDuration] - Maximum duration for which an entity can be locked.\n  /// [defaultVersion] - Default version string for new entities.\n  /// [defaultIsPublic] - Whether entities are public by default.\n  /// [defaultPriority] - Default priority level for new entities.\n  /// [defaultStage] - Default workflow stage for new entities.\n  /// [pathSeparator] - Character used to separate path segments.\n  /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.\n  factory EntityConfig.custom({\n    int? maxPathLength,\n    int? maxPathSegment,\n    int? maxHierarchyDepth,\n    int? maxHistorySize,\n    int? defaultHistorySize,\n    Duration? defaultLockTimeout,\n    Duration? lockExtensionPeriod,\n    Duration? minLockDuration,\n    Duration? maxLockDuration,\n    String? defaultVersion,\n    bool? defaultIsPublic,\n    EntityPriority? defaultPriority,\n    EntityStage? defaultStage,\n    String? pathSeparator,\n    String? invalidPathChars,\n  }) {"
-        }
-      ],
-      "properties": []
-    },
-    "DataManagerException": {
-      "file": "lib/src/domain/core/exceptions.dart",
-      "methods": [
-        {
-          "name": "DataManagerException",
-          "params": "{\n    required this.message,\n    this.details,\n    this.context,\n  });\n\n  @override\n  String toString(",
-          "doc": ""
-        }
-      ],
-      "properties": [
-        {
-          "name": "message",
-          "type": "String",
-          "doc": ""
-        },
-        {
-          "name": "buffer",
-          "type": "final",
-          "doc": ""
-        }
-      ]
-    },
-    "ValidationException": {
-      "file": "lib/src/domain/core/exceptions.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "field",
-          "type": "String",
-          "doc": ""
-        },
-        {
-          "name": "invalidValue",
-          "type": "dynamic",
-          "doc": ""
-        }
-      ]
-    },
-    "FieldValidationException": {
-      "file": "lib/src/domain/core/exceptions.dart",
-      "methods": [],
-      "properties": []
-    },
-    "PathValidationException": {
-      "file": "lib/src/domain/core/exceptions.dart",
-      "methods": [],
-      "properties": []
-    },
-    "HierarchyValidationException": {
-      "file": "lib/src/domain/core/exceptions.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "depth",
-          "type": "int",
-          "doc": ""
-        },
-        {
-          "name": "path",
-          "type": "List<String>",
-          "doc": ""
-        }
-      ]
-    },
-    "HierarchyException": {
-      "file": "lib/src/domain/core/exceptions.dart",
-      "methods": [],
-      "properties": []
-    },
-    "VersionConflictException": {
-      "file": "lib/src/domain/core/exceptions.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "currentVersion",
-          "type": "String",
-          "doc": ""
-        },
-        {
-          "name": "conflictingVersion",
-          "type": "String",
-          "doc": ""
-        }
-      ]
-    },
-    "LockException": {
-      "file": "lib/src/domain/core/exceptions.dart",
-      "methods": [],
-      "properties": []
-    },
-    "AccessException": {
-      "file": "lib/src/domain/core/exceptions.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "resource",
-          "type": "String",
-          "doc": ""
-        },
-        {
-          "name": "action",
-          "type": "String",
-          "doc": ""
-        }
-      ]
-    },
-    "IntegrityException": {
-      "file": "lib/src/domain/core/exceptions.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "entity",
-          "type": "String",
-          "doc": ""
-        },
-        {
-          "name": "operation",
-          "type": "String",
-          "doc": ""
-        }
-      ]
-    },
-    "OperationException": {
-      "file": "lib/src/domain/core/exceptions.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "operation",
-          "type": "String",
-          "doc": ""
-        },
-        {
-          "name": "params",
-          "type": "Map<String, dynamic>",
-          "doc": ""
-        }
-      ]
-    },
-    "AIProcessingException": {
-      "file": "lib/src/domain/core/exceptions.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "modelId",
-          "type": "String",
-          "doc": ""
-        },
-        {
-          "name": "operation",
-          "type": "String",
-          "doc": ""
-        }
-      ]
-    },
-    "EntityDefaults": {
-      "file": "lib/src/domain/core/core_entity.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "version",
-          "type": "String",
-          "doc": "Default schema version for new entities"
-        },
-        {
-          "name": "status",
-          "type": "EntityStatus",
-          "doc": "Default status for new entities"
-        },
-        {
-          "name": "priority",
-          "type": "EntityPriority",
-          "doc": "Default priority level for new entities"
-        },
-        {
-          "name": "stage",
-          "type": "EntityStage",
-          "doc": "Default workflow stage for new entities"
-        },
-        {
-          "name": "isPublic",
-          "type": "bool",
-          "doc": "Default public visibility setting"
-        },
-        {
-          "name": "accessCount",
-          "type": "int",
-          "doc": "Default access count for new entities"
-        },
-        {
-          "name": "pathSeparator",
-          "type": "String",
-          "doc": "Standard path separator character"
-        },
-        {
-          "name": "encodedPathSeparator",
-          "type": "String",
-          "doc": "URL-encoded path separator"
-        },
-        {
-          "name": "invalidPathChars",
-          "type": "String",
-          "doc": "Regular expression pattern for invalid path characters"
-        }
-      ]
-    },
-    "TypedMetadata": {
-      "file": "lib/src/domain/core/core_entity.dart",
-      "methods": [
-        {
-          "name": "TypedMetadata",
-          "params": "this._meta);\n\n  /// Returns whether the metadata contains a specific key\n  bool containsKey(String key",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "!_meta.containsKey(key)) return null;\n\n    final value = _meta[key];\n\n    try {\n      if (value == null",
-          "doc": "Get a value with a specific type, with proper error handling\n  ///\n  /// Note: Null is always allowed and will be returned if the key is missing or the value is null.\n  T? _getTyped<T>(String key) {"
-        },
-        {
-          "name": "if",
-          "params": "T == DateTime",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "dateTime != null) return dateTime as T;\n        throw FormatException('Invalid DateTime string: $value');\n      }\n\n      if (value is T) return value as T;\n      throw TypeError();\n    } catch (e",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "value == null) return null;\n\n    try {\n      if (value is List",
-          "doc": "Get a string value from metadata\n  String? getString(String key) => _getTyped<String?>(key);\n\n  /// Get an integer value from metadata\n  int? getInt(String key) => _getTyped<int?>(key);\n\n  /// Get a double value from metadata\n  double? getDouble(String key) => _getTyped<double?>(key);\n\n  /// Get a boolean value from metadata\n  bool? getBool(String key) => _getTyped<bool?>(key);\n\n  /// Get a DateTime value from metadata\n  DateTime? getDateTime(String key) => _getTyped<DateTime?>(key);\n\n  /// Get a list value from metadata\n  List<R>? getList<R>(String key) {\n    final value = _meta[key];"
-        },
-        {
-          "name": "if",
-          "params": "value == null) return null;\n\n    try {\n      if (value is Map",
-          "doc": "Get a map value from metadata\n  Map<K, V>? getMap<K, V>(String key) {\n    final value = _meta[key];"
-        }
-      ],
-      "properties": [
-        {
-          "name": "_meta",
-          "type": "Map<String, Object>",
-          "doc": ""
-        },
-        {
-          "name": "value",
-          "type": "final",
-          "doc": "Returns whether the metadata contains a specific key\n  bool containsKey(String key) => _meta.containsKey(key);\n\n  /// Get a value with a specific type, with proper error handling\n  ///\n  /// Note: Null is always allowed and will be returned if the key is missing or the value is null.\n  T? _getTyped<T>(String key) {\n    if (!_meta.containsKey(key)) return null;"
-        },
-        {
-          "name": "null",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "dateTime",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "null",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "value",
-          "type": "final",
-          "doc": "Get a string value from metadata\n  String? getString(String key) => _getTyped<String?>(key);\n\n  /// Get an integer value from metadata\n  int? getInt(String key) => _getTyped<int?>(key);\n\n  /// Get a double value from metadata\n  double? getDouble(String key) => _getTyped<double?>(key);\n\n  /// Get a boolean value from metadata\n  bool? getBool(String key) => _getTyped<bool?>(key);\n\n  /// Get a DateTime value from metadata\n  DateTime? getDateTime(String key) => _getTyped<DateTime?>(key);\n\n  /// Get a list value from metadata\n  List<R>? getList<R>(String key) {"
-        },
-        {
-          "name": "null",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "null",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "value",
-          "type": "final",
-          "doc": "Get a map value from metadata\n  Map<K, V>? getMap<K, V>(String key) {"
-        },
-        {
-          "name": "null",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "null",
-          "type": "return",
-          "doc": ""
-        }
-      ]
-    },
-    "CoreEntity": {
-      "file": "lib/src/domain/core/core_entity.dart",
-      "methods": [
-        {
-          "name": "CoreEntity",
-          "params": "{\n    required EntityId id,\n    required String name,\n    String? description,\n    required DateTime createdAt,\n    required DateTime updatedAt,\n    @Default(EntityDefaults.version) String schemaVer,\n    @Default(EntityDefaults.status) EntityStatus status,\n    @Default({}) Map<String, Object> meta,\n    required UserAction owner,\n    required UserAction creator,\n    required UserAction modifier,\n    T? data,\n  }) = _CoreEntity<T>;\n\n  factory CoreEntity.fromJson(\n    Map<String, Object> json,\n    T Function(Object? json) fromJsonT,",
-          "doc": "Creates a new CoreEntity instance\n  ///\n  /// [id] - Unique identifier for this entity\n  /// [name] - Human-readable name for this entity\n  /// [createdAt] - Timestamp of entity creation\n  /// [updatedAt] - Timestamp of last update\n  /// [data] - Optional typed payload data"
-        },
-        {
-          "name": "hasMetadata",
-          "params": "String key",
-          "doc": "Unique identifier string derived from the entity ID\n  String get uid => id.value;\n\n  /// Runtime type of the entity data\n  String get type => data?.runtimeType.toString() ?? T.toString();\n\n  /// Access metadata with type safety\n  TypedMetadata get typedMeta => TypedMetadata(meta);\n\n  /// Get a value from meta with an expected type\n  ///\n  /// Returns null if the key doesn't exist or there's a type conversion error\n  R? get<R>(String key) {\n    return _getValueWithType<R>(key);\n  }\n\n  /// Retrieve metadata by key with a simplified interface\n  ///\n  /// Returns the value from metadata or null if not found\n  Object? getMetadata(String key) => meta[key];\n\n  /// Check if metadata contains a specific key"
-        },
-        {
-          "name": "if",
-          "params": "!meta.containsKey(key)) return null;\n\n    final value = meta[key];\n    if (value == null",
-          "doc": "Get metadata with type safety, providing a default value if not present\n  ///\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  R getMetadataOrDefault<R>(String key, R defaultValue) {\n    return _getValueWithType<R>(key) ?? defaultValue;\n  }\n\n  /// Try to retrieve a typed value from metadata\n  ///\n  /// This method tries to safely cast the value to the expected type.\n  /// Returns null if the key doesn't exist or if the type conversion fails.\n  R? _getValueWithType<R>(String key) {"
-        },
-        {
-          "name": "if",
-          "params": "R == DateTime",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "dateTime != null) return dateTime as R;\n        throw FormatException('Invalid DateTime string: $value');\n      }\n\n      if (value is R",
-          "doc": ""
-        },
-        {
-          "name": "TypeError",
-          "params": ");\n    } catch (e",
-          "doc": ""
-        },
-        {
-          "name": "switch",
-          "params": "key",
-          "doc": "Gets a domain property by name\n  Object? getProperty(String key) {"
-        },
-        {
-          "name": "if",
-          "params": "propertyValue != null",
-          "doc": "Operator to access either domain properties or metadata\n  ///\n  /// If a key matches both a domain property and a metadata key, the domain property takes precedence.\n  /// First tries to access domain properties, then falls back to metadata.\n  operator [](String key) {\n    // Try domain properties first\n    final propertyValue = getProperty(key);"
-        }
-      ],
-      "properties": [
-        {
-          "name": "value",
-          "type": "final",
-          "doc": "Creates a new CoreEntity instance\n  ///\n  /// [id] - Unique identifier for this entity\n  /// [name] - Human-readable name for this entity\n  /// [createdAt] - Timestamp of entity creation\n  /// [updatedAt] - Timestamp of last update\n  /// [data] - Optional typed payload data\n  const factory CoreEntity({\n    required EntityId id,\n    required String name,\n    String? description,\n    required DateTime createdAt,\n    required DateTime updatedAt,\n    @Default(EntityDefaults.version) String schemaVer,\n    @Default(EntityDefaults.status) EntityStatus status,\n    @Default({}) Map<String, Object> meta,\n    required UserAction owner,\n    required UserAction creator,\n    required UserAction modifier,\n    T? data,\n  }) = _CoreEntity<T>;\n\n  factory CoreEntity.fromJson(\n    Map<String, Object> json,\n    T Function(Object? json) fromJsonT,\n  ) => _$CoreEntityFromJson(json, fromJsonT);\n\n  /// Unique identifier string derived from the entity ID\n  String get uid => id.value;\n\n  /// Runtime type of the entity data\n  String get type => data?.runtimeType.toString() ?? T.toString();\n\n  /// Access metadata with type safety\n  TypedMetadata get typedMeta => TypedMetadata(meta);\n\n  /// Get a value from meta with an expected type\n  ///\n  /// Returns null if the key doesn't exist or there's a type conversion error\n  R? get<R>(String key) {\n    return _getValueWithType<R>(key);\n  }\n\n  /// Retrieve metadata by key with a simplified interface\n  ///\n  /// Returns the value from metadata or null if not found\n  Object? getMetadata(String key) => meta[key];\n\n  /// Check if metadata contains a specific key\n  bool hasMetadata(String key) => meta.containsKey(key);\n\n  /// Get metadata with type safety, providing a default value if not present\n  ///\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  R getMetadataOrDefault<R>(String key, R defaultValue) {\n    return _getValueWithType<R>(key) ?? defaultValue;\n  }\n\n  /// Try to retrieve a typed value from metadata\n  ///\n  /// This method tries to safely cast the value to the expected type.\n  /// Returns null if the key doesn't exist or if the type conversion fails.\n  R? _getValueWithType<R>(String key) {\n    if (!meta.containsKey(key)) return null;"
-        },
-        {
-          "name": "null",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "dateTime",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "null",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "id",
-          "type": "return",
-          "doc": "Gets a domain property by name\n  Object? getProperty(String key) {\n    switch (key) {\n      case 'id':"
-        },
-        {
-          "name": "name",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "description",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "createdAt",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "updatedAt",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "schemaVer",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "status",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "owner",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "creator",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "modifier",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "data",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "null",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "propertyValue",
-          "type": "final",
-          "doc": "Operator to access either domain properties or metadata\n  ///\n  /// If a key matches both a domain property and a metadata key, the domain property takes precedence.\n  /// First tries to access domain properties, then falls back to metadata.\n  operator [](String key) {\n    // Try domain properties first"
-        },
-        {
-          "name": "propertyValue",
-          "type": "return",
-          "doc": ""
-        }
-      ]
-    },
-    "EmailAddress": {
-      "file": "lib/src/domain/value_objects/contact_value_objects.dart",
-      "methods": [
-        {
-          "name": "EmailAddress",
-          "params": "String value) = _EmailAddress;\n\n  const EmailAddress._();\n\n  bool isValid(",
-          "doc": ""
-        }
-      ],
-      "properties": []
-    },
-    "PhoneNumber": {
-      "file": "lib/src/domain/value_objects/contact_value_objects.dart",
-      "methods": [
-        {
-          "name": "PhoneNumber",
-          "params": "{\n    required String number,\n    String? countryCode,\n    String? extension,\n  }) = _PhoneNumber;\n\n  const PhoneNumber._();\n\n  String get formatted =>\n      '${countryCode != null ? '+$countryCode ' : ''}$number${extension != null ? ' x$extension' : ''}';\n\n  factory PhoneNumber.fromJson(Map<String, Object> json",
-          "doc": ""
-        }
-      ],
-      "properties": []
-    },
-    "Address": {
-      "file": "lib/src/domain/value_objects/contact_value_objects.dart",
-      "methods": [
-        {
-          "name": "Address",
-          "params": "{\n    required String street,\n    required String city,\n    required String country,\n    String? state,\n    String? postalCode,\n    double? latitude,\n    double? longitude,\n  }) = _Address;\n\n  const Address._();\n\n  bool get hasCoordinates => latitude != null && longitude != null;\n  String get oneLine =>\n      '$street, $city${state != null ? ', $state' : ''}, $country';\n\n  factory Address.fromJson(Map<String, Object> json",
-          "doc": ""
-        }
-      ],
-      "properties": []
-    },
-    "ContactInfo": {
-      "file": "lib/src/domain/value_objects/contact_value_objects.dart",
-      "methods": [
-        {
-          "name": "ContactInfo",
-          "params": "{\n    required String contactName,\n    required String companyName,\n    PhoneNumber? phone,\n    EmailAddress? email,\n    Address? address,\n  }) = _ContactInfo;\n\n  const ContactInfo._();\n\n  bool get hasValidContact => email != null || phone != null;\n  String get displayName => companyName;\n\n  factory ContactInfo.fromJson(Map<String, Object> json",
-          "doc": ""
-        }
-      ],
-      "properties": []
-    },
-    "UserAction": {
-      "file": "lib/src/domain/value_objects/user_action.dart",
-      "methods": [
-        {
-          "name": "UserAction",
-          "params": "{\n    /// Core User Information\n    required String uid,\n    @Default('') String displayName,\n\n    /// Action Metadata\n    required DateTime timestamp,\n    @Default('') String actionType,\n    @Default('') String description,\n\n    /// Context Information\n    @Default('') String entityId,\n    @Default('') String entityType,\n    @Default('') String workflowStage,\n    @Default('') String status,\n    @Default(false) bool isAuthenticated,\n\n    /// Action Details\n    @Default({}) Map<String, Object> changes,\n    @Default({}) Map<String, Object> metadata,\n    @Default([]) List<String> affectedFields,\n\n    /// Validation & Security\n    @Default(false) bool isAuthorized,\n    @Default([]) List<String> permissions,\n    @Default('') String authenticationMethod,\n\n    /// Audit Trail\n    @Default('') String previousValue,\n    @Default('') String newValue,\n    @Default('') String reason,\n    @Default(false) bool isSuccessful,\n    @Default('') String errorMessage,\n\n    /// Related Actions\n    @Default('') String parentActionId,\n    @Default([]) List<String> relatedActionIds,\n\n    /// Event Tracking\n    @Default('') String eventId,\n    @Default('') String eventType,\n    @Default('') String correlationId,\n    @Default('') String causationId,\n    @Default([]) List<String> eventTags,\n    @Default({}) Map<String, Object> eventMetadata,\n  }) = _UserAction;\n\n  factory UserAction.fromJson(Map<String, Object> json",
-          "doc": ""
-        },
-        {
-          "name": "UserAction",
-          "params": "uid: user.uid,\n      displayName: user.displayName ?? '',\n      timestamp: DateTime.now(),\n      isAuthenticated: true,\n    );\n  }\n\n  /// Creates an anonymous user action\n  factory UserAction.anonymous(",
-          "doc": "Creates a user action from auth user\n  factory UserAction.fromAuthUser(AuthUser user) {"
-        },
-        {
-          "name": "UserAction",
-          "params": "uid: 'anonymous',\n      timestamp: DateTime.now(),\n      isAuthenticated: false,\n    );\n  }\n\n  /// Creates a system action\n  factory UserAction.system({\n    required String actionType,\n    required String description,\n  }",
-          "doc": ""
-        }
-      ],
-      "properties": []
-    },
-    "Measurement": {
-      "file": "lib/src/domain/value_objects/measurement_value_objects.dart",
-      "methods": [
-        {
-          "name": "Measurement",
-          "params": "{\n    required double value,\n    required String unit,\n    double? tolerance,\n    DateTime? timestamp,\n  }) = _Measurement;\n\n  const Measurement._();\n\n  bool isWithinTolerance(double target",
-          "doc": ""
-        }
-      ],
-      "properties": []
-    },
-    "Range": {
-      "file": "lib/src/domain/value_objects/measurement_value_objects.dart",
-      "methods": [
-        {
-          "name": "Range",
-          "params": "{\n    required T min,\n    required T max,\n  }) = _Range<T>;\n\n  const Range._();\n\n  bool contains(T value",
-          "doc": ""
-        },
-        {
-          "name": "overlaps",
-          "params": "Range<T> other",
-          "doc": ""
-        }
-      ],
-      "properties": []
-    },
-    "EntityId": {
-      "file": "lib/src/domain/value_objects/identity_value_objects.dart",
-      "methods": [
-        {
-          "name": "EntityId",
-          "params": "String value) = _EntityId;\n\n  factory EntityId.generate(",
-          "doc": ""
-        },
-        {
-          "name": "toString",
-          "params": "",
-          "doc": ""
-        }
-      ],
-      "properties": []
-    },
-    "EventId": {
-      "file": "lib/src/domain/value_objects/identity_value_objects.dart",
-      "methods": [
-        {
-          "name": "EventId",
-          "params": "String value) = _EventId;\n\n  factory EventId.generate(",
-          "doc": ""
-        },
-        {
-          "name": "toString",
-          "params": "",
-          "doc": ""
-        }
-      ],
-      "properties": []
-    },
-    "ReferenceNumber": {
-      "file": "lib/src/domain/value_objects/identity_value_objects.dart",
-      "methods": [
-        {
-          "name": "ReferenceNumber",
-          "params": "{\n    required String prefix,\n    required int sequence,\n    String? suffix,\n  }) = _ReferenceNumber;\n\n  const ReferenceNumber._();\n\n  String get formatted =>\n      '$prefix-$sequence${suffix != null ? '-$suffix' : ''}';\n\n  static ReferenceNumber parse(String value",
-          "doc": ""
-        },
-        {
-          "name": "ReferenceNumber",
-          "params": "prefix: parts[0],\n      sequence: int.parse(parts[1]),\n      suffix: parts.length > 2 ? parts[2] : null,\n    );\n  }\n\n  factory ReferenceNumber.fromJson(Map<String, Object?> json",
-          "doc": ""
-        }
-      ],
-      "properties": [
-        {
-          "name": "parts",
-          "type": "final",
-          "doc": ""
-        }
-      ]
-    },
-    "Progress": {
-      "file": "lib/src/domain/value_objects/status_value_objects.dart",
-      "methods": [],
-      "properties": []
-    },
-    "TaskStatus": {
-      "file": "lib/src/domain/value_objects/status_value_objects.dart",
-      "methods": [],
-      "properties": []
-    },
-    "TimeWindow": {
-      "file": "lib/src/domain/value_objects/time_value_objects.dart",
-      "methods": [
-        {
-          "name": "TimeWindow",
-          "params": "{\n    required DateTime start,\n    required DateTime end,\n  }) = _TimeWindow;\n\n  const TimeWindow._();\n\n  Duration get duration => end.difference(start);\n  bool contains(DateTime time",
-          "doc": ""
-        },
-        {
-          "name": "isActive",
-          "params": "",
-          "doc": ""
-        }
-      ],
-      "properties": []
-    },
-    "Schedule": {
-      "file": "lib/src/domain/value_objects/time_value_objects.dart",
-      "methods": [
-        {
-          "name": "Schedule",
-          "params": "{\n    required TimeWindow window,\n    @Default([]) List<DateTime> breakTimes,\n    @Default(Duration.zero) Duration bufferTime,\n  }) = _Schedule;\n\n  const Schedule._();\n\n  bool isAvailable(DateTime time",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "!window.contains(time)) return false;\n    return !breakTimes.any((break_",
-          "doc": ""
-        }
-      ],
-      "properties": []
-    },
     "EventAwareRepository": {
       "file": "lib/src/domain/repositories/event_aware_repository.dart",
       "methods": [
@@ -852,6 +214,59 @@
         {
           "name": "events",
           "type": "final",
+          "doc": ""
+        }
+      ]
+    },
+    "IEventStore": {
+      "file": "lib/src/domain/repositories/event/i_event_store.dart",
+      "methods": [],
+      "properties": []
+    },
+    "EventQuery": {
+      "file": "lib/src/domain/repositories/event/i_event_store.dart",
+      "methods": [
+        {
+          "name": "EventQuery",
+          "params": "{\n    this.entityId,\n    this.fromDate,\n    this.toDate,\n    this.eventType,\n    this.includeSystemEvents = false,\n    this.limit,\n    this.filters,\n    this.ascending = true,\n  });\n\n  EventQuery copyWith({\n    EntityId? entityId,\n    DateTime? fromDate,\n    DateTime? toDate,\n    String? eventType,\n    bool? includeSystemEvents,\n    int? limit,\n    Map<String, Object>? filters,\n    bool? ascending,\n  }",
+          "doc": ""
+        }
+      ],
+      "properties": [
+        {
+          "name": "includeSystemEvents",
+          "type": "bool",
+          "doc": ""
+        },
+        {
+          "name": "ascending",
+          "type": "bool",
+          "doc": ""
+        }
+      ]
+    },
+    "EventMetadata": {
+      "file": "lib/src/domain/repositories/event/i_event_store.dart",
+      "methods": [],
+      "properties": [
+        {
+          "name": "versionVectors",
+          "type": "Map<String, int>",
+          "doc": ""
+        },
+        {
+          "name": "customData",
+          "type": "Map<String, Object>",
+          "doc": ""
+        },
+        {
+          "name": "timestamp",
+          "type": "DateTime",
+          "doc": ""
+        },
+        {
+          "name": "isSnapshot",
+          "type": "bool",
           "doc": ""
         }
       ]
@@ -1231,224 +646,6 @@
         {
           "name": "id",
           "type": "EntityId",
-          "doc": ""
-        }
-      ]
-    },
-    "IEventStore": {
-      "file": "lib/src/domain/repositories/event/i_event_store.dart",
-      "methods": [],
-      "properties": []
-    },
-    "EventQuery": {
-      "file": "lib/src/domain/repositories/event/i_event_store.dart",
-      "methods": [
-        {
-          "name": "EventQuery",
-          "params": "{\n    this.entityId,\n    this.fromDate,\n    this.toDate,\n    this.eventType,\n    this.includeSystemEvents = false,\n    this.limit,\n    this.filters,\n    this.ascending = true,\n  });\n\n  EventQuery copyWith({\n    EntityId? entityId,\n    DateTime? fromDate,\n    DateTime? toDate,\n    String? eventType,\n    bool? includeSystemEvents,\n    int? limit,\n    Map<String, Object>? filters,\n    bool? ascending,\n  }",
-          "doc": ""
-        }
-      ],
-      "properties": [
-        {
-          "name": "includeSystemEvents",
-          "type": "bool",
-          "doc": ""
-        },
-        {
-          "name": "ascending",
-          "type": "bool",
-          "doc": ""
-        }
-      ]
-    },
-    "EventMetadata": {
-      "file": "lib/src/domain/repositories/event/i_event_store.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "versionVectors",
-          "type": "Map<String, int>",
-          "doc": ""
-        },
-        {
-          "name": "customData",
-          "type": "Map<String, Object>",
-          "doc": ""
-        },
-        {
-          "name": "timestamp",
-          "type": "DateTime",
-          "doc": ""
-        },
-        {
-          "name": "isSnapshot",
-          "type": "bool",
-          "doc": ""
-        }
-      ]
-    },
-    "EventDefaults": {
-      "file": "lib/src/domain/events/domain_event.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "version",
-          "type": "const",
-          "doc": ""
-        },
-        {
-          "name": "isAsync",
-          "type": "const",
-          "doc": ""
-        },
-        {
-          "name": "tags",
-          "type": "const",
-          "doc": ""
-        }
-      ]
-    },
-    "EventSchemaConfig": {
-      "file": "lib/src/domain/events/domain_event.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "currentVersion",
-          "type": "const",
-          "doc": ""
-        },
-        {
-          "name": "minVersion",
-          "type": "const",
-          "doc": ""
-        },
-        {
-          "name": "maxBackwardsCompatible",
-          "type": "const",
-          "doc": ""
-        },
-        {
-          "name": "supportedVersions",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "migrationPaths",
-          "type": "final",
-          "doc": ""
-        }
-      ]
-    },
-    "EventSchema": {
-      "file": "lib/src/domain/events/domain_event.dart",
-      "methods": [
-        {
-          "name": "EventSchema",
-          "params": "{\n    required String version,\n    required String eventType,\n    required Map<String, String> fields,\n    required Map<String, bool> required,\n    Map<String, Object>? defaults,\n    Map<String, String>? migrations,\n  }) = _EventSchema;\n\n  factory EventSchema.fromJson(Map<String, Object> json",
-          "doc": ""
-        }
-      ],
-      "properties": []
-    },
-    "DomainEventModel": {
-      "file": "lib/src/domain/events/domain_event.dart",
-      "methods": [
-        {
-          "name": "DomainEventModel",
-          "params": "{\n    // Core event data\n    required EventId id,\n    required EntityId entityId,\n    required String eventType,\n    required DateTime timestamp,\n    required UserAction initiator,\n    required Map<String, Object> changes,\n\n    // Entity context\n    String? entityType,\n    EntityId? aggregateId,\n\n    // Metadata\n    Map<String, Object>? metadata,\n    @Default(EventDefaults.isAsync) bool isAsync,\n    @Default(EventDefaults.tags) List<String> tags,\n\n    // Event chain\n    EventId? correlationId,\n    EventId? causationId,\n    @Default(EventDefaults.version) int version,\n\n    // Status\n    String? status,\n\n    // Schema versioning\n    @Default(EventSchemaConfig.currentVersion) String schemaVersion,\n    Map<String, Object>? schemaChanges,\n    String? previousSchemaVersion,\n\n    // Version vectors for distributed events\n    @Default({}) Map<String, int> schemaVectors,\n  }) = _DomainEventModel;\n\n  factory DomainEventModel.fromJson(Map<String, Object> json",
-          "doc": ""
-        },
-        {
-          "name": "DomainEventModel",
-          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.created.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: initialData,\n    );\n  }\n\n  factory DomainEventModel.entityUpdated({\n    required EventId id,\n    required EntityId entityId,\n    required String entityType,\n    required UserAction action,\n    required Map<String, Object> changes,\n  }",
-          "doc": ""
-        },
-        {
-          "name": "DomainEventModel",
-          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.updated.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: changes,\n    );\n  }\n\n  // Relationship events\n  factory DomainEventModel.relationshipChanged({\n    required EventId id,\n    required EntityId entityId,\n    required String entityType,\n    required UserAction action,\n    required String relationshipType,\n    required Map<String, Object> changes,\n  }",
-          "doc": ""
-        },
-        {
-          "name": "DomainEventModel",
-          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.relationshipChanged.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: changes,\n      metadata: {'relationshipType': relationshipType},\n    );\n  }\n\n  // Status events\n  factory DomainEventModel.statusChanged({\n    required EventId id,\n    required EntityId entityId,\n    required String entityType,\n    required UserAction action,\n    required String oldStatus,\n    required String newStatus,\n  }",
-          "doc": ""
-        },
-        {
-          "name": "DomainEventModel",
-          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.statusChanged.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: {'oldStatus': oldStatus, 'newStatus': newStatus},\n      status: newStatus,\n    );\n  }\n\n  // Hierarchy events\n  factory DomainEventModel.hierarchyChanged({\n    required EventId id,\n    required EntityId entityId,\n    required String entityType,\n    required UserAction action,\n    required EntityId? oldParentId,\n    required EntityId? newParentId,\n  }",
-          "doc": ""
-        },
-        {
-          "name": "DomainEventModel",
-          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.hierarchyChanged.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: {\n        'oldParentId': oldParentId?.value ?? '',\n        'newParentId': newParentId?.value ?? '',\n      },\n    );\n  }\n\n  // TODO: Temporarily disabled validation events\n  /* \n  factory DomainEventModel.validationPerformed({\n    required EventId id,\n    required EntityId entityId,\n    required String entityType,\n    required UserAction action,\n    required ValidationResult result,\n  }",
-          "doc": ""
-        },
-        {
-          "name": "DomainEventModel",
-          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.validated.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: {\n        'isValid': result.isValid,\n        'issues': result.issues,\n      },\n    );\n  }\n  */\n\n  /// Schema validation\n  bool hasValidSchema(",
-          "doc": ""
-        },
-        {
-          "name": "isBackwardsCompatible",
-          "params": "",
-          "doc": ""
-        },
-        {
-          "name": "migrateSchema",
-          "params": "String targetVersion",
-          "doc": "Domain event interface method for schema migration\n  /// Actual implementation is moved to application layer"
-        },
-        {
-          "name": "UnimplementedError",
-          "params": "'Schema migration implementation should be provided by the application layer',\n    );\n  }\n\n  /// Schema version vector operations\n  bool hasVectorConflict(Map<String, int> otherVectors",
-          "doc": ""
-        },
-        {
-          "name": "incrementVector",
-          "params": "String node",
-          "doc": ""
-        },
-        {
-          "name": "copyWith",
-          "params": "schemaVectors: vectors);\n  }\n\n  DomainEventModel mergeVectors(Map<String, int> otherVectors",
-          "doc": ""
-        },
-        {
-          "name": "for",
-          "params": "final entry in otherVectors.entries",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "entry.value > current",
-          "doc": ""
-        }
-      ],
-      "properties": [
-        {
-          "name": "minVer",
-          "type": "final",
-          "doc": "Schema validation\n  bool hasValidSchema() {\n    return EventSchemaConfig.supportedVersions.contains(schemaVersion);\n  }\n\n  bool isBackwardsCompatible() {"
-        },
-        {
-          "name": "paths",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "vectors",
-          "type": "final",
-          "doc": "Domain event interface method for schema migration\n  /// Actual implementation is moved to application layer\n  DomainEventModel migrateSchema(String targetVersion) {\n    throw UnimplementedError(\n      'Schema migration implementation should be provided by the application layer',\n    );\n  }\n\n  /// Schema version vector operations\n  bool hasVectorConflict(Map<String, int> otherVectors) {\n    return otherVectors.entries.any(\n      (entry) =>\n          schemaVectors[entry.key] != null &&\n          schemaVectors[entry.key]! > entry.value,\n    );\n  }\n\n  DomainEventModel incrementVector(String node) {"
-        },
-        {
-          "name": "merged",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "current",
-          "type": "final",
           "doc": ""
         }
       ]
@@ -1856,6 +1053,111 @@
         }
       ]
     },
+    "OwnerModel": {
+      "file": "lib/src/domain/entities/entity_types.dart",
+      "methods": [
+        {
+          "name": "OwnerModel",
+          "params": "{\n    // Core info\n    required ContactInfo contact,\n    @Default([]) List<EntityId> siteIds,\n\n    // Metadata\n    @Default({}) Map<String, Object> meta,\n    Map<String, Object>? customData,\n  }) = _OwnerModel;\n\n  factory OwnerModel.fromJson(Map<String, Object> json",
+          "doc": ""
+        },
+        {
+          "name": "applyEvent",
+          "params": "DomainEventModel event",
+          "doc": ""
+        },
+        {
+          "name": "switch",
+          "params": "event.eventType",
+          "doc": ""
+        }
+      ],
+      "properties": []
+    },
+    "SiteModel": {
+      "file": "lib/src/domain/entities/entity_types.dart",
+      "methods": [
+        {
+          "name": "SiteModel",
+          "params": "{\n    // Core info\n    required String name,\n    required EntityId ownerId,\n\n    // Location\n    String? address,\n    double? latitude,\n    double? longitude,\n\n    // Equipment\n    @Default([]) List<EntityId> equipmentIds,\n\n    // Details\n    @Default({}) Map<String, Object> siteInfo,\n\n    // Metadata\n    Map<String, Object>? customData,\n    @Default({}) Map<String, Object> meta,\n    @Default({}) Map<String, String> contactInfo,\n  }) = _SiteModel;\n\n  factory SiteModel.fromJson(Map<String, Object> json",
+          "doc": ""
+        },
+        {
+          "name": "applyEvent",
+          "params": "DomainEventModel event",
+          "doc": ""
+        },
+        {
+          "name": "switch",
+          "params": "event.eventType",
+          "doc": ""
+        }
+      ],
+      "properties": []
+    },
+    "EquipmentModel": {
+      "file": "lib/src/domain/entities/entity_types.dart",
+      "methods": [
+        {
+          "name": "EquipmentModel",
+          "params": "{\n    // Core info\n    required String name,\n    required EntityId siteId,\n    required EquipmentType type,\n\n    // Technical info\n    String? serialNum,\n    String? modelId,\n    String? manufacturer,\n\n    // Specs\n    @Default({}) Map<String, Object> specs,\n\n    // Dates\n    DateTime? installDate,\n    DateTime? lastMaintDate,\n\n    // Hierarchy\n    EntityId? parentId,\n    @Default([]) List<EntityId> childIds,\n\n    // Metadata\n    Map<String, Object>? customData,\n    @Default({}) Map<String, Object> meta,\n    @Default({}) Map<String, String> maintContacts,\n  }) = _EquipmentModel;\n\n  factory EquipmentModel.fromJson(Map<String, Object> json",
+          "doc": ""
+        },
+        {
+          "name": "applyEvent",
+          "params": "DomainEventModel event",
+          "doc": ""
+        },
+        {
+          "name": "switch",
+          "params": "event.eventType",
+          "doc": ""
+        }
+      ],
+      "properties": []
+    },
+    "VendorModel": {
+      "file": "lib/src/domain/entities/entity_types.dart",
+      "methods": [
+        {
+          "name": "VendorModel",
+          "params": "{\n    // Core info\n    required ContactInfo contact,\n    @Default([]) List<EntityId> staffIds,\n    @Default([]) List<String> services,\n\n    // Metadata\n    @Default({}) Map<String, Object> meta,\n    Map<String, Object>? customData,\n    @Default({}) Map<String, Object> certifications,\n  }) = _VendorModel;\n\n  factory VendorModel.fromJson(Map<String, Object> json",
+          "doc": ""
+        },
+        {
+          "name": "applyEvent",
+          "params": "DomainEventModel event",
+          "doc": ""
+        },
+        {
+          "name": "switch",
+          "params": "event.eventType",
+          "doc": ""
+        }
+      ],
+      "properties": []
+    },
+    "PersonnelModel": {
+      "file": "lib/src/domain/entities/entity_types.dart",
+      "methods": [
+        {
+          "name": "PersonnelModel",
+          "params": "{\n    // Core info\n    required String name,\n    required EntityId vendorId,\n    required int skillLevel,\n\n    // Professional info\n    String? role,\n    @Default([]) List<String> certs,\n    @Default([]) List<String> specs,\n\n    // Contact info\n    String? phone,\n    String? email,\n\n    // Metadata\n    Map<String, Object>? customData,\n    @Default({}) Map<String, Object> meta,\n    @Default({}) Map<String, Object> schedule,\n    @Default({}) Map<String, DateTime> certDates,\n  }) = _PersonnelModel;\n\n  factory PersonnelModel.fromJson(Map<String, Object> json",
+          "doc": ""
+        },
+        {
+          "name": "applyEvent",
+          "params": "DomainEventModel event",
+          "doc": ""
+        },
+        {
+          "name": "switch",
+          "params": "event.eventType",
+          "doc": ""
+        }
+      ],
+      "properties": []
+    },
     "SystemLimits": {
       "file": "lib/src/domain/entities/base_entity.dart",
       "methods": [],
@@ -2030,137 +1332,1287 @@
       ],
       "properties": []
     },
-    "OwnerModel": {
-      "file": "lib/src/domain/entities/entity_types.dart",
+    "EventDefaults": {
+      "file": "lib/src/domain/events/domain_event.dart",
+      "methods": [],
+      "properties": [
+        {
+          "name": "version",
+          "type": "const",
+          "doc": ""
+        },
+        {
+          "name": "isAsync",
+          "type": "const",
+          "doc": ""
+        },
+        {
+          "name": "tags",
+          "type": "const",
+          "doc": ""
+        }
+      ]
+    },
+    "EventSchemaConfig": {
+      "file": "lib/src/domain/events/domain_event.dart",
+      "methods": [],
+      "properties": [
+        {
+          "name": "currentVersion",
+          "type": "const",
+          "doc": ""
+        },
+        {
+          "name": "minVersion",
+          "type": "const",
+          "doc": ""
+        },
+        {
+          "name": "maxBackwardsCompatible",
+          "type": "const",
+          "doc": ""
+        },
+        {
+          "name": "supportedVersions",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "migrationPaths",
+          "type": "final",
+          "doc": ""
+        }
+      ]
+    },
+    "EventSchema": {
+      "file": "lib/src/domain/events/domain_event.dart",
       "methods": [
         {
-          "name": "OwnerModel",
-          "params": "{\n    // Core info\n    required ContactInfo contact,\n    @Default([]) List<EntityId> siteIds,\n\n    // Metadata\n    @Default({}) Map<String, Object> meta,\n    Map<String, Object>? customData,\n  }) = _OwnerModel;\n\n  factory OwnerModel.fromJson(Map<String, Object> json",
-          "doc": ""
-        },
-        {
-          "name": "applyEvent",
-          "params": "DomainEventModel event",
-          "doc": ""
-        },
-        {
-          "name": "switch",
-          "params": "event.eventType",
+          "name": "EventSchema",
+          "params": "{\n    required String version,\n    required String eventType,\n    required Map<String, String> fields,\n    required Map<String, bool> required,\n    Map<String, Object>? defaults,\n    Map<String, String>? migrations,\n  }) = _EventSchema;\n\n  factory EventSchema.fromJson(Map<String, Object> json",
           "doc": ""
         }
       ],
       "properties": []
     },
-    "SiteModel": {
-      "file": "lib/src/domain/entities/entity_types.dart",
+    "DomainEventModel": {
+      "file": "lib/src/domain/events/domain_event.dart",
       "methods": [
         {
-          "name": "SiteModel",
-          "params": "{\n    // Core info\n    required String name,\n    required EntityId ownerId,\n\n    // Location\n    String? address,\n    double? latitude,\n    double? longitude,\n\n    // Equipment\n    @Default([]) List<EntityId> equipmentIds,\n\n    // Details\n    @Default({}) Map<String, Object> siteInfo,\n\n    // Metadata\n    Map<String, Object>? customData,\n    @Default({}) Map<String, Object> meta,\n    @Default({}) Map<String, String> contactInfo,\n  }) = _SiteModel;\n\n  factory SiteModel.fromJson(Map<String, Object> json",
+          "name": "DomainEventModel",
+          "params": "{\n    // Core event data\n    required EventId id,\n    required EntityId entityId,\n    required String eventType,\n    required DateTime timestamp,\n    required UserAction initiator,\n    required Map<String, Object> changes,\n\n    // Entity context\n    String? entityType,\n    EntityId? aggregateId,\n\n    // Metadata\n    Map<String, Object>? metadata,\n    @Default(EventDefaults.isAsync) bool isAsync,\n    @Default(EventDefaults.tags) List<String> tags,\n\n    // Event chain\n    EventId? correlationId,\n    EventId? causationId,\n    @Default(EventDefaults.version) int version,\n\n    // Status\n    String? status,\n\n    // Schema versioning\n    @Default(EventSchemaConfig.currentVersion) String schemaVersion,\n    Map<String, Object>? schemaChanges,\n    String? previousSchemaVersion,\n\n    // Version vectors for distributed events\n    @Default({}) Map<String, int> schemaVectors,\n  }) = _DomainEventModel;\n\n  factory DomainEventModel.fromJson(Map<String, Object> json",
           "doc": ""
         },
         {
-          "name": "applyEvent",
-          "params": "DomainEventModel event",
+          "name": "DomainEventModel",
+          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.created.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: initialData,\n    );\n  }\n\n  factory DomainEventModel.entityUpdated({\n    required EventId id,\n    required EntityId entityId,\n    required String entityType,\n    required UserAction action,\n    required Map<String, Object> changes,\n  }",
           "doc": ""
         },
         {
-          "name": "switch",
-          "params": "event.eventType",
+          "name": "DomainEventModel",
+          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.updated.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: changes,\n    );\n  }\n\n  // Relationship events\n  factory DomainEventModel.relationshipChanged({\n    required EventId id,\n    required EntityId entityId,\n    required String entityType,\n    required UserAction action,\n    required String relationshipType,\n    required Map<String, Object> changes,\n  }",
+          "doc": ""
+        },
+        {
+          "name": "DomainEventModel",
+          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.relationshipChanged.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: changes,\n      metadata: {'relationshipType': relationshipType},\n    );\n  }\n\n  // Status events\n  factory DomainEventModel.statusChanged({\n    required EventId id,\n    required EntityId entityId,\n    required String entityType,\n    required UserAction action,\n    required String oldStatus,\n    required String newStatus,\n  }",
+          "doc": ""
+        },
+        {
+          "name": "DomainEventModel",
+          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.statusChanged.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: {'oldStatus': oldStatus, 'newStatus': newStatus},\n      status: newStatus,\n    );\n  }\n\n  // Hierarchy events\n  factory DomainEventModel.hierarchyChanged({\n    required EventId id,\n    required EntityId entityId,\n    required String entityType,\n    required UserAction action,\n    required EntityId? oldParentId,\n    required EntityId? newParentId,\n  }",
+          "doc": ""
+        },
+        {
+          "name": "DomainEventModel",
+          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.hierarchyChanged.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: {\n        'oldParentId': oldParentId?.value ?? '',\n        'newParentId': newParentId?.value ?? '',\n      },\n    );\n  }\n\n  // TODO: Temporarily disabled validation events\n  /* \n  factory DomainEventModel.validationPerformed({\n    required EventId id,\n    required EntityId entityId,\n    required String entityType,\n    required UserAction action,\n    required ValidationResult result,\n  }",
+          "doc": ""
+        },
+        {
+          "name": "DomainEventModel",
+          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.validated.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: {\n        'isValid': result.isValid,\n        'issues': result.issues,\n      },\n    );\n  }\n  */\n\n  /// Schema validation\n  bool hasValidSchema(",
+          "doc": ""
+        },
+        {
+          "name": "isBackwardsCompatible",
+          "params": "",
+          "doc": ""
+        },
+        {
+          "name": "migrateSchema",
+          "params": "String targetVersion",
+          "doc": "Domain event interface method for schema migration\n  /// Actual implementation is moved to application layer"
+        },
+        {
+          "name": "UnimplementedError",
+          "params": "'Schema migration implementation should be provided by the application layer',\n    );\n  }\n\n  /// Schema version vector operations\n  bool hasVectorConflict(Map<String, int> otherVectors",
+          "doc": ""
+        },
+        {
+          "name": "incrementVector",
+          "params": "String node",
+          "doc": ""
+        },
+        {
+          "name": "copyWith",
+          "params": "schemaVectors: vectors);\n  }\n\n  DomainEventModel mergeVectors(Map<String, int> otherVectors",
+          "doc": ""
+        },
+        {
+          "name": "for",
+          "params": "final entry in otherVectors.entries",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "entry.value > current",
+          "doc": ""
+        }
+      ],
+      "properties": [
+        {
+          "name": "minVer",
+          "type": "final",
+          "doc": "Schema validation\n  bool hasValidSchema() {\n    return EventSchemaConfig.supportedVersions.contains(schemaVersion);\n  }\n\n  bool isBackwardsCompatible() {"
+        },
+        {
+          "name": "paths",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "vectors",
+          "type": "final",
+          "doc": "Domain event interface method for schema migration\n  /// Actual implementation is moved to application layer\n  DomainEventModel migrateSchema(String targetVersion) {\n    throw UnimplementedError(\n      'Schema migration implementation should be provided by the application layer',\n    );\n  }\n\n  /// Schema version vector operations\n  bool hasVectorConflict(Map<String, int> otherVectors) {\n    return otherVectors.entries.any(\n      (entry) =>\n          schemaVectors[entry.key] != null &&\n          schemaVectors[entry.key]! > entry.value,\n    );\n  }\n\n  DomainEventModel incrementVector(String node) {"
+        },
+        {
+          "name": "merged",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "current",
+          "type": "final",
+          "doc": ""
+        }
+      ]
+    },
+    "EmailAddress": {
+      "file": "lib/src/domain/value_objects/contact_value_objects.dart",
+      "methods": [
+        {
+          "name": "EmailAddress",
+          "params": "String value) = _EmailAddress;\n\n  const EmailAddress._();\n\n  bool isValid(",
           "doc": ""
         }
       ],
       "properties": []
     },
-    "EquipmentModel": {
-      "file": "lib/src/domain/entities/entity_types.dart",
+    "PhoneNumber": {
+      "file": "lib/src/domain/value_objects/contact_value_objects.dart",
       "methods": [
         {
-          "name": "EquipmentModel",
-          "params": "{\n    // Core info\n    required String name,\n    required EntityId siteId,\n    required EquipmentType type,\n\n    // Technical info\n    String? serialNum,\n    String? modelId,\n    String? manufacturer,\n\n    // Specs\n    @Default({}) Map<String, Object> specs,\n\n    // Dates\n    DateTime? installDate,\n    DateTime? lastMaintDate,\n\n    // Hierarchy\n    EntityId? parentId,\n    @Default([]) List<EntityId> childIds,\n\n    // Metadata\n    Map<String, Object>? customData,\n    @Default({}) Map<String, Object> meta,\n    @Default({}) Map<String, String> maintContacts,\n  }) = _EquipmentModel;\n\n  factory EquipmentModel.fromJson(Map<String, Object> json",
-          "doc": ""
-        },
-        {
-          "name": "applyEvent",
-          "params": "DomainEventModel event",
-          "doc": ""
-        },
-        {
-          "name": "switch",
-          "params": "event.eventType",
+          "name": "PhoneNumber",
+          "params": "{\n    required String number,\n    String? countryCode,\n    String? extension,\n  }) = _PhoneNumber;\n\n  const PhoneNumber._();\n\n  String get formatted =>\n      '${countryCode != null ? '+$countryCode ' : ''}$number${extension != null ? ' x$extension' : ''}';\n\n  factory PhoneNumber.fromJson(Map<String, Object> json",
           "doc": ""
         }
       ],
       "properties": []
     },
-    "VendorModel": {
-      "file": "lib/src/domain/entities/entity_types.dart",
+    "Address": {
+      "file": "lib/src/domain/value_objects/contact_value_objects.dart",
       "methods": [
         {
-          "name": "VendorModel",
-          "params": "{\n    // Core info\n    required ContactInfo contact,\n    @Default([]) List<EntityId> staffIds,\n    @Default([]) List<String> services,\n\n    // Metadata\n    @Default({}) Map<String, Object> meta,\n    Map<String, Object>? customData,\n    @Default({}) Map<String, Object> certifications,\n  }) = _VendorModel;\n\n  factory VendorModel.fromJson(Map<String, Object> json",
-          "doc": ""
-        },
-        {
-          "name": "applyEvent",
-          "params": "DomainEventModel event",
-          "doc": ""
-        },
-        {
-          "name": "switch",
-          "params": "event.eventType",
+          "name": "Address",
+          "params": "{\n    required String street,\n    required String city,\n    required String country,\n    String? state,\n    String? postalCode,\n    double? latitude,\n    double? longitude,\n  }) = _Address;\n\n  const Address._();\n\n  bool get hasCoordinates => latitude != null && longitude != null;\n  String get oneLine =>\n      '$street, $city${state != null ? ', $state' : ''}, $country';\n\n  factory Address.fromJson(Map<String, Object> json",
           "doc": ""
         }
       ],
       "properties": []
     },
-    "PersonnelModel": {
-      "file": "lib/src/domain/entities/entity_types.dart",
+    "ContactInfo": {
+      "file": "lib/src/domain/value_objects/contact_value_objects.dart",
       "methods": [
         {
-          "name": "PersonnelModel",
-          "params": "{\n    // Core info\n    required String name,\n    required EntityId vendorId,\n    required int skillLevel,\n\n    // Professional info\n    String? role,\n    @Default([]) List<String> certs,\n    @Default([]) List<String> specs,\n\n    // Contact info\n    String? phone,\n    String? email,\n\n    // Metadata\n    Map<String, Object>? customData,\n    @Default({}) Map<String, Object> meta,\n    @Default({}) Map<String, Object> schedule,\n    @Default({}) Map<String, DateTime> certDates,\n  }) = _PersonnelModel;\n\n  factory PersonnelModel.fromJson(Map<String, Object> json",
-          "doc": ""
-        },
-        {
-          "name": "applyEvent",
-          "params": "DomainEventModel event",
-          "doc": ""
-        },
-        {
-          "name": "switch",
-          "params": "event.eventType",
+          "name": "ContactInfo",
+          "params": "{\n    required String contactName,\n    required String companyName,\n    PhoneNumber? phone,\n    EmailAddress? email,\n    Address? address,\n  }) = _ContactInfo;\n\n  const ContactInfo._();\n\n  bool get hasValidContact => email != null || phone != null;\n  String get displayName => companyName;\n\n  factory ContactInfo.fromJson(Map<String, Object> json",
           "doc": ""
         }
       ],
       "properties": []
-    }
-  },
-  "interfaces": {
-    "DataManagerException": {
-      "file": "lib/src/domain/core/exceptions.dart",
+    },
+    "UserAction": {
+      "file": "lib/src/domain/value_objects/user_action.dart",
       "methods": [
         {
-          "name": "DataManagerException",
-          "params": "{\n    required this.message,\n    this.details,\n    this.context,\n  }",
+          "name": "UserAction",
+          "params": "{\n    /// Core User Information\n    required String uid,\n    @Default('') String displayName,\n\n    /// Action Metadata\n    required DateTime timestamp,\n    @Default('') String actionType,\n    @Default('') String description,\n\n    /// Context Information\n    @Default('') String entityId,\n    @Default('') String entityType,\n    @Default('') String workflowStage,\n    @Default('') String status,\n    @Default(false) bool isAuthenticated,\n\n    /// Action Details\n    @Default({}) Map<String, Object> changes,\n    @Default({}) Map<String, Object> metadata,\n    @Default([]) List<String> affectedFields,\n\n    /// Validation & Security\n    @Default(false) bool isAuthorized,\n    @Default([]) List<String> permissions,\n    @Default('') String authenticationMethod,\n\n    /// Audit Trail\n    @Default('') String previousValue,\n    @Default('') String newValue,\n    @Default('') String reason,\n    @Default(false) bool isSuccessful,\n    @Default('') String errorMessage,\n\n    /// Related Actions\n    @Default('') String parentActionId,\n    @Default([]) List<String> relatedActionIds,\n\n    /// Event Tracking\n    @Default('') String eventId,\n    @Default('') String eventType,\n    @Default('') String correlationId,\n    @Default('') String causationId,\n    @Default([]) List<String> eventTags,\n    @Default({}) Map<String, Object> eventMetadata,\n  }) = _UserAction;\n\n  factory UserAction.fromJson(Map<String, Object> json",
+          "doc": ""
+        },
+        {
+          "name": "UserAction",
+          "params": "uid: user.uid,\n      displayName: user.displayName ?? '',\n      timestamp: DateTime.now(),\n      isAuthenticated: true,\n    );\n  }\n\n  /// Creates an anonymous user action\n  factory UserAction.anonymous(",
+          "doc": "Creates a user action from auth user\n  factory UserAction.fromAuthUser(AuthUser user) {"
+        },
+        {
+          "name": "UserAction",
+          "params": "uid: 'anonymous',\n      timestamp: DateTime.now(),\n      isAuthenticated: false,\n    );\n  }\n\n  /// Creates a system action\n  factory UserAction.system({\n    required String actionType,\n    required String description,\n  }",
+          "doc": ""
+        }
+      ],
+      "properties": []
+    },
+    "Measurement": {
+      "file": "lib/src/domain/value_objects/measurement_value_objects.dart",
+      "methods": [
+        {
+          "name": "Measurement",
+          "params": "{\n    required double value,\n    required String unit,\n    double? tolerance,\n    DateTime? timestamp,\n  }) = _Measurement;\n\n  const Measurement._();\n\n  bool isWithinTolerance(double target",
+          "doc": ""
+        }
+      ],
+      "properties": []
+    },
+    "Range": {
+      "file": "lib/src/domain/value_objects/measurement_value_objects.dart",
+      "methods": [
+        {
+          "name": "Range",
+          "params": "{\n    required T min,\n    required T max,\n  }) = _Range<T>;\n\n  const Range._();\n\n  bool contains(T value",
+          "doc": ""
+        },
+        {
+          "name": "overlaps",
+          "params": "Range<T> other",
+          "doc": ""
+        }
+      ],
+      "properties": []
+    },
+    "Progress": {
+      "file": "lib/src/domain/value_objects/status_value_objects.dart",
+      "methods": [],
+      "properties": []
+    },
+    "TaskStatus": {
+      "file": "lib/src/domain/value_objects/status_value_objects.dart",
+      "methods": [],
+      "properties": []
+    },
+    "TimeWindow": {
+      "file": "lib/src/domain/value_objects/time_value_objects.dart",
+      "methods": [
+        {
+          "name": "TimeWindow",
+          "params": "{\n    required DateTime start,\n    required DateTime end,\n  }) = _TimeWindow;\n\n  const TimeWindow._();\n\n  Duration get duration => end.difference(start);\n  bool contains(DateTime time",
+          "doc": ""
+        },
+        {
+          "name": "isActive",
+          "params": "",
+          "doc": ""
+        }
+      ],
+      "properties": []
+    },
+    "Schedule": {
+      "file": "lib/src/domain/value_objects/time_value_objects.dart",
+      "methods": [
+        {
+          "name": "Schedule",
+          "params": "{\n    required TimeWindow window,\n    @Default([]) List<DateTime> breakTimes,\n    @Default(Duration.zero) Duration bufferTime,\n  }) = _Schedule;\n\n  const Schedule._();\n\n  bool isAvailable(DateTime time",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "!window.contains(time)) return false;\n    return !breakTimes.any((break_",
+          "doc": ""
+        }
+      ],
+      "properties": []
+    },
+    "EntityId": {
+      "file": "lib/src/domain/value_objects/identity_value_objects.dart",
+      "methods": [
+        {
+          "name": "EntityId",
+          "params": "String value) = _EntityId;\n\n  factory EntityId.generate(",
           "doc": ""
         },
         {
           "name": "toString",
           "params": "",
           "doc": ""
+        }
+      ],
+      "properties": []
+    },
+    "EventId": {
+      "file": "lib/src/domain/value_objects/identity_value_objects.dart",
+      "methods": [
+        {
+          "name": "EventId",
+          "params": "String value) = _EventId;\n\n  factory EventId.generate(",
+          "doc": ""
         },
         {
-          "name": "if",
-          "params": "details != null) buffer.write('\\nDetails: $details'",
+          "name": "toString",
+          "params": "",
+          "doc": ""
+        }
+      ],
+      "properties": []
+    },
+    "ReferenceNumber": {
+      "file": "lib/src/domain/value_objects/identity_value_objects.dart",
+      "methods": [
+        {
+          "name": "ReferenceNumber",
+          "params": "{\n    required String prefix,\n    required int sequence,\n    String? suffix,\n  }) = _ReferenceNumber;\n\n  const ReferenceNumber._();\n\n  String get formatted =>\n      '$prefix-$sequence${suffix != null ? '-$suffix' : ''}';\n\n  static ReferenceNumber parse(String value",
+          "doc": ""
+        },
+        {
+          "name": "ReferenceNumber",
+          "params": "prefix: parts[0],\n      sequence: int.parse(parts[1]),\n      suffix: parts.length > 2 ? parts[2] : null,\n    );\n  }\n\n  factory ReferenceNumber.fromJson(Map<String, Object?> json",
+          "doc": ""
+        }
+      ],
+      "properties": [
+        {
+          "name": "parts",
+          "type": "final",
           "doc": ""
         }
       ]
     },
     "EntityDefaults": {
       "file": "lib/src/domain/core/core_entity.dart",
-      "methods": []
+      "methods": [],
+      "properties": [
+        {
+          "name": "version",
+          "type": "String",
+          "doc": "Default schema version for new entities"
+        },
+        {
+          "name": "status",
+          "type": "EntityStatus",
+          "doc": "Default status for new entities"
+        },
+        {
+          "name": "priority",
+          "type": "EntityPriority",
+          "doc": "Default priority level for new entities"
+        },
+        {
+          "name": "stage",
+          "type": "EntityStage",
+          "doc": "Default workflow stage for new entities"
+        },
+        {
+          "name": "isPublic",
+          "type": "bool",
+          "doc": "Default public visibility setting"
+        },
+        {
+          "name": "accessCount",
+          "type": "int",
+          "doc": "Default access count for new entities"
+        },
+        {
+          "name": "pathSeparator",
+          "type": "String",
+          "doc": "Standard path separator character"
+        },
+        {
+          "name": "encodedPathSeparator",
+          "type": "String",
+          "doc": "URL-encoded path separator"
+        },
+        {
+          "name": "invalidPathChars",
+          "type": "String",
+          "doc": "Regular expression pattern for invalid path characters"
+        }
+      ]
     },
+    "TypedMetadata": {
+      "file": "lib/src/domain/core/core_entity.dart",
+      "methods": [
+        {
+          "name": "TypedMetadata",
+          "params": "this._meta);\n\n  /// Returns whether the metadata contains a specific key\n  bool containsKey(String key",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "value == null",
+          "doc": "Safely convert a value to the specified type with proper error handling\n  /// \n  /// This is a central conversion method used by all type-specific getters.\n  /// Returns null if conversion fails.\n  T? _safeConvert<T>(Object? value) {\n    try {"
+        },
+        {
+          "name": "if",
+          "params": "T == DateTime",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "dateTime != null) return dateTime as T;\n        throw FormatException('Invalid DateTime string: $value');\n      }\n\n      if (value is T",
+          "doc": ""
+        },
+        {
+          "name": "TypeError",
+          "params": ");\n    } catch (e",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "!_meta.containsKey(key)) return null;\n    return _safeConvert<T>(_meta[key]);\n  }\n\n  /// Get a string value from metadata\n  String? getString(String key",
+          "doc": "Get a value with a specific type, with proper error handling\n  ///\n  /// Note: Null is always allowed and will be returned if the key is missing or the value is null.\n  T? _getTyped<T>(String key) {"
+        },
+        {
+          "name": "if",
+          "params": "!_meta.containsKey(key) || value == null) return null;\n    \n    if (value is C",
+          "doc": "Get an integer value from metadata\n  int? getInt(String key) => _getTyped<int?>(key);\n\n  /// Get a double value from metadata\n  double? getDouble(String key) => _getTyped<double?>(key);\n\n  /// Get a boolean value from metadata\n  bool? getBool(String key) => _getTyped<bool?>(key);\n\n  /// Get a DateTime value from metadata\n  DateTime? getDateTime(String key) => _getTyped<DateTime?>(key);\n\n  /// Get a list value from metadata\n  Object? getList<R>(String key) => _getCollectionValue<List, R>(key);\n\n  /// Get a map value from metadata\n  Map<K, V>? getMap<K, V>(String key) => _getCollectionValue<Map, V>(key) as Map<K, V>?;\n  \n  /// Generic method to handle collection types (List, Map)\n  ///\n  /// Centralizes the error handling for collection type conversions\n  Object? _getCollectionValue<C, V>(String key) {\n    final value = _meta[key];"
+        },
+        {
+          "name": "if",
+          "params": "C == List) return (value as List).cast<V>() as C;\n        if (C == Map) return (value as Map).cast<String, V>() as C;\n        return value;\n      } catch (e",
+          "doc": ""
+        }
+      ],
+      "properties": [
+        {
+          "name": "_meta",
+          "type": "Map<String, Object>",
+          "doc": ""
+        },
+        {
+          "name": "null",
+          "type": "return",
+          "doc": "Returns whether the metadata contains a specific key\n  bool containsKey(String key) => _meta.containsKey(key);\n\n  /// Safely convert a value to the specified type with proper error handling\n  /// \n  /// This is a central conversion method used by all type-specific getters.\n  /// Returns null if conversion fails.\n  T? _safeConvert<T>(Object? value) {\n    try {\n      if (value == null) {"
+        },
+        {
+          "name": "dateTime",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "null",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "value",
+          "type": "final",
+          "doc": "Get a value with a specific type, with proper error handling\n  ///\n  /// Note: Null is always allowed and will be returned if the key is missing or the value is null.\n  T? _getTyped<T>(String key) {\n    if (!_meta.containsKey(key)) return null;\n    return _safeConvert<T>(_meta[key]);\n  }\n\n  /// Get a string value from metadata\n  String? getString(String key) => _getTyped<String?>(key);\n\n  /// Get an integer value from metadata\n  int? getInt(String key) => _getTyped<int?>(key);\n\n  /// Get a double value from metadata\n  double? getDouble(String key) => _getTyped<double?>(key);\n\n  /// Get a boolean value from metadata\n  bool? getBool(String key) => _getTyped<bool?>(key);\n\n  /// Get a DateTime value from metadata\n  DateTime? getDateTime(String key) => _getTyped<DateTime?>(key);\n\n  /// Get a list value from metadata\n  Object? getList<R>(String key) => _getCollectionValue<List, R>(key);\n\n  /// Get a map value from metadata\n  Map<K, V>? getMap<K, V>(String key) => _getCollectionValue<Map, V>(key) as Map<K, V>?;\n  \n  /// Generic method to handle collection types (List, Map)\n  ///\n  /// Centralizes the error handling for collection type conversions\n  Object? _getCollectionValue<C, V>(String key) {"
+        },
+        {
+          "name": "value",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "null",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "null",
+          "type": "return",
+          "doc": ""
+        }
+      ]
+    },
+    "CoreEntity": {
+      "file": "lib/src/domain/core/core_entity.dart",
+      "methods": [
+        {
+          "name": "CoreEntity",
+          "params": "{\n    required EntityId id,\n    required String name,\n    String? description,\n    required DateTime createdAt,\n    required DateTime updatedAt,\n    @Default(EntityDefaults.version) String schemaVer,\n    @Default(EntityDefaults.status) EntityStatus status,\n    @Default({}) Map<String, Object> meta,\n    required UserAction owner,\n    required UserAction creator,\n    required UserAction modifier,\n    T? data,\n  }) = _CoreEntity<T>;\n\n  factory CoreEntity.fromJson(\n    Map<String, Object> json,\n    T Function(Object? json) fromJsonT,",
+          "doc": "Creates a new CoreEntity instance\n  ///\n  /// [id] - Unique identifier for this entity\n  /// [name] - Human-readable name for this entity\n  /// [createdAt] - Timestamp of entity creation\n  /// [updatedAt] - Timestamp of last update\n  /// [data] - Optional typed payload data"
+        },
+        {
+          "name": "hasMetadata",
+          "params": "String key",
+          "doc": "Unique identifier string derived from the entity ID\n  String get uid => id.value;\n\n  /// Runtime type of the entity data\n  String get type => data?.runtimeType.toString() ?? T.toString();\n\n  /// Access metadata with type safety\n  TypedMetadata get typedMeta => TypedMetadata(meta);\n\n  /// Get a value from meta with an expected type\n  ///\n  /// Returns null if the key doesn't exist or there's a type conversion error\n  /// This is an alias for getMetadata<R>(key) for more concise syntax\n  R? get<R>(String key) => getMetadata<R>(key);\n\n  /// Retrieve metadata by key with a simplified interface\n  ///\n  /// Returns the value from metadata with the specified type or null if not found\n  /// For untyped access, use getMetadata<Object?>(key)\n  R? getMetadata<R>(String key) => _getValueWithType<R>(key);\n\n  /// Retrieve untyped metadata by key (backward compatibility)\n  ///\n  /// Returns the raw value from metadata or null if not found\n  Object? getRawMetadata(String key) => meta[key];\n\n  /// Check if metadata contains a specific key"
+        },
+        {
+          "name": "filterMetadata",
+          "params": "bool Function(String key, Object value) predicate",
+          "doc": "Get metadata with type safety, providing a default value if not present\n  ///\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  R getMetadataOrDefault<R>(String key, R defaultValue) {\n    return _getValueWithType<R>(key) ?? defaultValue;\n  }\n  \n  /// Filter metadata based on a predicate\n  /// \n  /// Returns a new Map containing only the metadata entries for which the predicate returns true\n  /// [predicate] - Function that tests each key and value"
+        },
+        {
+          "name": "withUpdatedMetadata",
+          "params": "Map<String, Object> updates, {\n    List<String>? removeKeys,\n  }",
+          "doc": "Creates a new instance of CoreEntity with updated metadata\n  /// \n  /// This method allows for bulk updates to metadata without changing other properties\n  /// [updates] - Map of key-value pairs to add or update in metadata\n  /// [removeKeys] - Optional list of keys to remove from metadata"
+        },
+        {
+          "name": "if",
+          "params": "removeKeys != null",
+          "doc": ""
+        },
+        {
+          "name": "for",
+          "params": "final key in removeKeys",
+          "doc": ""
+        },
+        {
+          "name": "copyWith",
+          "params": "meta: updatedMeta);\n  }\n\n  /// Try to retrieve a typed value from metadata\n  ///\n  /// This method tries to safely cast the value to the expected type.\n  /// Returns null if the key doesn't exist or if the type conversion fails.\n  R? _getValueWithType<R>(String key",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "!meta.containsKey(key)) return null;\n\n    // Delegate the type conversion to the TypedMetadata implementation\n    return typedMeta._safeConvert<R>(meta[key]);\n  }\n\n  /// Gets a domain property by name\n  Object? getProperty(String key",
+          "doc": ""
+        },
+        {
+          "name": "switch",
+          "params": "key",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "propertyValue != null",
+          "doc": "Operator to access either domain properties or metadata\n  ///\n  /// If a key matches both a domain property and a metadata key, the domain property takes precedence.\n  /// First tries to access domain properties, then falls back to metadata.\n  /// \n  /// Note: This provides convenient access but performs multiple lookups. For performance-critical\n  /// code, consider using getProperty() or getMetadata<R>() directly when you know the source.\n  operator [](String key) {\n    // Try domain properties first\n    final propertyValue = getProperty(key);"
+        }
+      ],
+      "properties": [
+        {
+          "name": "updatedMeta",
+          "type": "final",
+          "doc": "Creates a new CoreEntity instance\n  ///\n  /// [id] - Unique identifier for this entity\n  /// [name] - Human-readable name for this entity\n  /// [createdAt] - Timestamp of entity creation\n  /// [updatedAt] - Timestamp of last update\n  /// [data] - Optional typed payload data\n  const factory CoreEntity({\n    required EntityId id,\n    required String name,\n    String? description,\n    required DateTime createdAt,\n    required DateTime updatedAt,\n    @Default(EntityDefaults.version) String schemaVer,\n    @Default(EntityDefaults.status) EntityStatus status,\n    @Default({}) Map<String, Object> meta,\n    required UserAction owner,\n    required UserAction creator,\n    required UserAction modifier,\n    T? data,\n  }) = _CoreEntity<T>;\n\n  factory CoreEntity.fromJson(\n    Map<String, Object> json,\n    T Function(Object? json) fromJsonT,\n  ) => _$CoreEntityFromJson(json, fromJsonT);\n\n  /// Unique identifier string derived from the entity ID\n  String get uid => id.value;\n\n  /// Runtime type of the entity data\n  String get type => data?.runtimeType.toString() ?? T.toString();\n\n  /// Access metadata with type safety\n  TypedMetadata get typedMeta => TypedMetadata(meta);\n\n  /// Get a value from meta with an expected type\n  ///\n  /// Returns null if the key doesn't exist or there's a type conversion error\n  /// This is an alias for getMetadata<R>(key) for more concise syntax\n  R? get<R>(String key) => getMetadata<R>(key);\n\n  /// Retrieve metadata by key with a simplified interface\n  ///\n  /// Returns the value from metadata with the specified type or null if not found\n  /// For untyped access, use getMetadata<Object?>(key)\n  R? getMetadata<R>(String key) => _getValueWithType<R>(key);\n\n  /// Retrieve untyped metadata by key (backward compatibility)\n  ///\n  /// Returns the raw value from metadata or null if not found\n  Object? getRawMetadata(String key) => meta[key];\n\n  /// Check if metadata contains a specific key\n  bool hasMetadata(String key) => meta.containsKey(key);\n\n  /// Get metadata with type safety, providing a default value if not present\n  ///\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  R getMetadataOrDefault<R>(String key, R defaultValue) {\n    return _getValueWithType<R>(key) ?? defaultValue;\n  }\n  \n  /// Filter metadata based on a predicate\n  /// \n  /// Returns a new Map containing only the metadata entries for which the predicate returns true\n  /// [predicate] - Function that tests each key and value\n  Map<String, Object> filterMetadata(bool Function(String key, Object value) predicate) {\n    return Map.fromEntries(\n      meta.entries.where((entry) => predicate(entry.key, entry.value))\n    );\n  }\n  \n  /// Creates a new instance of CoreEntity with updated metadata\n  /// \n  /// This method allows for bulk updates to metadata without changing other properties\n  /// [updates] - Map of key-value pairs to add or update in metadata\n  /// [removeKeys] - Optional list of keys to remove from metadata\n  CoreEntity<T> withUpdatedMetadata(\n    Map<String, Object> updates, {\n    List<String>? removeKeys,\n  }) {\n    // Start with the existing metadata"
+        },
+        {
+          "name": "id",
+          "type": "return",
+          "doc": "Try to retrieve a typed value from metadata\n  ///\n  /// This method tries to safely cast the value to the expected type.\n  /// Returns null if the key doesn't exist or if the type conversion fails.\n  R? _getValueWithType<R>(String key) {\n    if (!meta.containsKey(key)) return null;\n\n    // Delegate the type conversion to the TypedMetadata implementation\n    return typedMeta._safeConvert<R>(meta[key]);\n  }\n\n  /// Gets a domain property by name\n  Object? getProperty(String key) {\n    switch (key) {\n      case 'id':"
+        },
+        {
+          "name": "name",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "description",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "createdAt",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "updatedAt",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "schemaVer",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "status",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "owner",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "creator",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "modifier",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "data",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "null",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "propertyValue",
+          "type": "final",
+          "doc": "Operator to access either domain properties or metadata\n  ///\n  /// If a key matches both a domain property and a metadata key, the domain property takes precedence.\n  /// First tries to access domain properties, then falls back to metadata.\n  /// \n  /// Note: This provides convenient access but performs multiple lookups. For performance-critical\n  /// code, consider using getProperty() or getMetadata<R>() directly when you know the source.\n  operator [](String key) {\n    // Try domain properties first"
+        },
+        {
+          "name": "propertyValue",
+          "type": "return",
+          "doc": ""
+        }
+      ]
+    },
+    "EntityConfig": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "methods": [
+        {
+          "name": "EntityConfig",
+          "params": "{\n    /// Configuration schema version for tracking changes to the configuration format itself.\n    /// This version follows semantic versioning and should be incremented when:\n    /// - MAJOR: Breaking changes to configuration structure\n    /// - MINOR: New backward-compatible fields added\n    /// - PATCH: Bug fixes that don't affect configuration structure\n    @Default('1.0.0') String configVersion,\n\n    // Path limits\n    /// Maximum length of an entity path in characters.\n    @Default(1024) int maxPathLength,\n\n    /// Maximum length of a single path segment in characters.\n    @Default(255) int maxPathSegment,\n\n    /// Maximum allowed depth of entity hierarchies.\n    @Default(10) int maxHierarchyDepth,\n\n    // History limits\n    /// Maximum number of history entries to retain per entity.\n    @Default(50) int maxHistorySize,\n\n    /// Default number of history entries to show in views.\n    @Default(50) int defaultHistorySize,\n\n    // Lock settings\n    /// Default duration before an entity lock expires.\n    @Default(Duration(minutes: 15)) Duration defaultLockTimeout,\n\n    /// Duration by which a lock can be extended.\n    @Default(Duration(minutes: 5)) Duration lockExtensionPeriod,\n\n    /// Minimum duration for which an entity can be locked.\n    @Default(Duration(seconds: 30)) Duration minLockDuration,\n\n    /// Maximum duration for which an entity can be locked.\n    @Default(Duration(hours: 24)) Duration maxLockDuration,\n\n    // Entity defaults\n    /// Default version string for new entities.\n    @Default('1.0.0') String defaultVersion,\n\n    /// Whether entities are public by default.\n    @Default(true) bool defaultIsPublic,\n\n    /// Default priority level for new entities.\n    @Default(EntityPriority.medium) EntityPriority defaultPriority,\n\n    /// Default workflow stage for new entities.\n    @Default(EntityStage.draft) EntityStage defaultStage,\n\n    // Path settings\n    /// Character used to separate path segments.\n    @Default('/') String pathSeparator,\n\n    /// Regular expression pattern defining invalid characters in paths.\n    ///\n    /// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).\n    /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.\n    ///\n    /// Default: `[<>:\"|?*\\x00-\\x1F]`\n    @Default(r'[<>:\"|?*\\x00-\\x1F]') String invalidPathChars,\n  }) = _EntityConfig;\n\n  /// Creates a new instance of [EntityConfig] with configuration optimized for development.\n  ///\n  /// This configuration has more permissive settings than the default.\n  factory EntityConfig.development(",
+          "doc": ""
+        },
+        {
+          "name": "EntityConfig",
+          "params": "configVersion: configVersion ?? defaultConfig.configVersion,\n      maxPathLength: maxPathLength ?? defaultConfig.maxPathLength,\n      maxPathSegment: maxPathSegment ?? defaultConfig.maxPathSegment,\n      maxHierarchyDepth: maxHierarchyDepth ?? defaultConfig.maxHierarchyDepth,\n      maxHistorySize: maxHistorySize ?? defaultConfig.maxHistorySize,\n      defaultHistorySize:\n          defaultHistorySize ?? defaultConfig.defaultHistorySize,\n      defaultLockTimeout:\n          defaultLockTimeout ?? defaultConfig.defaultLockTimeout,\n      lockExtensionPeriod:\n          lockExtensionPeriod ?? defaultConfig.lockExtensionPeriod,\n      minLockDuration: minLockDuration ?? defaultConfig.minLockDuration,\n      maxLockDuration: maxLockDuration ?? defaultConfig.maxLockDuration,\n      defaultVersion: defaultVersion ?? defaultConfig.defaultVersion,\n      defaultIsPublic: defaultIsPublic ?? defaultConfig.defaultIsPublic,\n      defaultPriority: defaultPriority ?? defaultConfig.defaultPriority,\n      defaultStage: defaultStage ?? defaultConfig.defaultStage,\n      pathSeparator: pathSeparator ?? defaultConfig.pathSeparator,\n      invalidPathChars: invalidPathChars ?? defaultConfig.invalidPathChars,\n    );\n  }\n\n  factory EntityConfig.fromJson(Map<String, Object?> json",
+          "doc": "Creates a new instance of [EntityConfig] with configuration optimized for production.\n  ///\n  /// This configuration has more restrictive settings than the default.\n  factory EntityConfig.production() {\n    return const EntityConfig(\n      configVersion: '1.0.0',\n      maxPathLength: 512,\n      maxPathSegment: 128,\n      maxHierarchyDepth: 8,\n      maxHistorySize: 25,\n      defaultHistorySize: 10,\n      defaultLockTimeout: Duration(minutes: 10),\n      maxLockDuration: Duration(hours: 12),\n      defaultIsPublic: false,\n    );\n  }\n\n  /// Creates a new instance of [EntityConfig] with custom overrides.\n  ///\n  /// This factory allows you to define configuration settings for any environment (e.g., staging, testing, CI)\n  /// by overriding only the fields you need. All unspecified fields will use the default values.\n  ///\n  /// Example:\n  /// ```dart\n  /// final stagingConfig = EntityConfig.custom(\n  ///   maxPathLength: 1500,\n  ///   defaultIsPublic: false,\n  /// );\n  /// ```\n  ///\n  /// [maxPathLength] - Maximum length of an entity path in characters.\n  /// [maxPathSegment] - Maximum length of a single path segment in characters.\n  /// [maxHierarchyDepth] - Maximum allowed depth of entity hierarchies.\n  /// [maxHistorySize] - Maximum number of history entries to retain per entity.\n  /// [defaultHistorySize] - Default number of history entries to show in views.\n  /// [defaultLockTimeout] - Default duration before an entity lock expires.\n  /// [lockExtensionPeriod] - Duration by which a lock can be extended.\n  /// [minLockDuration] - Minimum duration for which an entity can be locked.\n  /// [maxLockDuration] - Maximum duration for which an entity can be locked.\n  /// [defaultVersion] - Default version string for new entities.\n  /// [defaultIsPublic] - Whether entities are public by default.\n  /// [defaultPriority] - Default priority level for new entities.\n  /// [defaultStage] - Default workflow stage for new entities.\n  /// [pathSeparator] - Character used to separate path segments.\n  /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.\n  factory EntityConfig.custom({\n    String? configVersion,\n    int? maxPathLength,\n    int? maxPathSegment,\n    int? maxHierarchyDepth,\n    int? maxHistorySize,\n    int? defaultHistorySize,\n    Duration? defaultLockTimeout,\n    Duration? lockExtensionPeriod,\n    Duration? minLockDuration,\n    Duration? maxLockDuration,\n    String? defaultVersion,\n    bool? defaultIsPublic,\n    EntityPriority? defaultPriority,\n    EntityStage? defaultStage,\n    String? pathSeparator,\n    String? invalidPathChars,\n  }) {\n    const defaultConfig = EntityConfig();"
+        },
+        {
+          "name": "isValidPath",
+          "params": "String path",
+          "doc": "Validates if a path string conforms to the configuration constraints.\n  ///\n  /// Checks if the path:\n  /// - Does not exceed the maximum path length\n  /// - Does not exceed the maximum hierarchy depth\n  /// - Does not contain invalid characters\n  /// - Does not have segments that exceed the maximum segment length\n  ///\n  /// Returns true if the path is valid according to all constraints."
+        },
+        {
+          "name": "if",
+          "params": "path.length > maxPathLength) return false;\n\n    // Check path segments\n    final segments = path.split(pathSeparator);\n\n    // Check hierarchy depth\n    if (segments.length > maxHierarchyDepth) return false;\n\n    // Check each segment\n    for (final segment in segments",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "segment.isEmpty) continue;\n\n      // Check segment length\n      if (segment.length > maxPathSegment) return false;\n\n      // Check for invalid characters\n      if (RegExp(invalidPathChars).hasMatch(segment)) return false;\n    }\n\n    return true;\n  }\n\n  /// Sanitizes a path to conform to configuration constraints.\n  ///\n  /// This method:\n  /// - Replaces invalid characters with underscores\n  /// - Truncates paths that exceed maximum length\n  /// - Truncates segments that exceed maximum length\n  ///\n  /// Returns a sanitized path that conforms to all path constraints.\n  String sanitizePath(String path",
+          "doc": ""
+        },
+        {
+          "name": "for",
+          "params": "int i = 0; i < segments.length; i++",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "segments[i].length > maxPathSegment",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "segments.length > maxHierarchyDepth",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "result.length > maxPathLength",
+          "doc": ""
+        },
+        {
+          "name": "joinPath",
+          "params": "List<String> segments",
+          "doc": "Joins path segments using the configured path separator.\n  ///\n  /// This is a convenience method that ensures consistent path formatting.\n  /// It also sanitizes the result to ensure it conforms to all path constraints.\n  ///\n  /// Returns the joined path, sanitized according to configuration constraints."
+        },
+        {
+          "name": "sanitizePath",
+          "params": "joined);\n  }\n\n  /// Resolves a child path relative to a parent path.\n  ///\n  /// This ensures proper joining of paths using the configured path separator.\n  ///\n  /// Returns the full path to the child, sanitized according to configuration constraints.\n  String resolvePath(String parent, String child",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "parent.endsWith(pathSeparator)",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "child.startsWith(pathSeparator)",
+          "doc": ""
+        },
+        {
+          "name": "sanitizePath",
+          "params": "'$parent$pathSeparator$child');\n  }\n\n  /// Calculates the depth of a path based on the number of separators.\n  ///\n  /// Returns the hierarchy level (depth) of the path.\n  int getPathDepth(String path",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "trimmedPath.isEmpty) return 0;\n\n    final segments =\n        trimmedPath.split(pathSeparator).where((s",
+          "doc": ""
+        },
+        {
+          "name": "isValidLockDuration",
+          "params": "Duration lockDuration",
+          "doc": "Validates that a lock duration is within the configured limits.\n  ///\n  /// Returns true if the duration is between minLockDuration and maxLockDuration."
+        },
+        {
+          "name": "constrainLockDuration",
+          "params": "Duration lockDuration",
+          "doc": "Adjusts a lock duration to fit within the configured limits.\n  ///\n  /// If the input duration is too short, returns minLockDuration.\n  /// If the input duration is too long, returns maxLockDuration.\n  /// Otherwise, returns the original duration."
+        },
+        {
+          "name": "if",
+          "params": "lockDuration < minLockDuration) return minLockDuration;\n    if (lockDuration > maxLockDuration) return maxLockDuration;\n    return lockDuration;\n  }\n\n  /// Normalizes a path by:\n  /// 1. Removing redundant separators\n  /// 2. Removing trailing separators\n  /// 3. Ensuring the path conforms to configuration constraints\n  ///\n  /// Returns a normalized path string.\n  String normalizePath(String path",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "path.isEmpty) return '';\n\n    // Split into segments and filter out empty ones (that come from consecutive separators)\n    final segments =\n        path\n            .split(pathSeparator)\n            .where((segment",
+          "doc": ""
+        },
+        {
+          "name": "sanitizePath",
+          "params": "segments.join(pathSeparator));\n  }\n\n  /// Extracts the parent path from a given path.\n  ///\n  /// Returns the parent path, or an empty string if the path has no parent.\n  String getParentPath(String path",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "lastSeparatorIndex <= 0",
+          "doc": ""
+        },
+        {
+          "name": "getNameFromPath",
+          "params": "String path",
+          "doc": "Extracts the last segment (name) from a path.\n  ///\n  /// Returns the name component, or the full path if there are no separators."
+        },
+        {
+          "name": "if",
+          "params": "lastSeparatorIndex < 0",
+          "doc": ""
+        },
+        {
+          "name": "isParentPath",
+          "params": "String parentPath, String childPath",
+          "doc": "Checks if one path is a parent of another path.\n  ///\n  /// Returns true if parentPath is a parent of childPath."
+        },
+        {
+          "name": "if",
+          "params": "normalizedParent.isEmpty",
+          "doc": ""
+        },
+        {
+          "name": "isValidEntityName",
+          "params": "String name",
+          "doc": "Validates an entity name based on configuration constraints.\n  ///\n  /// Returns true if the name:\n  /// - Is not empty\n  /// - Does not contain path separators\n  /// - Does not contain invalid characters\n  /// - Does not exceed maxPathSegment length"
+        },
+        {
+          "name": "if",
+          "params": "name.isEmpty) return false;\n    if (name.length > maxPathSegment) return false;\n    if (name.contains(pathSeparator)) return false;\n    if (RegExp(invalidPathChars).hasMatch(name)) return false;\n    return true;\n  }\n\n  /// Validates configuration values to ensure they are reasonable and consistent.\n  ///\n  /// This can be called during initialization to check that the configuration\n  /// doesn't have contradictory or invalid settings.\n  ///\n  /// Returns true if the configuration is valid.\n  bool validate(",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "maxPathLength <= 0) return false;\n    if (maxPathSegment <= 0) return false;\n    if (maxHierarchyDepth <= 0) return false;\n    if (maxHistorySize < 0) return false;\n    if (defaultHistorySize < 0 || defaultHistorySize > maxHistorySize",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "defaultLockTimeout.isNegative) return false;\n    if (lockExtensionPeriod.isNegative) return false;\n    if (minLockDuration.isNegative) return false;\n    if (maxLockDuration.isNegative) return false;\n    if (minLockDuration > maxLockDuration) return false;\n    if (pathSeparator.isEmpty) return false;\n\n    // Try to compile the regex pattern to check validity\n    try {\n      RegExp(invalidPathChars);\n    } catch (e",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "defaultVersion != other.defaultVersion",
+          "doc": "Compares this configuration with another to identify differences.\n  ///\n  /// Returns a Map with property names as keys and a sub-map with 'this' and 'other' values\n  /// for each property that differs. Returns an empty map if the configurations are identical.\n  Map<String, Map<String, Object>> compareWith(EntityConfig other) {\n    final differences = <String, Map<String, Object>>{};\n\n    // Compare versions"
+        },
+        {
+          "name": "if",
+          "params": "maxPathLength != other.maxPathLength",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "maxPathSegment != other.maxPathSegment",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "maxHierarchyDepth != other.maxHierarchyDepth",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "maxHistorySize != other.maxHistorySize",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "defaultHistorySize != other.defaultHistorySize",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "defaultLockTimeout != other.defaultLockTimeout",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "lockExtensionPeriod != other.lockExtensionPeriod",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "minLockDuration != other.minLockDuration",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "maxLockDuration != other.maxLockDuration",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "defaultVersion != other.defaultVersion",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "defaultIsPublic != other.defaultIsPublic",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "defaultPriority != other.defaultPriority",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "defaultStage != other.defaultStage",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "pathSeparator != other.pathSeparator",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "invalidPathChars != other.invalidPathChars",
+          "doc": ""
+        },
+        {
+          "name": "isCompatibleWith",
+          "params": "EntityConfig other",
+          "doc": "Checks if this configuration is compatible with another configuration.\n  ///\n  /// A configuration is considered compatible when:\n  /// 1. Its path limits are equal to or greater than the other configuration\n  /// 2. It uses the same path separator character\n  /// 3. Its lock duration constraints can accommodate the other's default lock duration\n  ///\n  /// Returns true if this configuration is compatible with the other configuration."
+        },
+        {
+          "name": "if",
+          "params": "maxPathLength < other.maxPathLength) return false;\n    if (maxPathSegment < other.maxPathSegment) return false;\n    if (maxHierarchyDepth < other.maxHierarchyDepth) return false;\n    if (pathSeparator != other.pathSeparator) return false;\n\n    // Lock duration compatibility\n    if (other.defaultLockTimeout < minLockDuration) return false;\n    if (other.defaultLockTimeout > maxLockDuration) return false;\n\n    // Compatible with associated defaults\n    if (maxHistorySize < other.defaultHistorySize) return false;\n\n    return true;\n  }\n\n  /// Creates a merged configuration using the most permissive values from both configurations.\n  ///\n  /// This is useful when you need to ensure compatibility between two environments.\n  ///\n  /// Returns a new EntityConfig that will be compatible with both source configurations.\n  EntityConfig mergeWith(EntityConfig other",
+          "doc": ""
+        },
+        {
+          "name": "EntityConfig",
+          "params": "// Take the larger value for limits\n      maxPathLength: math.max(maxPathLength, other.maxPathLength),\n      maxPathSegment: math.max(maxPathSegment, other.maxPathSegment),\n      maxHierarchyDepth: math.max(maxHierarchyDepth, other.maxHierarchyDepth),\n      maxHistorySize: math.max(maxHistorySize, other.maxHistorySize),\n      defaultHistorySize: math.min(\n        math.max(defaultHistorySize, other.defaultHistorySize),\n        math.max(maxHistorySize, other.maxHistorySize),\n      ),\n\n      // Take the wider ranges for durations\n      defaultLockTimeout: Duration(\n        milliseconds:\n            (defaultLockTimeout.inMilliseconds +\n                other.defaultLockTimeout.inMilliseconds) ~/\n            2,\n      ),\n      lockExtensionPeriod: Duration(\n        milliseconds: math.max(\n          lockExtensionPeriod.inMilliseconds,\n          other.lockExtensionPeriod.inMilliseconds,\n        ),\n      ),\n      minLockDuration: Duration(\n        milliseconds: math.min(\n          minLockDuration.inMilliseconds,\n          other.minLockDuration.inMilliseconds,\n        ),\n      ),\n      maxLockDuration: Duration(\n        milliseconds: math.max(\n          maxLockDuration.inMilliseconds,\n          other.maxLockDuration.inMilliseconds,\n        ),\n      ),\n\n      // Preserve path separator from this config (they should be the same for compatibility)\n      pathSeparator: pathSeparator,\n\n      // Use most permissive regex pattern for invalid chars (if they differ)\n      invalidPathChars:\n          invalidPathChars == other.invalidPathChars\n              ? invalidPathChars\n              : _mergeInvalidCharsPatterns(\n                invalidPathChars,\n                other.invalidPathChars,\n              ),\n\n      // Use newest schema version\n      defaultVersion:\n          _compareVersions(defaultVersion, other.defaultVersion) >= 0\n              ? defaultVersion\n              : other.defaultVersion,\n\n      // Keep other settings from this config\n      defaultIsPublic: defaultIsPublic,\n      defaultPriority: defaultPriority,\n      defaultStage: defaultStage,\n    );\n  }\n\n  /// Helper method to merge two regex patterns for invalid characters,\n  /// creating a more permissive pattern that allows characters valid in either pattern.\n  static String _mergeInvalidCharsPatterns(String pattern1, String pattern2",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "pattern1 == pattern2) return pattern1;\n\n      // Simple approach: just use the more restrictive pattern\n      // A more complete approach would parse and merge the character sets\n      if (pattern1.length > pattern2.length) return pattern2;\n      return pattern1;\n    } catch (e",
+          "doc": ""
+        },
+        {
+          "name": "_compareVersions",
+          "params": "String v1, String v2",
+          "doc": "Helper method to compare semantic version strings.\n  /// Returns positive if v1 > v2, negative if v1 < v2, 0 if equal."
+        },
+        {
+          "name": "for",
+          "params": "var i = 0; i < math.min(v1Parts.length, v2Parts.length); i++",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "diff != 0) return diff;\n      }\n\n      return v1Parts.length - v2Parts.length;\n    } catch (e",
+          "doc": ""
+        },
+        {
+          "name": "isVersionCompatible",
+          "params": "String otherVersion, [String? thisVersion]",
+          "doc": "Checks if this configuration version is compatible with another version.\n  ///\n  /// Follows semantic versioning principles:\n  /// - Major versions must match (breaking changes)\n  /// - If this is being used with data created by otherVersion, this.minor >= other.minor\n  ///\n  /// [otherVersion] - Version string to check compatibility with (e.g., \"1.2.3\")\n  /// [thisVersion] - Optional version to check, defaults to this config's version\n  ///\n  /// Returns true if versions are compatible."
+        },
+        {
+          "name": "if",
+          "params": "version == otherVersion) return true;\n\n    try {\n      final vParts = version.split('.').map(int.parse).toList();\n      final otherParts = otherVersion.split('.').map(int.parse).toList();\n\n      // Major versions must match (breaking changes)\n      if (vParts.isNotEmpty &&\n          otherParts.isNotEmpty &&\n          vParts[0] != otherParts[0]",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "vParts.length > 1 && otherParts.length > 1",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "vParts[1] < otherParts[1]) return false;\n      }\n\n      // Patch versions don't affect compatibility\n      return true;\n    } catch (e",
+          "doc": ""
+        },
+        {
+          "name": "incrementVersion",
+          "params": "String increment, [String? baseVersion]",
+          "doc": "Creates a new configuration with an incremented version.\n  ///\n  /// [increment] - Which part to increment: \"major\", \"minor\", or \"patch\"\n  /// [baseVersion] - Optional base version, defaults to this config's version\n  ///\n  /// Returns a new version string following semantic versioning."
+        },
+        {
+          "name": "if",
+          "params": "parts.length != 3",
+          "doc": ""
+        },
+        {
+          "name": "switch",
+          "params": "increment.toLowerCase()",
+          "doc": ""
+        },
+        {
+          "name": "withIncrementedVersion",
+          "params": "String increment",
+          "doc": "Creates a new config with the version number incremented.\n  ///\n  /// This creates a new configuration with an updated version while\n  /// preserving all other settings.\n  ///\n  /// [increment] - Which part to increment: \"major\", \"minor\", or \"patch\"\n  ///\n  /// Returns a new EntityConfig with the updated version."
+        }
+      ],
+      "properties": [
+        {
+          "name": "defaultConfig",
+          "type": "const",
+          "doc": "Configuration schema version for tracking changes to the configuration format itself.\n    /// This version follows semantic versioning and should be incremented when:\n    /// - MAJOR: Breaking changes to configuration structure\n    /// - MINOR: New backward-compatible fields added\n    /// - PATCH: Bug fixes that don't affect configuration structure\n    @Default('1.0.0') String configVersion,\n\n    // Path limits\n    /// Maximum length of an entity path in characters.\n    @Default(1024) int maxPathLength,\n\n    /// Maximum length of a single path segment in characters.\n    @Default(255) int maxPathSegment,\n\n    /// Maximum allowed depth of entity hierarchies.\n    @Default(10) int maxHierarchyDepth,\n\n    // History limits\n    /// Maximum number of history entries to retain per entity.\n    @Default(50) int maxHistorySize,\n\n    /// Default number of history entries to show in views.\n    @Default(50) int defaultHistorySize,\n\n    // Lock settings\n    /// Default duration before an entity lock expires.\n    @Default(Duration(minutes: 15)) Duration defaultLockTimeout,\n\n    /// Duration by which a lock can be extended.\n    @Default(Duration(minutes: 5)) Duration lockExtensionPeriod,\n\n    /// Minimum duration for which an entity can be locked.\n    @Default(Duration(seconds: 30)) Duration minLockDuration,\n\n    /// Maximum duration for which an entity can be locked.\n    @Default(Duration(hours: 24)) Duration maxLockDuration,\n\n    // Entity defaults\n    /// Default version string for new entities.\n    @Default('1.0.0') String defaultVersion,\n\n    /// Whether entities are public by default.\n    @Default(true) bool defaultIsPublic,\n\n    /// Default priority level for new entities.\n    @Default(EntityPriority.medium) EntityPriority defaultPriority,\n\n    /// Default workflow stage for new entities.\n    @Default(EntityStage.draft) EntityStage defaultStage,\n\n    // Path settings\n    /// Character used to separate path segments.\n    @Default('/') String pathSeparator,\n\n    /// Regular expression pattern defining invalid characters in paths.\n    ///\n    /// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).\n    /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.\n    ///\n    /// Default: `[<>:\"|?*\\x00-\\x1F]`\n    @Default(r'[<>:\"|?*\\x00-\\x1F]') String invalidPathChars,\n  }) = _EntityConfig;\n\n  /// Creates a new instance of [EntityConfig] with configuration optimized for development.\n  ///\n  /// This configuration has more permissive settings than the default.\n  factory EntityConfig.development() {\n    return const EntityConfig(\n      configVersion: '1.0.0',\n      maxPathLength: 2048,\n      maxHistorySize: 100,\n      defaultLockTimeout: Duration(hours: 1),\n      minLockDuration: Duration(seconds: 5),\n      maxLockDuration: Duration(hours: 48),\n    );\n  }\n\n  /// Creates a new instance of [EntityConfig] with configuration optimized for production.\n  ///\n  /// This configuration has more restrictive settings than the default.\n  factory EntityConfig.production() {\n    return const EntityConfig(\n      configVersion: '1.0.0',\n      maxPathLength: 512,\n      maxPathSegment: 128,\n      maxHierarchyDepth: 8,\n      maxHistorySize: 25,\n      defaultHistorySize: 10,\n      defaultLockTimeout: Duration(minutes: 10),\n      maxLockDuration: Duration(hours: 12),\n      defaultIsPublic: false,\n    );\n  }\n\n  /// Creates a new instance of [EntityConfig] with custom overrides.\n  ///\n  /// This factory allows you to define configuration settings for any environment (e.g., staging, testing, CI)\n  /// by overriding only the fields you need. All unspecified fields will use the default values.\n  ///\n  /// Example:\n  /// ```dart\n  /// final stagingConfig = EntityConfig.custom(\n  ///   maxPathLength: 1500,\n  ///   defaultIsPublic: false,\n  /// );\n  /// ```\n  ///\n  /// [maxPathLength] - Maximum length of an entity path in characters.\n  /// [maxPathSegment] - Maximum length of a single path segment in characters.\n  /// [maxHierarchyDepth] - Maximum allowed depth of entity hierarchies.\n  /// [maxHistorySize] - Maximum number of history entries to retain per entity.\n  /// [defaultHistorySize] - Default number of history entries to show in views.\n  /// [defaultLockTimeout] - Default duration before an entity lock expires.\n  /// [lockExtensionPeriod] - Duration by which a lock can be extended.\n  /// [minLockDuration] - Minimum duration for which an entity can be locked.\n  /// [maxLockDuration] - Maximum duration for which an entity can be locked.\n  /// [defaultVersion] - Default version string for new entities.\n  /// [defaultIsPublic] - Whether entities are public by default.\n  /// [defaultPriority] - Default priority level for new entities.\n  /// [defaultStage] - Default workflow stage for new entities.\n  /// [pathSeparator] - Character used to separate path segments.\n  /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.\n  factory EntityConfig.custom({\n    String? configVersion,\n    int? maxPathLength,\n    int? maxPathSegment,\n    int? maxHierarchyDepth,\n    int? maxHistorySize,\n    int? defaultHistorySize,\n    Duration? defaultLockTimeout,\n    Duration? lockExtensionPeriod,\n    Duration? minLockDuration,\n    Duration? maxLockDuration,\n    String? defaultVersion,\n    bool? defaultIsPublic,\n    EntityPriority? defaultPriority,\n    EntityStage? defaultStage,\n    String? pathSeparator,\n    String? invalidPathChars,\n  }) {"
+        },
+        {
+          "name": "segments",
+          "type": "final",
+          "doc": "Validates if a path string conforms to the configuration constraints.\n  ///\n  /// Checks if the path:\n  /// - Does not exceed the maximum path length\n  /// - Does not exceed the maximum hierarchy depth\n  /// - Does not contain invalid characters\n  /// - Does not have segments that exceed the maximum segment length\n  ///\n  /// Returns true if the path is valid according to all constraints.\n  bool isValidPath(String path) {\n    // Check total path length\n    if (path.length > maxPathLength) return false;\n\n    // Check path segments"
+        },
+        {
+          "name": "true",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "result",
+          "type": "String",
+          "doc": "Sanitizes a path to conform to configuration constraints.\n  ///\n  /// This method:\n  /// - Replaces invalid characters with underscores\n  /// - Truncates paths that exceed maximum length\n  /// - Truncates segments that exceed maximum length\n  ///\n  /// Returns a sanitized path that conforms to all path constraints.\n  String sanitizePath(String path) {\n    // Start with the original path"
+        },
+        {
+          "name": "segments",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "result",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "joined",
+          "type": "final",
+          "doc": "Joins path segments using the configured path separator.\n  ///\n  /// This is a convenience method that ensures consistent path formatting.\n  /// It also sanitizes the result to ensure it conforms to all path constraints.\n  ///\n  /// Returns the joined path, sanitized according to configuration constraints.\n  String joinPath(List<String> segments) {"
+        },
+        {
+          "name": "trimmedPath",
+          "type": "final",
+          "doc": "Resolves a child path relative to a parent path.\n  ///\n  /// This ensures proper joining of paths using the configured path separator.\n  ///\n  /// Returns the full path to the child, sanitized according to configuration constraints.\n  String resolvePath(String parent, String child) {\n    // Remove trailing separators from parent\n    if (parent.endsWith(pathSeparator)) {\n      parent = parent.substring(0, parent.length - pathSeparator.length);\n    }\n\n    // Remove leading separators from child\n    if (child.startsWith(pathSeparator)) {\n      child = child.substring(pathSeparator.length);\n    }\n\n    return sanitizePath('$parent$pathSeparator$child');\n  }\n\n  /// Calculates the depth of a path based on the number of separators.\n  ///\n  /// Returns the hierarchy level (depth) of the path.\n  int getPathDepth(String path) {\n    // Count separators, accounting for leading/trailing separators"
+        },
+        {
+          "name": "segments",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "lockDuration",
+          "type": "return",
+          "doc": "Validates that a lock duration is within the configured limits.\n  ///\n  /// Returns true if the duration is between minLockDuration and maxLockDuration.\n  bool isValidLockDuration(Duration lockDuration) {\n    return lockDuration >= minLockDuration && lockDuration <= maxLockDuration;\n  }\n\n  /// Adjusts a lock duration to fit within the configured limits.\n  ///\n  /// If the input duration is too short, returns minLockDuration.\n  /// If the input duration is too long, returns maxLockDuration.\n  /// Otherwise, returns the original duration.\n  Duration constrainLockDuration(Duration lockDuration) {\n    if (lockDuration < minLockDuration) return minLockDuration;\n    if (lockDuration > maxLockDuration) return maxLockDuration;"
+        },
+        {
+          "name": "segments",
+          "type": "final",
+          "doc": "Normalizes a path by:\n  /// 1. Removing redundant separators\n  /// 2. Removing trailing separators\n  /// 3. Ensuring the path conforms to configuration constraints\n  ///\n  /// Returns a normalized path string.\n  String normalizePath(String path) {\n    // Handle empty paths\n    if (path.isEmpty) return '';\n\n    // Split into segments and filter out empty ones (that come from consecutive separators)"
+        },
+        {
+          "name": "normalized",
+          "type": "final",
+          "doc": "Extracts the parent path from a given path.\n  ///\n  /// Returns the parent path, or an empty string if the path has no parent.\n  String getParentPath(String path) {"
+        },
+        {
+          "name": "lastSeparatorIndex",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "normalized",
+          "type": "final",
+          "doc": "Extracts the last segment (name) from a path.\n  ///\n  /// Returns the name component, or the full path if there are no separators.\n  String getNameFromPath(String path) {"
+        },
+        {
+          "name": "lastSeparatorIndex",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "normalized",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "normalizedParent",
+          "type": "final",
+          "doc": "Checks if one path is a parent of another path.\n  ///\n  /// Returns true if parentPath is a parent of childPath.\n  bool isParentPath(String parentPath, String childPath) {"
+        },
+        {
+          "name": "normalizedChild",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "true",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "true",
+          "type": "return",
+          "doc": "Validates an entity name based on configuration constraints.\n  ///\n  /// Returns true if the name:\n  /// - Is not empty\n  /// - Does not contain path separators\n  /// - Does not contain invalid characters\n  /// - Does not exceed maxPathSegment length\n  bool isValidEntityName(String name) {\n    if (name.isEmpty) return false;\n    if (name.length > maxPathSegment) return false;\n    if (name.contains(pathSeparator)) return false;\n    if (RegExp(invalidPathChars).hasMatch(name)) return false;"
+        },
+        {
+          "name": "false",
+          "type": "return",
+          "doc": "Validates configuration values to ensure they are reasonable and consistent.\n  ///\n  /// This can be called during initialization to check that the configuration\n  /// doesn't have contradictory or invalid settings.\n  ///\n  /// Returns true if the configuration is valid.\n  bool validate() {\n    if (maxPathLength <= 0) return false;\n    if (maxPathSegment <= 0) return false;\n    if (maxHierarchyDepth <= 0) return false;\n    if (maxHistorySize < 0) return false;\n    if (defaultHistorySize < 0 || defaultHistorySize > maxHistorySize) {"
+        },
+        {
+          "name": "false",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "true",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "differences",
+          "type": "final",
+          "doc": "Compares this configuration with another to identify differences.\n  ///\n  /// Returns a Map with property names as keys and a sub-map with 'this' and 'other' values\n  /// for each property that differs. Returns an empty map if the configurations are identical.\n  Map<String, Map<String, Object>> compareWith(EntityConfig other) {"
+        },
+        {
+          "name": "differences",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "true",
+          "type": "return",
+          "doc": "Checks if this configuration is compatible with another configuration.\n  ///\n  /// A configuration is considered compatible when:\n  /// 1. Its path limits are equal to or greater than the other configuration\n  /// 2. It uses the same path separator character\n  /// 3. Its lock duration constraints can accommodate the other's default lock duration\n  ///\n  /// Returns true if this configuration is compatible with the other configuration.\n  bool isCompatibleWith(EntityConfig other) {\n    // Path compatibility\n    if (maxPathLength < other.maxPathLength) return false;\n    if (maxPathSegment < other.maxPathSegment) return false;\n    if (maxHierarchyDepth < other.maxHierarchyDepth) return false;\n    if (pathSeparator != other.pathSeparator) return false;\n\n    // Lock duration compatibility\n    if (other.defaultLockTimeout < minLockDuration) return false;\n    if (other.defaultLockTimeout > maxLockDuration) return false;\n\n    // Compatible with associated defaults\n    if (maxHistorySize < other.defaultHistorySize) return false;"
+        },
+        {
+          "name": "pattern1",
+          "type": "return",
+          "doc": "Creates a merged configuration using the most permissive values from both configurations.\n  ///\n  /// This is useful when you need to ensure compatibility between two environments.\n  ///\n  /// Returns a new EntityConfig that will be compatible with both source configurations.\n  EntityConfig mergeWith(EntityConfig other) {\n    return EntityConfig(\n      // Take the larger value for limits\n      maxPathLength: math.max(maxPathLength, other.maxPathLength),\n      maxPathSegment: math.max(maxPathSegment, other.maxPathSegment),\n      maxHierarchyDepth: math.max(maxHierarchyDepth, other.maxHierarchyDepth),\n      maxHistorySize: math.max(maxHistorySize, other.maxHistorySize),\n      defaultHistorySize: math.min(\n        math.max(defaultHistorySize, other.defaultHistorySize),\n        math.max(maxHistorySize, other.maxHistorySize),\n      ),\n\n      // Take the wider ranges for durations\n      defaultLockTimeout: Duration(\n        milliseconds:\n            (defaultLockTimeout.inMilliseconds +\n                other.defaultLockTimeout.inMilliseconds) ~/\n            2,\n      ),\n      lockExtensionPeriod: Duration(\n        milliseconds: math.max(\n          lockExtensionPeriod.inMilliseconds,\n          other.lockExtensionPeriod.inMilliseconds,\n        ),\n      ),\n      minLockDuration: Duration(\n        milliseconds: math.min(\n          minLockDuration.inMilliseconds,\n          other.minLockDuration.inMilliseconds,\n        ),\n      ),\n      maxLockDuration: Duration(\n        milliseconds: math.max(\n          maxLockDuration.inMilliseconds,\n          other.maxLockDuration.inMilliseconds,\n        ),\n      ),\n\n      // Preserve path separator from this config (they should be the same for compatibility)\n      pathSeparator: pathSeparator,\n\n      // Use most permissive regex pattern for invalid chars (if they differ)\n      invalidPathChars:\n          invalidPathChars == other.invalidPathChars\n              ? invalidPathChars\n              : _mergeInvalidCharsPatterns(\n                invalidPathChars,\n                other.invalidPathChars,\n              ),\n\n      // Use newest schema version\n      defaultVersion:\n          _compareVersions(defaultVersion, other.defaultVersion) >= 0\n              ? defaultVersion\n              : other.defaultVersion,\n\n      // Keep other settings from this config\n      defaultIsPublic: defaultIsPublic,\n      defaultPriority: defaultPriority,\n      defaultStage: defaultStage,\n    );\n  }\n\n  /// Helper method to merge two regex patterns for invalid characters,\n  /// creating a more permissive pattern that allows characters valid in either pattern.\n  static String _mergeInvalidCharsPatterns(String pattern1, String pattern2) {\n    // This is a simplified implementation - in a real system you might want\n    // a more sophisticated regex manipulation approach\n    try {\n      if (pattern1 == pattern2) return pattern1;\n\n      // Simple approach: just use the more restrictive pattern\n      // A more complete approach would parse and merge the character sets\n      if (pattern1.length > pattern2.length) return pattern2;"
+        },
+        {
+          "name": "v1Parts",
+          "type": "final",
+          "doc": "Helper method to compare semantic version strings.\n  /// Returns positive if v1 > v2, negative if v1 < v2, 0 if equal.\n  static int _compareVersions(String v1, String v2) {\n    try {"
+        },
+        {
+          "name": "v2Parts",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "diff",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "version",
+          "type": "final",
+          "doc": "Checks if this configuration version is compatible with another version.\n  ///\n  /// Follows semantic versioning principles:\n  /// - Major versions must match (breaking changes)\n  /// - If this is being used with data created by otherVersion, this.minor >= other.minor\n  ///\n  /// [otherVersion] - Version string to check compatibility with (e.g., \"1.2.3\")\n  /// [thisVersion] - Optional version to check, defaults to this config's version\n  ///\n  /// Returns true if versions are compatible.\n  bool isVersionCompatible(String otherVersion, [String? thisVersion]) {"
+        },
+        {
+          "name": "vParts",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "otherParts",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "false",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "true",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "version",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "version",
+          "type": "final",
+          "doc": "Creates a new configuration with an incremented version.\n  ///\n  /// [increment] - Which part to increment: \"major\", \"minor\", or \"patch\"\n  /// [baseVersion] - Optional base version, defaults to this config's version\n  ///\n  /// Returns a new version string following semantic versioning.\n  String incrementVersion(String increment, [String? baseVersion]) {"
+        },
+        {
+          "name": "parts",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "newVersion",
+          "type": "final",
+          "doc": "Creates a new config with the version number incremented.\n  ///\n  /// This creates a new configuration with an updated version while\n  /// preserving all other settings.\n  ///\n  /// [increment] - Which part to increment: \"major\", \"minor\", or \"patch\"\n  ///\n  /// Returns a new EntityConfig with the updated version.\n  EntityConfig withIncrementedVersion(String increment) {"
+        }
+      ]
+    },
+    "DataManagerException": {
+      "file": "lib/src/domain/core/exceptions.dart",
+      "methods": [
+        {
+          "name": "DataManagerException",
+          "params": "{\n    required this.message,\n    this.details,\n    this.context,\n  });\n\n  @override\n  String toString(",
+          "doc": ""
+        }
+      ],
+      "properties": [
+        {
+          "name": "message",
+          "type": "String",
+          "doc": ""
+        },
+        {
+          "name": "buffer",
+          "type": "final",
+          "doc": ""
+        }
+      ]
+    },
+    "ValidationException": {
+      "file": "lib/src/domain/core/exceptions.dart",
+      "methods": [],
+      "properties": [
+        {
+          "name": "field",
+          "type": "String",
+          "doc": ""
+        },
+        {
+          "name": "invalidValue",
+          "type": "dynamic",
+          "doc": ""
+        }
+      ]
+    },
+    "FieldValidationException": {
+      "file": "lib/src/domain/core/exceptions.dart",
+      "methods": [],
+      "properties": []
+    },
+    "PathValidationException": {
+      "file": "lib/src/domain/core/exceptions.dart",
+      "methods": [],
+      "properties": []
+    },
+    "HierarchyValidationException": {
+      "file": "lib/src/domain/core/exceptions.dart",
+      "methods": [],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "doc": ""
+        },
+        {
+          "name": "path",
+          "type": "List<String>",
+          "doc": ""
+        }
+      ]
+    },
+    "HierarchyException": {
+      "file": "lib/src/domain/core/exceptions.dart",
+      "methods": [],
+      "properties": []
+    },
+    "VersionConflictException": {
+      "file": "lib/src/domain/core/exceptions.dart",
+      "methods": [],
+      "properties": [
+        {
+          "name": "currentVersion",
+          "type": "String",
+          "doc": ""
+        },
+        {
+          "name": "conflictingVersion",
+          "type": "String",
+          "doc": ""
+        }
+      ]
+    },
+    "LockException": {
+      "file": "lib/src/domain/core/exceptions.dart",
+      "methods": [],
+      "properties": []
+    },
+    "AccessException": {
+      "file": "lib/src/domain/core/exceptions.dart",
+      "methods": [],
+      "properties": [
+        {
+          "name": "resource",
+          "type": "String",
+          "doc": ""
+        },
+        {
+          "name": "action",
+          "type": "String",
+          "doc": ""
+        }
+      ]
+    },
+    "IntegrityException": {
+      "file": "lib/src/domain/core/exceptions.dart",
+      "methods": [],
+      "properties": [
+        {
+          "name": "entity",
+          "type": "String",
+          "doc": ""
+        },
+        {
+          "name": "operation",
+          "type": "String",
+          "doc": ""
+        }
+      ]
+    },
+    "OperationException": {
+      "file": "lib/src/domain/core/exceptions.dart",
+      "methods": [],
+      "properties": [
+        {
+          "name": "operation",
+          "type": "String",
+          "doc": ""
+        },
+        {
+          "name": "params",
+          "type": "Map<String, dynamic>",
+          "doc": ""
+        }
+      ]
+    },
+    "AIProcessingException": {
+      "file": "lib/src/domain/core/exceptions.dart",
+      "methods": [],
+      "properties": [
+        {
+          "name": "modelId",
+          "type": "String",
+          "doc": ""
+        },
+        {
+          "name": "operation",
+          "type": "String",
+          "doc": ""
+        }
+      ]
+    }
+  },
+  "interfaces": {
     "EventAwareRepository": {
       "file": "lib/src/domain/repositories/event_aware_repository.dart",
       "methods": [
@@ -2232,6 +2684,56 @@
         {
           "name": "restoreFromSnapshot",
           "params": "DateTime timestamp) async {\n    await eventStore.restoreFromSnapshot(timestamp",
+          "doc": ""
+        }
+      ]
+    },
+    "IEventStore": {
+      "file": "lib/src/domain/repositories/event/i_event_store.dart",
+      "methods": [
+        {
+          "name": "store",
+          "params": "DomainEventModel event",
+          "doc": ""
+        },
+        {
+          "name": "watchEvents",
+          "params": "EntityId entityId",
+          "doc": ""
+        },
+        {
+          "name": "createSnapshot",
+          "params": "DateTime timestamp",
+          "doc": ""
+        },
+        {
+          "name": "pruneEvents",
+          "params": "DateTime olderThan",
+          "doc": ""
+        },
+        {
+          "name": "updateVersionVectors",
+          "params": "EntityId entityId,\n    Map<String, int> vectors,",
+          "doc": ""
+        },
+        {
+          "name": "getVersionEvent",
+          "params": "EntityId entityId, int version",
+          "doc": ""
+        },
+        {
+          "name": "rebaseEvents",
+          "params": "EntityId entityId,\n    List<DomainEventModel> newBaseEvents,",
+          "doc": ""
+        },
+        {
+          "name": "getLatestSnapshot",
+          "params": "EntityId entityId",
+          "doc": ""
+        },
+        {
+          "name": "hasVersionConflict",
+          "params": "EntityId entityId,\n    Map<String, int> versionVectors,",
           "doc": ""
         }
       ]
@@ -2341,55 +2843,9 @@
         }
       ]
     },
-    "IEventStore": {
-      "file": "lib/src/domain/repositories/event/i_event_store.dart",
-      "methods": [
-        {
-          "name": "store",
-          "params": "DomainEventModel event",
-          "doc": ""
-        },
-        {
-          "name": "watchEvents",
-          "params": "EntityId entityId",
-          "doc": ""
-        },
-        {
-          "name": "createSnapshot",
-          "params": "DateTime timestamp",
-          "doc": ""
-        },
-        {
-          "name": "pruneEvents",
-          "params": "DateTime olderThan",
-          "doc": ""
-        },
-        {
-          "name": "updateVersionVectors",
-          "params": "EntityId entityId,\n    Map<String, int> vectors,",
-          "doc": ""
-        },
-        {
-          "name": "getVersionEvent",
-          "params": "EntityId entityId, int version",
-          "doc": ""
-        },
-        {
-          "name": "rebaseEvents",
-          "params": "EntityId entityId,\n    List<DomainEventModel> newBaseEvents,",
-          "doc": ""
-        },
-        {
-          "name": "getLatestSnapshot",
-          "params": "EntityId entityId",
-          "doc": ""
-        },
-        {
-          "name": "hasVersionConflict",
-          "params": "EntityId entityId,\n    Map<String, int> versionVectors,",
-          "doc": ""
-        }
-      ]
+    "SystemLimits": {
+      "file": "lib/src/domain/entities/base_entity.dart",
+      "methods": []
     },
     "EventDefaults": {
       "file": "lib/src/domain/events/domain_event.dart",
@@ -2399,12 +2855,63 @@
       "file": "lib/src/domain/events/domain_event.dart",
       "methods": []
     },
-    "SystemLimits": {
-      "file": "lib/src/domain/entities/base_entity.dart",
+    "EntityDefaults": {
+      "file": "lib/src/domain/core/core_entity.dart",
       "methods": []
+    },
+    "DataManagerException": {
+      "file": "lib/src/domain/core/exceptions.dart",
+      "methods": [
+        {
+          "name": "DataManagerException",
+          "params": "{\n    required this.message,\n    this.details,\n    this.context,\n  }",
+          "doc": ""
+        },
+        {
+          "name": "toString",
+          "params": "",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "details != null) buffer.write('\\nDetails: $details'",
+          "doc": ""
+        }
+      ]
     }
   },
   "enums": {
+    "EventType": {
+      "file": "lib/src/domain/events/domain_event.dart",
+      "values": [
+        "// Entity lifecycle\n  created",
+        "updated",
+        "deleted",
+        "// Status management\n  locked",
+        "unlocked",
+        "statusChanged",
+        "// Workflow\n  workflowChanged",
+        "workflowTransitioned",
+        "workflowStepCompleted",
+        "workflowStepRejected",
+        "// Relationships\n  relationshipChanged",
+        "relationshipAdded",
+        "relationshipRemoved",
+        "// Hierarchy\n  hierarchyChanged",
+        "hierarchyParentChanged",
+        "hierarchyChildAdded",
+        "hierarchyChildRemoved",
+        "// Metadata\n  metadataChanged",
+        "tagged",
+        "untagged",
+        "// Access control\n  accessGranted",
+        "accessRevoked",
+        "// Synchronization\n  syncStarted",
+        "syncCompleted",
+        "// Versioning\n  versionCreated",
+        "versionMerged"
+      ]
+    },
     "OperationType": {
       "file": "lib/src/domain/value_objects/enum_objects.dart",
       "values": [
@@ -2508,52 +3015,9 @@
         "lockedByOtherUser",
         "expired"
       ]
-    },
-    "EventType": {
-      "file": "lib/src/domain/events/domain_event.dart",
-      "values": [
-        "// Entity lifecycle\n  created",
-        "updated",
-        "deleted",
-        "// Status management\n  locked",
-        "unlocked",
-        "statusChanged",
-        "// Workflow\n  workflowChanged",
-        "workflowTransitioned",
-        "workflowStepCompleted",
-        "workflowStepRejected",
-        "// Relationships\n  relationshipChanged",
-        "relationshipAdded",
-        "relationshipRemoved",
-        "// Hierarchy\n  hierarchyChanged",
-        "hierarchyParentChanged",
-        "hierarchyChildAdded",
-        "hierarchyChildRemoved",
-        "// Metadata\n  metadataChanged",
-        "tagged",
-        "untagged",
-        "// Access control\n  accessGranted",
-        "accessRevoked",
-        "// Synchronization\n  syncStarted",
-        "syncCompleted",
-        "// Versioning\n  versionCreated",
-        "versionMerged"
-      ]
     }
   },
   "typedefs": {
-    "EntityVersionVector": {
-      "file": "lib/src/domain/entities/base_entity.dart",
-      "type": "Map<String, int>"
-    },
-    "EntityEventMeta": {
-      "file": "lib/src/domain/entities/base_entity.dart",
-      "type": "Map<String, Object>"
-    },
-    "EntitySearchIndex": {
-      "file": "lib/src/domain/entities/base_entity.dart",
-      "type": "Map<String, Object>"
-    },
     "OwnerEntity": {
       "file": "lib/src/domain/entities/entity_types.dart",
       "type": "BaseEntityModel<OwnerModel>"
@@ -2573,18 +3037,30 @@
     "PersonnelEntity": {
       "file": "lib/src/domain/entities/entity_types.dart",
       "type": "BaseEntityModel<PersonnelModel>"
+    },
+    "EntityVersionVector": {
+      "file": "lib/src/domain/entities/base_entity.dart",
+      "type": "Map<String, int>"
+    },
+    "EntityEventMeta": {
+      "file": "lib/src/domain/entities/base_entity.dart",
+      "type": "Map<String, Object>"
+    },
+    "EntitySearchIndex": {
+      "file": "lib/src/domain/entities/base_entity.dart",
+      "type": "Map<String, Object>"
     }
   },
   "functions": {
-    "EventServiceProvider": {
-      "file": "lib/src/application/providers/event_service_provider.dart",
-      "params": "{EventMigrationService? migrationService})\n    : _migrationService = migrationService ?? EventMigrationService();\n\n  /// Extension method to allow DomainEventModel to use the migration service\n  /// without violating clean architecture principles\n  DomainEventModel migrateEventSchema(\n    DomainEventModel event,\n    String targetVersion,",
-      "doc": "Provider class that connects domain model with the application services\nclass EventServiceProvider {\n  final EventMigrationService _migrationService;"
-    },
     "migrate": {
       "file": "lib/src/application/extensions/domain_event_extensions.dart",
       "params": "String targetVersion,\n    EventServiceProvider serviceProvider,",
       "doc": "Extension methods for working with domain events in the application layer\nextension DomainEventModelExtensions on DomainEventModel {\n  /// Migrates the event schema to the target version using the provided service provider\n  ///\n  /// Usage example:\n  /// ```dart\n  /// final serviceProvider = EventServiceProvider();\n  /// final migratedEvent = event.migrate('1.1.0', serviceProvider);\n  /// ```"
+    },
+    "EventServiceProvider": {
+      "file": "lib/src/application/providers/event_service_provider.dart",
+      "params": "{EventMigrationService? migrationService})\n    : _migrationService = migrationService ?? EventMigrationService();\n\n  /// Extension method to allow DomainEventModel to use the migration service\n  /// without violating clean architecture principles\n  DomainEventModel migrateEventSchema(\n    DomainEventModel event,\n    String targetVersion,",
+      "doc": "Provider class that connects domain model with the application services\nclass EventServiceProvider {\n  final EventMigrationService _migrationService;"
     },
     "migrateEventSchema": {
       "file": "lib/src/application/services/event_migration_service.dart",
@@ -2592,8 +3068,8 @@
       "doc": "Service responsible for handling domain event schema migrations\nclass EventMigrationService {\n  /// Migrates a domain event to the target schema version\n  ///\n  /// This method implements the migration logic that was previously in the domain layer,\n  /// following Clean Architecture principles by keeping the implementation details\n  /// out of the domain layer."
     },
     "if": {
-      "file": "lib/src/domain/entities/base_entity.dart",
-      "params": "!hierarchy.childIds.contains(childId)) return this;\n    return copyWith(hierarchy: hierarchy.removeChild(childId));\n  }\n\n  /// Validates and corrects the hierarchy leaf status if needed\n  ///\n  /// This method ensures that the [isHierarchyLeaf] property correctly reflects\n  /// whether the entity has children or not.\n  ///\n  /// Returns an updated entity with corrected leaf status\n  BaseEntityModel<T> validateHierarchyLeafStatus(",
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "parts.length != 3",
       "doc": ""
     },
     "UnsupportedError": {
@@ -2602,83 +3078,13 @@
       "doc": ""
     },
     "switch": {
-      "file": "lib/src/domain/entities/entity_types.dart",
-      "params": "event.eventType",
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "increment.toLowerCase()",
       "doc": ""
     },
     "_migrateFrom100To110": {
       "file": "lib/src/application/services/event_migration_service.dart",
       "params": "event);\n\n      // Add more migration paths as needed\n\n      default:\n        // For now, if there's no specific migration needed, return as-is\n        return event;\n    }\n  }\n\n  /// Example migration implementation from v1.0.0 to v1.1.0\n  DomainEventModel _migrateFrom100To110(DomainEventModel event",
-      "doc": ""
-    },
-    "EntityConfig": {
-      "file": "lib/src/domain/core/entity_config.dart",
-      "params": "maxPathLength: maxPathLength ?? const EntityConfig().maxPathLength,\n      maxPathSegment: maxPathSegment ?? const EntityConfig().maxPathSegment,\n      maxHierarchyDepth:\n          maxHierarchyDepth ?? const EntityConfig().maxHierarchyDepth,\n      maxHistorySize: maxHistorySize ?? const EntityConfig().maxHistorySize,\n      defaultHistorySize:\n          defaultHistorySize ?? const EntityConfig().defaultHistorySize,\n      defaultLockTimeout:\n          defaultLockTimeout ?? const EntityConfig().defaultLockTimeout,\n      lockExtensionPeriod:\n          lockExtensionPeriod ?? const EntityConfig().lockExtensionPeriod,\n      minLockDuration: minLockDuration ?? const EntityConfig().minLockDuration,\n      maxLockDuration: maxLockDuration ?? const EntityConfig().maxLockDuration,\n      defaultVersion: defaultVersion ?? const EntityConfig().defaultVersion,\n      defaultIsPublic: defaultIsPublic ?? const EntityConfig().defaultIsPublic,\n      defaultPriority: defaultPriority ?? const EntityConfig().defaultPriority,\n      defaultStage: defaultStage ?? const EntityConfig().defaultStage,\n      pathSeparator: pathSeparator ?? const EntityConfig().pathSeparator,\n      invalidPathChars:\n          invalidPathChars ?? const EntityConfig().invalidPathChars,\n    );\n  }\n\n  factory EntityConfig.fromJson(Map<String, Object?> json",
-      "doc": "Defines configuration settings for entities within the data manager.\n///\n/// This immutable configuration class provides default settings for various\n/// entity-related operations including path handling, history tracking,\n/// locking behavior, and entity state defaults.\n@freezed\nsealed class EntityConfig with _$EntityConfig {\n  const factory EntityConfig({\n    // Path limits\n    /// Maximum length of an entity path in characters.\n    @Default(1024) int maxPathLength,\n\n    /// Maximum length of a single path segment in characters.\n    @Default(255) int maxPathSegment,\n\n    /// Maximum allowed depth of entity hierarchies.\n    @Default(10) int maxHierarchyDepth,\n\n    // History limits\n    /// Maximum number of history entries to retain per entity.\n    @Default(50) int maxHistorySize,\n\n    /// Default number of history entries to show in views.\n    @Default(50) int defaultHistorySize,\n\n    // Lock settings\n    /// Default duration before an entity lock expires.\n    @Default(Duration(minutes: 15)) Duration defaultLockTimeout,\n\n    /// Duration by which a lock can be extended.\n    @Default(Duration(minutes: 5)) Duration lockExtensionPeriod,\n\n    /// Minimum duration for which an entity can be locked.\n    @Default(Duration(seconds: 30)) Duration minLockDuration,\n\n    /// Maximum duration for which an entity can be locked.\n    @Default(Duration(hours: 24)) Duration maxLockDuration,\n\n    // Entity defaults\n    /// Default version string for new entities.\n    @Default('1.0.0') String defaultVersion,\n\n    /// Whether entities are public by default.\n    @Default(true) bool defaultIsPublic,\n\n    /// Default priority level for new entities.\n    @Default(EntityPriority.medium) EntityPriority defaultPriority,\n\n    /// Default workflow stage for new entities.\n    @Default(EntityStage.draft) EntityStage defaultStage,\n\n    // Path settings\n    /// Character used to separate path segments.\n    @Default('/') String pathSeparator,\n\n    /// Regular expression pattern defining invalid characters in paths.\n    ///\n    /// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).\n    /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.\n    ///\n    /// Default: `[<>:\"|?*\\x00-\\x1F]`\n    @Default(r'[<>:\"|?*\\x00-\\x1F]') String invalidPathChars,\n  }) = _EntityConfig;\n\n  /// Creates a new instance of [EntityConfig] with configuration optimized for development.\n  ///\n  /// This configuration has more permissive settings than the default.\n  factory EntityConfig.development() {\n    return const EntityConfig(\n      maxPathLength: 2048,\n      maxHistorySize: 100,\n      defaultLockTimeout: Duration(hours: 1),\n      minLockDuration: Duration(seconds: 5),\n      maxLockDuration: Duration(hours: 48),\n    );\n  }\n\n  /// Creates a new instance of [EntityConfig] with configuration optimized for production.\n  ///\n  /// This configuration has more restrictive settings than the default.\n  factory EntityConfig.production() {\n    return const EntityConfig(\n      maxPathLength: 512,\n      maxPathSegment: 128,\n      maxHierarchyDepth: 8,\n      maxHistorySize: 25,\n      defaultHistorySize: 10,\n      defaultLockTimeout: Duration(minutes: 10),\n      maxLockDuration: Duration(hours: 12),\n      defaultIsPublic: false,\n    );\n  }\n\n  /// Creates a new instance of [EntityConfig] with custom overrides.\n  ///\n  /// This factory allows you to define configuration settings for any environment (e.g., staging, testing, CI)\n  /// by overriding only the fields you need. All unspecified fields will use the default values.\n  ///\n  /// Example:\n  /// ```dart\n  /// final stagingConfig = EntityConfig.custom(\n  ///   maxPathLength: 1500,\n  ///   defaultIsPublic: false,\n  /// );\n  /// ```\n  ///\n  /// [maxPathLength] - Maximum length of an entity path in characters.\n  /// [maxPathSegment] - Maximum length of a single path segment in characters.\n  /// [maxHierarchyDepth] - Maximum allowed depth of entity hierarchies.\n  /// [maxHistorySize] - Maximum number of history entries to retain per entity.\n  /// [defaultHistorySize] - Default number of history entries to show in views.\n  /// [defaultLockTimeout] - Default duration before an entity lock expires.\n  /// [lockExtensionPeriod] - Duration by which a lock can be extended.\n  /// [minLockDuration] - Minimum duration for which an entity can be locked.\n  /// [maxLockDuration] - Maximum duration for which an entity can be locked.\n  /// [defaultVersion] - Default version string for new entities.\n  /// [defaultIsPublic] - Whether entities are public by default.\n  /// [defaultPriority] - Default priority level for new entities.\n  /// [defaultStage] - Default workflow stage for new entities.\n  /// [pathSeparator] - Character used to separate path segments.\n  /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.\n  factory EntityConfig.custom({\n    int? maxPathLength,\n    int? maxPathSegment,\n    int? maxHierarchyDepth,\n    int? maxHistorySize,\n    int? defaultHistorySize,\n    Duration? defaultLockTimeout,\n    Duration? lockExtensionPeriod,\n    Duration? minLockDuration,\n    Duration? maxLockDuration,\n    String? defaultVersion,\n    bool? defaultIsPublic,\n    EntityPriority? defaultPriority,\n    EntityStage? defaultStage,\n    String? pathSeparator,\n    String? invalidPathChars,\n  }) {"
-    },
-    "DataManagerException": {
-      "file": "lib/src/domain/core/exceptions.dart",
-      "params": "{\n    required this.message,\n    this.details,\n    this.context,\n  });\n\n  @override\n  String toString(",
-      "doc": "Base exception class for all data manager errors\nabstract class DataManagerException implements Exception {\n  final String message;\n  final String? details;\n  final Map<String, dynamic>? context;"
-    },
-    "hasMetadata": {
-      "file": "lib/src/domain/core/core_entity.dart",
-      "params": "String key",
-      "doc": "Unique identifier string derived from the entity ID\n  String get uid => id.value;\n\n  /// Runtime type of the entity data\n  String get type => data?.runtimeType.toString() ?? T.toString();\n\n  /// Access metadata with type safety\n  TypedMetadata get typedMeta => TypedMetadata(meta);\n\n  /// Get a value from meta with an expected type\n  ///\n  /// Returns null if the key doesn't exist or there's a type conversion error\n  R? get<R>(String key) {\n    return _getValueWithType<R>(key);\n  }\n\n  /// Retrieve metadata by key with a simplified interface\n  ///\n  /// Returns the value from metadata or null if not found\n  Object? getMetadata(String key) => meta[key];\n\n  /// Check if metadata contains a specific key"
-    },
-    "TypeError": {
-      "file": "lib/src/domain/core/core_entity.dart",
-      "params": ");\n    } catch (e",
-      "doc": ""
-    },
-    "UserAction": {
-      "file": "lib/src/domain/value_objects/user_action.dart",
-      "params": "uid: 'system',\n      timestamp: DateTime.now(),\n      actionType: actionType,\n      description: description,\n      isAuthenticated: true,\n      isAuthorized: true,\n    );\n  }\n}\n\n/// Extension methods for UserAction\nextension UserActionX on UserAction {\n  /// Checks if the action is a system action\n  bool get isSystemAction => uid == 'system';\n\n  /// Checks if the action is an anonymous action\n  bool get isAnonymousAction => uid == 'anonymous';\n\n  /// Gets the action age\n  Duration get age => DateTime.now().difference(timestamp);\n\n  /// Checks if the action is recent (within last hour)\n  bool get isRecent => age.inHours < 1;\n\n  /// Creates a copy with audit trail information\n  UserAction withAuditInfo({\n    required String previousValue,\n    required String newValue,\n    required String reason,\n  }",
-      "doc": ""
-    },
-    "copyWith": {
-      "file": "lib/src/domain/entities/base_entity.dart",
-      "params": "versioning: versioning.copyWith(\n        dataVer: versioning.dataVer + 1,\n        structVer:\n            isStructural ? versioning.structVer + 1 : versioning.structVer,\n      ),\n    );\n  }\n}\n\n/// Data transfer object for entity metadata\n@freezed\nsealed class EntityMetadata with _$EntityMetadata {\n  const EntityMetadata._();\n\n  /// Creates a new EntityMetadata instance\n  ///\n  /// [displayName] - Human-readable display name\n  /// [entityType] - Type classification of the entity\n  /// [description] - Optional description text\n  /// [lastNameUpdate] - When the name was last changed\n  /// [searchTerms] - Key-value pairs for enhanced searching\n  const factory EntityMetadata({\n    required String displayName,\n    required String entityType,\n    String? description,\n    DateTime? lastNameUpdate,\n    @Default({}) Map<String, String> searchTerms,\n  }) = _EntityMetadata;\n\n  /// Creates EntityMetadata from a JSON map\n  factory EntityMetadata.fromJson(Map<String, Object> json",
-      "doc": ""
-    },
-    "low": {
-      "file": "lib/src/domain/value_objects/enum_objects.dart",
-      "params": "'low'),\n\n  /// Medium priority entities (default).\n  medium('medium'),\n\n  /// High priority entities.\n  high('high'),\n\n  /// Critical priority entities requiring immediate attention.\n  critical('critical');\n\n  /// Creates a new entity priority with the given string representation.\n  const EntityPriority(this.value);\n\n  /// The string representation of this priority level.\n  final String value;\n\n  /// Converts a string to the corresponding EntityPriority.\n  ///\n  /// Returns [EntityPriority.medium] if the string doesn't match any priority.\n  static EntityPriority fromString(String value",
-      "doc": "Defines priority levels for entities in the data manager.\nenum EntityPriority {\n  /// Low priority entities."
-    },
-    "draft": {
-      "file": "lib/src/domain/value_objects/enum_objects.dart",
-      "params": "'draft'),\n\n  /// Review stage where entity is being evaluated.\n  review('review'),\n\n  /// Approved stage ready for publication or deployment.\n  approved('approved'),\n\n  /// Published stage where entity is publicly available.\n  published('published'),\n\n  /// Archived stage for inactive entities.\n  archived('archived');\n\n  /// Creates a new entity stage with the given string representation.\n  const EntityStage(this.value);\n\n  /// The string representation of this workflow stage.\n  final String value;\n\n  /// Converts a string to the corresponding EntityStage.\n  ///\n  /// Returns [EntityStage.draft] if the string doesn't match any stage.\n  static EntityStage fromString(String value",
-      "doc": "Defines workflow stages for entities in the data manager.\nenum EntityStage {\n  /// Initial draft stage."
-    },
-    "isWithinTolerance": {
-      "file": "lib/src/domain/value_objects/measurement_value_objects.dart",
-      "params": "double target",
-      "doc": ""
-    },
-    "overlaps": {
-      "file": "lib/src/domain/value_objects/measurement_value_objects.dart",
-      "params": "Range<T> other",
-      "doc": ""
-    },
-    "ReferenceNumber": {
-      "file": "lib/src/domain/value_objects/identity_value_objects.dart",
-      "params": "prefix: parts[0],\n      sequence: int.parse(parts[1]),\n      suffix: parts.length > 2 ? parts[2] : null,\n    );\n  }\n\n  factory ReferenceNumber.fromJson(Map<String, Object?> json",
-      "doc": ""
-    },
-    "contains": {
-      "file": "lib/src/domain/value_objects/time_value_objects.dart",
-      "params": "DateTime time",
-      "doc": ""
-    },
-    "isActive": {
-      "file": "lib/src/domain/value_objects/time_value_objects.dart",
-      "params": "",
-      "doc": ""
-    },
-    "isAvailable": {
-      "file": "lib/src/domain/value_objects/time_value_objects.dart",
-      "params": "DateTime time",
       "doc": ""
     },
     "StateError": {
@@ -2705,36 +3111,6 @@
       "file": "lib/src/domain/repositories/event/i_event_store.dart",
       "params": "DomainEventModel event);\n  Future<void> storeBatch(List<DomainEventModel> events);\n  Future<List<DomainEventModel>> getEvents(EntityId entityId);\n  Future<List<DomainEventModel>> queryEvents(EventQuery query);\n  Stream<DomainEventModel> watchEvents(EntityId entityId);\n\n  // Snapshot management\n  Future<void> createSnapshot(DateTime timestamp);\n  Future<void> restoreFromSnapshot(DateTime timestamp);\n  Future<void> pruneEvents(DateTime olderThan);\n  Future<void> compactEvents(DateTime upTo);\n\n  // Enhanced event queries\n  Future<List<DomainEventModel>> getEventsByType(\n    String eventType, {\n    DateTime? since,\n    int? limit,\n  });\n  Future<List<DomainEventModel>> getEventsByCorrelation(String correlationId);\n  Future<List<DomainEventModel>> getEventChain(String causationId);\n\n  // Version control\n  Future<Map<String, int>> getVersionVectors(EntityId entityId);\n  Future<void> updateVersionVectors(\n    EntityId entityId,\n    Map<String, int> vectors,\n  );\n  Future<List<DomainEventModel>> getEventsForVersion(\n    EntityId entityId,\n    int version,\n  );\n  Future<DomainEventModel?> getVersionEvent(EntityId entityId, int version);\n\n  // Event replay and recovery\n  Future<List<DomainEventModel>> replayEvents(\n    EntityId entityId,\n    DateTime fromTimestamp,\n    DateTime toTimestamp,\n  );\n  Future<void> rebaseEvents(\n    EntityId entityId,\n    List<DomainEventModel> newBaseEvents,\n  );\n\n  // Enhanced snapshot management\n  Future<DomainEventModel?> getLatestSnapshot(EntityId entityId);\n  Future<void> createVersionSnapshot(EntityId entityId, int version);\n  Future<bool> hasVersionConflict(\n    EntityId entityId,\n    Map<String, int> versionVectors,\n  );\n}\n\n/// Event query parameters\nclass EventQuery {\n  final EntityId? entityId;\n  final DateTime? fromDate;\n  final DateTime? toDate;\n  final String? eventType;\n  final bool includeSystemEvents;\n  final int? limit;\n  final Map<String, Object>? filters;\n  final bool ascending;\n\n  const EventQuery({\n    this.entityId,\n    this.fromDate,\n    this.toDate,\n    this.eventType,\n    this.includeSystemEvents = false,\n    this.limit,\n    this.filters,\n    this.ascending = true,\n  });\n\n  EventQuery copyWith({\n    EntityId? entityId,\n    DateTime? fromDate,\n    DateTime? toDate,\n    String? eventType,\n    bool? includeSystemEvents,\n    int? limit,\n    Map<String, Object>? filters,\n    bool? ascending,\n  }",
       "doc": "Core event store interface for domain event persistence\nabstract class IEventStore {\n  // Event operations"
-    },
-    "DomainEventModel": {
-      "file": "lib/src/domain/events/domain_event.dart",
-      "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.validated.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: {\n        'isValid': result.isValid,\n        'issues': result.issues,\n      },\n    );\n  }\n  */\n\n  /// Schema validation\n  bool hasValidSchema(",
-      "doc": ""
-    },
-    "isBackwardsCompatible": {
-      "file": "lib/src/domain/events/domain_event.dart",
-      "params": "",
-      "doc": ""
-    },
-    "migrateSchema": {
-      "file": "lib/src/domain/events/domain_event.dart",
-      "params": "String targetVersion",
-      "doc": "Domain event interface method for schema migration\n  /// Actual implementation is moved to application layer"
-    },
-    "UnimplementedError": {
-      "file": "lib/src/domain/events/domain_event.dart",
-      "params": "'Schema migration implementation should be provided by the application layer',\n    );\n  }\n\n  /// Schema version vector operations\n  bool hasVectorConflict(Map<String, int> otherVectors",
-      "doc": ""
-    },
-    "incrementVector": {
-      "file": "lib/src/domain/events/domain_event.dart",
-      "params": "String node",
-      "doc": ""
-    },
-    "for": {
-      "file": "lib/src/domain/events/domain_event.dart",
-      "params": "final entry in otherVectors.entries",
-      "doc": ""
     },
     "EntityCreateConfig": {
       "file": "lib/src/domain/entities/entity_factory.dart",
@@ -2836,15 +3212,25 @@
       "params": "message: 'Circular reference detected',\n        field: 'hierarchy',\n        depth: entity.hierarchy.ancestors.length,\n        path: entity.hierarchy.ancestors.map((a",
       "doc": ""
     },
+    "applyEvent": {
+      "file": "lib/src/domain/entities/entity_types.dart",
+      "params": "DomainEventModel event",
+      "doc": ""
+    },
     "addChild": {
       "file": "lib/src/domain/entities/base_entity.dart",
       "params": "EntityId childId",
       "doc": "Global type aliases for improved readability and maintenance\ntypedef EntityVersionVector = Map<String, int>;\ntypedef EntityEventMeta = Map<String, Object>;\ntypedef EntitySearchIndex = Map<String, Object>;\n\n/// System-wide constants for entity limitations and boundaries\nabstract class SystemLimits {\n  /// Maximum length of a path in characters\n  static const int pathMaxLength = 1024;\n\n  /// Maximum length of a path segment in characters\n  static const int pathMaxSegment = 255;\n\n  /// Maximum allowed depth in entity hierarchy\n  static const int hierarchyDepthMax = 10;\n\n  /// Maximum number of history entries to retain\n  static const int historyMax = 50;\n\n  /// Default number of history entries to retain\n  static const int historyDefault = 50;\n}\n\n/// Represents hierarchy information for an entity including tree structure and relationships\n@freezed\nsealed class EntityHierarchy with _$EntityHierarchy {\n  /// Creates a new EntityHierarchy instance\n  const factory EntityHierarchy({\n    /// Full path in the entity tree\n    ///\n    /// Format: '/parent_id/grandparent_id/entity_id'\n    /// - Paths use forward slashes as separators\n    /// - Paths start with a leading slash\n    /// - Path segments are entity IDs in reverse ancestry order\n    /// - Root entities have path equal to their ID or '/' + ID\n    /// - Maximum path length is limited to [SystemLimits.pathMaxLength]\n    /// - Maximum segment length is limited to [SystemLimits.pathMaxSegment]\n    String? treePath,\n\n    /// Depth level in the hierarchy (0 = root)\n    @Default(0) int treeDepth,\n\n    /// List of ancestor entity IDs in order from root to parent\n    @Default(<EntityId>[]) List<EntityId> ancestors,\n\n    /// Direct parent entity ID\n    EntityId? parentId,\n\n    /// List of direct child entity IDs\n    @Default(<EntityId>[]) List<EntityId> childIds,\n\n    /// Indicates if this entity is a root node in a hierarchy\n    @Default(true) bool isHierarchyRoot,\n\n    /// Indicates if this entity is a leaf node (has no children)\n    @Default(true) bool isHierarchyLeaf,\n\n    /// Additional hierarchy-related metadata\n    ///\n    /// Expected keys:\n    ///   - 'created': String (ISO8601 timestamp)\n    ///   - 'pathType': String (e.g., 'root', 'branch', etc.)\n    ///   - Add more as needed for your application\n    @Default({}) Map<String, Object> hierarchyMeta,\n  }) = _EntityHierarchy;\n}\n\n/// Extension methods for EntityHierarchy operations\nextension EntityHierarchyOperations on EntityHierarchy {\n  /// Adds a child entity ID, automatically updating leaf status and meta"
     },
+    "copyWith": {
+      "file": "lib/src/domain/core/core_entity.dart",
+      "params": "meta: updatedMeta);\n  }\n\n  /// Try to retrieve a typed value from metadata\n  ///\n  /// This method tries to safely cast the value to the expected type.\n  /// Returns null if the key doesn't exist or if the type conversion fails.\n  R? _getValueWithType<R>(String key",
+      "doc": ""
+    },
     "isValidPath": {
-      "file": "lib/src/domain/entities/base_entity.dart",
-      "params": "String? path, {\n    EntityConfig? config,\n    bool requireLeadingSlash = true,\n  }",
-      "doc": "Unified path validation: checks both format and length constraints"
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "String path",
+      "doc": "Validates if a path string conforms to the configuration constraints.\n  ///\n  /// Checks if the path:\n  /// - Does not exceed the maximum path length\n  /// - Does not exceed the maximum hierarchy depth\n  /// - Does not contain invalid characters\n  /// - Does not have segments that exceed the maximum segment length\n  ///\n  /// Returns true if the path is valid according to all constraints."
     },
     "splitPath": {
       "file": "lib/src/domain/entities/base_entity.dart",
@@ -2852,8 +3238,8 @@
       "doc": ""
     },
     "sanitizePath": {
-      "file": "lib/src/domain/entities/base_entity.dart",
-      "params": "hierarchy.treePath,\n        leadingSlash: true,\n        trailingSlash: false,\n      ).toLowerCase();\n  List<String> get pathSegments => splitPath(hierarchy.treePath);\n\n  /// Returns a list of ancestor paths, each as a string up to that ancestor\n  List<String> get ancestorPaths {\n    final segments = pathSegments;\n    final paths = <String>[];\n    for (var i = 0; i < segments.length; i++",
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "segments.join(pathSeparator));\n  }\n\n  /// Extracts the parent path from a given path.\n  ///\n  /// Returns the parent path, or an empty string if the path has no parent.\n  String getParentPath(String path",
       "doc": ""
     },
     "isAncestorOf": {
@@ -2896,34 +3282,164 @@
       "params": "queue.length > maxSize",
       "doc": ""
     },
-    "applyEvent": {
-      "file": "lib/src/domain/entities/entity_types.dart",
-      "params": "DomainEventModel event",
+    "DomainEventModel": {
+      "file": "lib/src/domain/events/domain_event.dart",
+      "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.validated.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: {\n        'isValid': result.isValid,\n        'issues': result.issues,\n      },\n    );\n  }\n  */\n\n  /// Schema validation\n  bool hasValidSchema(",
       "doc": ""
+    },
+    "isBackwardsCompatible": {
+      "file": "lib/src/domain/events/domain_event.dart",
+      "params": "",
+      "doc": ""
+    },
+    "migrateSchema": {
+      "file": "lib/src/domain/events/domain_event.dart",
+      "params": "String targetVersion",
+      "doc": "Domain event interface method for schema migration\n  /// Actual implementation is moved to application layer"
+    },
+    "UnimplementedError": {
+      "file": "lib/src/domain/events/domain_event.dart",
+      "params": "'Schema migration implementation should be provided by the application layer',\n    );\n  }\n\n  /// Schema version vector operations\n  bool hasVectorConflict(Map<String, int> otherVectors",
+      "doc": ""
+    },
+    "incrementVector": {
+      "file": "lib/src/domain/events/domain_event.dart",
+      "params": "String node",
+      "doc": ""
+    },
+    "for": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "var i = 0; i < math.min(v1Parts.length, v2Parts.length); i++",
+      "doc": "Helper method to compare semantic version strings.\n  /// Returns positive if v1 > v2, negative if v1 < v2, 0 if equal.\n  static int _compareVersions(String v1, String v2) {\n    try {\n      final v1Parts = v1.split('.').map(int.parse).toList();\n      final v2Parts = v2.split('.').map(int.parse).toList();"
+    },
+    "low": {
+      "file": "lib/src/domain/value_objects/enum_objects.dart",
+      "params": "'low'),\n\n  /// Medium priority entities (default).\n  medium('medium'),\n\n  /// High priority entities.\n  high('high'),\n\n  /// Critical priority entities requiring immediate attention.\n  critical('critical');\n\n  /// Creates a new entity priority with the given string representation.\n  const EntityPriority(this.value);\n\n  /// The string representation of this priority level.\n  final String value;\n\n  /// Converts a string to the corresponding EntityPriority.\n  ///\n  /// Returns [EntityPriority.medium] if the string doesn't match any priority.\n  static EntityPriority fromString(String value",
+      "doc": "Defines priority levels for entities in the data manager.\nenum EntityPriority {\n  /// Low priority entities."
+    },
+    "draft": {
+      "file": "lib/src/domain/value_objects/enum_objects.dart",
+      "params": "'draft'),\n\n  /// Review stage where entity is being evaluated.\n  review('review'),\n\n  /// Approved stage ready for publication or deployment.\n  approved('approved'),\n\n  /// Published stage where entity is publicly available.\n  published('published'),\n\n  /// Archived stage for inactive entities.\n  archived('archived');\n\n  /// Creates a new entity stage with the given string representation.\n  const EntityStage(this.value);\n\n  /// The string representation of this workflow stage.\n  final String value;\n\n  /// Converts a string to the corresponding EntityStage.\n  ///\n  /// Returns [EntityStage.draft] if the string doesn't match any stage.\n  static EntityStage fromString(String value",
+      "doc": "Defines workflow stages for entities in the data manager.\nenum EntityStage {\n  /// Initial draft stage."
+    },
+    "UserAction": {
+      "file": "lib/src/domain/value_objects/user_action.dart",
+      "params": "uid: 'system',\n      timestamp: DateTime.now(),\n      actionType: actionType,\n      description: description,\n      isAuthenticated: true,\n      isAuthorized: true,\n    );\n  }\n}\n\n/// Extension methods for UserAction\nextension UserActionX on UserAction {\n  /// Checks if the action is a system action\n  bool get isSystemAction => uid == 'system';\n\n  /// Checks if the action is an anonymous action\n  bool get isAnonymousAction => uid == 'anonymous';\n\n  /// Gets the action age\n  Duration get age => DateTime.now().difference(timestamp);\n\n  /// Checks if the action is recent (within last hour)\n  bool get isRecent => age.inHours < 1;\n\n  /// Creates a copy with audit trail information\n  UserAction withAuditInfo({\n    required String previousValue,\n    required String newValue,\n    required String reason,\n  }",
+      "doc": ""
+    },
+    "isWithinTolerance": {
+      "file": "lib/src/domain/value_objects/measurement_value_objects.dart",
+      "params": "double target",
+      "doc": ""
+    },
+    "overlaps": {
+      "file": "lib/src/domain/value_objects/measurement_value_objects.dart",
+      "params": "Range<T> other",
+      "doc": ""
+    },
+    "contains": {
+      "file": "lib/src/domain/value_objects/time_value_objects.dart",
+      "params": "DateTime time",
+      "doc": ""
+    },
+    "isActive": {
+      "file": "lib/src/domain/value_objects/time_value_objects.dart",
+      "params": "",
+      "doc": ""
+    },
+    "isAvailable": {
+      "file": "lib/src/domain/value_objects/time_value_objects.dart",
+      "params": "DateTime time",
+      "doc": ""
+    },
+    "ReferenceNumber": {
+      "file": "lib/src/domain/value_objects/identity_value_objects.dart",
+      "params": "prefix: parts[0],\n      sequence: int.parse(parts[1]),\n      suffix: parts.length > 2 ? parts[2] : null,\n    );\n  }\n\n  factory ReferenceNumber.fromJson(Map<String, Object?> json",
+      "doc": ""
+    },
+    "TypeError": {
+      "file": "lib/src/domain/core/core_entity.dart",
+      "params": ");\n    } catch (e",
+      "doc": ""
+    },
+    "hasMetadata": {
+      "file": "lib/src/domain/core/core_entity.dart",
+      "params": "String key",
+      "doc": "Unique identifier string derived from the entity ID\n  String get uid => id.value;\n\n  /// Runtime type of the entity data\n  String get type => data?.runtimeType.toString() ?? T.toString();\n\n  /// Access metadata with type safety\n  TypedMetadata get typedMeta => TypedMetadata(meta);\n\n  /// Get a value from meta with an expected type\n  ///\n  /// Returns null if the key doesn't exist or there's a type conversion error\n  /// This is an alias for getMetadata<R>(key) for more concise syntax\n  R? get<R>(String key) => getMetadata<R>(key);\n\n  /// Retrieve metadata by key with a simplified interface\n  ///\n  /// Returns the value from metadata with the specified type or null if not found\n  /// For untyped access, use getMetadata<Object?>(key)\n  R? getMetadata<R>(String key) => _getValueWithType<R>(key);\n\n  /// Retrieve untyped metadata by key (backward compatibility)\n  ///\n  /// Returns the raw value from metadata or null if not found\n  Object? getRawMetadata(String key) => meta[key];\n\n  /// Check if metadata contains a specific key"
+    },
+    "filterMetadata": {
+      "file": "lib/src/domain/core/core_entity.dart",
+      "params": "bool Function(String key, Object value) predicate",
+      "doc": "Get metadata with type safety, providing a default value if not present\n  ///\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  R getMetadataOrDefault<R>(String key, R defaultValue) {\n    return _getValueWithType<R>(key) ?? defaultValue;\n  }\n  \n  /// Filter metadata based on a predicate\n  /// \n  /// Returns a new Map containing only the metadata entries for which the predicate returns true\n  /// [predicate] - Function that tests each key and value"
+    },
+    "withUpdatedMetadata": {
+      "file": "lib/src/domain/core/core_entity.dart",
+      "params": "Map<String, Object> updates, {\n    List<String>? removeKeys,\n  }",
+      "doc": "Creates a new instance of CoreEntity with updated metadata\n  /// \n  /// This method allows for bulk updates to metadata without changing other properties\n  /// [updates] - Map of key-value pairs to add or update in metadata\n  /// [removeKeys] - Optional list of keys to remove from metadata"
+    },
+    "EntityConfig": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "// Take the larger value for limits\n      maxPathLength: math.max(maxPathLength, other.maxPathLength),\n      maxPathSegment: math.max(maxPathSegment, other.maxPathSegment),\n      maxHierarchyDepth: math.max(maxHierarchyDepth, other.maxHierarchyDepth),\n      maxHistorySize: math.max(maxHistorySize, other.maxHistorySize),\n      defaultHistorySize: math.min(\n        math.max(defaultHistorySize, other.defaultHistorySize),\n        math.max(maxHistorySize, other.maxHistorySize),\n      ),\n\n      // Take the wider ranges for durations\n      defaultLockTimeout: Duration(\n        milliseconds:\n            (defaultLockTimeout.inMilliseconds +\n                other.defaultLockTimeout.inMilliseconds) ~/\n            2,\n      ),\n      lockExtensionPeriod: Duration(\n        milliseconds: math.max(\n          lockExtensionPeriod.inMilliseconds,\n          other.lockExtensionPeriod.inMilliseconds,\n        ),\n      ),\n      minLockDuration: Duration(\n        milliseconds: math.min(\n          minLockDuration.inMilliseconds,\n          other.minLockDuration.inMilliseconds,\n        ),\n      ),\n      maxLockDuration: Duration(\n        milliseconds: math.max(\n          maxLockDuration.inMilliseconds,\n          other.maxLockDuration.inMilliseconds,\n        ),\n      ),\n\n      // Preserve path separator from this config (they should be the same for compatibility)\n      pathSeparator: pathSeparator,\n\n      // Use most permissive regex pattern for invalid chars (if they differ)\n      invalidPathChars:\n          invalidPathChars == other.invalidPathChars\n              ? invalidPathChars\n              : _mergeInvalidCharsPatterns(\n                invalidPathChars,\n                other.invalidPathChars,\n              ),\n\n      // Use newest schema version\n      defaultVersion:\n          _compareVersions(defaultVersion, other.defaultVersion) >= 0\n              ? defaultVersion\n              : other.defaultVersion,\n\n      // Keep other settings from this config\n      defaultIsPublic: defaultIsPublic,\n      defaultPriority: defaultPriority,\n      defaultStage: defaultStage,\n    );\n  }\n\n  /// Helper method to merge two regex patterns for invalid characters,\n  /// creating a more permissive pattern that allows characters valid in either pattern.\n  static String _mergeInvalidCharsPatterns(String pattern1, String pattern2",
+      "doc": ""
+    },
+    "joinPath": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "List<String> segments",
+      "doc": "Joins path segments using the configured path separator.\n  ///\n  /// This is a convenience method that ensures consistent path formatting.\n  /// It also sanitizes the result to ensure it conforms to all path constraints.\n  ///\n  /// Returns the joined path, sanitized according to configuration constraints."
+    },
+    "isValidLockDuration": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "Duration lockDuration",
+      "doc": "Validates that a lock duration is within the configured limits.\n  ///\n  /// Returns true if the duration is between minLockDuration and maxLockDuration."
+    },
+    "constrainLockDuration": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "Duration lockDuration",
+      "doc": "Adjusts a lock duration to fit within the configured limits.\n  ///\n  /// If the input duration is too short, returns minLockDuration.\n  /// If the input duration is too long, returns maxLockDuration.\n  /// Otherwise, returns the original duration."
+    },
+    "getNameFromPath": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "String path",
+      "doc": "Extracts the last segment (name) from a path.\n  ///\n  /// Returns the name component, or the full path if there are no separators."
+    },
+    "isParentPath": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "String parentPath, String childPath",
+      "doc": "Checks if one path is a parent of another path.\n  ///\n  /// Returns true if parentPath is a parent of childPath."
+    },
+    "isValidEntityName": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "String name",
+      "doc": "Validates an entity name based on configuration constraints.\n  ///\n  /// Returns true if the name:\n  /// - Is not empty\n  /// - Does not contain path separators\n  /// - Does not contain invalid characters\n  /// - Does not exceed maxPathSegment length"
+    },
+    "isCompatibleWith": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "EntityConfig other",
+      "doc": "Checks if this configuration is compatible with another configuration.\n  ///\n  /// A configuration is considered compatible when:\n  /// 1. Its path limits are equal to or greater than the other configuration\n  /// 2. It uses the same path separator character\n  /// 3. Its lock duration constraints can accommodate the other's default lock duration\n  ///\n  /// Returns true if this configuration is compatible with the other configuration."
+    },
+    "isVersionCompatible": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "String otherVersion, [String? thisVersion]",
+      "doc": "Checks if this configuration version is compatible with another version.\n  ///\n  /// Follows semantic versioning principles:\n  /// - Major versions must match (breaking changes)\n  /// - If this is being used with data created by otherVersion, this.minor >= other.minor\n  ///\n  /// [otherVersion] - Version string to check compatibility with (e.g., \"1.2.3\")\n  /// [thisVersion] - Optional version to check, defaults to this config's version\n  ///\n  /// Returns true if versions are compatible."
+    },
+    "incrementVersion": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "String increment, [String? baseVersion]",
+      "doc": "Creates a new configuration with an incremented version.\n  ///\n  /// [increment] - Which part to increment: \"major\", \"minor\", or \"patch\"\n  /// [baseVersion] - Optional base version, defaults to this config's version\n  ///\n  /// Returns a new version string following semantic versioning."
+    },
+    "withIncrementedVersion": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "String increment",
+      "doc": "Creates a new config with the version number incremented.\n  ///\n  /// This creates a new configuration with an updated version while\n  /// preserving all other settings.\n  ///\n  /// [increment] - Which part to increment: \"major\", \"minor\", or \"patch\"\n  ///\n  /// Returns a new EntityConfig with the updated version."
+    },
+    "DataManagerException": {
+      "file": "lib/src/domain/core/exceptions.dart",
+      "params": "{\n    required this.message,\n    this.details,\n    this.context,\n  });\n\n  @override\n  String toString(",
+      "doc": "Base exception class for all data manager errors\nabstract class DataManagerException implements Exception {\n  final String message;\n  final String? details;\n  final Map<String, dynamic>? context;"
     }
   },
   "categories": {
     "entities": [
-      "EntityCreateConfig",
-      "EntityCloneConfig",
-      "EntityBuilder",
-      "EntityCloneBuilder",
-      "EntityFactory",
-      "SystemLimits",
-      "EntityHierarchy",
-      "EntitySecurity",
-      "EntityClassification",
-      "EntityVersioning",
-      "BaseEntityModel",
-      "EntityMetadata",
-      "OwnerModel",
-      "SiteModel",
-      "EquipmentModel",
-      "VendorModel",
-      "PersonnelModel"
-    ],
-    "repositories": [
-      "EventAwareRepository",
       "IEntityRepository",
       "QueryParams",
       "SearchParams",
@@ -2939,11 +3455,32 @@
       "LockState",
       "EntityAuditReport",
       "EntityRelation",
-      "AggregateRepositoryBase",
-      "EntityNotFoundException",
+      "EntityCreateConfig",
+      "EntityCloneConfig",
+      "EntityBuilder",
+      "EntityCloneBuilder",
+      "EntityFactory",
+      "OwnerModel",
+      "SiteModel",
+      "EquipmentModel",
+      "VendorModel",
+      "PersonnelModel",
+      "SystemLimits",
+      "EntityHierarchy",
+      "EntitySecurity",
+      "EntityClassification",
+      "EntityVersioning",
+      "BaseEntityModel",
+      "EntityMetadata",
+      "EntityConfig"
+    ],
+    "repositories": [
+      "EventAwareRepository",
       "IEventStore",
       "EventQuery",
-      "EventMetadata"
+      "EventMetadata",
+      "AggregateRepositoryBase",
+      "EntityNotFoundException"
     ],
     "services": [
       "EventMigrationService"
@@ -2956,13 +3493,13 @@
       "UserAction",
       "Measurement",
       "Range",
-      "EntityId",
-      "EventId",
-      "ReferenceNumber",
       "Progress",
       "TaskStatus",
       "TimeWindow",
-      "Schedule"
+      "Schedule",
+      "EntityId",
+      "EventId",
+      "ReferenceNumber"
     ]
   }
 }

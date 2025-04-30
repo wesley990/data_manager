@@ -29,11 +29,11 @@ Total Classes: 74
 Total Interfaces: 9
 Total Enums: 12
 Total Typedefs: 8
-Total Functions: 65
+Total Functions: 77
 
 Domain Components:
-  Entities: 17
-  Repositories: 21
+  Entities: 33
+  Repositories: 6
   Services: 1
   Value Objects: 14
 ```
@@ -789,7 +789,7 @@ sealed class UserAction with _$UserActi...
 
 **Properties:**
 
-- `final value` - Creates a new CoreEntity instance
+- `final updatedMeta` - Creates a new CoreEntity instance
   ///
   /// [id] - Unique identifier for this entity
   /// [name] - Human-readable name for this entity
@@ -828,14 +828,19 @@ sealed class UserAction with _$UserActi...
   /// Get a value from meta with an expected type
   ///
   /// Returns null if the key doesn't exist or there's a type conversion error
-  R? get<R>(String key) {
-    return _getValueWithType<R>(key);
-  }
+  /// This is an alias for getMetadata<R>(key) for more concise syntax
+  R? get<R>(String key) => getMetadata<R>(key);
 
   /// Retrieve metadata by key with a simplified interface
   ///
-  /// Returns the value from metadata or null if not found
-  Object? getMetadata(String key) => meta[key];
+  /// Returns the value from metadata with the specified type or null if not found
+  /// For untyped access, use getMetadata<Object?>(key)
+  R? getMetadata<R>(String key) => _getValueWithType<R>(key);
+
+  /// Retrieve untyped metadata by key (backward compatibility)
+  ///
+  /// Returns the raw value from metadata or null if not found
+  Object? getRawMetadata(String key) => meta[key];
 
   /// Check if metadata contains a specific key
   bool hasMetadata(String key) => meta.containsKey(key);
@@ -847,17 +852,39 @@ sealed class UserAction with _$UserActi...
   R getMetadataOrDefault<R>(String key, R defaultValue) {
     return _getValueWithType<R>(key) ?? defaultValue;
   }
-
-  /// Try to retrieve a typed value from metadata
+  
+  /// Filter metadata based on a predicate
+  /// 
+  /// Returns a new Map containing only the metadata entries for which the predicate returns true
+  /// [predicate] - Function that tests each key and value
+  Map<String, Object> filterMetadata(bool Function(String key, Object value) predicate) {
+    return Map.fromEntries(
+      meta.entries.where((entry) => predicate(entry.key, entry.value))
+    );
+  }
+  
+  /// Creates a new instance of CoreEntity with updated metadata
+  /// 
+  /// This method allows for bulk updates to metadata without changing other properties
+  /// [updates] - Map of key-value pairs to add or update in metadata
+  /// [removeKeys] - Optional list of keys to remove from metadata
+  CoreEntity<T> withUpdatedMetadata(
+    Map<String, Object> updates, {
+    List<String>? removeKeys,
+  }) {
+    // Start with the existing metadata
+- `return id` - Try to retrieve a typed value from metadata
   ///
   /// This method tries to safely cast the value to the expected type.
   /// Returns null if the key doesn't exist or if the type conversion fails.
   R? _getValueWithType<R>(String key) {
     if (!meta.containsKey(key)) return null;
-- `return null`
-- `final dateTime`
-- `return null`
-- `return id` - Gets a domain property by name
+
+    // Delegate the type conversion to the TypedMetadata implementation
+    return typedMeta._safeConvert<R>(meta[key]);
+  }
+
+  /// Gets a domain property by name
   Object? getProperty(String key) {
     switch (key) {
       case 'id':
@@ -876,6 +903,9 @@ sealed class UserAction with _$UserActi...
   ///
   /// If a key matches both a domain property and a metadata key, the domain property takes precedence.
   /// First tries to access domain properties, then falls back to metadata.
+  /// 
+  /// Note: This provides convenient access but performs multiple lookups. For performance-critical
+  /// code, consider using getProperty() or getMetadata<R>() directly when you know the source.
   operator [](String key) {
     // Try domain properties first
 - `return propertyValue`
@@ -918,46 +948,66 @@ sealed class UserAction with _$UserActi...
   /// Get a value from meta with an expected type
   ///
   /// Returns null if the key doesn't exist or there's a type conversion error
-  R? get<R>(String key) {
-    return _getValueWithType<R>(key);
-  }
+  /// This is an alias for getMetadata<R>(key) for more concise syntax
+  R? get<R>(String key) => getMetadata<R>(key);
 
   /// Retrieve metadata by key with a simplified interface
   ///
-  /// Returns the value from metadata or null if not found
-  Object? getMetadata(String key) => meta[key];
+  /// Returns the value from metadata with the specified type or null if not found
+  /// For untyped access, use getMetadata<Object?>(key)
+  R? getMetadata<R>(String key) => _getValueWithType<R>(key);
+
+  /// Retrieve untyped metadata by key (backward compatibility)
+  ///
+  /// Returns the raw value from metadata or null if not found
+  Object? getRawMetadata(String key) => meta[key];
 
   /// Check if metadata contains a specific key
-- `if(!meta.containsKey(key)) return null;
-
-    final value = meta[key];
-    if (value == null)` - Get metadata with type safety, providing a default value if not present
+- `filterMetadata(bool Function(String key, Object value) predicate)` - Get metadata with type safety, providing a default value if not present
   ///
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
   R getMetadataOrDefault<R>(String key, R defaultValue) {
     return _getValueWithType<R>(key) ?? defaultValue;
   }
+  
+  /// Filter metadata based on a predicate
+  /// 
+  /// Returns a new Map containing only the metadata entries for which the predicate returns true
+  /// [predicate] - Function that tests each key and value
+- `withUpdatedMetadata(Map<String, Object> updates, {
+    List<String>? removeKeys,
+  })` - Creates a new instance of CoreEntity with updated metadata
+  /// 
+  /// This method allows for bulk updates to metadata without changing other properties
+  /// [updates] - Map of key-value pairs to add or update in metadata
+  /// [removeKeys] - Optional list of keys to remove from metadata
+- `if(removeKeys != null)`
+- `for(final key in removeKeys)`
+- `copyWith(meta: updatedMeta);
+  }
 
   /// Try to retrieve a typed value from metadata
   ///
   /// This method tries to safely cast the value to the expected type.
   /// Returns null if the key doesn't exist or if the type conversion fails.
-  R? _getValueWithType<R>(String key) {
-- `if(R == DateTime)`
-- `if(dateTime != null) return dateTime as R;
-        throw FormatException('Invalid DateTime string: $value');
-      }
+  R? _getValueWithType<R>(String key)`
+- `if(!meta.containsKey(key)) return null;
 
-      if (value is R)`
-- `TypeError();
-    } catch (e)`
-- `switch(key)` - Gets a domain property by name
-  Object? getProperty(String key) {
+    // Delegate the type conversion to the TypedMetadata implementation
+    return typedMeta._safeConvert<R>(meta[key]);
+  }
+
+  /// Gets a domain property by name
+  Object? getProperty(String key)`
+- `switch(key)`
 - `if(propertyValue != null)` - Operator to access either domain properties or metadata
   ///
   /// If a key matches both a domain property and a metadata key, the domain property takes precedence.
   /// First tries to access domain properties, then falls back to metadata.
+  /// 
+  /// Note: This provides convenient access but performs multiple lookups. For performance-critical
+  /// code, consider using getProperty() or getMetadata<R>() directly when you know the source.
   operator [](String key) {
     // Try domain properties first
     final propertyValue = getProperty(key);
@@ -1302,9 +1352,432 @@ sealed class UserAction with _$UserActi...
 
 **File:** `lib/src/domain/core/entity_config.dart`
 
+**Properties:**
+
+- `const defaultConfig` - Configuration schema version for tracking changes to the configuration format itself.
+    /// This version follows semantic versioning and should be incremented when:
+    /// - MAJOR: Breaking changes to configuration structure
+    /// - MINOR: New backward-compatible fields added
+    /// - PATCH: Bug fixes that don't affect configuration structure
+    @Default('1.0.0') String configVersion,
+
+    // Path limits
+    /// Maximum length of an entity path in characters.
+    @Default(1024) int maxPathLength,
+
+    /// Maximum length of a single path segment in characters.
+    @Default(255) int maxPathSegment,
+
+    /// Maximum allowed depth of entity hierarchies.
+    @Default(10) int maxHierarchyDepth,
+
+    // History limits
+    /// Maximum number of history entries to retain per entity.
+    @Default(50) int maxHistorySize,
+
+    /// Default number of history entries to show in views.
+    @Default(50) int defaultHistorySize,
+
+    // Lock settings
+    /// Default duration before an entity lock expires.
+    @Default(Duration(minutes: 15)) Duration defaultLockTimeout,
+
+    /// Duration by which a lock can be extended.
+    @Default(Duration(minutes: 5)) Duration lockExtensionPeriod,
+
+    /// Minimum duration for which an entity can be locked.
+    @Default(Duration(seconds: 30)) Duration minLockDuration,
+
+    /// Maximum duration for which an entity can be locked.
+    @Default(Duration(hours: 24)) Duration maxLockDuration,
+
+    // Entity defaults
+    /// Default version string for new entities.
+    @Default('1.0.0') String defaultVersion,
+
+    /// Whether entities are public by default.
+    @Default(true) bool defaultIsPublic,
+
+    /// Default priority level for new entities.
+    @Default(EntityPriority.medium) EntityPriority defaultPriority,
+
+    /// Default workflow stage for new entities.
+    @Default(EntityStage.draft) EntityStage defaultStage,
+
+    // Path settings
+    /// Character used to separate path segments.
+    @Default('/') String pathSeparator,
+
+    /// Regular expression pattern defining invalid characters in paths.
+    ///
+    /// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).
+    /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
+    ///
+    /// Default: `[<>:"|?*\x00-\x1F]`
+    @Default(r'[<>:"|?*\x00-\x1F]') String invalidPathChars,
+  }) = _EntityConfig;
+
+  /// Creates a new instance of [EntityConfig] with configuration optimized for development.
+  ///
+  /// This configuration has more permissive settings than the default.
+  factory EntityConfig.development() {
+    return const EntityConfig(
+      configVersion: '1.0.0',
+      maxPathLength: 2048,
+      maxHistorySize: 100,
+      defaultLockTimeout: Duration(hours: 1),
+      minLockDuration: Duration(seconds: 5),
+      maxLockDuration: Duration(hours: 48),
+    );
+  }
+
+  /// Creates a new instance of [EntityConfig] with configuration optimized for production.
+  ///
+  /// This configuration has more restrictive settings than the default.
+  factory EntityConfig.production() {
+    return const EntityConfig(
+      configVersion: '1.0.0',
+      maxPathLength: 512,
+      maxPathSegment: 128,
+      maxHierarchyDepth: 8,
+      maxHistorySize: 25,
+      defaultHistorySize: 10,
+      defaultLockTimeout: Duration(minutes: 10),
+      maxLockDuration: Duration(hours: 12),
+      defaultIsPublic: false,
+    );
+  }
+
+  /// Creates a new instance of [EntityConfig] with custom overrides.
+  ///
+  /// This factory allows you to define configuration settings for any environment (e.g., staging, testing, CI)
+  /// by overriding only the fields you need. All unspecified fields will use the default values.
+  ///
+  /// Example:
+  /// ```dart
+  /// final stagingConfig = EntityConfig.custom(
+  ///   maxPathLength: 1500,
+  ///   defaultIsPublic: false,
+  /// );
+  /// ```
+  ///
+  /// [maxPathLength] - Maximum length of an entity path in characters.
+  /// [maxPathSegment] - Maximum length of a single path segment in characters.
+  /// [maxHierarchyDepth] - Maximum allowed depth of entity hierarchies.
+  /// [maxHistorySize] - Maximum number of history entries to retain per entity.
+  /// [defaultHistorySize] - Default number of history entries to show in views.
+  /// [defaultLockTimeout] - Default duration before an entity lock expires.
+  /// [lockExtensionPeriod] - Duration by which a lock can be extended.
+  /// [minLockDuration] - Minimum duration for which an entity can be locked.
+  /// [maxLockDuration] - Maximum duration for which an entity can be locked.
+  /// [defaultVersion] - Default version string for new entities.
+  /// [defaultIsPublic] - Whether entities are public by default.
+  /// [defaultPriority] - Default priority level for new entities.
+  /// [defaultStage] - Default workflow stage for new entities.
+  /// [pathSeparator] - Character used to separate path segments.
+  /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.
+  factory EntityConfig.custom({
+    String? configVersion,
+    int? maxPathLength,
+    int? maxPathSegment,
+    int? maxHierarchyDepth,
+    int? maxHistorySize,
+    int? defaultHistorySize,
+    Duration? defaultLockTimeout,
+    Duration? lockExtensionPeriod,
+    Duration? minLockDuration,
+    Duration? maxLockDuration,
+    String? defaultVersion,
+    bool? defaultIsPublic,
+    EntityPriority? defaultPriority,
+    EntityStage? defaultStage,
+    String? pathSeparator,
+    String? invalidPathChars,
+  }) {
+- `final segments` - Validates if a path string conforms to the configuration constraints.
+  ///
+  /// Checks if the path:
+  /// - Does not exceed the maximum path length
+  /// - Does not exceed the maximum hierarchy depth
+  /// - Does not contain invalid characters
+  /// - Does not have segments that exceed the maximum segment length
+  ///
+  /// Returns true if the path is valid according to all constraints.
+  bool isValidPath(String path) {
+    // Check total path length
+    if (path.length > maxPathLength) return false;
+
+    // Check path segments
+- `return true`
+- `String result` - Sanitizes a path to conform to configuration constraints.
+  ///
+  /// This method:
+  /// - Replaces invalid characters with underscores
+  /// - Truncates paths that exceed maximum length
+  /// - Truncates segments that exceed maximum length
+  ///
+  /// Returns a sanitized path that conforms to all path constraints.
+  String sanitizePath(String path) {
+    // Start with the original path
+- `final segments`
+- `return result`
+- `final joined` - Joins path segments using the configured path separator.
+  ///
+  /// This is a convenience method that ensures consistent path formatting.
+  /// It also sanitizes the result to ensure it conforms to all path constraints.
+  ///
+  /// Returns the joined path, sanitized according to configuration constraints.
+  String joinPath(List<String> segments) {
+- `final trimmedPath` - Resolves a child path relative to a parent path.
+  ///
+  /// This ensures proper joining of paths using the configured path separator.
+  ///
+  /// Returns the full path to the child, sanitized according to configuration constraints.
+  String resolvePath(String parent, String child) {
+    // Remove trailing separators from parent
+    if (parent.endsWith(pathSeparator)) {
+      parent = parent.substring(0, parent.length - pathSeparator.length);
+    }
+
+    // Remove leading separators from child
+    if (child.startsWith(pathSeparator)) {
+      child = child.substring(pathSeparator.length);
+    }
+
+    return sanitizePath('$parent$pathSeparator$child');
+  }
+
+  /// Calculates the depth of a path based on the number of separators.
+  ///
+  /// Returns the hierarchy level (depth) of the path.
+  int getPathDepth(String path) {
+    // Count separators, accounting for leading/trailing separators
+- `final segments`
+- `return lockDuration` - Validates that a lock duration is within the configured limits.
+  ///
+  /// Returns true if the duration is between minLockDuration and maxLockDuration.
+  bool isValidLockDuration(Duration lockDuration) {
+    return lockDuration >= minLockDuration && lockDuration <= maxLockDuration;
+  }
+
+  /// Adjusts a lock duration to fit within the configured limits.
+  ///
+  /// If the input duration is too short, returns minLockDuration.
+  /// If the input duration is too long, returns maxLockDuration.
+  /// Otherwise, returns the original duration.
+  Duration constrainLockDuration(Duration lockDuration) {
+    if (lockDuration < minLockDuration) return minLockDuration;
+    if (lockDuration > maxLockDuration) return maxLockDuration;
+- `final segments` - Normalizes a path by:
+  /// 1. Removing redundant separators
+  /// 2. Removing trailing separators
+  /// 3. Ensuring the path conforms to configuration constraints
+  ///
+  /// Returns a normalized path string.
+  String normalizePath(String path) {
+    // Handle empty paths
+    if (path.isEmpty) return '';
+
+    // Split into segments and filter out empty ones (that come from consecutive separators)
+- `final normalized` - Extracts the parent path from a given path.
+  ///
+  /// Returns the parent path, or an empty string if the path has no parent.
+  String getParentPath(String path) {
+- `final lastSeparatorIndex`
+- `final normalized` - Extracts the last segment (name) from a path.
+  ///
+  /// Returns the name component, or the full path if there are no separators.
+  String getNameFromPath(String path) {
+- `final lastSeparatorIndex`
+- `return normalized`
+- `final normalizedParent` - Checks if one path is a parent of another path.
+  ///
+  /// Returns true if parentPath is a parent of childPath.
+  bool isParentPath(String parentPath, String childPath) {
+- `final normalizedChild`
+- `return true`
+- `return true` - Validates an entity name based on configuration constraints.
+  ///
+  /// Returns true if the name:
+  /// - Is not empty
+  /// - Does not contain path separators
+  /// - Does not contain invalid characters
+  /// - Does not exceed maxPathSegment length
+  bool isValidEntityName(String name) {
+    if (name.isEmpty) return false;
+    if (name.length > maxPathSegment) return false;
+    if (name.contains(pathSeparator)) return false;
+    if (RegExp(invalidPathChars).hasMatch(name)) return false;
+- `return false` - Validates configuration values to ensure they are reasonable and consistent.
+  ///
+  /// This can be called during initialization to check that the configuration
+  /// doesn't have contradictory or invalid settings.
+  ///
+  /// Returns true if the configuration is valid.
+  bool validate() {
+    if (maxPathLength <= 0) return false;
+    if (maxPathSegment <= 0) return false;
+    if (maxHierarchyDepth <= 0) return false;
+    if (maxHistorySize < 0) return false;
+    if (defaultHistorySize < 0 || defaultHistorySize > maxHistorySize) {
+- `return false`
+- `return true`
+- `final differences` - Compares this configuration with another to identify differences.
+  ///
+  /// Returns a Map with property names as keys and a sub-map with 'this' and 'other' values
+  /// for each property that differs. Returns an empty map if the configurations are identical.
+  Map<String, Map<String, Object>> compareWith(EntityConfig other) {
+- `return differences`
+- `return true` - Checks if this configuration is compatible with another configuration.
+  ///
+  /// A configuration is considered compatible when:
+  /// 1. Its path limits are equal to or greater than the other configuration
+  /// 2. It uses the same path separator character
+  /// 3. Its lock duration constraints can accommodate the other's default lock duration
+  ///
+  /// Returns true if this configuration is compatible with the other configuration.
+  bool isCompatibleWith(EntityConfig other) {
+    // Path compatibility
+    if (maxPathLength < other.maxPathLength) return false;
+    if (maxPathSegment < other.maxPathSegment) return false;
+    if (maxHierarchyDepth < other.maxHierarchyDepth) return false;
+    if (pathSeparator != other.pathSeparator) return false;
+
+    // Lock duration compatibility
+    if (other.defaultLockTimeout < minLockDuration) return false;
+    if (other.defaultLockTimeout > maxLockDuration) return false;
+
+    // Compatible with associated defaults
+    if (maxHistorySize < other.defaultHistorySize) return false;
+- `return pattern1` - Creates a merged configuration using the most permissive values from both configurations.
+  ///
+  /// This is useful when you need to ensure compatibility between two environments.
+  ///
+  /// Returns a new EntityConfig that will be compatible with both source configurations.
+  EntityConfig mergeWith(EntityConfig other) {
+    return EntityConfig(
+      // Take the larger value for limits
+      maxPathLength: math.max(maxPathLength, other.maxPathLength),
+      maxPathSegment: math.max(maxPathSegment, other.maxPathSegment),
+      maxHierarchyDepth: math.max(maxHierarchyDepth, other.maxHierarchyDepth),
+      maxHistorySize: math.max(maxHistorySize, other.maxHistorySize),
+      defaultHistorySize: math.min(
+        math.max(defaultHistorySize, other.defaultHistorySize),
+        math.max(maxHistorySize, other.maxHistorySize),
+      ),
+
+      // Take the wider ranges for durations
+      defaultLockTimeout: Duration(
+        milliseconds:
+            (defaultLockTimeout.inMilliseconds +
+                other.defaultLockTimeout.inMilliseconds) ~/
+            2,
+      ),
+      lockExtensionPeriod: Duration(
+        milliseconds: math.max(
+          lockExtensionPeriod.inMilliseconds,
+          other.lockExtensionPeriod.inMilliseconds,
+        ),
+      ),
+      minLockDuration: Duration(
+        milliseconds: math.min(
+          minLockDuration.inMilliseconds,
+          other.minLockDuration.inMilliseconds,
+        ),
+      ),
+      maxLockDuration: Duration(
+        milliseconds: math.max(
+          maxLockDuration.inMilliseconds,
+          other.maxLockDuration.inMilliseconds,
+        ),
+      ),
+
+      // Preserve path separator from this config (they should be the same for compatibility)
+      pathSeparator: pathSeparator,
+
+      // Use most permissive regex pattern for invalid chars (if they differ)
+      invalidPathChars:
+          invalidPathChars == other.invalidPathChars
+              ? invalidPathChars
+              : _mergeInvalidCharsPatterns(
+                invalidPathChars,
+                other.invalidPathChars,
+              ),
+
+      // Use newest schema version
+      defaultVersion:
+          _compareVersions(defaultVersion, other.defaultVersion) >= 0
+              ? defaultVersion
+              : other.defaultVersion,
+
+      // Keep other settings from this config
+      defaultIsPublic: defaultIsPublic,
+      defaultPriority: defaultPriority,
+      defaultStage: defaultStage,
+    );
+  }
+
+  /// Helper method to merge two regex patterns for invalid characters,
+  /// creating a more permissive pattern that allows characters valid in either pattern.
+  static String _mergeInvalidCharsPatterns(String pattern1, String pattern2) {
+    // This is a simplified implementation - in a real system you might want
+    // a more sophisticated regex manipulation approach
+    try {
+      if (pattern1 == pattern2) return pattern1;
+
+      // Simple approach: just use the more restrictive pattern
+      // A more complete approach would parse and merge the character sets
+      if (pattern1.length > pattern2.length) return pattern2;
+- `final v1Parts` - Helper method to compare semantic version strings.
+  /// Returns positive if v1 > v2, negative if v1 < v2, 0 if equal.
+  static int _compareVersions(String v1, String v2) {
+    try {
+- `final v2Parts`
+- `final diff`
+- `final version` - Checks if this configuration version is compatible with another version.
+  ///
+  /// Follows semantic versioning principles:
+  /// - Major versions must match (breaking changes)
+  /// - If this is being used with data created by otherVersion, this.minor >= other.minor
+  ///
+  /// [otherVersion] - Version string to check compatibility with (e.g., "1.2.3")
+  /// [thisVersion] - Optional version to check, defaults to this config's version
+  ///
+  /// Returns true if versions are compatible.
+  bool isVersionCompatible(String otherVersion, [String? thisVersion]) {
+- `final vParts`
+- `final otherParts`
+- `return false`
+- `return true`
+- `return version`
+- `final version` - Creates a new configuration with an incremented version.
+  ///
+  /// [increment] - Which part to increment: "major", "minor", or "patch"
+  /// [baseVersion] - Optional base version, defaults to this config's version
+  ///
+  /// Returns a new version string following semantic versioning.
+  String incrementVersion(String increment, [String? baseVersion]) {
+- `final parts`
+- `final newVersion` - Creates a new config with the version number incremented.
+  ///
+  /// This creates a new configuration with an updated version while
+  /// preserving all other settings.
+  ///
+  /// [increment] - Which part to increment: "major", "minor", or "patch"
+  ///
+  /// Returns a new EntityConfig with the updated version.
+  EntityConfig withIncrementedVersion(String increment) {
+
 **Methods:**
 
 - `EntityConfig({
+    /// Configuration schema version for tracking changes to the configuration format itself.
+    /// This version follows semantic versioning and should be incremented when:
+    /// - MAJOR: Breaking changes to configuration structure
+    /// - MINOR: New backward-compatible fields added
+    /// - PATCH: Bug fixes that don't affect configuration structure
+    @Default('1.0.0') String configVersion,
+
     // Path limits
     /// Maximum length of an entity path in characters.
     @Default(1024) int maxPathLength,
@@ -1365,26 +1838,25 @@ sealed class UserAction with _$UserActi...
   ///
   /// This configuration has more permissive settings than the default.
   factory EntityConfig.development()`
-- `EntityConfig(maxPathLength: maxPathLength ?? const EntityConfig().maxPathLength,
-      maxPathSegment: maxPathSegment ?? const EntityConfig().maxPathSegment,
-      maxHierarchyDepth:
-          maxHierarchyDepth ?? const EntityConfig().maxHierarchyDepth,
-      maxHistorySize: maxHistorySize ?? const EntityConfig().maxHistorySize,
+- `EntityConfig(configVersion: configVersion ?? defaultConfig.configVersion,
+      maxPathLength: maxPathLength ?? defaultConfig.maxPathLength,
+      maxPathSegment: maxPathSegment ?? defaultConfig.maxPathSegment,
+      maxHierarchyDepth: maxHierarchyDepth ?? defaultConfig.maxHierarchyDepth,
+      maxHistorySize: maxHistorySize ?? defaultConfig.maxHistorySize,
       defaultHistorySize:
-          defaultHistorySize ?? const EntityConfig().defaultHistorySize,
+          defaultHistorySize ?? defaultConfig.defaultHistorySize,
       defaultLockTimeout:
-          defaultLockTimeout ?? const EntityConfig().defaultLockTimeout,
+          defaultLockTimeout ?? defaultConfig.defaultLockTimeout,
       lockExtensionPeriod:
-          lockExtensionPeriod ?? const EntityConfig().lockExtensionPeriod,
-      minLockDuration: minLockDuration ?? const EntityConfig().minLockDuration,
-      maxLockDuration: maxLockDuration ?? const EntityConfig().maxLockDuration,
-      defaultVersion: defaultVersion ?? const EntityConfig().defaultVersion,
-      defaultIsPublic: defaultIsPublic ?? const EntityConfig().defaultIsPublic,
-      defaultPriority: defaultPriority ?? const EntityConfig().defaultPriority,
-      defaultStage: defaultStage ?? const EntityConfig().defaultStage,
-      pathSeparator: pathSeparator ?? const EntityConfig().pathSeparator,
-      invalidPathChars:
-          invalidPathChars ?? const EntityConfig().invalidPathChars,
+          lockExtensionPeriod ?? defaultConfig.lockExtensionPeriod,
+      minLockDuration: minLockDuration ?? defaultConfig.minLockDuration,
+      maxLockDuration: maxLockDuration ?? defaultConfig.maxLockDuration,
+      defaultVersion: defaultVersion ?? defaultConfig.defaultVersion,
+      defaultIsPublic: defaultIsPublic ?? defaultConfig.defaultIsPublic,
+      defaultPriority: defaultPriority ?? defaultConfig.defaultPriority,
+      defaultStage: defaultStage ?? defaultConfig.defaultStage,
+      pathSeparator: pathSeparator ?? defaultConfig.pathSeparator,
+      invalidPathChars: invalidPathChars ?? defaultConfig.invalidPathChars,
     );
   }
 
@@ -1393,6 +1865,7 @@ sealed class UserAction with _$UserActi...
   /// This configuration has more restrictive settings than the default.
   factory EntityConfig.production() {
     return const EntityConfig(
+      configVersion: '1.0.0',
       maxPathLength: 512,
       maxPathSegment: 128,
       maxHierarchyDepth: 8,
@@ -1433,6 +1906,7 @@ sealed class UserAction with _$UserActi...
   /// [pathSeparator] - Character used to separate path segments.
   /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.
   factory EntityConfig.custom({
+    String? configVersion,
     int? maxPathLength,
     int? maxPathSegment,
     int? maxHierarchyDepth,
@@ -1449,6 +1923,333 @@ sealed class UserAction with _$UserActi...
     String? pathSeparator,
     String? invalidPathChars,
   }) {
+    const defaultConfig = EntityConfig();
+- `isValidPath(String path)` - Validates if a path string conforms to the configuration constraints.
+  ///
+  /// Checks if the path:
+  /// - Does not exceed the maximum path length
+  /// - Does not exceed the maximum hierarchy depth
+  /// - Does not contain invalid characters
+  /// - Does not have segments that exceed the maximum segment length
+  ///
+  /// Returns true if the path is valid according to all constraints.
+- `if(path.length > maxPathLength) return false;
+
+    // Check path segments
+    final segments = path.split(pathSeparator);
+
+    // Check hierarchy depth
+    if (segments.length > maxHierarchyDepth) return false;
+
+    // Check each segment
+    for (final segment in segments)`
+- `if(segment.isEmpty) continue;
+
+      // Check segment length
+      if (segment.length > maxPathSegment) return false;
+
+      // Check for invalid characters
+      if (RegExp(invalidPathChars).hasMatch(segment)) return false;
+    }
+
+    return true;
+  }
+
+  /// Sanitizes a path to conform to configuration constraints.
+  ///
+  /// This method:
+  /// - Replaces invalid characters with underscores
+  /// - Truncates paths that exceed maximum length
+  /// - Truncates segments that exceed maximum length
+  ///
+  /// Returns a sanitized path that conforms to all path constraints.
+  String sanitizePath(String path)`
+- `for(int i = 0; i < segments.length; i++)`
+- `if(segments[i].length > maxPathSegment)`
+- `if(segments.length > maxHierarchyDepth)`
+- `if(result.length > maxPathLength)`
+- `joinPath(List<String> segments)` - Joins path segments using the configured path separator.
+  ///
+  /// This is a convenience method that ensures consistent path formatting.
+  /// It also sanitizes the result to ensure it conforms to all path constraints.
+  ///
+  /// Returns the joined path, sanitized according to configuration constraints.
+- `sanitizePath(joined);
+  }
+
+  /// Resolves a child path relative to a parent path.
+  ///
+  /// This ensures proper joining of paths using the configured path separator.
+  ///
+  /// Returns the full path to the child, sanitized according to configuration constraints.
+  String resolvePath(String parent, String child)`
+- `if(parent.endsWith(pathSeparator))`
+- `if(child.startsWith(pathSeparator))`
+- `sanitizePath('$parent$pathSeparator$child');
+  }
+
+  /// Calculates the depth of a path based on the number of separators.
+  ///
+  /// Returns the hierarchy level (depth) of the path.
+  int getPathDepth(String path)`
+- `if(trimmedPath.isEmpty) return 0;
+
+    final segments =
+        trimmedPath.split(pathSeparator).where((s)`
+- `isValidLockDuration(Duration lockDuration)` - Validates that a lock duration is within the configured limits.
+  ///
+  /// Returns true if the duration is between minLockDuration and maxLockDuration.
+- `constrainLockDuration(Duration lockDuration)` - Adjusts a lock duration to fit within the configured limits.
+  ///
+  /// If the input duration is too short, returns minLockDuration.
+  /// If the input duration is too long, returns maxLockDuration.
+  /// Otherwise, returns the original duration.
+- `if(lockDuration < minLockDuration) return minLockDuration;
+    if (lockDuration > maxLockDuration) return maxLockDuration;
+    return lockDuration;
+  }
+
+  /// Normalizes a path by:
+  /// 1. Removing redundant separators
+  /// 2. Removing trailing separators
+  /// 3. Ensuring the path conforms to configuration constraints
+  ///
+  /// Returns a normalized path string.
+  String normalizePath(String path)`
+- `if(path.isEmpty) return '';
+
+    // Split into segments and filter out empty ones (that come from consecutive separators)
+    final segments =
+        path
+            .split(pathSeparator)
+            .where((segment)`
+- `sanitizePath(segments.join(pathSeparator));
+  }
+
+  /// Extracts the parent path from a given path.
+  ///
+  /// Returns the parent path, or an empty string if the path has no parent.
+  String getParentPath(String path)`
+- `if(lastSeparatorIndex <= 0)`
+- `getNameFromPath(String path)` - Extracts the last segment (name) from a path.
+  ///
+  /// Returns the name component, or the full path if there are no separators.
+- `if(lastSeparatorIndex < 0)`
+- `isParentPath(String parentPath, String childPath)` - Checks if one path is a parent of another path.
+  ///
+  /// Returns true if parentPath is a parent of childPath.
+- `if(normalizedParent.isEmpty)`
+- `isValidEntityName(String name)` - Validates an entity name based on configuration constraints.
+  ///
+  /// Returns true if the name:
+  /// - Is not empty
+  /// - Does not contain path separators
+  /// - Does not contain invalid characters
+  /// - Does not exceed maxPathSegment length
+- `if(name.isEmpty) return false;
+    if (name.length > maxPathSegment) return false;
+    if (name.contains(pathSeparator)) return false;
+    if (RegExp(invalidPathChars).hasMatch(name)) return false;
+    return true;
+  }
+
+  /// Validates configuration values to ensure they are reasonable and consistent.
+  ///
+  /// This can be called during initialization to check that the configuration
+  /// doesn't have contradictory or invalid settings.
+  ///
+  /// Returns true if the configuration is valid.
+  bool validate()`
+- `if(maxPathLength <= 0) return false;
+    if (maxPathSegment <= 0) return false;
+    if (maxHierarchyDepth <= 0) return false;
+    if (maxHistorySize < 0) return false;
+    if (defaultHistorySize < 0 || defaultHistorySize > maxHistorySize)`
+- `if(defaultLockTimeout.isNegative) return false;
+    if (lockExtensionPeriod.isNegative) return false;
+    if (minLockDuration.isNegative) return false;
+    if (maxLockDuration.isNegative) return false;
+    if (minLockDuration > maxLockDuration) return false;
+    if (pathSeparator.isEmpty) return false;
+
+    // Try to compile the regex pattern to check validity
+    try {
+      RegExp(invalidPathChars);
+    } catch (e)`
+- `if(defaultVersion != other.defaultVersion)` - Compares this configuration with another to identify differences.
+  ///
+  /// Returns a Map with property names as keys and a sub-map with 'this' and 'other' values
+  /// for each property that differs. Returns an empty map if the configurations are identical.
+  Map<String, Map<String, Object>> compareWith(EntityConfig other) {
+    final differences = <String, Map<String, Object>>{};
+
+    // Compare versions
+- `if(maxPathLength != other.maxPathLength)`
+- `if(maxPathSegment != other.maxPathSegment)`
+- `if(maxHierarchyDepth != other.maxHierarchyDepth)`
+- `if(maxHistorySize != other.maxHistorySize)`
+- `if(defaultHistorySize != other.defaultHistorySize)`
+- `if(defaultLockTimeout != other.defaultLockTimeout)`
+- `if(lockExtensionPeriod != other.lockExtensionPeriod)`
+- `if(minLockDuration != other.minLockDuration)`
+- `if(maxLockDuration != other.maxLockDuration)`
+- `if(defaultVersion != other.defaultVersion)`
+- `if(defaultIsPublic != other.defaultIsPublic)`
+- `if(defaultPriority != other.defaultPriority)`
+- `if(defaultStage != other.defaultStage)`
+- `if(pathSeparator != other.pathSeparator)`
+- `if(invalidPathChars != other.invalidPathChars)`
+- `isCompatibleWith(EntityConfig other)` - Checks if this configuration is compatible with another configuration.
+  ///
+  /// A configuration is considered compatible when:
+  /// 1. Its path limits are equal to or greater than the other configuration
+  /// 2. It uses the same path separator character
+  /// 3. Its lock duration constraints can accommodate the other's default lock duration
+  ///
+  /// Returns true if this configuration is compatible with the other configuration.
+- `if(maxPathLength < other.maxPathLength) return false;
+    if (maxPathSegment < other.maxPathSegment) return false;
+    if (maxHierarchyDepth < other.maxHierarchyDepth) return false;
+    if (pathSeparator != other.pathSeparator) return false;
+
+    // Lock duration compatibility
+    if (other.defaultLockTimeout < minLockDuration) return false;
+    if (other.defaultLockTimeout > maxLockDuration) return false;
+
+    // Compatible with associated defaults
+    if (maxHistorySize < other.defaultHistorySize) return false;
+
+    return true;
+  }
+
+  /// Creates a merged configuration using the most permissive values from both configurations.
+  ///
+  /// This is useful when you need to ensure compatibility between two environments.
+  ///
+  /// Returns a new EntityConfig that will be compatible with both source configurations.
+  EntityConfig mergeWith(EntityConfig other)`
+- `EntityConfig(// Take the larger value for limits
+      maxPathLength: math.max(maxPathLength, other.maxPathLength),
+      maxPathSegment: math.max(maxPathSegment, other.maxPathSegment),
+      maxHierarchyDepth: math.max(maxHierarchyDepth, other.maxHierarchyDepth),
+      maxHistorySize: math.max(maxHistorySize, other.maxHistorySize),
+      defaultHistorySize: math.min(
+        math.max(defaultHistorySize, other.defaultHistorySize),
+        math.max(maxHistorySize, other.maxHistorySize),
+      ),
+
+      // Take the wider ranges for durations
+      defaultLockTimeout: Duration(
+        milliseconds:
+            (defaultLockTimeout.inMilliseconds +
+                other.defaultLockTimeout.inMilliseconds) ~/
+            2,
+      ),
+      lockExtensionPeriod: Duration(
+        milliseconds: math.max(
+          lockExtensionPeriod.inMilliseconds,
+          other.lockExtensionPeriod.inMilliseconds,
+        ),
+      ),
+      minLockDuration: Duration(
+        milliseconds: math.min(
+          minLockDuration.inMilliseconds,
+          other.minLockDuration.inMilliseconds,
+        ),
+      ),
+      maxLockDuration: Duration(
+        milliseconds: math.max(
+          maxLockDuration.inMilliseconds,
+          other.maxLockDuration.inMilliseconds,
+        ),
+      ),
+
+      // Preserve path separator from this config (they should be the same for compatibility)
+      pathSeparator: pathSeparator,
+
+      // Use most permissive regex pattern for invalid chars (if they differ)
+      invalidPathChars:
+          invalidPathChars == other.invalidPathChars
+              ? invalidPathChars
+              : _mergeInvalidCharsPatterns(
+                invalidPathChars,
+                other.invalidPathChars,
+              ),
+
+      // Use newest schema version
+      defaultVersion:
+          _compareVersions(defaultVersion, other.defaultVersion) >= 0
+              ? defaultVersion
+              : other.defaultVersion,
+
+      // Keep other settings from this config
+      defaultIsPublic: defaultIsPublic,
+      defaultPriority: defaultPriority,
+      defaultStage: defaultStage,
+    );
+  }
+
+  /// Helper method to merge two regex patterns for invalid characters,
+  /// creating a more permissive pattern that allows characters valid in either pattern.
+  static String _mergeInvalidCharsPatterns(String pattern1, String pattern2)`
+- `if(pattern1 == pattern2) return pattern1;
+
+      // Simple approach: just use the more restrictive pattern
+      // A more complete approach would parse and merge the character sets
+      if (pattern1.length > pattern2.length) return pattern2;
+      return pattern1;
+    } catch (e)`
+- `_compareVersions(String v1, String v2)` - Helper method to compare semantic version strings.
+  /// Returns positive if v1 > v2, negative if v1 < v2, 0 if equal.
+- `for(var i = 0; i < math.min(v1Parts.length, v2Parts.length); i++)`
+- `if(diff != 0) return diff;
+      }
+
+      return v1Parts.length - v2Parts.length;
+    } catch (e)`
+- `isVersionCompatible(String otherVersion, [String? thisVersion])` - Checks if this configuration version is compatible with another version.
+  ///
+  /// Follows semantic versioning principles:
+  /// - Major versions must match (breaking changes)
+  /// - If this is being used with data created by otherVersion, this.minor >= other.minor
+  ///
+  /// [otherVersion] - Version string to check compatibility with (e.g., "1.2.3")
+  /// [thisVersion] - Optional version to check, defaults to this config's version
+  ///
+  /// Returns true if versions are compatible.
+- `if(version == otherVersion) return true;
+
+    try {
+      final vParts = version.split('.').map(int.parse).toList();
+      final otherParts = otherVersion.split('.').map(int.parse).toList();
+
+      // Major versions must match (breaking changes)
+      if (vParts.isNotEmpty &&
+          otherParts.isNotEmpty &&
+          vParts[0] != otherParts[0])`
+- `if(vParts.length > 1 && otherParts.length > 1)`
+- `if(vParts[1] < otherParts[1]) return false;
+      }
+
+      // Patch versions don't affect compatibility
+      return true;
+    } catch (e)`
+- `incrementVersion(String increment, [String? baseVersion])` - Creates a new configuration with an incremented version.
+  ///
+  /// [increment] - Which part to increment: "major", "minor", or "patch"
+  /// [baseVersion] - Optional base version, defaults to this config's version
+  ///
+  /// Returns a new version string following semantic versioning.
+- `if(parts.length != 3)`
+- `switch(increment.toLowerCase())`
+- `withIncrementedVersion(String increment)` - Creates a new config with the version number incremented.
+  ///
+  /// This creates a new configuration with an updated version while
+  /// preserving all other settings.
+  ///
+  /// [increment] - Which part to increment: "major", "minor", or "patch"
+  ///
+  /// Returns a new EntityConfig with the updated version.
 
 ### `EntityCreateConfig`
 
@@ -2432,18 +3233,27 @@ sealed class UserAction with _$UserActi...
 **Properties:**
 
 - `Map<String, Object> _meta`
-- `final value` - Returns whether the metadata contains a specific key
+- `return null` - Returns whether the metadata contains a specific key
   bool containsKey(String key) => _meta.containsKey(key);
 
-  /// Get a value with a specific type, with proper error handling
+  /// Safely convert a value to the specified type with proper error handling
+  /// 
+  /// This is a central conversion method used by all type-specific getters.
+  /// Returns null if conversion fails.
+  T? _safeConvert<T>(Object? value) {
+    try {
+      if (value == null) {
+- `final dateTime`
+- `return null`
+- `final value` - Get a value with a specific type, with proper error handling
   ///
   /// Note: Null is always allowed and will be returned if the key is missing or the value is null.
   T? _getTyped<T>(String key) {
     if (!_meta.containsKey(key)) return null;
-- `return null`
-- `final dateTime`
-- `return null`
-- `final value` - Get a string value from metadata
+    return _safeConvert<T>(_meta[key]);
+  }
+
+  /// Get a string value from metadata
   String? getString(String key) => _getTyped<String?>(key);
 
   /// Get an integer value from metadata
@@ -2459,11 +3269,16 @@ sealed class UserAction with _$UserActi...
   DateTime? getDateTime(String key) => _getTyped<DateTime?>(key);
 
   /// Get a list value from metadata
-  List<R>? getList<R>(String key) {
-- `return null`
-- `return null`
-- `final value` - Get a map value from metadata
-  Map<K, V>? getMap<K, V>(String key) {
+  Object? getList<R>(String key) => _getCollectionValue<List, R>(key);
+
+  /// Get a map value from metadata
+  Map<K, V>? getMap<K, V>(String key) => _getCollectionValue<Map, V>(key) as Map<K, V>?;
+  
+  /// Generic method to handle collection types (List, Map)
+  ///
+  /// Centralizes the error handling for collection type conversions
+  Object? _getCollectionValue<C, V>(String key) {
+- `return value`
 - `return null`
 - `return null`
 
@@ -2473,30 +3288,32 @@ sealed class UserAction with _$UserActi...
 
   /// Returns whether the metadata contains a specific key
   bool containsKey(String key)`
-- `if(!_meta.containsKey(key)) return null;
-
-    final value = _meta[key];
-
+- `if(value == null)` - Safely convert a value to the specified type with proper error handling
+  /// 
+  /// This is a central conversion method used by all type-specific getters.
+  /// Returns null if conversion fails.
+  T? _safeConvert<T>(Object? value) {
     try {
-      if (value == null)` - Get a value with a specific type, with proper error handling
-  ///
-  /// Note: Null is always allowed and will be returned if the key is missing or the value is null.
-  T? _getTyped<T>(String key) {
 - `if(T == DateTime)`
 - `if(dateTime != null) return dateTime as T;
         throw FormatException('Invalid DateTime string: $value');
       }
 
-      if (value is T) return value as T;
-      throw TypeError();
+      if (value is T)`
+- `TypeError();
     } catch (e)`
-- `if(value == null) return null;
+- `if(!_meta.containsKey(key)) return null;
+    return _safeConvert<T>(_meta[key]);
+  }
 
-    try {
-      if (value is List)` - Get a string value from metadata
-  String? getString(String key) => _getTyped<String?>(key);
-
-  /// Get an integer value from metadata
+  /// Get a string value from metadata
+  String? getString(String key)` - Get a value with a specific type, with proper error handling
+  ///
+  /// Note: Null is always allowed and will be returned if the key is missing or the value is null.
+  T? _getTyped<T>(String key) {
+- `if(!_meta.containsKey(key) || value == null) return null;
+    
+    if (value is C)` - Get an integer value from metadata
   int? getInt(String key) => _getTyped<int?>(key);
 
   /// Get a double value from metadata
@@ -2509,14 +3326,20 @@ sealed class UserAction with _$UserActi...
   DateTime? getDateTime(String key) => _getTyped<DateTime?>(key);
 
   /// Get a list value from metadata
-  List<R>? getList<R>(String key) {
-    final value = _meta[key];
-- `if(value == null) return null;
+  Object? getList<R>(String key) => _getCollectionValue<List, R>(key);
 
-    try {
-      if (value is Map)` - Get a map value from metadata
-  Map<K, V>? getMap<K, V>(String key) {
+  /// Get a map value from metadata
+  Map<K, V>? getMap<K, V>(String key) => _getCollectionValue<Map, V>(key) as Map<K, V>?;
+  
+  /// Generic method to handle collection types (List, Map)
+  ///
+  /// Centralizes the error handling for collection type conversions
+  Object? _getCollectionValue<C, V>(String key) {
     final value = _meta[key];
+- `if(C == List) return (value as List).cast<V>() as C;
+        if (C == Map) return (value as Map).cast<String, V>() as C;
+        return value;
+      } catch (e)`
 
 ### `UserAction`
 
@@ -3193,169 +4016,70 @@ abstract class DataManagerException implements Exception {
 
 **File:** `lib/src/domain/core/entity_config.dart`
 
-**Description:** Defines configuration settings for entities within the data manager.
-///
-/// This immutable configuration class provides default settings for various
-/// entity-related operations including path handling, history tracking,
-/// locking behavior, and entity state defaults.
-@freezed
-sealed class EntityConfig with _$EntityConfig {
-  const factory EntityConfig({
-    // Path limits
-    /// Maximum length of an entity path in characters.
-    @Default(1024) int maxPathLength,
+**Signature:** `EntityConfig(// Take the larger value for limits
+      maxPathLength: math.max(maxPathLength, other.maxPathLength),
+      maxPathSegment: math.max(maxPathSegment, other.maxPathSegment),
+      maxHierarchyDepth: math.max(maxHierarchyDepth, other.maxHierarchyDepth),
+      maxHistorySize: math.max(maxHistorySize, other.maxHistorySize),
+      defaultHistorySize: math.min(
+        math.max(defaultHistorySize, other.defaultHistorySize),
+        math.max(maxHistorySize, other.maxHistorySize),
+      ),
 
-    /// Maximum length of a single path segment in characters.
-    @Default(255) int maxPathSegment,
+      // Take the wider ranges for durations
+      defaultLockTimeout: Duration(
+        milliseconds:
+            (defaultLockTimeout.inMilliseconds +
+                other.defaultLockTimeout.inMilliseconds) ~/
+            2,
+      ),
+      lockExtensionPeriod: Duration(
+        milliseconds: math.max(
+          lockExtensionPeriod.inMilliseconds,
+          other.lockExtensionPeriod.inMilliseconds,
+        ),
+      ),
+      minLockDuration: Duration(
+        milliseconds: math.min(
+          minLockDuration.inMilliseconds,
+          other.minLockDuration.inMilliseconds,
+        ),
+      ),
+      maxLockDuration: Duration(
+        milliseconds: math.max(
+          maxLockDuration.inMilliseconds,
+          other.maxLockDuration.inMilliseconds,
+        ),
+      ),
 
-    /// Maximum allowed depth of entity hierarchies.
-    @Default(10) int maxHierarchyDepth,
+      // Preserve path separator from this config (they should be the same for compatibility)
+      pathSeparator: pathSeparator,
 
-    // History limits
-    /// Maximum number of history entries to retain per entity.
-    @Default(50) int maxHistorySize,
-
-    /// Default number of history entries to show in views.
-    @Default(50) int defaultHistorySize,
-
-    // Lock settings
-    /// Default duration before an entity lock expires.
-    @Default(Duration(minutes: 15)) Duration defaultLockTimeout,
-
-    /// Duration by which a lock can be extended.
-    @Default(Duration(minutes: 5)) Duration lockExtensionPeriod,
-
-    /// Minimum duration for which an entity can be locked.
-    @Default(Duration(seconds: 30)) Duration minLockDuration,
-
-    /// Maximum duration for which an entity can be locked.
-    @Default(Duration(hours: 24)) Duration maxLockDuration,
-
-    // Entity defaults
-    /// Default version string for new entities.
-    @Default('1.0.0') String defaultVersion,
-
-    /// Whether entities are public by default.
-    @Default(true) bool defaultIsPublic,
-
-    /// Default priority level for new entities.
-    @Default(EntityPriority.medium) EntityPriority defaultPriority,
-
-    /// Default workflow stage for new entities.
-    @Default(EntityStage.draft) EntityStage defaultStage,
-
-    // Path settings
-    /// Character used to separate path segments.
-    @Default('/') String pathSeparator,
-
-    /// Regular expression pattern defining invalid characters in paths.
-    ///
-    /// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).
-    /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
-    ///
-    /// Default: `[<>:"|?*\x00-\x1F]`
-    @Default(r'[<>:"|?*\x00-\x1F]') String invalidPathChars,
-  }) = _EntityConfig;
-
-  /// Creates a new instance of [EntityConfig] with configuration optimized for development.
-  ///
-  /// This configuration has more permissive settings than the default.
-  factory EntityConfig.development() {
-    return const EntityConfig(
-      maxPathLength: 2048,
-      maxHistorySize: 100,
-      defaultLockTimeout: Duration(hours: 1),
-      minLockDuration: Duration(seconds: 5),
-      maxLockDuration: Duration(hours: 48),
-    );
-  }
-
-  /// Creates a new instance of [EntityConfig] with configuration optimized for production.
-  ///
-  /// This configuration has more restrictive settings than the default.
-  factory EntityConfig.production() {
-    return const EntityConfig(
-      maxPathLength: 512,
-      maxPathSegment: 128,
-      maxHierarchyDepth: 8,
-      maxHistorySize: 25,
-      defaultHistorySize: 10,
-      defaultLockTimeout: Duration(minutes: 10),
-      maxLockDuration: Duration(hours: 12),
-      defaultIsPublic: false,
-    );
-  }
-
-  /// Creates a new instance of [EntityConfig] with custom overrides.
-  ///
-  /// This factory allows you to define configuration settings for any environment (e.g., staging, testing, CI)
-  /// by overriding only the fields you need. All unspecified fields will use the default values.
-  ///
-  /// Example:
-  /// ```dart
-  /// final stagingConfig = EntityConfig.custom(
-  ///   maxPathLength: 1500,
-  ///   defaultIsPublic: false,
-  /// );
-  /// ```
-  ///
-  /// [maxPathLength] - Maximum length of an entity path in characters.
-  /// [maxPathSegment] - Maximum length of a single path segment in characters.
-  /// [maxHierarchyDepth] - Maximum allowed depth of entity hierarchies.
-  /// [maxHistorySize] - Maximum number of history entries to retain per entity.
-  /// [defaultHistorySize] - Default number of history entries to show in views.
-  /// [defaultLockTimeout] - Default duration before an entity lock expires.
-  /// [lockExtensionPeriod] - Duration by which a lock can be extended.
-  /// [minLockDuration] - Minimum duration for which an entity can be locked.
-  /// [maxLockDuration] - Maximum duration for which an entity can be locked.
-  /// [defaultVersion] - Default version string for new entities.
-  /// [defaultIsPublic] - Whether entities are public by default.
-  /// [defaultPriority] - Default priority level for new entities.
-  /// [defaultStage] - Default workflow stage for new entities.
-  /// [pathSeparator] - Character used to separate path segments.
-  /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.
-  factory EntityConfig.custom({
-    int? maxPathLength,
-    int? maxPathSegment,
-    int? maxHierarchyDepth,
-    int? maxHistorySize,
-    int? defaultHistorySize,
-    Duration? defaultLockTimeout,
-    Duration? lockExtensionPeriod,
-    Duration? minLockDuration,
-    Duration? maxLockDuration,
-    String? defaultVersion,
-    bool? defaultIsPublic,
-    EntityPriority? defaultPriority,
-    EntityStage? defaultStage,
-    String? pathSeparator,
-    String? invalidPathChars,
-  }) {
-
-**Signature:** `EntityConfig(maxPathLength: maxPathLength ?? const EntityConfig().maxPathLength,
-      maxPathSegment: maxPathSegment ?? const EntityConfig().maxPathSegment,
-      maxHierarchyDepth:
-          maxHierarchyDepth ?? const EntityConfig().maxHierarchyDepth,
-      maxHistorySize: maxHistorySize ?? const EntityConfig().maxHistorySize,
-      defaultHistorySize:
-          defaultHistorySize ?? const EntityConfig().defaultHistorySize,
-      defaultLockTimeout:
-          defaultLockTimeout ?? const EntityConfig().defaultLockTimeout,
-      lockExtensionPeriod:
-          lockExtensionPeriod ?? const EntityConfig().lockExtensionPeriod,
-      minLockDuration: minLockDuration ?? const EntityConfig().minLockDuration,
-      maxLockDuration: maxLockDuration ?? const EntityConfig().maxLockDuration,
-      defaultVersion: defaultVersion ?? const EntityConfig().defaultVersion,
-      defaultIsPublic: defaultIsPublic ?? const EntityConfig().defaultIsPublic,
-      defaultPriority: defaultPriority ?? const EntityConfig().defaultPriority,
-      defaultStage: defaultStage ?? const EntityConfig().defaultStage,
-      pathSeparator: pathSeparator ?? const EntityConfig().pathSeparator,
+      // Use most permissive regex pattern for invalid chars (if they differ)
       invalidPathChars:
-          invalidPathChars ?? const EntityConfig().invalidPathChars,
+          invalidPathChars == other.invalidPathChars
+              ? invalidPathChars
+              : _mergeInvalidCharsPatterns(
+                invalidPathChars,
+                other.invalidPathChars,
+              ),
+
+      // Use newest schema version
+      defaultVersion:
+          _compareVersions(defaultVersion, other.defaultVersion) >= 0
+              ? defaultVersion
+              : other.defaultVersion,
+
+      // Keep other settings from this config
+      defaultIsPublic: defaultIsPublic,
+      defaultPriority: defaultPriority,
+      defaultStage: defaultStage,
     );
   }
 
-  factory EntityConfig.fromJson(Map<String, Object?> json)`
+  /// Helper method to merge two regex patterns for invalid characters,
+  /// creating a more permissive pattern that allows characters valid in either pattern.
+  static String _mergeInvalidCharsPatterns(String pattern1, String pattern2)`
 
 ### `EntityCreateConfig`
 
@@ -3750,6 +4474,18 @@ extension EntityHierarchyOperations on EntityHierarchy {
 
 **Signature:** `build()`
 
+### `constrainLockDuration`
+
+**File:** `lib/src/domain/core/entity_config.dart`
+
+**Description:** Adjusts a lock duration to fit within the configured limits.
+  ///
+  /// If the input duration is too short, returns minLockDuration.
+  /// If the input duration is too long, returns maxLockDuration.
+  /// Otherwise, returns the original duration.
+
+**Signature:** `constrainLockDuration(Duration lockDuration)`
+
 ### `contains`
 
 **File:** `lib/src/domain/value_objects/time_value_objects.dart`
@@ -3758,39 +4494,16 @@ extension EntityHierarchyOperations on EntityHierarchy {
 
 ### `copyWith`
 
-**File:** `lib/src/domain/entities/base_entity.dart`
+**File:** `lib/src/domain/core/core_entity.dart`
 
-**Signature:** `copyWith(versioning: versioning.copyWith(
-        dataVer: versioning.dataVer + 1,
-        structVer:
-            isStructural ? versioning.structVer + 1 : versioning.structVer,
-      ),
-    );
+**Signature:** `copyWith(meta: updatedMeta);
   }
-}
 
-/// Data transfer object for entity metadata
-@freezed
-sealed class EntityMetadata with _$EntityMetadata {
-  const EntityMetadata._();
-
-  /// Creates a new EntityMetadata instance
+  /// Try to retrieve a typed value from metadata
   ///
-  /// [displayName] - Human-readable display name
-  /// [entityType] - Type classification of the entity
-  /// [description] - Optional description text
-  /// [lastNameUpdate] - When the name was last changed
-  /// [searchTerms] - Key-value pairs for enhanced searching
-  const factory EntityMetadata({
-    required String displayName,
-    required String entityType,
-    String? description,
-    DateTime? lastNameUpdate,
-    @Default({}) Map<String, String> searchTerms,
-  }) = _EntityMetadata;
-
-  /// Creates EntityMetadata from a JSON map
-  factory EntityMetadata.fromJson(Map<String, Object> json)`
+  /// This method tries to safely cast the value to the expected type.
+  /// Returns null if the key doesn't exist or if the type conversion fails.
+  R? _getValueWithType<R>(String key)`
 
 ### `draft`
 
@@ -3825,17 +4538,53 @@ enum EntityStage {
   /// Returns [EntityStage.draft] if the string doesn't match any stage.
   static EntityStage fromString(String value)`
 
+### `filterMetadata`
+
+**File:** `lib/src/domain/core/core_entity.dart`
+
+**Description:** Get metadata with type safety, providing a default value if not present
+  ///
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  R getMetadataOrDefault<R>(String key, R defaultValue) {
+    return _getValueWithType<R>(key) ?? defaultValue;
+  }
+  
+  /// Filter metadata based on a predicate
+  /// 
+  /// Returns a new Map containing only the metadata entries for which the predicate returns true
+  /// [predicate] - Function that tests each key and value
+
+**Signature:** `filterMetadata(bool Function(String key, Object value) predicate)`
+
 ### `for`
 
-**File:** `lib/src/domain/events/domain_event.dart`
+**File:** `lib/src/domain/core/entity_config.dart`
 
-**Signature:** `for(final entry in otherVectors.entries)`
+**Description:** Helper method to compare semantic version strings.
+  /// Returns positive if v1 > v2, negative if v1 < v2, 0 if equal.
+  static int _compareVersions(String v1, String v2) {
+    try {
+      final v1Parts = v1.split('.').map(int.parse).toList();
+      final v2Parts = v2.split('.').map(int.parse).toList();
+
+**Signature:** `for(var i = 0; i < math.min(v1Parts.length, v2Parts.length); i++)`
 
 ### `getDepthTo`
 
 **File:** `lib/src/domain/entities/base_entity.dart`
 
 **Signature:** `getDepthTo(BaseEntityModel<T> ancestor)`
+
+### `getNameFromPath`
+
+**File:** `lib/src/domain/core/entity_config.dart`
+
+**Description:** Extracts the last segment (name) from a path.
+  ///
+  /// Returns the name component, or the full path if there are no separators.
+
+**Signature:** `getNameFromPath(String path)`
 
 ### `hasMetadata`
 
@@ -3853,14 +4602,19 @@ enum EntityStage {
   /// Get a value from meta with an expected type
   ///
   /// Returns null if the key doesn't exist or there's a type conversion error
-  R? get<R>(String key) {
-    return _getValueWithType<R>(key);
-  }
+  /// This is an alias for getMetadata<R>(key) for more concise syntax
+  R? get<R>(String key) => getMetadata<R>(key);
 
   /// Retrieve metadata by key with a simplified interface
   ///
-  /// Returns the value from metadata or null if not found
-  Object? getMetadata(String key) => meta[key];
+  /// Returns the value from metadata with the specified type or null if not found
+  /// For untyped access, use getMetadata<Object?>(key)
+  R? getMetadata<R>(String key) => _getValueWithType<R>(key);
+
+  /// Retrieve untyped metadata by key (backward compatibility)
+  ///
+  /// Returns the raw value from metadata or null if not found
+  Object? getRawMetadata(String key) => meta[key];
 
   /// Check if metadata contains a specific key
 
@@ -3868,25 +4622,28 @@ enum EntityStage {
 
 ### `if`
 
-**File:** `lib/src/domain/entities/base_entity.dart`
+**File:** `lib/src/domain/core/entity_config.dart`
 
-**Signature:** `if(!hierarchy.childIds.contains(childId)) return this;
-    return copyWith(hierarchy: hierarchy.removeChild(childId));
-  }
-
-  /// Validates and corrects the hierarchy leaf status if needed
-  ///
-  /// This method ensures that the [isHierarchyLeaf] property correctly reflects
-  /// whether the entity has children or not.
-  ///
-  /// Returns an updated entity with corrected leaf status
-  BaseEntityModel<T> validateHierarchyLeafStatus()`
+**Signature:** `if(parts.length != 3)`
 
 ### `incrementVector`
 
 **File:** `lib/src/domain/events/domain_event.dart`
 
 **Signature:** `incrementVector(String node)`
+
+### `incrementVersion`
+
+**File:** `lib/src/domain/core/entity_config.dart`
+
+**Description:** Creates a new configuration with an incremented version.
+  ///
+  /// [increment] - Which part to increment: "major", "minor", or "patch"
+  /// [baseVersion] - Optional base version, defaults to this config's version
+  ///
+  /// Returns a new version string following semantic versioning.
+
+**Signature:** `incrementVersion(String increment, [String? baseVersion])`
 
 ### `isActive`
 
@@ -3923,11 +4680,36 @@ enum EntityStage {
 
 **Signature:** `isBackwardsCompatible()`
 
+### `isCompatibleWith`
+
+**File:** `lib/src/domain/core/entity_config.dart`
+
+**Description:** Checks if this configuration is compatible with another configuration.
+  ///
+  /// A configuration is considered compatible when:
+  /// 1. Its path limits are equal to or greater than the other configuration
+  /// 2. It uses the same path separator character
+  /// 3. Its lock duration constraints can accommodate the other's default lock duration
+  ///
+  /// Returns true if this configuration is compatible with the other configuration.
+
+**Signature:** `isCompatibleWith(EntityConfig other)`
+
 ### `isDescendantOf`
 
 **File:** `lib/src/domain/entities/base_entity.dart`
 
 **Signature:** `isDescendantOf(BaseEntityModel<T> other)`
+
+### `isParentPath`
+
+**File:** `lib/src/domain/core/entity_config.dart`
+
+**Description:** Checks if one path is a parent of another path.
+  ///
+  /// Returns true if parentPath is a parent of childPath.
+
+**Signature:** `isParentPath(String parentPath, String childPath)`
 
 ### `isPublic`
 
@@ -3935,22 +4717,81 @@ enum EntityStage {
 
 **Signature:** `isPublic(bool isPublic)`
 
+### `isValidEntityName`
+
+**File:** `lib/src/domain/core/entity_config.dart`
+
+**Description:** Validates an entity name based on configuration constraints.
+  ///
+  /// Returns true if the name:
+  /// - Is not empty
+  /// - Does not contain path separators
+  /// - Does not contain invalid characters
+  /// - Does not exceed maxPathSegment length
+
+**Signature:** `isValidEntityName(String name)`
+
+### `isValidLockDuration`
+
+**File:** `lib/src/domain/core/entity_config.dart`
+
+**Description:** Validates that a lock duration is within the configured limits.
+  ///
+  /// Returns true if the duration is between minLockDuration and maxLockDuration.
+
+**Signature:** `isValidLockDuration(Duration lockDuration)`
+
 ### `isValidPath`
 
-**File:** `lib/src/domain/entities/base_entity.dart`
+**File:** `lib/src/domain/core/entity_config.dart`
 
-**Description:** Unified path validation: checks both format and length constraints
+**Description:** Validates if a path string conforms to the configuration constraints.
+  ///
+  /// Checks if the path:
+  /// - Does not exceed the maximum path length
+  /// - Does not exceed the maximum hierarchy depth
+  /// - Does not contain invalid characters
+  /// - Does not have segments that exceed the maximum segment length
+  ///
+  /// Returns true if the path is valid according to all constraints.
 
-**Signature:** `isValidPath(String? path, {
-    EntityConfig? config,
-    bool requireLeadingSlash = true,
-  })`
+**Signature:** `isValidPath(String path)`
+
+### `isVersionCompatible`
+
+**File:** `lib/src/domain/core/entity_config.dart`
+
+**Description:** Checks if this configuration version is compatible with another version.
+  ///
+  /// Follows semantic versioning principles:
+  /// - Major versions must match (breaking changes)
+  /// - If this is being used with data created by otherVersion, this.minor >= other.minor
+  ///
+  /// [otherVersion] - Version string to check compatibility with (e.g., "1.2.3")
+  /// [thisVersion] - Optional version to check, defaults to this config's version
+  ///
+  /// Returns true if versions are compatible.
+
+**Signature:** `isVersionCompatible(String otherVersion, [String? thisVersion])`
 
 ### `isWithinTolerance`
 
 **File:** `lib/src/domain/value_objects/measurement_value_objects.dart`
 
 **Signature:** `isWithinTolerance(double target)`
+
+### `joinPath`
+
+**File:** `lib/src/domain/core/entity_config.dart`
+
+**Description:** Joins path segments using the configured path separator.
+  ///
+  /// This is a convenience method that ensures consistent path formatting.
+  /// It also sanitizes the result to ensure it conforms to all path constraints.
+  ///
+  /// Returns the joined path, sanitized according to configuration constraints.
+
+**Signature:** `joinPath(List<String> segments)`
 
 ### `low`
 
@@ -4061,19 +4902,15 @@ class EventMigrationService {
 
 ### `sanitizePath`
 
-**File:** `lib/src/domain/entities/base_entity.dart`
+**File:** `lib/src/domain/core/entity_config.dart`
 
-**Signature:** `sanitizePath(hierarchy.treePath,
-        leadingSlash: true,
-        trailingSlash: false,
-      ).toLowerCase();
-  List<String> get pathSegments => splitPath(hierarchy.treePath);
+**Signature:** `sanitizePath(segments.join(pathSeparator));
+  }
 
-  /// Returns a list of ancestor paths, each as a string up to that ancestor
-  List<String> get ancestorPaths {
-    final segments = pathSegments;
-    final paths = <String>[];
-    for (var i = 0; i < segments.length; i++)`
+  /// Extracts the parent path from a given path.
+  ///
+  /// Returns the parent path, or an empty string if the path has no parent.
+  String getParentPath(String path)`
 
 ### `splitPath`
 
@@ -4177,9 +5014,9 @@ class EventQuery {
 
 ### `switch`
 
-**File:** `lib/src/domain/entities/entity_types.dart`
+**File:** `lib/src/domain/core/entity_config.dart`
 
-**Signature:** `switch(event.eventType)`
+**Signature:** `switch(increment.toLowerCase())`
 
 ### `updateHierarchy`
 
@@ -4221,6 +5058,21 @@ class EventQuery {
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
 **Signature:** `withExpiryDate(DateTime expiryDate)`
+
+### `withIncrementedVersion`
+
+**File:** `lib/src/domain/core/entity_config.dart`
+
+**Description:** Creates a new config with the version number incremented.
+  ///
+  /// This creates a new configuration with an updated version while
+  /// preserving all other settings.
+  ///
+  /// [increment] - Which part to increment: "major", "minor", or "patch"
+  ///
+  /// Returns a new EntityConfig with the updated version.
+
+**Signature:** `withIncrementedVersion(String increment)`
 
 ### `withLabels`
 
@@ -4275,6 +5127,20 @@ class EventQuery {
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
 **Signature:** `withTags(List<String> newTags)`
+
+### `withUpdatedMetadata`
+
+**File:** `lib/src/domain/core/core_entity.dart`
+
+**Description:** Creates a new instance of CoreEntity with updated metadata
+  /// 
+  /// This method allows for bulk updates to metadata without changing other properties
+  /// [updates] - Map of key-value pairs to add or update in metadata
+  /// [removeKeys] - Optional list of keys to remove from metadata
+
+**Signature:** `withUpdatedMetadata(Map<String, Object> updates, {
+    List<String>? removeKeys,
+  })`
 
 ### `withUser`
 
@@ -4358,7 +5224,6 @@ classDiagram
 
     % Repository implementations
     EntityRepository <|-- EventAwareRepository
-    EntityRepository <|-- IEntityRepository
     EntityRepository <|-- AggregateRepositoryBase
 ```
 
@@ -4467,6 +5332,7 @@ No imports.
 
 **Imports:**
 
+- `dart:math`
 - `package:freezed_annotation/freezed_annotation.dart`
 - `../../domain/value_objects/enum_objects.dart`
 
@@ -4971,6 +5837,17 @@ No imports.
   /// Returns an updated entity with incremented version numbers.
   BaseEntityModel<T> incrementVersion({bool isStructural = false})`
 
+### `EntityAuditReport`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `List<UserAction> modifications`
+- `List<UserAction> accesses`
+- `Map<String, int> operationCounts`
+- `DateTime generatedAt`
+
 ### `EntityBuilder`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
@@ -5060,6 +5937,909 @@ No imports.
 
 - `BaseEntityModel<T> source`
 - `AuthUser user`
+
+### `EntityConfig`
+
+**File:** `lib/src/domain/core/entity_config.dart`
+
+**Properties:**
+
+- `const defaultConfig` - Configuration schema version for tracking changes to the configuration format itself.
+    /// This version follows semantic versioning and should be incremented when:
+    /// - MAJOR: Breaking changes to configuration structure
+    /// - MINOR: New backward-compatible fields added
+    /// - PATCH: Bug fixes that don't affect configuration structure
+    @Default('1.0.0') String configVersion,
+
+    // Path limits
+    /// Maximum length of an entity path in characters.
+    @Default(1024) int maxPathLength,
+
+    /// Maximum length of a single path segment in characters.
+    @Default(255) int maxPathSegment,
+
+    /// Maximum allowed depth of entity hierarchies.
+    @Default(10) int maxHierarchyDepth,
+
+    // History limits
+    /// Maximum number of history entries to retain per entity.
+    @Default(50) int maxHistorySize,
+
+    /// Default number of history entries to show in views.
+    @Default(50) int defaultHistorySize,
+
+    // Lock settings
+    /// Default duration before an entity lock expires.
+    @Default(Duration(minutes: 15)) Duration defaultLockTimeout,
+
+    /// Duration by which a lock can be extended.
+    @Default(Duration(minutes: 5)) Duration lockExtensionPeriod,
+
+    /// Minimum duration for which an entity can be locked.
+    @Default(Duration(seconds: 30)) Duration minLockDuration,
+
+    /// Maximum duration for which an entity can be locked.
+    @Default(Duration(hours: 24)) Duration maxLockDuration,
+
+    // Entity defaults
+    /// Default version string for new entities.
+    @Default('1.0.0') String defaultVersion,
+
+    /// Whether entities are public by default.
+    @Default(true) bool defaultIsPublic,
+
+    /// Default priority level for new entities.
+    @Default(EntityPriority.medium) EntityPriority defaultPriority,
+
+    /// Default workflow stage for new entities.
+    @Default(EntityStage.draft) EntityStage defaultStage,
+
+    // Path settings
+    /// Character used to separate path segments.
+    @Default('/') String pathSeparator,
+
+    /// Regular expression pattern defining invalid characters in paths.
+    ///
+    /// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).
+    /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
+    ///
+    /// Default: `[<>:"|?*\x00-\x1F]`
+    @Default(r'[<>:"|?*\x00-\x1F]') String invalidPathChars,
+  }) = _EntityConfig;
+
+  /// Creates a new instance of [EntityConfig] with configuration optimized for development.
+  ///
+  /// This configuration has more permissive settings than the default.
+  factory EntityConfig.development() {
+    return const EntityConfig(
+      configVersion: '1.0.0',
+      maxPathLength: 2048,
+      maxHistorySize: 100,
+      defaultLockTimeout: Duration(hours: 1),
+      minLockDuration: Duration(seconds: 5),
+      maxLockDuration: Duration(hours: 48),
+    );
+  }
+
+  /// Creates a new instance of [EntityConfig] with configuration optimized for production.
+  ///
+  /// This configuration has more restrictive settings than the default.
+  factory EntityConfig.production() {
+    return const EntityConfig(
+      configVersion: '1.0.0',
+      maxPathLength: 512,
+      maxPathSegment: 128,
+      maxHierarchyDepth: 8,
+      maxHistorySize: 25,
+      defaultHistorySize: 10,
+      defaultLockTimeout: Duration(minutes: 10),
+      maxLockDuration: Duration(hours: 12),
+      defaultIsPublic: false,
+    );
+  }
+
+  /// Creates a new instance of [EntityConfig] with custom overrides.
+  ///
+  /// This factory allows you to define configuration settings for any environment (e.g., staging, testing, CI)
+  /// by overriding only the fields you need. All unspecified fields will use the default values.
+  ///
+  /// Example:
+  /// ```dart
+  /// final stagingConfig = EntityConfig.custom(
+  ///   maxPathLength: 1500,
+  ///   defaultIsPublic: false,
+  /// );
+  /// ```
+  ///
+  /// [maxPathLength] - Maximum length of an entity path in characters.
+  /// [maxPathSegment] - Maximum length of a single path segment in characters.
+  /// [maxHierarchyDepth] - Maximum allowed depth of entity hierarchies.
+  /// [maxHistorySize] - Maximum number of history entries to retain per entity.
+  /// [defaultHistorySize] - Default number of history entries to show in views.
+  /// [defaultLockTimeout] - Default duration before an entity lock expires.
+  /// [lockExtensionPeriod] - Duration by which a lock can be extended.
+  /// [minLockDuration] - Minimum duration for which an entity can be locked.
+  /// [maxLockDuration] - Maximum duration for which an entity can be locked.
+  /// [defaultVersion] - Default version string for new entities.
+  /// [defaultIsPublic] - Whether entities are public by default.
+  /// [defaultPriority] - Default priority level for new entities.
+  /// [defaultStage] - Default workflow stage for new entities.
+  /// [pathSeparator] - Character used to separate path segments.
+  /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.
+  factory EntityConfig.custom({
+    String? configVersion,
+    int? maxPathLength,
+    int? maxPathSegment,
+    int? maxHierarchyDepth,
+    int? maxHistorySize,
+    int? defaultHistorySize,
+    Duration? defaultLockTimeout,
+    Duration? lockExtensionPeriod,
+    Duration? minLockDuration,
+    Duration? maxLockDuration,
+    String? defaultVersion,
+    bool? defaultIsPublic,
+    EntityPriority? defaultPriority,
+    EntityStage? defaultStage,
+    String? pathSeparator,
+    String? invalidPathChars,
+  }) {
+- `final segments` - Validates if a path string conforms to the configuration constraints.
+  ///
+  /// Checks if the path:
+  /// - Does not exceed the maximum path length
+  /// - Does not exceed the maximum hierarchy depth
+  /// - Does not contain invalid characters
+  /// - Does not have segments that exceed the maximum segment length
+  ///
+  /// Returns true if the path is valid according to all constraints.
+  bool isValidPath(String path) {
+    // Check total path length
+    if (path.length > maxPathLength) return false;
+
+    // Check path segments
+- `return true`
+- `String result` - Sanitizes a path to conform to configuration constraints.
+  ///
+  /// This method:
+  /// - Replaces invalid characters with underscores
+  /// - Truncates paths that exceed maximum length
+  /// - Truncates segments that exceed maximum length
+  ///
+  /// Returns a sanitized path that conforms to all path constraints.
+  String sanitizePath(String path) {
+    // Start with the original path
+- `final segments`
+- `return result`
+- `final joined` - Joins path segments using the configured path separator.
+  ///
+  /// This is a convenience method that ensures consistent path formatting.
+  /// It also sanitizes the result to ensure it conforms to all path constraints.
+  ///
+  /// Returns the joined path, sanitized according to configuration constraints.
+  String joinPath(List<String> segments) {
+- `final trimmedPath` - Resolves a child path relative to a parent path.
+  ///
+  /// This ensures proper joining of paths using the configured path separator.
+  ///
+  /// Returns the full path to the child, sanitized according to configuration constraints.
+  String resolvePath(String parent, String child) {
+    // Remove trailing separators from parent
+    if (parent.endsWith(pathSeparator)) {
+      parent = parent.substring(0, parent.length - pathSeparator.length);
+    }
+
+    // Remove leading separators from child
+    if (child.startsWith(pathSeparator)) {
+      child = child.substring(pathSeparator.length);
+    }
+
+    return sanitizePath('$parent$pathSeparator$child');
+  }
+
+  /// Calculates the depth of a path based on the number of separators.
+  ///
+  /// Returns the hierarchy level (depth) of the path.
+  int getPathDepth(String path) {
+    // Count separators, accounting for leading/trailing separators
+- `final segments`
+- `return lockDuration` - Validates that a lock duration is within the configured limits.
+  ///
+  /// Returns true if the duration is between minLockDuration and maxLockDuration.
+  bool isValidLockDuration(Duration lockDuration) {
+    return lockDuration >= minLockDuration && lockDuration <= maxLockDuration;
+  }
+
+  /// Adjusts a lock duration to fit within the configured limits.
+  ///
+  /// If the input duration is too short, returns minLockDuration.
+  /// If the input duration is too long, returns maxLockDuration.
+  /// Otherwise, returns the original duration.
+  Duration constrainLockDuration(Duration lockDuration) {
+    if (lockDuration < minLockDuration) return minLockDuration;
+    if (lockDuration > maxLockDuration) return maxLockDuration;
+- `final segments` - Normalizes a path by:
+  /// 1. Removing redundant separators
+  /// 2. Removing trailing separators
+  /// 3. Ensuring the path conforms to configuration constraints
+  ///
+  /// Returns a normalized path string.
+  String normalizePath(String path) {
+    // Handle empty paths
+    if (path.isEmpty) return '';
+
+    // Split into segments and filter out empty ones (that come from consecutive separators)
+- `final normalized` - Extracts the parent path from a given path.
+  ///
+  /// Returns the parent path, or an empty string if the path has no parent.
+  String getParentPath(String path) {
+- `final lastSeparatorIndex`
+- `final normalized` - Extracts the last segment (name) from a path.
+  ///
+  /// Returns the name component, or the full path if there are no separators.
+  String getNameFromPath(String path) {
+- `final lastSeparatorIndex`
+- `return normalized`
+- `final normalizedParent` - Checks if one path is a parent of another path.
+  ///
+  /// Returns true if parentPath is a parent of childPath.
+  bool isParentPath(String parentPath, String childPath) {
+- `final normalizedChild`
+- `return true`
+- `return true` - Validates an entity name based on configuration constraints.
+  ///
+  /// Returns true if the name:
+  /// - Is not empty
+  /// - Does not contain path separators
+  /// - Does not contain invalid characters
+  /// - Does not exceed maxPathSegment length
+  bool isValidEntityName(String name) {
+    if (name.isEmpty) return false;
+    if (name.length > maxPathSegment) return false;
+    if (name.contains(pathSeparator)) return false;
+    if (RegExp(invalidPathChars).hasMatch(name)) return false;
+- `return false` - Validates configuration values to ensure they are reasonable and consistent.
+  ///
+  /// This can be called during initialization to check that the configuration
+  /// doesn't have contradictory or invalid settings.
+  ///
+  /// Returns true if the configuration is valid.
+  bool validate() {
+    if (maxPathLength <= 0) return false;
+    if (maxPathSegment <= 0) return false;
+    if (maxHierarchyDepth <= 0) return false;
+    if (maxHistorySize < 0) return false;
+    if (defaultHistorySize < 0 || defaultHistorySize > maxHistorySize) {
+- `return false`
+- `return true`
+- `final differences` - Compares this configuration with another to identify differences.
+  ///
+  /// Returns a Map with property names as keys and a sub-map with 'this' and 'other' values
+  /// for each property that differs. Returns an empty map if the configurations are identical.
+  Map<String, Map<String, Object>> compareWith(EntityConfig other) {
+- `return differences`
+- `return true` - Checks if this configuration is compatible with another configuration.
+  ///
+  /// A configuration is considered compatible when:
+  /// 1. Its path limits are equal to or greater than the other configuration
+  /// 2. It uses the same path separator character
+  /// 3. Its lock duration constraints can accommodate the other's default lock duration
+  ///
+  /// Returns true if this configuration is compatible with the other configuration.
+  bool isCompatibleWith(EntityConfig other) {
+    // Path compatibility
+    if (maxPathLength < other.maxPathLength) return false;
+    if (maxPathSegment < other.maxPathSegment) return false;
+    if (maxHierarchyDepth < other.maxHierarchyDepth) return false;
+    if (pathSeparator != other.pathSeparator) return false;
+
+    // Lock duration compatibility
+    if (other.defaultLockTimeout < minLockDuration) return false;
+    if (other.defaultLockTimeout > maxLockDuration) return false;
+
+    // Compatible with associated defaults
+    if (maxHistorySize < other.defaultHistorySize) return false;
+- `return pattern1` - Creates a merged configuration using the most permissive values from both configurations.
+  ///
+  /// This is useful when you need to ensure compatibility between two environments.
+  ///
+  /// Returns a new EntityConfig that will be compatible with both source configurations.
+  EntityConfig mergeWith(EntityConfig other) {
+    return EntityConfig(
+      // Take the larger value for limits
+      maxPathLength: math.max(maxPathLength, other.maxPathLength),
+      maxPathSegment: math.max(maxPathSegment, other.maxPathSegment),
+      maxHierarchyDepth: math.max(maxHierarchyDepth, other.maxHierarchyDepth),
+      maxHistorySize: math.max(maxHistorySize, other.maxHistorySize),
+      defaultHistorySize: math.min(
+        math.max(defaultHistorySize, other.defaultHistorySize),
+        math.max(maxHistorySize, other.maxHistorySize),
+      ),
+
+      // Take the wider ranges for durations
+      defaultLockTimeout: Duration(
+        milliseconds:
+            (defaultLockTimeout.inMilliseconds +
+                other.defaultLockTimeout.inMilliseconds) ~/
+            2,
+      ),
+      lockExtensionPeriod: Duration(
+        milliseconds: math.max(
+          lockExtensionPeriod.inMilliseconds,
+          other.lockExtensionPeriod.inMilliseconds,
+        ),
+      ),
+      minLockDuration: Duration(
+        milliseconds: math.min(
+          minLockDuration.inMilliseconds,
+          other.minLockDuration.inMilliseconds,
+        ),
+      ),
+      maxLockDuration: Duration(
+        milliseconds: math.max(
+          maxLockDuration.inMilliseconds,
+          other.maxLockDuration.inMilliseconds,
+        ),
+      ),
+
+      // Preserve path separator from this config (they should be the same for compatibility)
+      pathSeparator: pathSeparator,
+
+      // Use most permissive regex pattern for invalid chars (if they differ)
+      invalidPathChars:
+          invalidPathChars == other.invalidPathChars
+              ? invalidPathChars
+              : _mergeInvalidCharsPatterns(
+                invalidPathChars,
+                other.invalidPathChars,
+              ),
+
+      // Use newest schema version
+      defaultVersion:
+          _compareVersions(defaultVersion, other.defaultVersion) >= 0
+              ? defaultVersion
+              : other.defaultVersion,
+
+      // Keep other settings from this config
+      defaultIsPublic: defaultIsPublic,
+      defaultPriority: defaultPriority,
+      defaultStage: defaultStage,
+    );
+  }
+
+  /// Helper method to merge two regex patterns for invalid characters,
+  /// creating a more permissive pattern that allows characters valid in either pattern.
+  static String _mergeInvalidCharsPatterns(String pattern1, String pattern2) {
+    // This is a simplified implementation - in a real system you might want
+    // a more sophisticated regex manipulation approach
+    try {
+      if (pattern1 == pattern2) return pattern1;
+
+      // Simple approach: just use the more restrictive pattern
+      // A more complete approach would parse and merge the character sets
+      if (pattern1.length > pattern2.length) return pattern2;
+- `final v1Parts` - Helper method to compare semantic version strings.
+  /// Returns positive if v1 > v2, negative if v1 < v2, 0 if equal.
+  static int _compareVersions(String v1, String v2) {
+    try {
+- `final v2Parts`
+- `final diff`
+- `final version` - Checks if this configuration version is compatible with another version.
+  ///
+  /// Follows semantic versioning principles:
+  /// - Major versions must match (breaking changes)
+  /// - If this is being used with data created by otherVersion, this.minor >= other.minor
+  ///
+  /// [otherVersion] - Version string to check compatibility with (e.g., "1.2.3")
+  /// [thisVersion] - Optional version to check, defaults to this config's version
+  ///
+  /// Returns true if versions are compatible.
+  bool isVersionCompatible(String otherVersion, [String? thisVersion]) {
+- `final vParts`
+- `final otherParts`
+- `return false`
+- `return true`
+- `return version`
+- `final version` - Creates a new configuration with an incremented version.
+  ///
+  /// [increment] - Which part to increment: "major", "minor", or "patch"
+  /// [baseVersion] - Optional base version, defaults to this config's version
+  ///
+  /// Returns a new version string following semantic versioning.
+  String incrementVersion(String increment, [String? baseVersion]) {
+- `final parts`
+- `final newVersion` - Creates a new config with the version number incremented.
+  ///
+  /// This creates a new configuration with an updated version while
+  /// preserving all other settings.
+  ///
+  /// [increment] - Which part to increment: "major", "minor", or "patch"
+  ///
+  /// Returns a new EntityConfig with the updated version.
+  EntityConfig withIncrementedVersion(String increment) {
+
+**Methods:**
+
+- `EntityConfig({
+    /// Configuration schema version for tracking changes to the configuration format itself.
+    /// This version follows semantic versioning and should be incremented when:
+    /// - MAJOR: Breaking changes to configuration structure
+    /// - MINOR: New backward-compatible fields added
+    /// - PATCH: Bug fixes that don't affect configuration structure
+    @Default('1.0.0') String configVersion,
+
+    // Path limits
+    /// Maximum length of an entity path in characters.
+    @Default(1024) int maxPathLength,
+
+    /// Maximum length of a single path segment in characters.
+    @Default(255) int maxPathSegment,
+
+    /// Maximum allowed depth of entity hierarchies.
+    @Default(10) int maxHierarchyDepth,
+
+    // History limits
+    /// Maximum number of history entries to retain per entity.
+    @Default(50) int maxHistorySize,
+
+    /// Default number of history entries to show in views.
+    @Default(50) int defaultHistorySize,
+
+    // Lock settings
+    /// Default duration before an entity lock expires.
+    @Default(Duration(minutes: 15)) Duration defaultLockTimeout,
+
+    /// Duration by which a lock can be extended.
+    @Default(Duration(minutes: 5)) Duration lockExtensionPeriod,
+
+    /// Minimum duration for which an entity can be locked.
+    @Default(Duration(seconds: 30)) Duration minLockDuration,
+
+    /// Maximum duration for which an entity can be locked.
+    @Default(Duration(hours: 24)) Duration maxLockDuration,
+
+    // Entity defaults
+    /// Default version string for new entities.
+    @Default('1.0.0') String defaultVersion,
+
+    /// Whether entities are public by default.
+    @Default(true) bool defaultIsPublic,
+
+    /// Default priority level for new entities.
+    @Default(EntityPriority.medium) EntityPriority defaultPriority,
+
+    /// Default workflow stage for new entities.
+    @Default(EntityStage.draft) EntityStage defaultStage,
+
+    // Path settings
+    /// Character used to separate path segments.
+    @Default('/') String pathSeparator,
+
+    /// Regular expression pattern defining invalid characters in paths.
+    ///
+    /// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).
+    /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
+    ///
+    /// Default: `[<>:"|?*\x00-\x1F]`
+    @Default(r'[<>:"|?*\x00-\x1F]') String invalidPathChars,
+  }) = _EntityConfig;
+
+  /// Creates a new instance of [EntityConfig] with configuration optimized for development.
+  ///
+  /// This configuration has more permissive settings than the default.
+  factory EntityConfig.development()`
+- `EntityConfig(configVersion: configVersion ?? defaultConfig.configVersion,
+      maxPathLength: maxPathLength ?? defaultConfig.maxPathLength,
+      maxPathSegment: maxPathSegment ?? defaultConfig.maxPathSegment,
+      maxHierarchyDepth: maxHierarchyDepth ?? defaultConfig.maxHierarchyDepth,
+      maxHistorySize: maxHistorySize ?? defaultConfig.maxHistorySize,
+      defaultHistorySize:
+          defaultHistorySize ?? defaultConfig.defaultHistorySize,
+      defaultLockTimeout:
+          defaultLockTimeout ?? defaultConfig.defaultLockTimeout,
+      lockExtensionPeriod:
+          lockExtensionPeriod ?? defaultConfig.lockExtensionPeriod,
+      minLockDuration: minLockDuration ?? defaultConfig.minLockDuration,
+      maxLockDuration: maxLockDuration ?? defaultConfig.maxLockDuration,
+      defaultVersion: defaultVersion ?? defaultConfig.defaultVersion,
+      defaultIsPublic: defaultIsPublic ?? defaultConfig.defaultIsPublic,
+      defaultPriority: defaultPriority ?? defaultConfig.defaultPriority,
+      defaultStage: defaultStage ?? defaultConfig.defaultStage,
+      pathSeparator: pathSeparator ?? defaultConfig.pathSeparator,
+      invalidPathChars: invalidPathChars ?? defaultConfig.invalidPathChars,
+    );
+  }
+
+  factory EntityConfig.fromJson(Map<String, Object?> json)` - Creates a new instance of [EntityConfig] with configuration optimized for production.
+  ///
+  /// This configuration has more restrictive settings than the default.
+  factory EntityConfig.production() {
+    return const EntityConfig(
+      configVersion: '1.0.0',
+      maxPathLength: 512,
+      maxPathSegment: 128,
+      maxHierarchyDepth: 8,
+      maxHistorySize: 25,
+      defaultHistorySize: 10,
+      defaultLockTimeout: Duration(minutes: 10),
+      maxLockDuration: Duration(hours: 12),
+      defaultIsPublic: false,
+    );
+  }
+
+  /// Creates a new instance of [EntityConfig] with custom overrides.
+  ///
+  /// This factory allows you to define configuration settings for any environment (e.g., staging, testing, CI)
+  /// by overriding only the fields you need. All unspecified fields will use the default values.
+  ///
+  /// Example:
+  /// ```dart
+  /// final stagingConfig = EntityConfig.custom(
+  ///   maxPathLength: 1500,
+  ///   defaultIsPublic: false,
+  /// );
+  /// ```
+  ///
+  /// [maxPathLength] - Maximum length of an entity path in characters.
+  /// [maxPathSegment] - Maximum length of a single path segment in characters.
+  /// [maxHierarchyDepth] - Maximum allowed depth of entity hierarchies.
+  /// [maxHistorySize] - Maximum number of history entries to retain per entity.
+  /// [defaultHistorySize] - Default number of history entries to show in views.
+  /// [defaultLockTimeout] - Default duration before an entity lock expires.
+  /// [lockExtensionPeriod] - Duration by which a lock can be extended.
+  /// [minLockDuration] - Minimum duration for which an entity can be locked.
+  /// [maxLockDuration] - Maximum duration for which an entity can be locked.
+  /// [defaultVersion] - Default version string for new entities.
+  /// [defaultIsPublic] - Whether entities are public by default.
+  /// [defaultPriority] - Default priority level for new entities.
+  /// [defaultStage] - Default workflow stage for new entities.
+  /// [pathSeparator] - Character used to separate path segments.
+  /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.
+  factory EntityConfig.custom({
+    String? configVersion,
+    int? maxPathLength,
+    int? maxPathSegment,
+    int? maxHierarchyDepth,
+    int? maxHistorySize,
+    int? defaultHistorySize,
+    Duration? defaultLockTimeout,
+    Duration? lockExtensionPeriod,
+    Duration? minLockDuration,
+    Duration? maxLockDuration,
+    String? defaultVersion,
+    bool? defaultIsPublic,
+    EntityPriority? defaultPriority,
+    EntityStage? defaultStage,
+    String? pathSeparator,
+    String? invalidPathChars,
+  }) {
+    const defaultConfig = EntityConfig();
+- `isValidPath(String path)` - Validates if a path string conforms to the configuration constraints.
+  ///
+  /// Checks if the path:
+  /// - Does not exceed the maximum path length
+  /// - Does not exceed the maximum hierarchy depth
+  /// - Does not contain invalid characters
+  /// - Does not have segments that exceed the maximum segment length
+  ///
+  /// Returns true if the path is valid according to all constraints.
+- `if(path.length > maxPathLength) return false;
+
+    // Check path segments
+    final segments = path.split(pathSeparator);
+
+    // Check hierarchy depth
+    if (segments.length > maxHierarchyDepth) return false;
+
+    // Check each segment
+    for (final segment in segments)`
+- `if(segment.isEmpty) continue;
+
+      // Check segment length
+      if (segment.length > maxPathSegment) return false;
+
+      // Check for invalid characters
+      if (RegExp(invalidPathChars).hasMatch(segment)) return false;
+    }
+
+    return true;
+  }
+
+  /// Sanitizes a path to conform to configuration constraints.
+  ///
+  /// This method:
+  /// - Replaces invalid characters with underscores
+  /// - Truncates paths that exceed maximum length
+  /// - Truncates segments that exceed maximum length
+  ///
+  /// Returns a sanitized path that conforms to all path constraints.
+  String sanitizePath(String path)`
+- `for(int i = 0; i < segments.length; i++)`
+- `if(segments[i].length > maxPathSegment)`
+- `if(segments.length > maxHierarchyDepth)`
+- `if(result.length > maxPathLength)`
+- `joinPath(List<String> segments)` - Joins path segments using the configured path separator.
+  ///
+  /// This is a convenience method that ensures consistent path formatting.
+  /// It also sanitizes the result to ensure it conforms to all path constraints.
+  ///
+  /// Returns the joined path, sanitized according to configuration constraints.
+- `sanitizePath(joined);
+  }
+
+  /// Resolves a child path relative to a parent path.
+  ///
+  /// This ensures proper joining of paths using the configured path separator.
+  ///
+  /// Returns the full path to the child, sanitized according to configuration constraints.
+  String resolvePath(String parent, String child)`
+- `if(parent.endsWith(pathSeparator))`
+- `if(child.startsWith(pathSeparator))`
+- `sanitizePath('$parent$pathSeparator$child');
+  }
+
+  /// Calculates the depth of a path based on the number of separators.
+  ///
+  /// Returns the hierarchy level (depth) of the path.
+  int getPathDepth(String path)`
+- `if(trimmedPath.isEmpty) return 0;
+
+    final segments =
+        trimmedPath.split(pathSeparator).where((s)`
+- `isValidLockDuration(Duration lockDuration)` - Validates that a lock duration is within the configured limits.
+  ///
+  /// Returns true if the duration is between minLockDuration and maxLockDuration.
+- `constrainLockDuration(Duration lockDuration)` - Adjusts a lock duration to fit within the configured limits.
+  ///
+  /// If the input duration is too short, returns minLockDuration.
+  /// If the input duration is too long, returns maxLockDuration.
+  /// Otherwise, returns the original duration.
+- `if(lockDuration < minLockDuration) return minLockDuration;
+    if (lockDuration > maxLockDuration) return maxLockDuration;
+    return lockDuration;
+  }
+
+  /// Normalizes a path by:
+  /// 1. Removing redundant separators
+  /// 2. Removing trailing separators
+  /// 3. Ensuring the path conforms to configuration constraints
+  ///
+  /// Returns a normalized path string.
+  String normalizePath(String path)`
+- `if(path.isEmpty) return '';
+
+    // Split into segments and filter out empty ones (that come from consecutive separators)
+    final segments =
+        path
+            .split(pathSeparator)
+            .where((segment)`
+- `sanitizePath(segments.join(pathSeparator));
+  }
+
+  /// Extracts the parent path from a given path.
+  ///
+  /// Returns the parent path, or an empty string if the path has no parent.
+  String getParentPath(String path)`
+- `if(lastSeparatorIndex <= 0)`
+- `getNameFromPath(String path)` - Extracts the last segment (name) from a path.
+  ///
+  /// Returns the name component, or the full path if there are no separators.
+- `if(lastSeparatorIndex < 0)`
+- `isParentPath(String parentPath, String childPath)` - Checks if one path is a parent of another path.
+  ///
+  /// Returns true if parentPath is a parent of childPath.
+- `if(normalizedParent.isEmpty)`
+- `isValidEntityName(String name)` - Validates an entity name based on configuration constraints.
+  ///
+  /// Returns true if the name:
+  /// - Is not empty
+  /// - Does not contain path separators
+  /// - Does not contain invalid characters
+  /// - Does not exceed maxPathSegment length
+- `if(name.isEmpty) return false;
+    if (name.length > maxPathSegment) return false;
+    if (name.contains(pathSeparator)) return false;
+    if (RegExp(invalidPathChars).hasMatch(name)) return false;
+    return true;
+  }
+
+  /// Validates configuration values to ensure they are reasonable and consistent.
+  ///
+  /// This can be called during initialization to check that the configuration
+  /// doesn't have contradictory or invalid settings.
+  ///
+  /// Returns true if the configuration is valid.
+  bool validate()`
+- `if(maxPathLength <= 0) return false;
+    if (maxPathSegment <= 0) return false;
+    if (maxHierarchyDepth <= 0) return false;
+    if (maxHistorySize < 0) return false;
+    if (defaultHistorySize < 0 || defaultHistorySize > maxHistorySize)`
+- `if(defaultLockTimeout.isNegative) return false;
+    if (lockExtensionPeriod.isNegative) return false;
+    if (minLockDuration.isNegative) return false;
+    if (maxLockDuration.isNegative) return false;
+    if (minLockDuration > maxLockDuration) return false;
+    if (pathSeparator.isEmpty) return false;
+
+    // Try to compile the regex pattern to check validity
+    try {
+      RegExp(invalidPathChars);
+    } catch (e)`
+- `if(defaultVersion != other.defaultVersion)` - Compares this configuration with another to identify differences.
+  ///
+  /// Returns a Map with property names as keys and a sub-map with 'this' and 'other' values
+  /// for each property that differs. Returns an empty map if the configurations are identical.
+  Map<String, Map<String, Object>> compareWith(EntityConfig other) {
+    final differences = <String, Map<String, Object>>{};
+
+    // Compare versions
+- `if(maxPathLength != other.maxPathLength)`
+- `if(maxPathSegment != other.maxPathSegment)`
+- `if(maxHierarchyDepth != other.maxHierarchyDepth)`
+- `if(maxHistorySize != other.maxHistorySize)`
+- `if(defaultHistorySize != other.defaultHistorySize)`
+- `if(defaultLockTimeout != other.defaultLockTimeout)`
+- `if(lockExtensionPeriod != other.lockExtensionPeriod)`
+- `if(minLockDuration != other.minLockDuration)`
+- `if(maxLockDuration != other.maxLockDuration)`
+- `if(defaultVersion != other.defaultVersion)`
+- `if(defaultIsPublic != other.defaultIsPublic)`
+- `if(defaultPriority != other.defaultPriority)`
+- `if(defaultStage != other.defaultStage)`
+- `if(pathSeparator != other.pathSeparator)`
+- `if(invalidPathChars != other.invalidPathChars)`
+- `isCompatibleWith(EntityConfig other)` - Checks if this configuration is compatible with another configuration.
+  ///
+  /// A configuration is considered compatible when:
+  /// 1. Its path limits are equal to or greater than the other configuration
+  /// 2. It uses the same path separator character
+  /// 3. Its lock duration constraints can accommodate the other's default lock duration
+  ///
+  /// Returns true if this configuration is compatible with the other configuration.
+- `if(maxPathLength < other.maxPathLength) return false;
+    if (maxPathSegment < other.maxPathSegment) return false;
+    if (maxHierarchyDepth < other.maxHierarchyDepth) return false;
+    if (pathSeparator != other.pathSeparator) return false;
+
+    // Lock duration compatibility
+    if (other.defaultLockTimeout < minLockDuration) return false;
+    if (other.defaultLockTimeout > maxLockDuration) return false;
+
+    // Compatible with associated defaults
+    if (maxHistorySize < other.defaultHistorySize) return false;
+
+    return true;
+  }
+
+  /// Creates a merged configuration using the most permissive values from both configurations.
+  ///
+  /// This is useful when you need to ensure compatibility between two environments.
+  ///
+  /// Returns a new EntityConfig that will be compatible with both source configurations.
+  EntityConfig mergeWith(EntityConfig other)`
+- `EntityConfig(// Take the larger value for limits
+      maxPathLength: math.max(maxPathLength, other.maxPathLength),
+      maxPathSegment: math.max(maxPathSegment, other.maxPathSegment),
+      maxHierarchyDepth: math.max(maxHierarchyDepth, other.maxHierarchyDepth),
+      maxHistorySize: math.max(maxHistorySize, other.maxHistorySize),
+      defaultHistorySize: math.min(
+        math.max(defaultHistorySize, other.defaultHistorySize),
+        math.max(maxHistorySize, other.maxHistorySize),
+      ),
+
+      // Take the wider ranges for durations
+      defaultLockTimeout: Duration(
+        milliseconds:
+            (defaultLockTimeout.inMilliseconds +
+                other.defaultLockTimeout.inMilliseconds) ~/
+            2,
+      ),
+      lockExtensionPeriod: Duration(
+        milliseconds: math.max(
+          lockExtensionPeriod.inMilliseconds,
+          other.lockExtensionPeriod.inMilliseconds,
+        ),
+      ),
+      minLockDuration: Duration(
+        milliseconds: math.min(
+          minLockDuration.inMilliseconds,
+          other.minLockDuration.inMilliseconds,
+        ),
+      ),
+      maxLockDuration: Duration(
+        milliseconds: math.max(
+          maxLockDuration.inMilliseconds,
+          other.maxLockDuration.inMilliseconds,
+        ),
+      ),
+
+      // Preserve path separator from this config (they should be the same for compatibility)
+      pathSeparator: pathSeparator,
+
+      // Use most permissive regex pattern for invalid chars (if they differ)
+      invalidPathChars:
+          invalidPathChars == other.invalidPathChars
+              ? invalidPathChars
+              : _mergeInvalidCharsPatterns(
+                invalidPathChars,
+                other.invalidPathChars,
+              ),
+
+      // Use newest schema version
+      defaultVersion:
+          _compareVersions(defaultVersion, other.defaultVersion) >= 0
+              ? defaultVersion
+              : other.defaultVersion,
+
+      // Keep other settings from this config
+      defaultIsPublic: defaultIsPublic,
+      defaultPriority: defaultPriority,
+      defaultStage: defaultStage,
+    );
+  }
+
+  /// Helper method to merge two regex patterns for invalid characters,
+  /// creating a more permissive pattern that allows characters valid in either pattern.
+  static String _mergeInvalidCharsPatterns(String pattern1, String pattern2)`
+- `if(pattern1 == pattern2) return pattern1;
+
+      // Simple approach: just use the more restrictive pattern
+      // A more complete approach would parse and merge the character sets
+      if (pattern1.length > pattern2.length) return pattern2;
+      return pattern1;
+    } catch (e)`
+- `_compareVersions(String v1, String v2)` - Helper method to compare semantic version strings.
+  /// Returns positive if v1 > v2, negative if v1 < v2, 0 if equal.
+- `for(var i = 0; i < math.min(v1Parts.length, v2Parts.length); i++)`
+- `if(diff != 0) return diff;
+      }
+
+      return v1Parts.length - v2Parts.length;
+    } catch (e)`
+- `isVersionCompatible(String otherVersion, [String? thisVersion])` - Checks if this configuration version is compatible with another version.
+  ///
+  /// Follows semantic versioning principles:
+  /// - Major versions must match (breaking changes)
+  /// - If this is being used with data created by otherVersion, this.minor >= other.minor
+  ///
+  /// [otherVersion] - Version string to check compatibility with (e.g., "1.2.3")
+  /// [thisVersion] - Optional version to check, defaults to this config's version
+  ///
+  /// Returns true if versions are compatible.
+- `if(version == otherVersion) return true;
+
+    try {
+      final vParts = version.split('.').map(int.parse).toList();
+      final otherParts = otherVersion.split('.').map(int.parse).toList();
+
+      // Major versions must match (breaking changes)
+      if (vParts.isNotEmpty &&
+          otherParts.isNotEmpty &&
+          vParts[0] != otherParts[0])`
+- `if(vParts.length > 1 && otherParts.length > 1)`
+- `if(vParts[1] < otherParts[1]) return false;
+      }
+
+      // Patch versions don't affect compatibility
+      return true;
+    } catch (e)`
+- `incrementVersion(String increment, [String? baseVersion])` - Creates a new configuration with an incremented version.
+  ///
+  /// [increment] - Which part to increment: "major", "minor", or "patch"
+  /// [baseVersion] - Optional base version, defaults to this config's version
+  ///
+  /// Returns a new version string following semantic versioning.
+- `if(parts.length != 3)`
+- `switch(increment.toLowerCase())`
+- `withIncrementedVersion(String increment)` - Creates a new config with the version number incremented.
+  ///
+  /// This creates a new configuration with an updated version while
+  /// preserving all other settings.
+  ///
+  /// [increment] - Which part to increment: "major", "minor", or "patch"
+  ///
+  /// Returns a new EntityConfig with the updated version.
 
 ### `EntityCreateConfig`
 
@@ -5252,6 +7032,19 @@ No imports.
   /// [lastNameUpdate] - When the name was last changed
   /// [searchTerms] - Key-value pairs for enhanced searching
 
+### `EntityRelation`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `String type`
+- `EntityId sourceId`
+- `EntityId targetId`
+- `DateTime createdAt`
+- `UserAction createdBy`
+- `Map<String, Object> metadata`
+
 ### `EntitySecurity`
 
 **File:** `lib/src/domain/entities/base_entity.dart`
@@ -5298,6 +7091,44 @@ No imports.
 - `applyEvent(DomainEventModel event)`
 - `switch(event.eventType)`
 
+### `HierarchyParams`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `HierarchyDirection direction`
+- `bool includeDeleted`
+
+### `HierarchyQueryParams`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `List<String> filter`
+- `Map<String, Object> metadata`
+
+### `IEntityRepository`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `bool includeRoot`
+- `bool recursive`
+- `bool includeDeleted`
+
+### `LockState`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `bool isLocked`
+- `int attemptCount`
+- `Map<String, dynamic> metadata`
+
 ### `OwnerModel`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
@@ -5317,6 +7148,17 @@ No imports.
   factory OwnerModel.fromJson(Map<String, Object> json)`
 - `applyEvent(DomainEventModel event)`
 - `switch(event.eventType)`
+
+### `PagedResult`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `List<T> items`
+- `int total`
+- `int page`
+- `int pageSize`
 
 ### `PersonnelModel`
 
@@ -5350,6 +7192,39 @@ No imports.
 - `applyEvent(DomainEventModel event)`
 - `switch(event.eventType)`
 
+### `QueryParams`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `Map<String, Object> filters`
+- `Map<String, SortOrder> sort`
+- `List<String> include`
+- `bool withDeleted`
+
+### `SearchParams`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `String query`
+- `Map<String, Object> filters`
+- `int limit`
+- `List<String> fields`
+
+### `SearchResult`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `List<T> items`
+- `int totalCount`
+- `double searchTime`
+- `Map<String, Object> facets`
+
 ### `SiteModel`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
@@ -5381,6 +7256,36 @@ No imports.
   factory SiteModel.fromJson(Map<String, Object> json)`
 - `applyEvent(DomainEventModel event)`
 - `switch(event.eventType)`
+
+### `SyncParams`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `Duration timeout`
+- `bool force`
+- `List<String> collections`
+
+### `SyncProgress`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `int total`
+- `int current`
+- `String status`
+- `double percentage`
+
+### `SyncResult`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `Map<String, Object> stats`
+- `List<String> errors`
 
 ### `SystemLimits`
 
@@ -5415,6 +7320,23 @@ No imports.
   factory VendorModel.fromJson(Map<String, Object> json)`
 - `applyEvent(DomainEventModel event)`
 - `switch(event.eventType)`
+
+### `VersionQuery`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `EntityId entityId`
+- `bool includeMetadata`
+
+### `WatchParams`
+
+**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
+
+**Properties:**
+
+- `Duration debounceTime`
 
 ## Value Objects
 
@@ -5735,17 +7657,6 @@ No imports.
     for (final eventId in eventIds)`
 - `if(event.isNotEmpty)`
 
-### `EntityAuditReport`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `List<UserAction> modifications`
-- `List<UserAction> accesses`
-- `Map<String, int> operationCounts`
-- `DateTime generatedAt`
-
 ### `EntityNotFoundException`
 
 **File:** `lib/src/domain/repositories/aggregate/aggregate_repository_base.dart`
@@ -5760,19 +7671,6 @@ No imports.
 
   @override
   String toString()`
-
-### `EntityRelation`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `String type`
-- `EntityId sourceId`
-- `EntityId targetId`
-- `DateTime createdAt`
-- `UserAction createdBy`
-- `Map<String, Object> metadata`
 
 ### `EventAwareRepository`
 
@@ -5909,138 +7807,9 @@ No imports.
     bool? ascending,
   })`
 
-### `HierarchyParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `HierarchyDirection direction`
-- `bool includeDeleted`
-
-### `HierarchyQueryParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `List<String> filter`
-- `Map<String, Object> metadata`
-
-### `IEntityRepository`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `bool includeRoot`
-- `bool recursive`
-- `bool includeDeleted`
-
 ### `IEventStore`
 
 **File:** `lib/src/domain/repositories/event/i_event_store.dart`
-
-### `LockState`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `bool isLocked`
-- `int attemptCount`
-- `Map<String, dynamic> metadata`
-
-### `PagedResult`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `List<T> items`
-- `int total`
-- `int page`
-- `int pageSize`
-
-### `QueryParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `Map<String, Object> filters`
-- `Map<String, SortOrder> sort`
-- `List<String> include`
-- `bool withDeleted`
-
-### `SearchParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `String query`
-- `Map<String, Object> filters`
-- `int limit`
-- `List<String> fields`
-
-### `SearchResult`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `List<T> items`
-- `int totalCount`
-- `double searchTime`
-- `Map<String, Object> facets`
-
-### `SyncParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `Duration timeout`
-- `bool force`
-- `List<String> collections`
-
-### `SyncProgress`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `int total`
-- `int current`
-- `String status`
-- `double percentage`
-
-### `SyncResult`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `Map<String, Object> stats`
-- `List<String> errors`
-
-### `VersionQuery`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `EntityId entityId`
-- `bool includeMetadata`
-
-### `WatchParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `Duration debounceTime`
 
 ## Services
 
@@ -6246,22 +8015,32 @@ No imports.
 - `addChild` - `lib/src/domain/entities/base_entity.dart`
 - `applyEvent` - `lib/src/domain/entities/entity_types.dart`
 - `build` - `lib/src/domain/entities/entity_factory.dart`
+- `constrainLockDuration` - `lib/src/domain/core/entity_config.dart`
 - `contains` - `lib/src/domain/value_objects/time_value_objects.dart`
-- `copyWith` - `lib/src/domain/entities/base_entity.dart`
+- `copyWith` - `lib/src/domain/core/core_entity.dart`
 - `draft` - `lib/src/domain/value_objects/enum_objects.dart`
-- `for` - `lib/src/domain/events/domain_event.dart`
+- `filterMetadata` - `lib/src/domain/core/core_entity.dart`
+- `for` - `lib/src/domain/core/entity_config.dart`
 - `getDepthTo` - `lib/src/domain/entities/base_entity.dart`
+- `getNameFromPath` - `lib/src/domain/core/entity_config.dart`
 - `hasMetadata` - `lib/src/domain/core/core_entity.dart`
-- `if` - `lib/src/domain/entities/base_entity.dart`
+- `if` - `lib/src/domain/core/entity_config.dart`
 - `incrementVector` - `lib/src/domain/events/domain_event.dart`
+- `incrementVersion` - `lib/src/domain/core/entity_config.dart`
 - `isActive` - `lib/src/domain/value_objects/time_value_objects.dart`
 - `isAncestorOf` - `lib/src/domain/entities/base_entity.dart`
 - `isAvailable` - `lib/src/domain/value_objects/time_value_objects.dart`
 - `isBackwardsCompatible` - `lib/src/domain/events/domain_event.dart`
+- `isCompatibleWith` - `lib/src/domain/core/entity_config.dart`
 - `isDescendantOf` - `lib/src/domain/entities/base_entity.dart`
+- `isParentPath` - `lib/src/domain/core/entity_config.dart`
 - `isPublic` - `lib/src/domain/entities/entity_factory.dart`
-- `isValidPath` - `lib/src/domain/entities/base_entity.dart`
+- `isValidEntityName` - `lib/src/domain/core/entity_config.dart`
+- `isValidLockDuration` - `lib/src/domain/core/entity_config.dart`
+- `isValidPath` - `lib/src/domain/core/entity_config.dart`
+- `isVersionCompatible` - `lib/src/domain/core/entity_config.dart`
 - `isWithinTolerance` - `lib/src/domain/value_objects/measurement_value_objects.dart`
+- `joinPath` - `lib/src/domain/core/entity_config.dart`
 - `low` - `lib/src/domain/value_objects/enum_objects.dart`
 - `migrate` - `lib/src/application/extensions/domain_event_extensions.dart`
 - `migrateEventSchema` - `lib/src/application/services/event_migration_service.dart`
@@ -6269,16 +8048,17 @@ No imports.
 - `overlaps` - `lib/src/domain/value_objects/measurement_value_objects.dart`
 - `replayEvents` - `lib/src/domain/repositories/event_aware_repository.dart`
 - `return` - `lib/src/domain/entities/base_entity.dart`
-- `sanitizePath` - `lib/src/domain/entities/base_entity.dart`
+- `sanitizePath` - `lib/src/domain/core/entity_config.dart`
 - `splitPath` - `lib/src/domain/entities/base_entity.dart`
 - `store` - `lib/src/domain/repositories/event/i_event_store.dart`
-- `switch` - `lib/src/domain/entities/entity_types.dart`
+- `switch` - `lib/src/domain/core/entity_config.dart`
 - `updateHierarchy` - `lib/src/domain/entities/base_entity.dart`
 - `while` - `lib/src/domain/entities/base_entity.dart`
 - `withAncestors` - `lib/src/domain/entities/entity_factory.dart`
 - `withData` - `lib/src/domain/entities/entity_factory.dart`
 - `withDescription` - `lib/src/domain/entities/entity_factory.dart`
 - `withExpiryDate` - `lib/src/domain/entities/entity_factory.dart`
+- `withIncrementedVersion` - `lib/src/domain/core/entity_config.dart`
 - `withLabels` - `lib/src/domain/entities/entity_factory.dart`
 - `withMeta` - `lib/src/domain/entities/entity_factory.dart`
 - `withName` - `lib/src/domain/entities/entity_factory.dart`
@@ -6288,5 +8068,6 @@ No imports.
 - `withPriority` - `lib/src/domain/entities/entity_factory.dart`
 - `withStage` - `lib/src/domain/entities/entity_factory.dart`
 - `withTags` - `lib/src/domain/entities/entity_factory.dart`
+- `withUpdatedMetadata` - `lib/src/domain/core/core_entity.dart`
 - `withUser` - `lib/src/domain/entities/entity_factory.dart`
 
