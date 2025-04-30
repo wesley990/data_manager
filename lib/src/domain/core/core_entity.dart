@@ -54,10 +54,10 @@ class TypedMetadata {
   bool containsKey(String key) => _meta.containsKey(key);
 
   /// Safely convert a value to the specified type with proper error handling
-  /// 
+  ///
   /// This is a central conversion method used by all type-specific getters.
   /// Returns null if conversion fails.
-  T? _safeConvert<T>(Object? value) {
+  T? _convertSafely<T>(Object? value) {
     try {
       if (value == null) {
         return null;
@@ -73,7 +73,7 @@ class TypedMetadata {
       if (value is T) {
         return value as T;
       }
-      
+
       // More complex conversion cases could be handled here
       throw TypeError();
     } catch (e) {
@@ -85,39 +85,41 @@ class TypedMetadata {
   /// Get a value with a specific type, with proper error handling
   ///
   /// Note: Null is always allowed and will be returned if the key is missing or the value is null.
-  T? _getTyped<T>(String key) {
+  T? _getValueTyped<T>(String key) {
     if (!_meta.containsKey(key)) return null;
-    return _safeConvert<T>(_meta[key]);
+    return _convertSafely<T>(_meta[key]);
   }
 
   /// Get a string value from metadata
-  String? getString(String key) => _getTyped<String?>(key);
+  String? getString(String key) => _getValueTyped<String?>(key);
 
   /// Get an integer value from metadata
-  int? getInt(String key) => _getTyped<int?>(key);
+  int? getInt(String key) => _getValueTyped<int?>(key);
 
   /// Get a double value from metadata
-  double? getDouble(String key) => _getTyped<double?>(key);
+  double? getDouble(String key) => _getValueTyped<double?>(key);
 
   /// Get a boolean value from metadata
-  bool? getBool(String key) => _getTyped<bool?>(key);
+  bool? getBool(String key) => _getValueTyped<bool?>(key);
 
   /// Get a DateTime value from metadata
-  DateTime? getDateTime(String key) => _getTyped<DateTime?>(key);
+  DateTime? getDateTime(String key) => _getValueTyped<DateTime?>(key);
 
   /// Get a list value from metadata
-  Object? getList<R>(String key) => _getCollectionValue<List, R>(key);
+  List<R>? getListAs<R>(String key) =>
+      _getCollectionTyped<List, R>(key) as List<R>?;
 
   /// Get a map value from metadata
-  Map<K, V>? getMap<K, V>(String key) => _getCollectionValue<Map, V>(key) as Map<K, V>?;
-  
+  Map<K, V>? getMapAs<K, V>(String key) =>
+      _getCollectionTyped<Map, V>(key) as Map<K, V>?;
+
   /// Generic method to handle collection types (List, Map)
   ///
   /// Centralizes the error handling for collection type conversions
-  Object? _getCollectionValue<C, V>(String key) {
+  Object? _getCollectionTyped<C, V>(String key) {
     final value = _meta[key];
     if (!_meta.containsKey(key) || value == null) return null;
-    
+
     if (value is C) {
       try {
         if (C == List) return (value as List).cast<V>() as C;
@@ -175,18 +177,22 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   ///
   /// Returns null if the key doesn't exist or there's a type conversion error
   /// This is an alias for getMetadata<R>(key) for more concise syntax
-  R? get<R>(String key) => getMetadata<R>(key);
+  R? getMetadataAs<R>(String key) => getMetadata<R>(key);
+
+  /// Alias for backward compatibility
+  @Deprecated('Use getMetadataAs<R> instead for consistent naming')
+  R? get<R>(String key) => getMetadataAs<R>(key);
 
   /// Retrieve metadata by key with a simplified interface
   ///
   /// Returns the value from metadata with the specified type or null if not found
   /// For untyped access, use getMetadata<Object?>(key)
-  R? getMetadata<R>(String key) => _getValueWithType<R>(key);
+  R? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
 
   /// Retrieve untyped metadata by key (backward compatibility)
   ///
   /// Returns the raw value from metadata or null if not found
-  Object? getRawMetadata(String key) => meta[key];
+  Object? getMetadataValue(String key) => meta[key];
 
   /// Check if metadata contains a specific key
   bool hasMetadata(String key) => meta.containsKey(key);
@@ -196,41 +202,43 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
   R getMetadataOrDefault<R>(String key, R defaultValue) {
-    return _getValueWithType<R>(key) ?? defaultValue;
+    return _getMetadataTyped<R>(key) ?? defaultValue;
   }
-  
+
   /// Filter metadata based on a predicate
-  /// 
+  ///
   /// Returns a new Map containing only the metadata entries for which the predicate returns true
   /// [predicate] - Function that tests each key and value
-  Map<String, Object> filterMetadata(bool Function(String key, Object value) predicate) {
+  Map<String, Object> filterMetadata(
+    bool Function(String key, Object value) predicate,
+  ) {
     return Map.fromEntries(
-      meta.entries.where((entry) => predicate(entry.key, entry.value))
+      meta.entries.where((entry) => predicate(entry.key, entry.value)),
     );
   }
-  
+
   /// Creates a new instance of CoreEntity with updated metadata
-  /// 
+  ///
   /// This method allows for bulk updates to metadata without changing other properties
   /// [updates] - Map of key-value pairs to add or update in metadata
   /// [removeKeys] - Optional list of keys to remove from metadata
-  CoreEntity<T> withUpdatedMetadata(
+  CoreEntity<T> updateMetadata(
     Map<String, Object> updates, {
     List<String>? removeKeys,
   }) {
     // Start with the existing metadata
     final updatedMeta = Map<String, Object>.from(meta);
-    
+
     // Apply updates
     updatedMeta.addAll(updates);
-    
+
     // Remove keys if specified
     if (removeKeys != null) {
       for (final key in removeKeys) {
         updatedMeta.remove(key);
       }
     }
-    
+
     // Create a new entity with updated metadata
     return copyWith(meta: updatedMeta);
   }
@@ -239,11 +247,11 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   ///
   /// This method tries to safely cast the value to the expected type.
   /// Returns null if the key doesn't exist or if the type conversion fails.
-  R? _getValueWithType<R>(String key) {
+  R? _getMetadataTyped<R>(String key) {
     if (!meta.containsKey(key)) return null;
 
     // Delegate the type conversion to the TypedMetadata implementation
-    return typedMeta._safeConvert<R>(meta[key]);
+    return typedMeta._convertSafely<R>(meta[key]);
   }
 
   /// Gets a domain property by name
@@ -280,7 +288,7 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   ///
   /// If a key matches both a domain property and a metadata key, the domain property takes precedence.
   /// First tries to access domain properties, then falls back to metadata.
-  /// 
+  ///
   /// Note: This provides convenient access but performs multiple lookups. For performance-critical
   /// code, consider using getProperty() or getMetadata<R>() directly when you know the source.
   operator [](String key) {
