@@ -25,14 +25,14 @@
 
 ```
 Total Dart Files: 22
-Total Classes: 74
-Total Interfaces: 9
+Total Classes: 75
+Total Interfaces: 10
 Total Enums: 12
 Total Typedefs: 8
 Total Functions: 78
 
 Domain Components:
-  Entities: 33
+  Entities: 34
   Repositories: 6
   Services: 1
   Value Objects: 14
@@ -266,13 +266,18 @@ class EventMigrationService {
 - `lib/src/domain/core/core_entity.dart` - Default values and configurations for entities
 abstract class EntityDefaults {
   /// Schema version ...
-- `lib/src/domain/core/entity_config.dart` - Defines configuration settings for entities within the data manager.
+- `lib/src/domain/core/entity_config.dart` - Default values and configurations for entity configs
+abstract class EntityConfigDefaults {
+  /// Sch...
 - `lib/src/domain/core/exceptions.dart` - Base exception class for all data manager errors
 abstract class DataManagerException implements Exce...
-- `lib/src/domain/entities/base_entity.dart` - Global type aliases for improved readability and maintenance
-typedef EntityVersionVector = Map<Strin...
+- `lib/src/domain/entities/base_entity.dart` - Type aliases for improved code readability
+typedef EntityVersionVector = Map<String, int>;
+typedef E...
 - `lib/src/domain/entities/entity_factory.dart` - Configuration object for creating new entities.
-- `lib/src/domain/entities/entity_types.dart` - Entity definition for entity types
+- `lib/src/domain/entities/entity_types.dart` - Domain-specific data models for business entities
+@freezed
+sealed class OwnerData with _$OwnerData {...
 - `lib/src/domain/events/domain_event.dart` - Domain Event System  ===================   This module provides a structured approach to domain events in a clean architecture.
 - `lib/src/domain/repositories/aggregate/aggregate_repository_base.dart` - Repository for managing aggregate repository base data
 - `lib/src/domain/repositories/entity/i_entity_repository.dart` - Repository for managing i entity data
@@ -462,22 +467,16 @@ sealed class UserAction with _$UserActi...
   /// Returns null if this entity is root or treePath is not set.
   String? get parentFullPath {
 - `final segments`
-- `final now` - Adds a child entity relationship, ensuring hierarchy consistency.
+- `final now` - Adds a child entity relationship, ensuring hierarchy consistency
   ///
-  /// This method safely adds a child entity ID to this entity while automatically
-  /// maintaining the [isHierarchyLeaf] property.
-  ///
-  /// [childId] - The ID of the child entity to add.
-  /// Returns an updated entity with the child added and leaf status updated.
+  /// [childId] - The ID of the child entity to add
+  /// Returns an updated entity with the child added and leaf status updated
   BaseEntityModel<T> _addChildEntity(EntityId childId) {
     if (hierarchy.childIds.contains(childId)) return this;
     return copyWith(hierarchy: hierarchy.addChild(childId));
   }
 
   /// Removes a child entity relationship, ensuring hierarchy consistency.
-  ///
-  /// This method safely removes a child entity ID from this entity while automatically
-  /// updating the [isHierarchyLeaf] property based on remaining children.
   ///
   /// [childId] - The ID of the child entity to remove.
   /// Returns an updated entity with the child removed and leaf status updated.
@@ -638,22 +637,16 @@ sealed class UserAction with _$UserActi...
     return '/${segments.sublist(0, segments.length - 1).join('/')}';
   }
 
-  /// Adds a child entity relationship, ensuring hierarchy consistency.
+  /// Adds a child entity relationship, ensuring hierarchy consistency
   ///
-  /// This method safely adds a child entity ID to this entity while automatically
-  /// maintaining the [isHierarchyLeaf] property.
-  ///
-  /// [childId] - The ID of the child entity to add.
-  /// Returns an updated entity with the child added and leaf status updated.
+  /// [childId] - The ID of the child entity to add
+  /// Returns an updated entity with the child added and leaf status updated
   BaseEntityModel<T> _addChildEntity(EntityId childId)`
 - `if(hierarchy.childIds.contains(childId)) return this;
     return copyWith(hierarchy: hierarchy.addChild(childId));
   }
 
   /// Removes a child entity relationship, ensuring hierarchy consistency.
-  ///
-  /// This method safely removes a child entity ID from this entity while automatically
-  /// updating the [isHierarchyLeaf] property based on remaining children.
   ///
   /// [childId] - The ID of the child entity to remove.
   /// Returns an updated entity with the child removed and leaf status updated.
@@ -1305,72 +1298,66 @@ sealed class UserAction with _$UserActi...
 
 **Properties:**
 
-- `const defaultConfig` - Configuration schema version for tracking changes to the configuration format itself.
-    /// This version follows semantic versioning and should be incremented when:
-    /// - MAJOR: Breaking changes to configuration structure
-    /// - MINOR: New backward-compatible fields added
-    /// - PATCH: Bug fixes that don't affect configuration structure
-    @Default('1.0.0') String configVersion,
+- `const defaultConfig` - Configuration schema version for tracking changes to the configuration format itself
+    @Default(EntityConfigDefaults.configVersion) String configVersion,
 
     // Path limits
     /// Maximum length of an entity path in characters.
-    @Default(1024) int maxPathLength,
+    @Default(EntityConfigDefaults.maxPathLength) int maxPathLength,
 
     /// Maximum length of a single path segment in characters.
-    @Default(255) int maxPathSegment,
+    @Default(EntityConfigDefaults.maxPathSegment) int maxPathSegment,
 
     /// Maximum allowed depth of entity hierarchies.
-    @Default(10) int maxHierarchyDepth,
+    @Default(EntityConfigDefaults.maxHierarchyDepth) int maxHierarchyDepth,
 
     // History limits
     /// Maximum number of history entries to retain per entity.
-    @Default(50) int maxHistorySize,
+    @Default(EntityConfigDefaults.maxHistorySize) int maxHistorySize,
 
     /// Default number of history entries to show in views.
-    @Default(50) int defaultHistorySize,
+    @Default(EntityConfigDefaults.defaultHistorySize) int defaultHistorySize,
 
     // Lock settings
     /// Default duration before an entity lock expires.
-    @Default(Duration(minutes: 15)) Duration defaultLockTimeout,
+    @Default(EntityConfigDefaults.defaultLockTimeout)
+    Duration defaultLockTimeout,
 
     /// Duration by which a lock can be extended.
-    @Default(Duration(minutes: 5)) Duration lockExtensionPeriod,
+    @Default(EntityConfigDefaults.lockExtensionPeriod)
+    Duration lockExtensionPeriod,
 
     /// Minimum duration for which an entity can be locked.
-    @Default(Duration(seconds: 30)) Duration minLockDuration,
+    @Default(EntityConfigDefaults.minLockDuration) Duration minLockDuration,
 
     /// Maximum duration for which an entity can be locked.
-    @Default(Duration(hours: 24)) Duration maxLockDuration,
+    @Default(EntityConfigDefaults.maxLockDuration) Duration maxLockDuration,
 
     // Entity defaults
     /// Default version string for new entities.
-    @Default('1.0.0') String defaultVersion,
+    @Default(EntityConfigDefaults.defaultVersion) String defaultVersion,
 
     /// Whether entities are public by default.
-    @Default(true) bool defaultIsPublic,
+    @Default(EntityConfigDefaults.defaultIsPublic) bool defaultIsPublic,
 
     /// Default priority level for new entities.
-    @Default(EntityPriority.medium) EntityPriority defaultPriority,
+    @Default(EntityConfigDefaults.defaultPriority)
+    EntityPriority defaultPriority,
 
     /// Default workflow stage for new entities.
-    @Default(EntityStage.draft) EntityStage defaultStage,
+    @Default(EntityConfigDefaults.defaultStage) EntityStage defaultStage,
 
     // Path settings
     /// Character used to separate path segments.
-    @Default('/') String pathSeparator,
+    @Default(EntityConfigDefaults.pathSeparator) String pathSeparator,
 
     /// Regular expression pattern defining invalid characters in paths.
-    ///
-    /// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).
-    /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
-    ///
-    /// Default: `[<>:"|?*\x00-\x1F]`
-    @Default(r'[<>:"|?*\x00-\x1F]') String invalidPathChars,
+    @Default(EntityConfigDefaults.invalidPathChars) String invalidPathChars,
   }) = _EntityConfig;
 
-  /// Creates a new instance of [EntityConfig] with configuration optimized for development.
+  /// Creates a new instance of [EntityConfig] with configuration optimized for development
   ///
-  /// This configuration has more permissive settings than the default.
+  /// This configuration has more permissive settings than the default
   factory EntityConfig.development() {
     return const EntityConfig(
       configVersion: '1.0.0',
@@ -1382,9 +1369,9 @@ sealed class UserAction with _$UserActi...
     );
   }
 
-  /// Creates a new instance of [EntityConfig] with configuration optimized for production.
+  /// Creates a new instance of [EntityConfig] with configuration optimized for production
   ///
-  /// This configuration has more restrictive settings than the default.
+  /// This configuration has more restrictive settings than the default
   factory EntityConfig.production() {
     return const EntityConfig(
       configVersion: '1.0.0',
@@ -1411,22 +1398,6 @@ sealed class UserAction with _$UserActi...
   ///   defaultIsPublic: false,
   /// );
   /// ```
-  ///
-  /// [maxPathLength] - Maximum length of an entity path in characters.
-  /// [maxPathSegment] - Maximum length of a single path segment in characters.
-  /// [maxHierarchyDepth] - Maximum allowed depth of entity hierarchies.
-  /// [maxHistorySize] - Maximum number of history entries to retain per entity.
-  /// [defaultHistorySize] - Default number of history entries to show in views.
-  /// [defaultLockTimeout] - Default duration before an entity lock expires.
-  /// [lockExtensionPeriod] - Duration by which a lock can be extended.
-  /// [minLockDuration] - Minimum duration for which an entity can be locked.
-  /// [maxLockDuration] - Maximum duration for which an entity can be locked.
-  /// [defaultVersion] - Default version string for new entities.
-  /// [defaultIsPublic] - Whether entities are public by default.
-  /// [defaultPriority] - Default priority level for new entities.
-  /// [defaultStage] - Default workflow stage for new entities.
-  /// [pathSeparator] - Character used to separate path segments.
-  /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.
   factory EntityConfig.custom({
     String? configVersion,
     int? maxPathLength,
@@ -1445,15 +1416,9 @@ sealed class UserAction with _$UserActi...
     String? pathSeparator,
     String? invalidPathChars,
   }) {
-- `final segments` - Validates if a path string conforms to the configuration constraints.
+- `final segments` - Validates if a path string conforms to the configuration constraints
   ///
-  /// Checks if the path:
-  /// - Does not exceed the maximum path length
-  /// - Does not exceed the maximum hierarchy depth
-  /// - Does not contain invalid characters
-  /// - Does not have segments that exceed the maximum segment length
-  ///
-  /// Returns true if the path is valid according to all constraints.
+  /// Returns true if the path is valid according to all path constraints
   bool isValidPath(String path) {
     // Check total path length
     if (path.length > maxPathLength) return false;
@@ -1462,12 +1427,10 @@ sealed class UserAction with _$UserActi...
 - `return true`
 - `String result` - Sanitizes a path to conform to configuration constraints.
   ///
-  /// This method:
-  /// - Replaces invalid characters with underscores
-  /// - Truncates paths that exceed maximum length
-  /// - Truncates segments that exceed maximum length
+  /// This method removes invalid characters, truncates paths and segments
+  /// that exceed maximum length.
   ///
-  /// Returns a sanitized path that conforms to all path constraints.
+  /// Returns a sanitized path that conforms to configuration constraints.
   String sanitizePath(String path) {
     // Start with the original path
 - `final segments`
@@ -1519,10 +1482,7 @@ sealed class UserAction with _$UserActi...
   Duration constrainLockDuration(Duration lockDuration) {
     if (lockDuration < minLockDuration) return minLockDuration;
     if (lockDuration > maxLockDuration) return maxLockDuration;
-- `final segments` - Normalizes a path by:
-  /// 1. Removing redundant separators
-  /// 2. Removing trailing separators
-  /// 3. Ensuring the path conforms to configuration constraints
+- `final segments` - Normalizes a path by removing redundant separators and ensuring constraints
   ///
   /// Returns a normalized path string.
   String normalizePath(String path) {
@@ -1561,9 +1521,6 @@ sealed class UserAction with _$UserActi...
     if (RegExp(invalidPathChars).hasMatch(name)) return false;
 - `return false` - Validates configuration values to ensure they are reasonable and consistent.
   ///
-  /// This can be called during initialization to check that the configuration
-  /// doesn't have contradictory or invalid settings.
-  ///
   /// Returns true if the configuration is valid.
   bool validate() {
     if (maxPathLength <= 0) return false;
@@ -1600,11 +1557,11 @@ sealed class UserAction with _$UserActi...
 
     // Compatible with associated defaults
     if (maxHistorySize < other.defaultHistorySize) return false;
-- `return pattern1` - Creates a merged configuration using the most permissive values from both configurations.
+- `return pattern1` - Creates a merged configuration using the most permissive values from both configurations
   ///
-  /// This is useful when you need to ensure compatibility between two environments.
+  /// This is useful when you need to ensure compatibility between two environments
   ///
-  /// Returns a new EntityConfig that will be compatible with both source configurations.
+  /// Returns a new EntityConfig that will be compatible with both source configurations
   EntityConfig mergeWith(EntityConfig other) {
     return EntityConfig(
       // Take the larger value for limits
@@ -1687,10 +1644,6 @@ sealed class UserAction with _$UserActi...
 - `final diff`
 - `final version` - Checks if this configuration version is compatible with another version.
   ///
-  /// Follows semantic versioning principles:
-  /// - Major versions must match (breaking changes)
-  /// - If this is being used with data created by otherVersion, this.minor >= other.minor
-  ///
   /// [otherVersion] - Version string to check compatibility with (e.g., "1.2.3")
   /// [thisVersion] - Optional version to check, defaults to this config's version
   ///
@@ -1701,12 +1654,10 @@ sealed class UserAction with _$UserActi...
 - `return false`
 - `return true`
 - `return version`
-- `final version` - Creates a new configuration with an incremented version.
+- `final version` - Creates a new version string following semantic versioning.
   ///
   /// [increment] - Which part to increment: "major", "minor", or "patch"
   /// [baseVersion] - Optional base version, defaults to this config's version
-  ///
-  /// Returns a new version string following semantic versioning.
   String incrementVersion(String increment, [String? baseVersion]) {
 - `final parts`
 - `final newVersion` - Creates a new config with the version number incremented.
@@ -1722,72 +1673,66 @@ sealed class UserAction with _$UserActi...
 **Methods:**
 
 - `EntityConfig({
-    /// Configuration schema version for tracking changes to the configuration format itself.
-    /// This version follows semantic versioning and should be incremented when:
-    /// - MAJOR: Breaking changes to configuration structure
-    /// - MINOR: New backward-compatible fields added
-    /// - PATCH: Bug fixes that don't affect configuration structure
-    @Default('1.0.0') String configVersion,
+    /// Configuration schema version for tracking changes to the configuration format itself
+    @Default(EntityConfigDefaults.configVersion) String configVersion,
 
     // Path limits
     /// Maximum length of an entity path in characters.
-    @Default(1024) int maxPathLength,
+    @Default(EntityConfigDefaults.maxPathLength) int maxPathLength,
 
     /// Maximum length of a single path segment in characters.
-    @Default(255) int maxPathSegment,
+    @Default(EntityConfigDefaults.maxPathSegment) int maxPathSegment,
 
     /// Maximum allowed depth of entity hierarchies.
-    @Default(10) int maxHierarchyDepth,
+    @Default(EntityConfigDefaults.maxHierarchyDepth) int maxHierarchyDepth,
 
     // History limits
     /// Maximum number of history entries to retain per entity.
-    @Default(50) int maxHistorySize,
+    @Default(EntityConfigDefaults.maxHistorySize) int maxHistorySize,
 
     /// Default number of history entries to show in views.
-    @Default(50) int defaultHistorySize,
+    @Default(EntityConfigDefaults.defaultHistorySize) int defaultHistorySize,
 
     // Lock settings
     /// Default duration before an entity lock expires.
-    @Default(Duration(minutes: 15)) Duration defaultLockTimeout,
+    @Default(EntityConfigDefaults.defaultLockTimeout)
+    Duration defaultLockTimeout,
 
     /// Duration by which a lock can be extended.
-    @Default(Duration(minutes: 5)) Duration lockExtensionPeriod,
+    @Default(EntityConfigDefaults.lockExtensionPeriod)
+    Duration lockExtensionPeriod,
 
     /// Minimum duration for which an entity can be locked.
-    @Default(Duration(seconds: 30)) Duration minLockDuration,
+    @Default(EntityConfigDefaults.minLockDuration) Duration minLockDuration,
 
     /// Maximum duration for which an entity can be locked.
-    @Default(Duration(hours: 24)) Duration maxLockDuration,
+    @Default(EntityConfigDefaults.maxLockDuration) Duration maxLockDuration,
 
     // Entity defaults
     /// Default version string for new entities.
-    @Default('1.0.0') String defaultVersion,
+    @Default(EntityConfigDefaults.defaultVersion) String defaultVersion,
 
     /// Whether entities are public by default.
-    @Default(true) bool defaultIsPublic,
+    @Default(EntityConfigDefaults.defaultIsPublic) bool defaultIsPublic,
 
     /// Default priority level for new entities.
-    @Default(EntityPriority.medium) EntityPriority defaultPriority,
+    @Default(EntityConfigDefaults.defaultPriority)
+    EntityPriority defaultPriority,
 
     /// Default workflow stage for new entities.
-    @Default(EntityStage.draft) EntityStage defaultStage,
+    @Default(EntityConfigDefaults.defaultStage) EntityStage defaultStage,
 
     // Path settings
     /// Character used to separate path segments.
-    @Default('/') String pathSeparator,
+    @Default(EntityConfigDefaults.pathSeparator) String pathSeparator,
 
     /// Regular expression pattern defining invalid characters in paths.
-    ///
-    /// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).
-    /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
-    ///
-    /// Default: `[<>:"|?*\x00-\x1F]`
-    @Default(r'[<>:"|?*\x00-\x1F]') String invalidPathChars,
+    @Default(EntityConfigDefaults.invalidPathChars) String invalidPathChars,
   }) = _EntityConfig;
 
-  /// Creates a new instance of [EntityConfig] with configuration optimized for development.
+  /// Creates a new instance of [EntityConfig] with configuration optimized for development
   ///
-  /// This configuration has more permissive settings than the default.
+  /// This configuration has more permissive settings than the default
   factory EntityConfig.development()`
 - `EntityConfig(configVersion: configVersion ?? defaultConfig.configVersion,
       maxPathLength: maxPathLength ?? defaultConfig.maxPathLength,
@@ -1811,9 +1756,9 @@ sealed class UserAction with _$UserActi...
     );
   }
 
-  factory EntityConfig.fromJson(Map<String, Object?> json)` - Creates a new instance of [EntityConfig] with configuration optimized for production.
+  factory EntityConfig.fromJson(Map<String, Object?> json)` - Creates a new instance of [EntityConfig] with configuration optimized for production
   ///
-  /// This configuration has more restrictive settings than the default.
+  /// This configuration has more restrictive settings than the default
   factory EntityConfig.production() {
     return const EntityConfig(
       configVersion: '1.0.0',
@@ -1840,22 +1785,6 @@ sealed class UserAction with _$UserActi...
   ///   defaultIsPublic: false,
   /// );
   /// ```
-  ///
-  /// [maxPathLength] - Maximum length of an entity path in characters.
-  /// [maxPathSegment] - Maximum length of a single path segment in characters.
-  /// [maxHierarchyDepth] - Maximum allowed depth of entity hierarchies.
-  /// [maxHistorySize] - Maximum number of history entries to retain per entity.
-  /// [defaultHistorySize] - Default number of history entries to show in views.
-  /// [defaultLockTimeout] - Default duration before an entity lock expires.
-  /// [lockExtensionPeriod] - Duration by which a lock can be extended.
-  /// [minLockDuration] - Minimum duration for which an entity can be locked.
-  /// [maxLockDuration] - Maximum duration for which an entity can be locked.
-  /// [defaultVersion] - Default version string for new entities.
-  /// [defaultIsPublic] - Whether entities are public by default.
-  /// [defaultPriority] - Default priority level for new entities.
-  /// [defaultStage] - Default workflow stage for new entities.
-  /// [pathSeparator] - Character used to separate path segments.
-  /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.
   factory EntityConfig.custom({
     String? configVersion,
     int? maxPathLength,
@@ -1875,15 +1804,9 @@ sealed class UserAction with _$UserActi...
     String? invalidPathChars,
   }) {
     const defaultConfig = EntityConfig();
-- `isValidPath(String path)` - Validates if a path string conforms to the configuration constraints.
+- `isValidPath(String path)` - Validates if a path string conforms to the configuration constraints
   ///
-  /// Checks if the path:
-  /// - Does not exceed the maximum path length
-  /// - Does not exceed the maximum hierarchy depth
-  /// - Does not contain invalid characters
-  /// - Does not have segments that exceed the maximum segment length
-  ///
-  /// Returns true if the path is valid according to all constraints.
+  /// Returns true if the path is valid according to all path constraints
 - `if(path.length > maxPathLength) return false;
 
     // Check path segments
@@ -1908,12 +1831,10 @@ sealed class UserAction with _$UserActi...
 
   /// Sanitizes a path to conform to configuration constraints.
   ///
-  /// This method:
-  /// - Replaces invalid characters with underscores
-  /// - Truncates paths that exceed maximum length
-  /// - Truncates segments that exceed maximum length
+  /// This method removes invalid characters, truncates paths and segments
+  /// that exceed maximum length.
   ///
-  /// Returns a sanitized path that conforms to all path constraints.
+  /// Returns a sanitized path that conforms to configuration constraints.
   String sanitizePath(String path)`
 - `for(int i = 0; i < segments.length; i++)`
 - `if(segments[i].length > maxPathSegment)`
@@ -1960,10 +1881,7 @@ sealed class UserAction with _$UserActi...
     return lockDuration;
   }
 
-  /// Normalizes a path by:
-  /// 1. Removing redundant separators
-  /// 2. Removing trailing separators
-  /// 3. Ensuring the path conforms to configuration constraints
+  /// Normalizes a path by removing redundant separators and ensuring constraints
   ///
   /// Returns a normalized path string.
   String normalizePath(String path)`
@@ -2005,9 +1923,6 @@ sealed class UserAction with _$UserActi...
   }
 
   /// Validates configuration values to ensure they are reasonable and consistent.
-  ///
-  /// This can be called during initialization to check that the configuration
-  /// doesn't have contradictory or invalid settings.
   ///
   /// Returns true if the configuration is valid.
   bool validate()`
@@ -2073,11 +1988,11 @@ sealed class UserAction with _$UserActi...
     return true;
   }
 
-  /// Creates a merged configuration using the most permissive values from both configurations.
+  /// Creates a merged configuration using the most permissive values from both configurations
   ///
-  /// This is useful when you need to ensure compatibility between two environments.
+  /// This is useful when you need to ensure compatibility between two environments
   ///
-  /// Returns a new EntityConfig that will be compatible with both source configurations.
+  /// Returns a new EntityConfig that will be compatible with both source configurations
   EntityConfig mergeWith(EntityConfig other)`
 - `EntityConfig(// Take the larger value for limits
       maxPathLength: math.max(maxPathLength, other.maxPathLength),
@@ -2160,10 +2075,6 @@ sealed class UserAction with _$UserActi...
     } catch (e)`
 - `isVersionCompatible(String otherVersion, [String? thisVersion])` - Checks if this configuration version is compatible with another version.
   ///
-  /// Follows semantic versioning principles:
-  /// - Major versions must match (breaking changes)
-  /// - If this is being used with data created by otherVersion, this.minor >= other.minor
-  ///
   /// [otherVersion] - Version string to check compatibility with (e.g., "1.2.3")
   /// [thisVersion] - Optional version to check, defaults to this config's version
   ///
@@ -2185,12 +2096,10 @@ sealed class UserAction with _$UserActi...
       // Patch versions don't affect compatibility
       return true;
     } catch (e)`
-- `incrementVersion(String increment, [String? baseVersion])` - Creates a new configuration with an incremented version.
+- `incrementVersion(String increment, [String? baseVersion])` - Creates a new version string following semantic versioning.
   ///
   /// [increment] - Which part to increment: "major", "minor", or "patch"
   /// [baseVersion] - Optional base version, defaults to this config's version
-  ///
-  /// Returns a new version string following semantic versioning.
 - `if(parts.length != 3)`
 - `switch(increment.toLowerCase())`
 - `withIncrementedVersion(String increment)` - Creates a new config with the version number incremented.
@@ -2201,6 +2110,29 @@ sealed class UserAction with _$UserActi...
   /// [increment] - Which part to increment: "major", "minor", or "patch"
   ///
   /// Returns a new EntityConfig with the updated version.
+
+### `EntityConfigDefaults`
+
+**File:** `lib/src/domain/core/entity_config.dart`
+
+**Properties:**
+
+- `String configVersion` - Schema version for config entities
+- `int maxPathLength` - Maximum length of entity path in characters
+- `int maxPathSegment` - Maximum length of path segment
+- `int maxHierarchyDepth` - Maximum depth of entity hierarchies
+- `int maxHistorySize` - Maximum number of history entries to retain
+- `int defaultHistorySize` - Default number of history entries to show in views
+- `Duration defaultLockTimeout` - Default duration before a lock expires
+- `Duration lockExtensionPeriod` - Duration by which a lock can be extended
+- `Duration minLockDuration` - Minimum duration for which an entity can be locked
+- `Duration maxLockDuration` - Maximum duration for which an entity can be locked
+- `String defaultVersion` - Default version string for new entities
+- `bool defaultIsPublic` - Default public visibility setting
+- `EntityPriority defaultPriority` - Default priority level for new entities
+- `EntityStage defaultStage` - Default workflow stage for new entities
+- `String pathSeparator` - Character used to separate path segments
+- `String invalidPathChars` - Regular expression pattern for invalid path characters
 
 ### `EntityCreateConfig`
 
@@ -2386,6 +2318,77 @@ sealed class UserAction with _$UserActi...
 
 **File:** `lib/src/domain/entities/base_entity.dart`
 
+**Properties:**
+
+- `final now` - Creates a new EntityHierarchy instance
+  const factory EntityHierarchy({
+    /// Full path in the entity tree
+    ///
+    /// Format: '/parent_id/grandparent_id/entity_id'
+    /// Paths use forward slashes as separators and start with a leading slash
+    /// Path segments are entity IDs in reverse ancestry order
+    String? treePath,
+
+    /// Depth level in the hierarchy (0 = root)
+    @Default(0) int treeDepth,
+
+    /// List of ancestor entity IDs in order from root to parent
+    @Default(<EntityId>[]) List<EntityId> ancestors,
+
+    /// Direct parent entity ID
+    EntityId? parentId,
+
+    /// List of direct child entity IDs
+    @Default(<EntityId>[]) List<EntityId> childIds,
+
+    /// Indicates if this entity is a root node in a hierarchy
+    @Default(true) bool isHierarchyRoot,
+
+    /// Indicates if this entity is a leaf node (has no children)
+    @Default(true) bool isHierarchyLeaf,
+
+    /// Additional hierarchy-related metadata
+    @Default({}) Map<String, Object> hierarchyMeta,
+  }) = _EntityHierarchy;
+
+  /// Creates a new root EntityHierarchy instance
+  factory EntityHierarchy.root(String entityId) {
+
+**Methods:**
+
+- `EntityHierarchy({
+    /// Full path in the entity tree
+    ///
+    /// Format: '/parent_id/grandparent_id/entity_id'
+    /// Paths use forward slashes as separators and start with a leading slash
+    /// Path segments are entity IDs in reverse ancestry order
+    String? treePath,
+
+    /// Depth level in the hierarchy (0 = root)
+    @Default(0) int treeDepth,
+
+    /// List of ancestor entity IDs in order from root to parent
+    @Default(<EntityId>[]) List<EntityId> ancestors,
+
+    /// Direct parent entity ID
+    EntityId? parentId,
+
+    /// List of direct child entity IDs
+    @Default(<EntityId>[]) List<EntityId> childIds,
+
+    /// Indicates if this entity is a root node in a hierarchy
+    @Default(true) bool isHierarchyRoot,
+
+    /// Indicates if this entity is a leaf node (has no children)
+    @Default(true) bool isHierarchyLeaf,
+
+    /// Additional hierarchy-related metadata
+    @Default({}) Map<String, Object> hierarchyMeta,
+  }) = _EntityHierarchy;
+
+  /// Creates a new root EntityHierarchy instance
+  factory EntityHierarchy.root(String entityId)` - Creates a new EntityHierarchy instance
+
 ### `EntityId`
 
 **File:** `lib/src/domain/value_objects/identity_value_objects.dart`
@@ -2396,6 +2399,18 @@ sealed class UserAction with _$UserActi...
 
   factory EntityId.generate()`
 - `toString()`
+
+### `EntityLimits`
+
+**File:** `lib/src/domain/entities/base_entity.dart`
+
+**Properties:**
+
+- `int pathMaxLength` - Maximum length of a path in characters
+- `int pathMaxSegment` - Maximum length of a path segment in characters
+- `int hierarchyDepthMax` - Maximum allowed depth in entity hierarchy
+- `int historyMax` - Maximum number of history entries to retain
+- `int historyDefault` - Default number of history entries to retain
 
 ### `EntityMetadata`
 
@@ -2456,13 +2471,13 @@ sealed class UserAction with _$UserActi...
 
 **File:** `lib/src/domain/entities/base_entity.dart`
 
-### `EquipmentModel`
+### `EquipmentData`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
 
 **Methods:**
 
-- `EquipmentModel({
+- `EquipmentData({
     // Core info
     required String name,
     required EntityId siteId,
@@ -2488,10 +2503,43 @@ sealed class UserAction with _$UserActi...
     Map<String, Object>? customData,
     @Default({}) Map<String, Object> meta,
     @Default({}) Map<String, String> maintContacts,
-  }) = _EquipmentModel;
+  }) = _EquipmentData;
 
-  factory EquipmentModel.fromJson(Map<String, Object> json)`
-- `applyEvent(DomainEventModel event)`
+  factory EquipmentData.fromJson(Map<String, Object> json)` - Data model for physical equipment or machinery
+  ///
+  /// [name] - Name of the equipment
+  /// [siteId] - Site where equipment is installed
+  /// [type] - Equipment type classification
+  /// [serialNum] - Optional manufacturer serial number
+  /// [parentId] - Optional parent equipment for hierarchical structures
+  /// [childIds] - Sub-components of this equipment
+- `applyEvent(DomainEventModel event)` - Whether equipment requires maintenance (over 180 days since last)
+  bool get needsMaintenance =>
+      lastMaintDate?.isBefore(
+        DateTime.now().subtract(const Duration(days: 180)),
+      ) ??
+      true;
+
+  /// Whether equipment was installed in the last 30 days
+  bool get isNewInstall =>
+      installDate?.isAfter(DateTime.now().subtract(const Duration(days: 30))) ??
+      false;
+
+  /// Whether equipment has child components
+  bool get hasChildren => childIds.isNotEmpty;
+
+  /// Whether equipment is a child/sub-component
+  bool get isChild => parentId != null;
+
+  /// Whether equipment is a root component (not a child)
+  bool get isRoot => parentId == null;
+
+  /// Whether equipment has sub-components
+  bool get hasSubComponents => childIds.isNotEmpty;
+
+  /// Handles domain events by generating new state
+  ///
+  /// Returns updated EquipmentData reflecting the applied event
 - `switch(event.eventType)`
 
 ### `EventAwareRepository`
@@ -2895,13 +2943,13 @@ sealed class UserAction with _$UserActi...
 - `String operation`
 - `Map<String, dynamic> params`
 
-### `OwnerModel`
+### `OwnerData`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
 
 **Methods:**
 
-- `OwnerModel({
+- `OwnerData({
     // Core info
     required ContactInfo contact,
     @Default([]) List<EntityId> siteIds,
@@ -2909,10 +2957,26 @@ sealed class UserAction with _$UserActi...
     // Metadata
     @Default({}) Map<String, Object> meta,
     Map<String, Object>? customData,
-  }) = _OwnerModel;
+  }) = _OwnerData;
 
-  factory OwnerModel.fromJson(Map<String, Object> json)`
-- `applyEvent(DomainEventModel event)`
+  factory OwnerData.fromJson(Map<String, Object> json)` - Entity owner data model representing an organization or individual
+  ///
+  /// Stores contact information and site references
+- `applyEvent(DomainEventModel event)` - Whether this owner has associated sites
+  bool get hasSites => siteIds.isNotEmpty;
+
+  /// Whether owner has multiple sites
+  bool get hasMultipleSites => siteIds.length > 1;
+
+  /// Whether valid contact information exists
+  bool get hasValidContact => contact.email != null || contact.phone != null;
+
+  /// Human-readable name for display
+  String get displayName => contact.displayName;
+
+  /// Applies domain event and returns updated state
+  ///
+  /// Processes event data to create new entity state without mutation
 - `switch(event.eventType)`
 
 ### `PagedResult`
@@ -2930,13 +2994,13 @@ sealed class UserAction with _$UserActi...
 
 **File:** `lib/src/domain/core/exceptions.dart`
 
-### `PersonnelModel`
+### `PersonnelData`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
 
 **Methods:**
 
-- `PersonnelModel({
+- `PersonnelData({
     // Core info
     required String name,
     required EntityId vendorId,
@@ -2956,10 +3020,37 @@ sealed class UserAction with _$UserActi...
     @Default({}) Map<String, Object> meta,
     @Default({}) Map<String, Object> schedule,
     @Default({}) Map<String, DateTime> certDates,
-  }) = _PersonnelModel;
+  }) = _PersonnelData;
 
-  factory PersonnelModel.fromJson(Map<String, Object> json)`
-- `applyEvent(DomainEventModel event)`
+  factory PersonnelData.fromJson(Map<String, Object> json)` - Data model for individuals providing services
+  ///
+  /// [name] - Name of the person
+  /// [vendorId] - Associated vendor/employer
+  /// [skillLevel] - Numeric rating of skill (1-10)
+  /// [certs] - Professional certifications
+  /// [specs] - Areas of specialization
+  /// [certDates] - Expiration dates for certifications
+- `applyEvent(DomainEventModel event)` - Whether person holds certifications
+  bool get isCertified => certs.isNotEmpty;
+
+  /// Whether person has specialized skills
+  bool get isSpecialized => specs.isNotEmpty;
+
+  /// Whether valid contact information exists
+  bool get hasValidContact => email != null || phone != null;
+
+  /// Primary certification, if any
+  String? get primaryCert => certs.isNotEmpty ? certs.first : null;
+
+  /// Whether certifications are valid and have dates
+  bool get hasValidCerts => certs.isNotEmpty && certDates.isNotEmpty;
+
+  /// Gets the expiration date for a specific certification
+  DateTime? getCertExpiry(String cert) => certDates[cert];
+
+  /// Handles domain events by generating new state
+  ///
+  /// Returns updated PersonnelData reflecting the applied event
 - `switch(event.eventType)`
 
 ### `PhoneNumber`
@@ -3082,13 +3173,13 @@ sealed class UserAction with _$UserActi...
 - `double searchTime`
 - `Map<String, Object> facets`
 
-### `SiteModel`
+### `SiteData`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
 
 **Methods:**
 
-- `SiteModel({
+- `SiteData({
     // Core info
     required String name,
     required EntityId ownerId,
@@ -3108,10 +3199,26 @@ sealed class UserAction with _$UserActi...
     Map<String, Object>? customData,
     @Default({}) Map<String, Object> meta,
     @Default({}) Map<String, String> contactInfo,
-  }) = _SiteModel;
+  }) = _SiteData;
 
-  factory SiteModel.fromJson(Map<String, Object> json)`
-- `applyEvent(DomainEventModel event)`
+  factory SiteData.fromJson(Map<String, Object> json)` - Data model for physical location or site
+  ///
+  /// [name] - Name of the site
+  /// [ownerId] - Reference to the owner of the site
+  /// [address] - Optional physical address
+  /// [equipmentIds] - Equipment installed at this site
+- `applyEvent(DomainEventModel event)` - Whether site has valid geolocation coordinates
+  bool get hasLocation => latitude != null && longitude != null;
+
+  /// Formatted location coordinates string
+  String get locationCoords => hasLocation ? '$latitude,$longitude' : '';
+
+  /// Whether site has associated equipment
+  bool get hasEquipment => equipmentIds.isNotEmpty;
+
+  /// Handles domain events by generating new state
+  ///
+  /// Returns updated SiteData reflecting the applied event
 - `switch(event.eventType)`
 
 ### `SyncParams`
@@ -3143,18 +3250,6 @@ sealed class UserAction with _$UserActi...
 
 - `Map<String, Object> stats`
 - `List<String> errors`
-
-### `SystemLimits`
-
-**File:** `lib/src/domain/entities/base_entity.dart`
-
-**Properties:**
-
-- `int pathMaxLength` - Maximum length of a path in characters
-- `int pathMaxSegment` - Maximum length of a path segment in characters
-- `int hierarchyDepthMax` - Maximum allowed depth in entity hierarchy
-- `int historyMax` - Maximum number of history entries to retain
-- `int historyDefault` - Default number of history entries to retain
 
 ### `TaskStatus`
 
@@ -3369,13 +3464,13 @@ sealed class UserAction with _$UserActi...
 - `String field`
 - `dynamic invalidValue`
 
-### `VendorModel`
+### `VendorData`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
 
 **Methods:**
 
-- `VendorModel({
+- `VendorData({
     // Core info
     required ContactInfo contact,
     @Default([]) List<EntityId> staffIds,
@@ -3385,10 +3480,29 @@ sealed class UserAction with _$UserActi...
     @Default({}) Map<String, Object> meta,
     Map<String, Object>? customData,
     @Default({}) Map<String, Object> certifications,
-  }) = _VendorModel;
+  }) = _VendorData;
 
-  factory VendorModel.fromJson(Map<String, Object> json)`
-- `applyEvent(DomainEventModel event)`
+  factory VendorData.fromJson(Map<String, Object> json)` - Data model for external service providers or vendors
+  ///
+  /// [contact] - Main contact information for the vendor
+  /// [staffIds] - Personnel working for this vendor
+  /// [services] - Types of services offered
+  /// [certifications] - Professional certifications held
+- `applyEvent(DomainEventModel event)` - Whether vendor has associated staff members
+  bool get hasStaff => staffIds.isNotEmpty;
+
+  /// Whether vendor provides services
+  bool get hasServices => services.isNotEmpty;
+
+  /// Human-readable name for display
+  String get displayName => contact.displayName;
+
+  /// Whether valid contact information exists
+  bool get hasValidContact => contact.email != null || contact.phone != null;
+
+  /// Handles domain events by generating new state
+  ///
+  /// Returns updated VendorData reflecting the applied event
 - `switch(event.eventType)`
 
 ### `VersionConflictException`
@@ -3448,9 +3562,17 @@ sealed class UserAction with _$UserActi...
 - `toString()`
 - `if(details != null) buffer.write('\nDetails: $details')`
 
+### `EntityConfigDefaults`
+
+**File:** `lib/src/domain/core/entity_config.dart`
+
 ### `EntityDefaults`
 
 **File:** `lib/src/domain/core/core_entity.dart`
+
+### `EntityLimits`
+
+**File:** `lib/src/domain/entities/base_entity.dart`
 
 ### `EventAwareRepository`
 
@@ -3538,10 +3660,6 @@ sealed class UserAction with _$UserActi...
 - `getLatestSnapshot(EntityId entityId)`
 - `hasVersionConflict(EntityId entityId,
     Map<String, int> versionVectors,)`
-
-### `SystemLimits`
-
-**File:** `lib/src/domain/entities/base_entity.dart`
 
 ## Enums
 
@@ -3768,35 +3886,35 @@ sealed class UserAction with _$UserActi...
 
 **Definition:** `EntityVersionVector = Map<String, int>`
 
-### `EquipmentEntity`
+### `EquipmentEntityModel`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
 
-**Definition:** `EquipmentEntity = BaseEntityModel<EquipmentModel>`
+**Definition:** `EquipmentEntityModel = BaseEntityModel<EquipmentData>`
 
-### `OwnerEntity`
-
-**File:** `lib/src/domain/entities/entity_types.dart`
-
-**Definition:** `OwnerEntity = BaseEntityModel<OwnerModel>`
-
-### `PersonnelEntity`
+### `OwnerEntityModel`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
 
-**Definition:** `PersonnelEntity = BaseEntityModel<PersonnelModel>`
+**Definition:** `OwnerEntityModel = BaseEntityModel<OwnerData>`
 
-### `SiteEntity`
-
-**File:** `lib/src/domain/entities/entity_types.dart`
-
-**Definition:** `SiteEntity = BaseEntityModel<SiteModel>`
-
-### `VendorEntity`
+### `PersonnelEntityModel`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
 
-**Definition:** `VendorEntity = BaseEntityModel<VendorModel>`
+**Definition:** `PersonnelEntityModel = BaseEntityModel<PersonnelData>`
+
+### `SiteEntityModel`
+
+**File:** `lib/src/domain/entities/entity_types.dart`
+
+**Definition:** `SiteEntityModel = BaseEntityModel<SiteData>`
+
+### `VendorEntityModel`
+
+**File:** `lib/src/domain/entities/entity_types.dart`
+
+**Definition:** `VendorEntityModel = BaseEntityModel<VendorData>`
 
 ## Functions
 
@@ -4130,6 +4248,90 @@ class EntityBuilder<T extends Object> {
   // Required field methods
   EntityBuilder<T> withName(String name)`
 
+### `EntityHierarchy`
+
+**File:** `lib/src/domain/entities/base_entity.dart`
+
+**Description:** Type aliases for improved code readability
+typedef EntityVersionVector = Map<String, int>;
+typedef EntityEventMeta = Map<String, Object>;
+typedef EntitySearchIndex = Map<String, Object>;
+
+/// Constants defining entity system boundaries and limitations
+abstract class EntityLimits {
+  /// Maximum length of a path in characters
+  static const int pathMaxLength = 1024;
+
+  /// Maximum length of a path segment in characters
+  static const int pathMaxSegment = 255;
+
+  /// Maximum allowed depth in entity hierarchy
+  static const int hierarchyDepthMax = 10;
+
+  /// Maximum number of history entries to retain
+  static const int historyMax = 50;
+
+  /// Default number of history entries to retain
+  static const int historyDefault = 50;
+}
+
+/// Represents hierarchy information for an entity including tree structure and relationships
+@freezed
+sealed class EntityHierarchy with _$EntityHierarchy {
+  const EntityHierarchy._(); // This private constructor already exists
+
+  /// Creates a new EntityHierarchy instance
+  const factory EntityHierarchy({
+    /// Full path in the entity tree
+    ///
+    /// Format: '/parent_id/grandparent_id/entity_id'
+    /// Paths use forward slashes as separators and start with a leading slash
+    /// Path segments are entity IDs in reverse ancestry order
+    String? treePath,
+
+    /// Depth level in the hierarchy (0 = root)
+    @Default(0) int treeDepth,
+
+    /// List of ancestor entity IDs in order from root to parent
+    @Default(<EntityId>[]) List<EntityId> ancestors,
+
+    /// Direct parent entity ID
+    EntityId? parentId,
+
+    /// List of direct child entity IDs
+    @Default(<EntityId>[]) List<EntityId> childIds,
+
+    /// Indicates if this entity is a root node in a hierarchy
+    @Default(true) bool isHierarchyRoot,
+
+    /// Indicates if this entity is a leaf node (has no children)
+    @Default(true) bool isHierarchyLeaf,
+
+    /// Additional hierarchy-related metadata
+    @Default({}) Map<String, Object> hierarchyMeta,
+  }) = _EntityHierarchy;
+
+  /// Creates a new root EntityHierarchy instance
+  factory EntityHierarchy.root(String entityId) {
+    final now = DateTime.now();
+
+**Signature:** `EntityHierarchy(treePath: '/$entityId',
+      treeDepth: 0,
+      ancestors: const [],
+      parentId: null,
+      childIds: const [],
+      isHierarchyRoot: true,
+      isHierarchyLeaf: true,
+      hierarchyMeta: {'created': now.toIso8601String(), 'pathType': 'root'},
+    );
+  }
+}
+
+/// Extension methods for EntityHierarchy operations
+extension EntityHierarchyOperations on EntityHierarchy {
+  /// Adds a child entity ID, updating leaf status and metadata
+  EntityHierarchy addChild(EntityId childId)`
+
 ### `EventServiceProvider`
 
 **File:** `lib/src/application/providers/event_service_provider.dart`
@@ -4341,86 +4543,47 @@ extension UserActionX on UserAction {
   /// Example migration implementation from v1.0.0 to v1.1.0
   DomainEventModel _migrateFrom100To110(DomainEventModel event)`
 
-### `addChild`
-
-**File:** `lib/src/domain/entities/base_entity.dart`
-
-**Description:** Global type aliases for improved readability and maintenance
-typedef EntityVersionVector = Map<String, int>;
-typedef EntityEventMeta = Map<String, Object>;
-typedef EntitySearchIndex = Map<String, Object>;
-
-/// System-wide constants for entity limitations and boundaries
-abstract class SystemLimits {
-  /// Maximum length of a path in characters
-  static const int pathMaxLength = 1024;
-
-  /// Maximum length of a path segment in characters
-  static const int pathMaxSegment = 255;
-
-  /// Maximum allowed depth in entity hierarchy
-  static const int hierarchyDepthMax = 10;
-
-  /// Maximum number of history entries to retain
-  static const int historyMax = 50;
-
-  /// Default number of history entries to retain
-  static const int historyDefault = 50;
-}
-
-/// Represents hierarchy information for an entity including tree structure and relationships
-@freezed
-sealed class EntityHierarchy with _$EntityHierarchy {
-  /// Creates a new EntityHierarchy instance
-  const factory EntityHierarchy({
-    /// Full path in the entity tree
-    ///
-    /// Format: '/parent_id/grandparent_id/entity_id'
-    /// - Paths use forward slashes as separators
-    /// - Paths start with a leading slash
-    /// - Path segments are entity IDs in reverse ancestry order
-    /// - Root entities have path equal to their ID or '/' + ID
-    /// - Maximum path length is limited to [SystemLimits.pathMaxLength]
-    /// - Maximum segment length is limited to [SystemLimits.pathMaxSegment]
-    String? treePath,
-
-    /// Depth level in the hierarchy (0 = root)
-    @Default(0) int treeDepth,
-
-    /// List of ancestor entity IDs in order from root to parent
-    @Default(<EntityId>[]) List<EntityId> ancestors,
-
-    /// Direct parent entity ID
-    EntityId? parentId,
-
-    /// List of direct child entity IDs
-    @Default(<EntityId>[]) List<EntityId> childIds,
-
-    /// Indicates if this entity is a root node in a hierarchy
-    @Default(true) bool isHierarchyRoot,
-
-    /// Indicates if this entity is a leaf node (has no children)
-    @Default(true) bool isHierarchyLeaf,
-
-    /// Additional hierarchy-related metadata
-    ///
-    /// Expected keys:
-    ///   - 'created': String (ISO8601 timestamp)
-    ///   - 'pathType': String (e.g., 'root', 'branch', etc.)
-    ///   - Add more as needed for your application
-    @Default({}) Map<String, Object> hierarchyMeta,
-  }) = _EntityHierarchy;
-}
-
-/// Extension methods for EntityHierarchy operations
-extension EntityHierarchyOperations on EntityHierarchy {
-  /// Adds a child entity ID, automatically updating leaf status and meta
-
-**Signature:** `addChild(EntityId childId)`
-
 ### `applyEvent`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
+
+**Description:** Domain-specific data models for business entities
+@freezed
+sealed class OwnerData with _$OwnerData {
+  const OwnerData._(); // Private constructor for methods
+
+  /// Entity owner data model representing an organization or individual
+  ///
+  /// Stores contact information and site references
+  const factory OwnerData({
+    // Core info
+    required ContactInfo contact,
+    @Default([]) List<EntityId> siteIds,
+
+    // Metadata
+    @Default({}) Map<String, Object> meta,
+    Map<String, Object>? customData,
+  }) = _OwnerData;
+
+  factory OwnerData.fromJson(Map<String, Object> json) =>
+      _$OwnerDataFromJson(json);
+
+  // Computed properties
+  /// Whether this owner has associated sites
+  bool get hasSites => siteIds.isNotEmpty;
+
+  /// Whether owner has multiple sites
+  bool get hasMultipleSites => siteIds.length > 1;
+
+  /// Whether valid contact information exists
+  bool get hasValidContact => contact.email != null || contact.phone != null;
+
+  /// Human-readable name for display
+  String get displayName => contact.displayName;
+
+  /// Applies domain event and returns updated state
+  ///
+  /// Processes event data to create new entity state without mutation
 
 **Signature:** `applyEvent(DomainEventModel event)`
 
@@ -4578,12 +4741,10 @@ enum EntityStage {
 
 **File:** `lib/src/domain/core/entity_config.dart`
 
-**Description:** Creates a new configuration with an incremented version.
+**Description:** Creates a new version string following semantic versioning.
   ///
   /// [increment] - Which part to increment: "major", "minor", or "patch"
   /// [baseVersion] - Optional base version, defaults to this config's version
-  ///
-  /// Returns a new version string following semantic versioning.
 
 **Signature:** `incrementVersion(String increment, [String? baseVersion])`
 
@@ -4687,15 +4848,9 @@ enum EntityStage {
 
 **File:** `lib/src/domain/core/entity_config.dart`
 
-**Description:** Validates if a path string conforms to the configuration constraints.
+**Description:** Validates if a path string conforms to the configuration constraints
   ///
-  /// Checks if the path:
-  /// - Does not exceed the maximum path length
-  /// - Does not exceed the maximum hierarchy depth
-  /// - Does not contain invalid characters
-  /// - Does not have segments that exceed the maximum segment length
-  ///
-  /// Returns true if the path is valid according to all constraints.
+  /// Returns true if the path is valid according to all path constraints
 
 **Signature:** `isValidPath(String path)`
 
@@ -4704,10 +4859,6 @@ enum EntityStage {
 **File:** `lib/src/domain/core/entity_config.dart`
 
 **Description:** Checks if this configuration version is compatible with another version.
-  ///
-  /// Follows semantic versioning principles:
-  /// - Major versions must match (breaking changes)
-  /// - If this is being used with data created by otherVersion, this.minor >= other.minor
   ///
   /// [otherVersion] - Version string to check compatibility with (e.g., "1.2.3")
   /// [thisVersion] - Optional version to check, defaults to this config's version
@@ -5477,22 +5628,16 @@ No imports.
   /// Returns null if this entity is root or treePath is not set.
   String? get parentFullPath {
 - `final segments`
-- `final now` - Adds a child entity relationship, ensuring hierarchy consistency.
+- `final now` - Adds a child entity relationship, ensuring hierarchy consistency
   ///
-  /// This method safely adds a child entity ID to this entity while automatically
-  /// maintaining the [isHierarchyLeaf] property.
-  ///
-  /// [childId] - The ID of the child entity to add.
-  /// Returns an updated entity with the child added and leaf status updated.
+  /// [childId] - The ID of the child entity to add
+  /// Returns an updated entity with the child added and leaf status updated
   BaseEntityModel<T> _addChildEntity(EntityId childId) {
     if (hierarchy.childIds.contains(childId)) return this;
     return copyWith(hierarchy: hierarchy.addChild(childId));
   }
 
   /// Removes a child entity relationship, ensuring hierarchy consistency.
-  ///
-  /// This method safely removes a child entity ID from this entity while automatically
-  /// updating the [isHierarchyLeaf] property based on remaining children.
   ///
   /// [childId] - The ID of the child entity to remove.
   /// Returns an updated entity with the child removed and leaf status updated.
@@ -5653,22 +5798,16 @@ No imports.
     return '/${segments.sublist(0, segments.length - 1).join('/')}';
   }
 
-  /// Adds a child entity relationship, ensuring hierarchy consistency.
+  /// Adds a child entity relationship, ensuring hierarchy consistency
   ///
-  /// This method safely adds a child entity ID to this entity while automatically
-  /// maintaining the [isHierarchyLeaf] property.
-  ///
-  /// [childId] - The ID of the child entity to add.
-  /// Returns an updated entity with the child added and leaf status updated.
+  /// [childId] - The ID of the child entity to add
+  /// Returns an updated entity with the child added and leaf status updated
   BaseEntityModel<T> _addChildEntity(EntityId childId)`
 - `if(hierarchy.childIds.contains(childId)) return this;
     return copyWith(hierarchy: hierarchy.addChild(childId));
   }
 
   /// Removes a child entity relationship, ensuring hierarchy consistency.
-  ///
-  /// This method safely removes a child entity ID from this entity while automatically
-  /// updating the [isHierarchyLeaf] property based on remaining children.
   ///
   /// [childId] - The ID of the child entity to remove.
   /// Returns an updated entity with the child removed and leaf status updated.
@@ -5884,72 +6023,66 @@ No imports.
 
 **Properties:**
 
-- `const defaultConfig` - Configuration schema version for tracking changes to the configuration format itself.
-    /// This version follows semantic versioning and should be incremented when:
-    /// - MAJOR: Breaking changes to configuration structure
-    /// - MINOR: New backward-compatible fields added
-    /// - PATCH: Bug fixes that don't affect configuration structure
-    @Default('1.0.0') String configVersion,
+- `const defaultConfig` - Configuration schema version for tracking changes to the configuration format itself
+    @Default(EntityConfigDefaults.configVersion) String configVersion,
 
     // Path limits
     /// Maximum length of an entity path in characters.
-    @Default(1024) int maxPathLength,
+    @Default(EntityConfigDefaults.maxPathLength) int maxPathLength,
 
     /// Maximum length of a single path segment in characters.
-    @Default(255) int maxPathSegment,
+    @Default(EntityConfigDefaults.maxPathSegment) int maxPathSegment,
 
     /// Maximum allowed depth of entity hierarchies.
-    @Default(10) int maxHierarchyDepth,
+    @Default(EntityConfigDefaults.maxHierarchyDepth) int maxHierarchyDepth,
 
     // History limits
     /// Maximum number of history entries to retain per entity.
-    @Default(50) int maxHistorySize,
+    @Default(EntityConfigDefaults.maxHistorySize) int maxHistorySize,
 
     /// Default number of history entries to show in views.
-    @Default(50) int defaultHistorySize,
+    @Default(EntityConfigDefaults.defaultHistorySize) int defaultHistorySize,
 
     // Lock settings
     /// Default duration before an entity lock expires.
-    @Default(Duration(minutes: 15)) Duration defaultLockTimeout,
+    @Default(EntityConfigDefaults.defaultLockTimeout)
+    Duration defaultLockTimeout,
 
     /// Duration by which a lock can be extended.
-    @Default(Duration(minutes: 5)) Duration lockExtensionPeriod,
+    @Default(EntityConfigDefaults.lockExtensionPeriod)
+    Duration lockExtensionPeriod,
 
     /// Minimum duration for which an entity can be locked.
-    @Default(Duration(seconds: 30)) Duration minLockDuration,
+    @Default(EntityConfigDefaults.minLockDuration) Duration minLockDuration,
 
     /// Maximum duration for which an entity can be locked.
-    @Default(Duration(hours: 24)) Duration maxLockDuration,
+    @Default(EntityConfigDefaults.maxLockDuration) Duration maxLockDuration,
 
     // Entity defaults
     /// Default version string for new entities.
-    @Default('1.0.0') String defaultVersion,
+    @Default(EntityConfigDefaults.defaultVersion) String defaultVersion,
 
     /// Whether entities are public by default.
-    @Default(true) bool defaultIsPublic,
+    @Default(EntityConfigDefaults.defaultIsPublic) bool defaultIsPublic,
 
     /// Default priority level for new entities.
-    @Default(EntityPriority.medium) EntityPriority defaultPriority,
+    @Default(EntityConfigDefaults.defaultPriority)
+    EntityPriority defaultPriority,
 
     /// Default workflow stage for new entities.
-    @Default(EntityStage.draft) EntityStage defaultStage,
+    @Default(EntityConfigDefaults.defaultStage) EntityStage defaultStage,
 
     // Path settings
     /// Character used to separate path segments.
-    @Default('/') String pathSeparator,
+    @Default(EntityConfigDefaults.pathSeparator) String pathSeparator,
 
     /// Regular expression pattern defining invalid characters in paths.
-    ///
-    /// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).
-    /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
-    ///
-    /// Default: `[<>:"|?*\x00-\x1F]`
-    @Default(r'[<>:"|?*\x00-\x1F]') String invalidPathChars,
+    @Default(EntityConfigDefaults.invalidPathChars) String invalidPathChars,
   }) = _EntityConfig;
 
-  /// Creates a new instance of [EntityConfig] with configuration optimized for development.
+  /// Creates a new instance of [EntityConfig] with configuration optimized for development
   ///
-  /// This configuration has more permissive settings than the default.
+  /// This configuration has more permissive settings than the default
   factory EntityConfig.development() {
     return const EntityConfig(
       configVersion: '1.0.0',
@@ -5961,9 +6094,9 @@ No imports.
     );
   }
 
-  /// Creates a new instance of [EntityConfig] with configuration optimized for production.
+  /// Creates a new instance of [EntityConfig] with configuration optimized for production
   ///
-  /// This configuration has more restrictive settings than the default.
+  /// This configuration has more restrictive settings than the default
   factory EntityConfig.production() {
     return const EntityConfig(
       configVersion: '1.0.0',
@@ -5990,22 +6123,6 @@ No imports.
   ///   defaultIsPublic: false,
   /// );
   /// ```
-  ///
-  /// [maxPathLength] - Maximum length of an entity path in characters.
-  /// [maxPathSegment] - Maximum length of a single path segment in characters.
-  /// [maxHierarchyDepth] - Maximum allowed depth of entity hierarchies.
-  /// [maxHistorySize] - Maximum number of history entries to retain per entity.
-  /// [defaultHistorySize] - Default number of history entries to show in views.
-  /// [defaultLockTimeout] - Default duration before an entity lock expires.
-  /// [lockExtensionPeriod] - Duration by which a lock can be extended.
-  /// [minLockDuration] - Minimum duration for which an entity can be locked.
-  /// [maxLockDuration] - Maximum duration for which an entity can be locked.
-  /// [defaultVersion] - Default version string for new entities.
-  /// [defaultIsPublic] - Whether entities are public by default.
-  /// [defaultPriority] - Default priority level for new entities.
-  /// [defaultStage] - Default workflow stage for new entities.
-  /// [pathSeparator] - Character used to separate path segments.
-  /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.
   factory EntityConfig.custom({
     String? configVersion,
     int? maxPathLength,
@@ -6024,15 +6141,9 @@ No imports.
     String? pathSeparator,
     String? invalidPathChars,
   }) {
-- `final segments` - Validates if a path string conforms to the configuration constraints.
+- `final segments` - Validates if a path string conforms to the configuration constraints
   ///
-  /// Checks if the path:
-  /// - Does not exceed the maximum path length
-  /// - Does not exceed the maximum hierarchy depth
-  /// - Does not contain invalid characters
-  /// - Does not have segments that exceed the maximum segment length
-  ///
-  /// Returns true if the path is valid according to all constraints.
+  /// Returns true if the path is valid according to all path constraints
   bool isValidPath(String path) {
     // Check total path length
     if (path.length > maxPathLength) return false;
@@ -6041,12 +6152,10 @@ No imports.
 - `return true`
 - `String result` - Sanitizes a path to conform to configuration constraints.
   ///
-  /// This method:
-  /// - Replaces invalid characters with underscores
-  /// - Truncates paths that exceed maximum length
-  /// - Truncates segments that exceed maximum length
+  /// This method removes invalid characters, truncates paths and segments
+  /// that exceed maximum length.
   ///
-  /// Returns a sanitized path that conforms to all path constraints.
+  /// Returns a sanitized path that conforms to configuration constraints.
   String sanitizePath(String path) {
     // Start with the original path
 - `final segments`
@@ -6098,10 +6207,7 @@ No imports.
   Duration constrainLockDuration(Duration lockDuration) {
     if (lockDuration < minLockDuration) return minLockDuration;
     if (lockDuration > maxLockDuration) return maxLockDuration;
-- `final segments` - Normalizes a path by:
-  /// 1. Removing redundant separators
-  /// 2. Removing trailing separators
-  /// 3. Ensuring the path conforms to configuration constraints
+- `final segments` - Normalizes a path by removing redundant separators and ensuring constraints
   ///
   /// Returns a normalized path string.
   String normalizePath(String path) {
@@ -6140,9 +6246,6 @@ No imports.
     if (RegExp(invalidPathChars).hasMatch(name)) return false;
 - `return false` - Validates configuration values to ensure they are reasonable and consistent.
   ///
-  /// This can be called during initialization to check that the configuration
-  /// doesn't have contradictory or invalid settings.
-  ///
   /// Returns true if the configuration is valid.
   bool validate() {
     if (maxPathLength <= 0) return false;
@@ -6179,11 +6282,11 @@ No imports.
 
     // Compatible with associated defaults
     if (maxHistorySize < other.defaultHistorySize) return false;
-- `return pattern1` - Creates a merged configuration using the most permissive values from both configurations.
+- `return pattern1` - Creates a merged configuration using the most permissive values from both configurations
   ///
-  /// This is useful when you need to ensure compatibility between two environments.
+  /// This is useful when you need to ensure compatibility between two environments
   ///
-  /// Returns a new EntityConfig that will be compatible with both source configurations.
+  /// Returns a new EntityConfig that will be compatible with both source configurations
   EntityConfig mergeWith(EntityConfig other) {
     return EntityConfig(
       // Take the larger value for limits
@@ -6266,10 +6369,6 @@ No imports.
 - `final diff`
 - `final version` - Checks if this configuration version is compatible with another version.
   ///
-  /// Follows semantic versioning principles:
-  /// - Major versions must match (breaking changes)
-  /// - If this is being used with data created by otherVersion, this.minor >= other.minor
-  ///
   /// [otherVersion] - Version string to check compatibility with (e.g., "1.2.3")
   /// [thisVersion] - Optional version to check, defaults to this config's version
   ///
@@ -6280,12 +6379,10 @@ No imports.
 - `return false`
 - `return true`
 - `return version`
-- `final version` - Creates a new configuration with an incremented version.
+- `final version` - Creates a new version string following semantic versioning.
   ///
   /// [increment] - Which part to increment: "major", "minor", or "patch"
   /// [baseVersion] - Optional base version, defaults to this config's version
-  ///
-  /// Returns a new version string following semantic versioning.
   String incrementVersion(String increment, [String? baseVersion]) {
 - `final parts`
 - `final newVersion` - Creates a new config with the version number incremented.
@@ -6301,72 +6398,66 @@ No imports.
 **Methods:**
 
 - `EntityConfig({
-    /// Configuration schema version for tracking changes to the configuration format itself.
-    /// This version follows semantic versioning and should be incremented when:
-    /// - MAJOR: Breaking changes to configuration structure
-    /// - MINOR: New backward-compatible fields added
-    /// - PATCH: Bug fixes that don't affect configuration structure
-    @Default('1.0.0') String configVersion,
+    /// Configuration schema version for tracking changes to the configuration format itself
+    @Default(EntityConfigDefaults.configVersion) String configVersion,
 
     // Path limits
     /// Maximum length of an entity path in characters.
-    @Default(1024) int maxPathLength,
+    @Default(EntityConfigDefaults.maxPathLength) int maxPathLength,
 
     /// Maximum length of a single path segment in characters.
-    @Default(255) int maxPathSegment,
+    @Default(EntityConfigDefaults.maxPathSegment) int maxPathSegment,
 
     /// Maximum allowed depth of entity hierarchies.
-    @Default(10) int maxHierarchyDepth,
+    @Default(EntityConfigDefaults.maxHierarchyDepth) int maxHierarchyDepth,
 
     // History limits
     /// Maximum number of history entries to retain per entity.
-    @Default(50) int maxHistorySize,
+    @Default(EntityConfigDefaults.maxHistorySize) int maxHistorySize,
 
     /// Default number of history entries to show in views.
-    @Default(50) int defaultHistorySize,
+    @Default(EntityConfigDefaults.defaultHistorySize) int defaultHistorySize,
 
     // Lock settings
     /// Default duration before an entity lock expires.
-    @Default(Duration(minutes: 15)) Duration defaultLockTimeout,
+    @Default(EntityConfigDefaults.defaultLockTimeout)
+    Duration defaultLockTimeout,
 
     /// Duration by which a lock can be extended.
-    @Default(Duration(minutes: 5)) Duration lockExtensionPeriod,
+    @Default(EntityConfigDefaults.lockExtensionPeriod)
+    Duration lockExtensionPeriod,
 
     /// Minimum duration for which an entity can be locked.
-    @Default(Duration(seconds: 30)) Duration minLockDuration,
+    @Default(EntityConfigDefaults.minLockDuration) Duration minLockDuration,
 
     /// Maximum duration for which an entity can be locked.
-    @Default(Duration(hours: 24)) Duration maxLockDuration,
+    @Default(EntityConfigDefaults.maxLockDuration) Duration maxLockDuration,
 
     // Entity defaults
     /// Default version string for new entities.
-    @Default('1.0.0') String defaultVersion,
+    @Default(EntityConfigDefaults.defaultVersion) String defaultVersion,
 
     /// Whether entities are public by default.
-    @Default(true) bool defaultIsPublic,
+    @Default(EntityConfigDefaults.defaultIsPublic) bool defaultIsPublic,
 
     /// Default priority level for new entities.
-    @Default(EntityPriority.medium) EntityPriority defaultPriority,
+    @Default(EntityConfigDefaults.defaultPriority)
+    EntityPriority defaultPriority,
 
     /// Default workflow stage for new entities.
-    @Default(EntityStage.draft) EntityStage defaultStage,
+    @Default(EntityConfigDefaults.defaultStage) EntityStage defaultStage,
 
     // Path settings
     /// Character used to separate path segments.
-    @Default('/') String pathSeparator,
+    @Default(EntityConfigDefaults.pathSeparator) String pathSeparator,
 
     /// Regular expression pattern defining invalid characters in paths.
-    ///
-    /// By default, this pattern disallows characters that are not permitted in common file systems (e.g., Windows, Unix).
-    /// If your environment requires a different set of restrictions, you can override this value using the [EntityConfig.custom] factory.
-    ///
-    /// Default: `[<>:"|?*\x00-\x1F]`
-    @Default(r'[<>:"|?*\x00-\x1F]') String invalidPathChars,
+    @Default(EntityConfigDefaults.invalidPathChars) String invalidPathChars,
   }) = _EntityConfig;
 
-  /// Creates a new instance of [EntityConfig] with configuration optimized for development.
+  /// Creates a new instance of [EntityConfig] with configuration optimized for development
   ///
-  /// This configuration has more permissive settings than the default.
+  /// This configuration has more permissive settings than the default
   factory EntityConfig.development()`
 - `EntityConfig(configVersion: configVersion ?? defaultConfig.configVersion,
       maxPathLength: maxPathLength ?? defaultConfig.maxPathLength,
@@ -6390,9 +6481,9 @@ No imports.
     );
   }
 
-  factory EntityConfig.fromJson(Map<String, Object?> json)` - Creates a new instance of [EntityConfig] with configuration optimized for production.
+  factory EntityConfig.fromJson(Map<String, Object?> json)` - Creates a new instance of [EntityConfig] with configuration optimized for production
   ///
-  /// This configuration has more restrictive settings than the default.
+  /// This configuration has more restrictive settings than the default
   factory EntityConfig.production() {
     return const EntityConfig(
       configVersion: '1.0.0',
@@ -6419,22 +6510,6 @@ No imports.
   ///   defaultIsPublic: false,
   /// );
   /// ```
-  ///
-  /// [maxPathLength] - Maximum length of an entity path in characters.
-  /// [maxPathSegment] - Maximum length of a single path segment in characters.
-  /// [maxHierarchyDepth] - Maximum allowed depth of entity hierarchies.
-  /// [maxHistorySize] - Maximum number of history entries to retain per entity.
-  /// [defaultHistorySize] - Default number of history entries to show in views.
-  /// [defaultLockTimeout] - Default duration before an entity lock expires.
-  /// [lockExtensionPeriod] - Duration by which a lock can be extended.
-  /// [minLockDuration] - Minimum duration for which an entity can be locked.
-  /// [maxLockDuration] - Maximum duration for which an entity can be locked.
-  /// [defaultVersion] - Default version string for new entities.
-  /// [defaultIsPublic] - Whether entities are public by default.
-  /// [defaultPriority] - Default priority level for new entities.
-  /// [defaultStage] - Default workflow stage for new entities.
-  /// [pathSeparator] - Character used to separate path segments.
-  /// [invalidPathChars] - Regular expression pattern defining invalid characters in paths.
   factory EntityConfig.custom({
     String? configVersion,
     int? maxPathLength,
@@ -6454,15 +6529,9 @@ No imports.
     String? invalidPathChars,
   }) {
     const defaultConfig = EntityConfig();
-- `isValidPath(String path)` - Validates if a path string conforms to the configuration constraints.
+- `isValidPath(String path)` - Validates if a path string conforms to the configuration constraints
   ///
-  /// Checks if the path:
-  /// - Does not exceed the maximum path length
-  /// - Does not exceed the maximum hierarchy depth
-  /// - Does not contain invalid characters
-  /// - Does not have segments that exceed the maximum segment length
-  ///
-  /// Returns true if the path is valid according to all constraints.
+  /// Returns true if the path is valid according to all path constraints
 - `if(path.length > maxPathLength) return false;
 
     // Check path segments
@@ -6487,12 +6556,10 @@ No imports.
 
   /// Sanitizes a path to conform to configuration constraints.
   ///
-  /// This method:
-  /// - Replaces invalid characters with underscores
-  /// - Truncates paths that exceed maximum length
-  /// - Truncates segments that exceed maximum length
+  /// This method removes invalid characters, truncates paths and segments
+  /// that exceed maximum length.
   ///
-  /// Returns a sanitized path that conforms to all path constraints.
+  /// Returns a sanitized path that conforms to configuration constraints.
   String sanitizePath(String path)`
 - `for(int i = 0; i < segments.length; i++)`
 - `if(segments[i].length > maxPathSegment)`
@@ -6539,10 +6606,7 @@ No imports.
     return lockDuration;
   }
 
-  /// Normalizes a path by:
-  /// 1. Removing redundant separators
-  /// 2. Removing trailing separators
-  /// 3. Ensuring the path conforms to configuration constraints
+  /// Normalizes a path by removing redundant separators and ensuring constraints
   ///
   /// Returns a normalized path string.
   String normalizePath(String path)`
@@ -6584,9 +6648,6 @@ No imports.
   }
 
   /// Validates configuration values to ensure they are reasonable and consistent.
-  ///
-  /// This can be called during initialization to check that the configuration
-  /// doesn't have contradictory or invalid settings.
   ///
   /// Returns true if the configuration is valid.
   bool validate()`
@@ -6652,11 +6713,11 @@ No imports.
     return true;
   }
 
-  /// Creates a merged configuration using the most permissive values from both configurations.
+  /// Creates a merged configuration using the most permissive values from both configurations
   ///
-  /// This is useful when you need to ensure compatibility between two environments.
+  /// This is useful when you need to ensure compatibility between two environments
   ///
-  /// Returns a new EntityConfig that will be compatible with both source configurations.
+  /// Returns a new EntityConfig that will be compatible with both source configurations
   EntityConfig mergeWith(EntityConfig other)`
 - `EntityConfig(// Take the larger value for limits
       maxPathLength: math.max(maxPathLength, other.maxPathLength),
@@ -6739,10 +6800,6 @@ No imports.
     } catch (e)`
 - `isVersionCompatible(String otherVersion, [String? thisVersion])` - Checks if this configuration version is compatible with another version.
   ///
-  /// Follows semantic versioning principles:
-  /// - Major versions must match (breaking changes)
-  /// - If this is being used with data created by otherVersion, this.minor >= other.minor
-  ///
   /// [otherVersion] - Version string to check compatibility with (e.g., "1.2.3")
   /// [thisVersion] - Optional version to check, defaults to this config's version
   ///
@@ -6764,12 +6821,10 @@ No imports.
       // Patch versions don't affect compatibility
       return true;
     } catch (e)`
-- `incrementVersion(String increment, [String? baseVersion])` - Creates a new configuration with an incremented version.
+- `incrementVersion(String increment, [String? baseVersion])` - Creates a new version string following semantic versioning.
   ///
   /// [increment] - Which part to increment: "major", "minor", or "patch"
   /// [baseVersion] - Optional base version, defaults to this config's version
-  ///
-  /// Returns a new version string following semantic versioning.
 - `if(parts.length != 3)`
 - `switch(increment.toLowerCase())`
 - `withIncrementedVersion(String increment)` - Creates a new config with the version number incremented.
@@ -6780,6 +6835,29 @@ No imports.
   /// [increment] - Which part to increment: "major", "minor", or "patch"
   ///
   /// Returns a new EntityConfig with the updated version.
+
+### `EntityConfigDefaults`
+
+**File:** `lib/src/domain/core/entity_config.dart`
+
+**Properties:**
+
+- `String configVersion` - Schema version for config entities
+- `int maxPathLength` - Maximum length of entity path in characters
+- `int maxPathSegment` - Maximum length of path segment
+- `int maxHierarchyDepth` - Maximum depth of entity hierarchies
+- `int maxHistorySize` - Maximum number of history entries to retain
+- `int defaultHistorySize` - Default number of history entries to show in views
+- `Duration defaultLockTimeout` - Default duration before a lock expires
+- `Duration lockExtensionPeriod` - Duration by which a lock can be extended
+- `Duration minLockDuration` - Minimum duration for which an entity can be locked
+- `Duration maxLockDuration` - Maximum duration for which an entity can be locked
+- `String defaultVersion` - Default version string for new entities
+- `bool defaultIsPublic` - Default public visibility setting
+- `EntityPriority defaultPriority` - Default priority level for new entities
+- `EntityStage defaultStage` - Default workflow stage for new entities
+- `String pathSeparator` - Character used to separate path segments
+- `String invalidPathChars` - Regular expression pattern for invalid path characters
 
 ### `EntityCreateConfig`
 
@@ -6949,6 +7027,89 @@ No imports.
 
 **File:** `lib/src/domain/entities/base_entity.dart`
 
+**Properties:**
+
+- `final now` - Creates a new EntityHierarchy instance
+  const factory EntityHierarchy({
+    /// Full path in the entity tree
+    ///
+    /// Format: '/parent_id/grandparent_id/entity_id'
+    /// Paths use forward slashes as separators and start with a leading slash
+    /// Path segments are entity IDs in reverse ancestry order
+    String? treePath,
+
+    /// Depth level in the hierarchy (0 = root)
+    @Default(0) int treeDepth,
+
+    /// List of ancestor entity IDs in order from root to parent
+    @Default(<EntityId>[]) List<EntityId> ancestors,
+
+    /// Direct parent entity ID
+    EntityId? parentId,
+
+    /// List of direct child entity IDs
+    @Default(<EntityId>[]) List<EntityId> childIds,
+
+    /// Indicates if this entity is a root node in a hierarchy
+    @Default(true) bool isHierarchyRoot,
+
+    /// Indicates if this entity is a leaf node (has no children)
+    @Default(true) bool isHierarchyLeaf,
+
+    /// Additional hierarchy-related metadata
+    @Default({}) Map<String, Object> hierarchyMeta,
+  }) = _EntityHierarchy;
+
+  /// Creates a new root EntityHierarchy instance
+  factory EntityHierarchy.root(String entityId) {
+
+**Methods:**
+
+- `EntityHierarchy({
+    /// Full path in the entity tree
+    ///
+    /// Format: '/parent_id/grandparent_id/entity_id'
+    /// Paths use forward slashes as separators and start with a leading slash
+    /// Path segments are entity IDs in reverse ancestry order
+    String? treePath,
+
+    /// Depth level in the hierarchy (0 = root)
+    @Default(0) int treeDepth,
+
+    /// List of ancestor entity IDs in order from root to parent
+    @Default(<EntityId>[]) List<EntityId> ancestors,
+
+    /// Direct parent entity ID
+    EntityId? parentId,
+
+    /// List of direct child entity IDs
+    @Default(<EntityId>[]) List<EntityId> childIds,
+
+    /// Indicates if this entity is a root node in a hierarchy
+    @Default(true) bool isHierarchyRoot,
+
+    /// Indicates if this entity is a leaf node (has no children)
+    @Default(true) bool isHierarchyLeaf,
+
+    /// Additional hierarchy-related metadata
+    @Default({}) Map<String, Object> hierarchyMeta,
+  }) = _EntityHierarchy;
+
+  /// Creates a new root EntityHierarchy instance
+  factory EntityHierarchy.root(String entityId)` - Creates a new EntityHierarchy instance
+
+### `EntityLimits`
+
+**File:** `lib/src/domain/entities/base_entity.dart`
+
+**Properties:**
+
+- `int pathMaxLength` - Maximum length of a path in characters
+- `int pathMaxSegment` - Maximum length of a path segment in characters
+- `int hierarchyDepthMax` - Maximum allowed depth in entity hierarchy
+- `int historyMax` - Maximum number of history entries to retain
+- `int historyDefault` - Default number of history entries to retain
+
 ### `EntityMetadata`
 
 **File:** `lib/src/domain/entities/base_entity.dart`
@@ -6993,13 +7154,13 @@ No imports.
 
 **File:** `lib/src/domain/entities/base_entity.dart`
 
-### `EquipmentModel`
+### `EquipmentData`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
 
 **Methods:**
 
-- `EquipmentModel({
+- `EquipmentData({
     // Core info
     required String name,
     required EntityId siteId,
@@ -7025,10 +7186,43 @@ No imports.
     Map<String, Object>? customData,
     @Default({}) Map<String, Object> meta,
     @Default({}) Map<String, String> maintContacts,
-  }) = _EquipmentModel;
+  }) = _EquipmentData;
 
-  factory EquipmentModel.fromJson(Map<String, Object> json)`
-- `applyEvent(DomainEventModel event)`
+  factory EquipmentData.fromJson(Map<String, Object> json)` - Data model for physical equipment or machinery
+  ///
+  /// [name] - Name of the equipment
+  /// [siteId] - Site where equipment is installed
+  /// [type] - Equipment type classification
+  /// [serialNum] - Optional manufacturer serial number
+  /// [parentId] - Optional parent equipment for hierarchical structures
+  /// [childIds] - Sub-components of this equipment
+- `applyEvent(DomainEventModel event)` - Whether equipment requires maintenance (over 180 days since last)
+  bool get needsMaintenance =>
+      lastMaintDate?.isBefore(
+        DateTime.now().subtract(const Duration(days: 180)),
+      ) ??
+      true;
+
+  /// Whether equipment was installed in the last 30 days
+  bool get isNewInstall =>
+      installDate?.isAfter(DateTime.now().subtract(const Duration(days: 30))) ??
+      false;
+
+  /// Whether equipment has child components
+  bool get hasChildren => childIds.isNotEmpty;
+
+  /// Whether equipment is a child/sub-component
+  bool get isChild => parentId != null;
+
+  /// Whether equipment is a root component (not a child)
+  bool get isRoot => parentId == null;
+
+  /// Whether equipment has sub-components
+  bool get hasSubComponents => childIds.isNotEmpty;
+
+  /// Handles domain events by generating new state
+  ///
+  /// Returns updated EquipmentData reflecting the applied event
 - `switch(event.eventType)`
 
 ### `HierarchyParams`
@@ -7069,13 +7263,13 @@ No imports.
 - `int attemptCount`
 - `Map<String, dynamic> metadata`
 
-### `OwnerModel`
+### `OwnerData`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
 
 **Methods:**
 
-- `OwnerModel({
+- `OwnerData({
     // Core info
     required ContactInfo contact,
     @Default([]) List<EntityId> siteIds,
@@ -7083,10 +7277,26 @@ No imports.
     // Metadata
     @Default({}) Map<String, Object> meta,
     Map<String, Object>? customData,
-  }) = _OwnerModel;
+  }) = _OwnerData;
 
-  factory OwnerModel.fromJson(Map<String, Object> json)`
-- `applyEvent(DomainEventModel event)`
+  factory OwnerData.fromJson(Map<String, Object> json)` - Entity owner data model representing an organization or individual
+  ///
+  /// Stores contact information and site references
+- `applyEvent(DomainEventModel event)` - Whether this owner has associated sites
+  bool get hasSites => siteIds.isNotEmpty;
+
+  /// Whether owner has multiple sites
+  bool get hasMultipleSites => siteIds.length > 1;
+
+  /// Whether valid contact information exists
+  bool get hasValidContact => contact.email != null || contact.phone != null;
+
+  /// Human-readable name for display
+  String get displayName => contact.displayName;
+
+  /// Applies domain event and returns updated state
+  ///
+  /// Processes event data to create new entity state without mutation
 - `switch(event.eventType)`
 
 ### `PagedResult`
@@ -7100,13 +7310,13 @@ No imports.
 - `int page`
 - `int pageSize`
 
-### `PersonnelModel`
+### `PersonnelData`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
 
 **Methods:**
 
-- `PersonnelModel({
+- `PersonnelData({
     // Core info
     required String name,
     required EntityId vendorId,
@@ -7126,10 +7336,37 @@ No imports.
     @Default({}) Map<String, Object> meta,
     @Default({}) Map<String, Object> schedule,
     @Default({}) Map<String, DateTime> certDates,
-  }) = _PersonnelModel;
+  }) = _PersonnelData;
 
-  factory PersonnelModel.fromJson(Map<String, Object> json)`
-- `applyEvent(DomainEventModel event)`
+  factory PersonnelData.fromJson(Map<String, Object> json)` - Data model for individuals providing services
+  ///
+  /// [name] - Name of the person
+  /// [vendorId] - Associated vendor/employer
+  /// [skillLevel] - Numeric rating of skill (1-10)
+  /// [certs] - Professional certifications
+  /// [specs] - Areas of specialization
+  /// [certDates] - Expiration dates for certifications
+- `applyEvent(DomainEventModel event)` - Whether person holds certifications
+  bool get isCertified => certs.isNotEmpty;
+
+  /// Whether person has specialized skills
+  bool get isSpecialized => specs.isNotEmpty;
+
+  /// Whether valid contact information exists
+  bool get hasValidContact => email != null || phone != null;
+
+  /// Primary certification, if any
+  String? get primaryCert => certs.isNotEmpty ? certs.first : null;
+
+  /// Whether certifications are valid and have dates
+  bool get hasValidCerts => certs.isNotEmpty && certDates.isNotEmpty;
+
+  /// Gets the expiration date for a specific certification
+  DateTime? getCertExpiry(String cert) => certDates[cert];
+
+  /// Handles domain events by generating new state
+  ///
+  /// Returns updated PersonnelData reflecting the applied event
 - `switch(event.eventType)`
 
 ### `QueryParams`
@@ -7165,13 +7402,13 @@ No imports.
 - `double searchTime`
 - `Map<String, Object> facets`
 
-### `SiteModel`
+### `SiteData`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
 
 **Methods:**
 
-- `SiteModel({
+- `SiteData({
     // Core info
     required String name,
     required EntityId ownerId,
@@ -7191,10 +7428,26 @@ No imports.
     Map<String, Object>? customData,
     @Default({}) Map<String, Object> meta,
     @Default({}) Map<String, String> contactInfo,
-  }) = _SiteModel;
+  }) = _SiteData;
 
-  factory SiteModel.fromJson(Map<String, Object> json)`
-- `applyEvent(DomainEventModel event)`
+  factory SiteData.fromJson(Map<String, Object> json)` - Data model for physical location or site
+  ///
+  /// [name] - Name of the site
+  /// [ownerId] - Reference to the owner of the site
+  /// [address] - Optional physical address
+  /// [equipmentIds] - Equipment installed at this site
+- `applyEvent(DomainEventModel event)` - Whether site has valid geolocation coordinates
+  bool get hasLocation => latitude != null && longitude != null;
+
+  /// Formatted location coordinates string
+  String get locationCoords => hasLocation ? '$latitude,$longitude' : '';
+
+  /// Whether site has associated equipment
+  bool get hasEquipment => equipmentIds.isNotEmpty;
+
+  /// Handles domain events by generating new state
+  ///
+  /// Returns updated SiteData reflecting the applied event
 - `switch(event.eventType)`
 
 ### `SyncParams`
@@ -7227,25 +7480,13 @@ No imports.
 - `Map<String, Object> stats`
 - `List<String> errors`
 
-### `SystemLimits`
-
-**File:** `lib/src/domain/entities/base_entity.dart`
-
-**Properties:**
-
-- `int pathMaxLength` - Maximum length of a path in characters
-- `int pathMaxSegment` - Maximum length of a path segment in characters
-- `int hierarchyDepthMax` - Maximum allowed depth in entity hierarchy
-- `int historyMax` - Maximum number of history entries to retain
-- `int historyDefault` - Default number of history entries to retain
-
-### `VendorModel`
+### `VendorData`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
 
 **Methods:**
 
-- `VendorModel({
+- `VendorData({
     // Core info
     required ContactInfo contact,
     @Default([]) List<EntityId> staffIds,
@@ -7255,10 +7496,29 @@ No imports.
     @Default({}) Map<String, Object> meta,
     Map<String, Object>? customData,
     @Default({}) Map<String, Object> certifications,
-  }) = _VendorModel;
+  }) = _VendorData;
 
-  factory VendorModel.fromJson(Map<String, Object> json)`
-- `applyEvent(DomainEventModel event)`
+  factory VendorData.fromJson(Map<String, Object> json)` - Data model for external service providers or vendors
+  ///
+  /// [contact] - Main contact information for the vendor
+  /// [staffIds] - Personnel working for this vendor
+  /// [services] - Types of services offered
+  /// [certifications] - Professional certifications held
+- `applyEvent(DomainEventModel event)` - Whether vendor has associated staff members
+  bool get hasStaff => staffIds.isNotEmpty;
+
+  /// Whether vendor provides services
+  bool get hasServices => services.isNotEmpty;
+
+  /// Human-readable name for display
+  String get displayName => contact.displayName;
+
+  /// Whether valid contact information exists
+  bool get hasValidContact => contact.email != null || contact.phone != null;
+
+  /// Handles domain events by generating new state
+  ///
+  /// Returns updated VendorData reflecting the applied event
 - `switch(event.eventType)`
 
 ### `VersionQuery`
@@ -7872,17 +8132,19 @@ No imports.
 - `EntityCloneBuilder` - `lib/src/domain/entities/entity_factory.dart`
 - `EntityCloneConfig` - `lib/src/domain/entities/entity_factory.dart`
 - `EntityConfig` - `lib/src/domain/core/entity_config.dart`
+- `EntityConfigDefaults` - `lib/src/domain/core/entity_config.dart`
 - `EntityCreateConfig` - `lib/src/domain/entities/entity_factory.dart`
 - `EntityDefaults` - `lib/src/domain/core/core_entity.dart`
 - `EntityFactory` - `lib/src/domain/entities/entity_factory.dart`
 - `EntityHierarchy` - `lib/src/domain/entities/base_entity.dart`
 - `EntityId` - `lib/src/domain/value_objects/identity_value_objects.dart`
+- `EntityLimits` - `lib/src/domain/entities/base_entity.dart`
 - `EntityMetadata` - `lib/src/domain/entities/base_entity.dart`
 - `EntityNotFoundException` - `lib/src/domain/repositories/aggregate/aggregate_repository_base.dart`
 - `EntityRelation` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 - `EntitySecurity` - `lib/src/domain/entities/base_entity.dart`
 - `EntityVersioning` - `lib/src/domain/entities/base_entity.dart`
-- `EquipmentModel` - `lib/src/domain/entities/entity_types.dart`
+- `EquipmentData` - `lib/src/domain/entities/entity_types.dart`
 - `EventAwareRepository` - `lib/src/domain/repositories/event_aware_repository.dart`
 - `EventDefaults` - `lib/src/domain/events/domain_event.dart`
 - `EventId` - `lib/src/domain/value_objects/identity_value_objects.dart`
@@ -7904,10 +8166,10 @@ No imports.
 - `LockState` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 - `Measurement` - `lib/src/domain/value_objects/measurement_value_objects.dart`
 - `OperationException` - `lib/src/domain/core/exceptions.dart`
-- `OwnerModel` - `lib/src/domain/entities/entity_types.dart`
+- `OwnerData` - `lib/src/domain/entities/entity_types.dart`
 - `PagedResult` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 - `PathValidationException` - `lib/src/domain/core/exceptions.dart`
-- `PersonnelModel` - `lib/src/domain/entities/entity_types.dart`
+- `PersonnelData` - `lib/src/domain/entities/entity_types.dart`
 - `PhoneNumber` - `lib/src/domain/value_objects/contact_value_objects.dart`
 - `Progress` - `lib/src/domain/value_objects/status_value_objects.dart`
 - `QueryParams` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
@@ -7916,17 +8178,16 @@ No imports.
 - `Schedule` - `lib/src/domain/value_objects/time_value_objects.dart`
 - `SearchParams` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 - `SearchResult` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
-- `SiteModel` - `lib/src/domain/entities/entity_types.dart`
+- `SiteData` - `lib/src/domain/entities/entity_types.dart`
 - `SyncParams` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 - `SyncProgress` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 - `SyncResult` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
-- `SystemLimits` - `lib/src/domain/entities/base_entity.dart`
 - `TaskStatus` - `lib/src/domain/value_objects/status_value_objects.dart`
 - `TimeWindow` - `lib/src/domain/value_objects/time_value_objects.dart`
 - `TypedMetadata` - `lib/src/domain/core/core_entity.dart`
 - `UserAction` - `lib/src/domain/value_objects/user_action.dart`
 - `ValidationException` - `lib/src/domain/core/exceptions.dart`
-- `VendorModel` - `lib/src/domain/entities/entity_types.dart`
+- `VendorData` - `lib/src/domain/entities/entity_types.dart`
 - `VersionConflictException` - `lib/src/domain/core/exceptions.dart`
 - `VersionQuery` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 - `WatchParams` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
@@ -7940,6 +8201,7 @@ No imports.
 - `DomainEventModel` - `lib/src/domain/events/domain_event.dart`
 - `EntityConfig` - `lib/src/domain/core/entity_config.dart`
 - `EntityCreateConfig` - `lib/src/domain/entities/entity_factory.dart`
+- `EntityHierarchy` - `lib/src/domain/entities/base_entity.dart`
 - `EventServiceProvider` - `lib/src/application/providers/event_service_provider.dart`
 - `Exception` - `lib/src/domain/entities/base_entity.dart`
 - `HierarchyValidationException` - `lib/src/domain/entities/entity_factory.dart`
@@ -7953,7 +8215,6 @@ No imports.
 - `UserAction` - `lib/src/domain/value_objects/user_action.dart`
 - `_createEvent` - `lib/src/domain/repositories/event_aware_repository.dart`
 - `_migrateFrom100To110` - `lib/src/application/services/event_migration_service.dart`
-- `addChild` - `lib/src/domain/entities/base_entity.dart`
 - `applyEvent` - `lib/src/domain/entities/entity_types.dart`
 - `build` - `lib/src/domain/entities/entity_factory.dart`
 - `constrainLockDuration` - `lib/src/domain/core/entity_config.dart`
