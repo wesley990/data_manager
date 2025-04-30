@@ -3,7 +3,7 @@ import 'package:data_manager/data_manager.dart';
 
 abstract class IEntityRepository<T extends Object> {
   // Core operations with proper return types and error handling
-  Future<BaseEntityModel<T>> create(EntityCreateConfig<T> config);
+  Future<BaseEntityModel<T>> create(EntityCreationConfig<T> config);
   Future<BaseEntityModel<T>> read(EntityId id, {bool includeDeleted = false});
   Future<BaseEntityModel<T>> update(EntityId id, Map<String, Object> changes);
   Future<void> delete(EntityId id, {bool permanent = false});
@@ -20,10 +20,15 @@ abstract class IEntityRepository<T extends Object> {
 
   // Hierarchy & relationships
   Future<List<BaseEntityModel<T>>> getHierarchy(
-      EntityId id, HierarchyParams params);
+    EntityId id,
+    HierarchyParams params,
+  );
   Future<void> addRelation(EntityId sourceId, String type, EntityId targetId);
   Future<void> removeRelation(
-      EntityId sourceId, String type, EntityId targetId);
+    EntityId sourceId,
+    String type,
+    EntityId targetId,
+  );
   Future<List<EntityRelation>> getRelations(EntityId id, {String? type});
   Stream<List<EntityRelation>> watchRelations(EntityId id);
 
@@ -35,7 +40,7 @@ abstract class IEntityRepository<T extends Object> {
   });
   Future<List<BaseEntityModel<T>>> getChildren(
     EntityId id, {
-    bool recursive = false,  
+    bool recursive = false,
     int? maxDepth,
   });
   Future<List<BaseEntityModel<T>>> getDescendants(
@@ -48,22 +53,14 @@ abstract class IEntityRepository<T extends Object> {
   Future<List<BaseEntityModel<T>>> getByPaths(List<String> paths);
   Future<String> getCanonicalPath(EntityId id);
   Future<List<String>> getAncestorPaths(String path);
-  
+
   // Tree restructuring
-  Future<void> moveEntity(
-    EntityId id,
-    EntityId newParentId,
-  );
-  Future<void> reorderChildren(
-    EntityId parentId,
-    List<EntityId> newOrder,
-  );
+  Future<void> moveEntity(EntityId id, EntityId newParentId);
+  Future<void> reorderChildren(EntityId parentId, List<EntityId> newOrder);
   Future<void> detachFromParent(EntityId id);
-  
+
   // Hierarchy queries
-  Future<List<BaseEntityModel<T>>> queryHierarchy(
-    HierarchyQueryParams params,
-  );
+  Future<List<BaseEntityModel<T>>> queryHierarchy(HierarchyQueryParams params);
   Stream<List<BaseEntityModel<T>>> watchHierarchy(
     EntityId rootId,
     HierarchyQueryParams params,
@@ -86,28 +83,26 @@ abstract class IEntityRepository<T extends Object> {
   // Event & Version Control
   Future<void> applyEvent(DomainEventModel event);
   Future<void> applyEvents(List<DomainEventModel> events);
-  Future<List<DomainEventModel>> getEventHistory(EntityId id, {
+  Future<List<DomainEventModel>> getEventHistory(
+    EntityId id, {
     DateTime? since,
     int? limit,
   });
   Stream<DomainEventModel> watchEvents(EntityId id);
-  
+
   Future<BaseEntityModel<T>> getVersion(EntityId id, int version);
   Future<List<int>> getAvailableVersions(EntityId id);
   Future<BaseEntityModel<T>> revertToVersion(EntityId id, int version);
-  
+
   Future<bool> hasVersionConflict(EntityId id, Map<String, int> versionVectors);
   Future<BaseEntityModel<T>> resolveConflict(
     EntityId id,
     BaseEntityModel<T> localVersion,
     BaseEntityModel<T> serverVersion,
   );
-  
+
   Future<Map<String, int>> getVersionVectors(EntityId id);
-  Future<void> updateVersionVectors(
-    EntityId id, 
-    Map<String, int> vectors,
-  );
+  Future<void> updateVersionVectors(EntityId id, Map<String, int> vectors);
 }
 
 // Unified parameter classes
@@ -182,7 +177,7 @@ class WatchParams {
 // Add new parameter class for hierarchy queries
 class HierarchyQueryParams {
   final String? pathPrefix;
-  final int? maxDepth; 
+  final int? maxDepth;
   final List<String> filter;
   final Map<String, Object> metadata;
 
@@ -246,10 +241,7 @@ class SyncResult {
   final Map<String, Object> stats;
   final List<String> errors;
 
-  SyncResult({
-    this.stats = const {},
-    this.errors = const [],
-  });
+  SyncResult({this.stats = const {}, this.errors = const []});
 }
 
 class SyncProgress {

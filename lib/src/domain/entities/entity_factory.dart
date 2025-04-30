@@ -4,7 +4,7 @@ import 'package:data_manager/data_manager.dart';
 
 /// Configuration object for creating new entities.
 /// Contains all parameters needed to construct a complete entity.
-class EntityCreateConfig<T extends Object> {
+class EntityCreationConfig<T extends Object> {
   // Core info
   final String name;
   final AuthUser user;
@@ -25,7 +25,7 @@ class EntityCreateConfig<T extends Object> {
   final DateTime? expiryDate;
   final bool? isPublic;
 
-  EntityCreateConfig({
+  EntityCreationConfig({
     required this.name,
     required this.user,
     required this.data,
@@ -45,7 +45,7 @@ class EntityCreateConfig<T extends Object> {
 
 /// Configuration object for cloning existing entities.
 /// Contains the source entity and optional overrides for the clone.
-class EntityCloneConfig<T extends Object> {
+class EntityCloningConfig<T extends Object> {
   final BaseEntityModel<T> source;
   final AuthUser user;
   final String? newName;
@@ -54,7 +54,7 @@ class EntityCloneConfig<T extends Object> {
   final Map<String, String>? newLabels;
   final List<String>? newTags;
 
-  EntityCloneConfig({
+  EntityCloningConfig({
     required this.source,
     required this.user,
     this.newName,
@@ -72,7 +72,7 @@ class EntityCloneConfig<T extends Object> {
 ///
 /// Example:
 /// ```dart
-/// final site = EntityBuilder<SiteModel>()
+/// final site = EntityCreationBuilder<SiteModel>()
 ///   .withName('Main Office')
 ///   .withUser(currentUser)
 ///   .withData(siteModel)
@@ -82,7 +82,7 @@ class EntityCloneConfig<T extends Object> {
 ///   .isPublic(true)
 ///   .build();
 /// ```
-class EntityBuilder<T extends Object> {
+class EntityCreationBuilder<T extends Object> {
   // Required fields
   String? _name;
   AuthUser? _user;
@@ -102,73 +102,73 @@ class EntityBuilder<T extends Object> {
   bool? _isPublic;
 
   // Required field methods
-  EntityBuilder<T> withName(String name) {
+  EntityCreationBuilder<T> withName(String name) {
     _name = name;
     return this;
   }
 
-  EntityBuilder<T> withUser(AuthUser user) {
+  EntityCreationBuilder<T> withUser(AuthUser user) {
     _user = user;
     return this;
   }
 
-  EntityBuilder<T> withData(T data) {
+  EntityCreationBuilder<T> withData(T data) {
     _data = data;
     return this;
   }
 
   // Optional field methods
-  EntityBuilder<T> withDescription(String description) {
+  EntityCreationBuilder<T> withDescription(String description) {
     _description = description;
     return this;
   }
 
-  EntityBuilder<T> withParentPath(String parentPath) {
+  EntityCreationBuilder<T> withParentPath(String parentPath) {
     _parentPath = parentPath;
     return this;
   }
 
-  EntityBuilder<T> withParentId(EntityId parentId) {
+  EntityCreationBuilder<T> withParentId(EntityId parentId) {
     _parentId = parentId;
     return this;
   }
 
-  EntityBuilder<T> withAncestors(List<EntityId> ancestors) {
+  EntityCreationBuilder<T> withAncestors(List<EntityId> ancestors) {
     _ancestors = ancestors;
     return this;
   }
 
-  EntityBuilder<T> withMeta(Map<String, Object> meta) {
+  EntityCreationBuilder<T> withMeta(Map<String, Object> meta) {
     _meta = meta;
     return this;
   }
 
-  EntityBuilder<T> withTags(List<String> tags) {
+  EntityCreationBuilder<T> withTags(List<String> tags) {
     _tags = tags;
     return this;
   }
 
-  EntityBuilder<T> withLabels(Map<String, String> labels) {
+  EntityCreationBuilder<T> withLabels(Map<String, String> labels) {
     _labels = labels;
     return this;
   }
 
-  EntityBuilder<T> withPriority(EntityPriority priority) {
+  EntityCreationBuilder<T> withPriority(EntityPriority priority) {
     _priority = priority;
     return this;
   }
 
-  EntityBuilder<T> withStage(EntityStage stage) {
+  EntityCreationBuilder<T> withStage(EntityStage stage) {
     _stage = stage;
     return this;
   }
 
-  EntityBuilder<T> withExpiryDate(DateTime expiryDate) {
+  EntityCreationBuilder<T> withExpiryDate(DateTime expiryDate) {
     _expiryDate = expiryDate;
     return this;
   }
 
-  EntityBuilder<T> isPublic(bool isPublic) {
+  EntityCreationBuilder<T> isPublic(bool isPublic) {
     _isPublic = isPublic;
     return this;
   }
@@ -187,7 +187,7 @@ class EntityBuilder<T extends Object> {
     }
 
     // Create config
-    final config = EntityCreateConfig<T>(
+    final config = EntityCreationConfig<T>(
       name: _name!,
       user: _user!,
       data: _data!,
@@ -215,14 +215,14 @@ class EntityBuilder<T extends Object> {
 ///
 /// Example:
 /// ```dart
-/// final clonedSite = EntityCloneBuilder<SiteModel>()
+/// final clonedSite = EntityCloningBuilder<SiteModel>()
 ///   .fromSource(existingSite)
 ///   .withUser(currentUser)
 ///   .withName('Branch Office')
 ///   .withTags(['branch', 'office'])
 ///   .build();
 /// ```
-class EntityCloneBuilder<T extends Object> {
+class EntityCloningBuilder<T extends Object> {
   // Required fields
   BaseEntityModel<T>? _source;
   AuthUser? _user;
@@ -235,38 +235,38 @@ class EntityCloneBuilder<T extends Object> {
   List<String>? _newTags;
 
   // Required field methods
-  EntityCloneBuilder<T> fromSource(BaseEntityModel<T> source) {
+  EntityCloningBuilder<T> fromSource(BaseEntityModel<T> source) {
     _source = source;
     return this;
   }
 
-  EntityCloneBuilder<T> withUser(AuthUser user) {
+  EntityCloningBuilder<T> withUser(AuthUser user) {
     _user = user;
     return this;
   }
 
   // Optional field methods
-  EntityCloneBuilder<T> withName(String newName) {
+  EntityCloningBuilder<T> withName(String newName) {
     _newName = newName;
     return this;
   }
 
-  EntityCloneBuilder<T> withPath(String newPath) {
+  EntityCloningBuilder<T> withPath(String newPath) {
     _newPath = newPath;
     return this;
   }
 
-  EntityCloneBuilder<T> withMeta(Map<String, Object> newMeta) {
+  EntityCloningBuilder<T> withMeta(Map<String, Object> newMeta) {
     _newMeta = newMeta;
     return this;
   }
 
-  EntityCloneBuilder<T> withLabels(Map<String, String> newLabels) {
+  EntityCloningBuilder<T> withLabels(Map<String, String> newLabels) {
     _newLabels = newLabels;
     return this;
   }
 
-  EntityCloneBuilder<T> withTags(List<String> newTags) {
+  EntityCloningBuilder<T> withTags(List<String> newTags) {
     _newTags = newTags;
     return this;
   }
@@ -282,7 +282,7 @@ class EntityCloneBuilder<T extends Object> {
     }
 
     // Create config
-    final config = EntityCloneConfig<T>(
+    final config = EntityCloningConfig<T>(
       source: _source!,
       user: _user!,
       newName: _newName,
@@ -301,7 +301,7 @@ class EntityCloneBuilder<T extends Object> {
 ///
 /// This factory handles the construction of entity objects, applying validation
 /// and ensuring structural integrity. It's recommended to use the builder pattern
-/// through [EntityBuilder] and [EntityCloneBuilder] for a more fluent API.
+/// through [EntityCreationBuilder] and [EntityCloningBuilder] for a more fluent API.
 class EntityFactory {
   /// Valid entity types that can be created with this factory
   static final _validTypes = <Type>{
@@ -314,11 +314,11 @@ class EntityFactory {
 
   /// Creates a new entity from the provided configuration.
   ///
-  /// For a more fluent API, consider using [EntityBuilder] instead.
+  /// For a more fluent API, consider using [EntityCreationBuilder] instead.
   ///
   /// Example with builder pattern:
   /// ```dart
-  /// final entity = EntityBuilder<SiteModel>()
+  /// final entity = EntityCreationBuilder<SiteModel>()
   ///   .withName('Site Name')
   ///   .withUser(currentUser)
   ///   .withData(siteData)
@@ -332,7 +332,7 @@ class EntityFactory {
   /// @throws PathValidationException if the provided path is invalid
   /// @throws HierarchyValidationException if a circular reference is detected
   static BaseEntityModel<T> create<T extends Object>(
-    EntityCreateConfig<T> config,
+    EntityCreationConfig<T> config,
   ) {
     if (!_validTypes.contains(T)) {
       throw ArgumentError('Invalid type: ${T.toString()}');
@@ -410,11 +410,11 @@ class EntityFactory {
 
   /// Creates a clone of an existing entity with optional modifications.
   ///
-  /// For a more fluent API, consider using [EntityCloneBuilder] instead.
+  /// For a more fluent API, consider using [EntityCloningBuilder] instead.
   ///
   /// Example with builder pattern:
   /// ```dart
-  /// final clonedEntity = EntityCloneBuilder<SiteModel>()
+  /// final clonedEntity = EntityCloningBuilder<SiteModel>()
   ///   .fromSource(existingEntity)
   ///   .withUser(currentUser)
   ///   .withName('New Name')
@@ -424,7 +424,7 @@ class EntityFactory {
   /// @param config The configuration for cloning, including source entity and overrides
   /// @return A new entity based on the source with applied modifications
   static BaseEntityModel<T> clone<T extends Object>(
-    EntityCloneConfig<T> config,
+    EntityCloningConfig<T> config,
   ) {
     final now = DateTime.now();
     final userAction = UserAction.fromAuthUser(config.user);
