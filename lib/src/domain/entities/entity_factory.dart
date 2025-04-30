@@ -2,27 +2,53 @@ import 'package:uuid/uuid.dart';
 import 'package:authentication/authentication.dart';
 import 'package:data_manager/data_manager.dart';
 
-/// Configuration object for creating new entities.
-/// Contains all parameters needed to construct a complete entity.
+/// Configuration data for new entity creation
+///
+/// Contains core entity information, hierarchy data, and classification parameters
 class EntityCreationConfig<T extends Object> {
   // Core info
+  /// User-provided name for the entity
   final String name;
+
+  /// User creating the entity
   final AuthUser user;
+
+  /// Type-specific payload data
   final T data;
+
+  /// Optional description of the entity
   final String? description;
 
   // Tree structure
+  /// Path in the entity hierarchy
   final String? parentPath;
+
+  /// Direct parent entity ID
   final EntityId? parentId;
+
+  /// List of ancestor entity IDs
   final List<EntityId>? ancestors;
 
   // Metadata & Classification
+  /// Custom metadata key-value pairs
   final Map<String, Object>? meta;
+
+  /// Searchable tags
   final List<String>? tags;
+
+  /// Categorization labels
   final Map<String, String>? labels;
+
+  /// Entity importance level
   final EntityPriority? priority;
+
+  /// Current workflow stage
   final EntityStage? stage;
+
+  /// Optional date when entity expires
   final DateTime? expiryDate;
+
+  /// Whether entity is publicly accessible
   final bool? isPublic;
 
   EntityCreationConfig({
@@ -46,12 +72,25 @@ class EntityCreationConfig<T extends Object> {
 /// Configuration object for cloning existing entities.
 /// Contains the source entity and optional overrides for the clone.
 class EntityCloningConfig<T extends Object> {
+  /// Source entity to clone
   final BaseEntityModel<T> source;
+
+  /// User performing the cloning operation
   final AuthUser user;
+
+  /// New name for the cloned entity (defaults to source name + " (Copy)")
   final String? newName;
+
+  /// New path for the cloned entity
   final String? newPath;
+
+  /// Custom metadata overrides for the clone
   final Map<String, Object>? newMeta;
+
+  /// Label overrides for the clone
   final Map<String, String>? newLabels;
+
+  /// Tag overrides for the clone
   final List<String>? newTags;
 
   EntityCloningConfig({
@@ -65,10 +104,10 @@ class EntityCloningConfig<T extends Object> {
   });
 }
 
-/// A fluent builder for creating entities.
+/// A fluent builder for creating entities
 ///
-/// The builder pattern provides a cleaner, more readable API for creating complex entities
-/// with many optional parameters. It uses method chaining for a fluent interface.
+/// Provides method chaining for a cleaner API when creating complex entities
+/// with many optional parameters
 ///
 /// Example:
 /// ```dart
@@ -76,10 +115,8 @@ class EntityCloningConfig<T extends Object> {
 ///   .withName('Main Office')
 ///   .withUser(currentUser)
 ///   .withData(siteModel)
-///   .withDescription('Corporate headquarters')
 ///   .withParentId(organizationId)
 ///   .withTags(['headquarters', 'office'])
-///   .isPublic(true)
 ///   .build();
 /// ```
 class EntityCreationBuilder<T extends Object> {
@@ -102,72 +139,86 @@ class EntityCreationBuilder<T extends Object> {
   bool? _isPublic;
 
   // Required field methods
+  /// Sets the name for the entity
   EntityCreationBuilder<T> withName(String name) {
     _name = name;
     return this;
   }
 
+  /// Sets the user creating the entity
   EntityCreationBuilder<T> withUser(AuthUser user) {
     _user = user;
     return this;
   }
 
+  /// Sets the type-specific payload data
   EntityCreationBuilder<T> withData(T data) {
     _data = data;
     return this;
   }
 
   // Optional field methods
+  /// Sets the description for the entity
   EntityCreationBuilder<T> withDescription(String description) {
     _description = description;
     return this;
   }
 
+  /// Sets the parent path in the entity hierarchy
   EntityCreationBuilder<T> withParentPath(String parentPath) {
     _parentPath = parentPath;
     return this;
   }
 
+  /// Sets the direct parent entity ID
   EntityCreationBuilder<T> withParentId(EntityId parentId) {
     _parentId = parentId;
     return this;
   }
 
+  /// Sets the list of ancestor entity IDs
   EntityCreationBuilder<T> withAncestors(List<EntityId> ancestors) {
     _ancestors = ancestors;
     return this;
   }
 
+  /// Sets custom metadata key-value pairs
   EntityCreationBuilder<T> withMeta(Map<String, Object> meta) {
     _meta = meta;
     return this;
   }
 
+  /// Sets searchable tags
   EntityCreationBuilder<T> withTags(List<String> tags) {
     _tags = tags;
     return this;
   }
 
+  /// Sets categorization labels
   EntityCreationBuilder<T> withLabels(Map<String, String> labels) {
     _labels = labels;
     return this;
   }
 
+  /// Sets the entity importance level
   EntityCreationBuilder<T> withPriority(EntityPriority priority) {
     _priority = priority;
     return this;
   }
 
+  /// Sets the workflow stage
   EntityCreationBuilder<T> withStage(EntityStage stage) {
     _stage = stage;
     return this;
   }
 
+  /// Sets the expiry date for the entity
   EntityCreationBuilder<T> withExpiryDate(DateTime expiryDate) {
     _expiryDate = expiryDate;
     return this;
   }
 
+  /// Sets whether the entity is publicly accessible
   EntityCreationBuilder<T> isPublic(bool isPublic) {
     _isPublic = isPublic;
     return this;
@@ -235,37 +286,44 @@ class EntityCloningBuilder<T extends Object> {
   List<String>? _newTags;
 
   // Required field methods
+  /// Sets the source entity to clone
   EntityCloningBuilder<T> fromSource(BaseEntityModel<T> source) {
     _source = source;
     return this;
   }
 
+  /// Sets the user performing the clone operation
   EntityCloningBuilder<T> withUser(AuthUser user) {
     _user = user;
     return this;
   }
 
   // Optional field methods
+  /// Sets the name for the cloned entity
   EntityCloningBuilder<T> withName(String newName) {
     _newName = newName;
     return this;
   }
 
+  /// Sets the path for the cloned entity
   EntityCloningBuilder<T> withPath(String newPath) {
     _newPath = newPath;
     return this;
   }
 
+  /// Sets custom metadata for the cloned entity
   EntityCloningBuilder<T> withMeta(Map<String, Object> newMeta) {
     _newMeta = newMeta;
     return this;
   }
 
+  /// Sets labels for the cloned entity
   EntityCloningBuilder<T> withLabels(Map<String, String> newLabels) {
     _newLabels = newLabels;
     return this;
   }
 
+  /// Sets tags for the cloned entity
   EntityCloningBuilder<T> withTags(List<String> newTags) {
     _newTags = newTags;
     return this;
