@@ -102,10 +102,12 @@ class TypedMetadata {
   }
 
   /// Gets string value from metadata
-  Object? getString(String key) => _getValueTyped<String?>(key);
+  Object? getString(String key, {String defaultValue = ''}) => 
+      _getValueTyped<String>(key) ?? defaultValue;
 
   /// Gets integer value from metadata
-  Object? getInt(String key) => _getValueTyped<int?>(key);
+  Object? getInt(String key, {int defaultValue = 0}) => 
+      _getValueTyped<int>(key) ?? defaultValue;
 
   /// Gets double value from metadata
   Object? getDouble(String key) => _getValueTyped<double?>(key);
