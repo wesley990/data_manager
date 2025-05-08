@@ -49,10 +49,16 @@ DateTime? _tryParseDateTime(Object value) {
 /// Provides type-safe access to metadata values
 class TypedMetadata {
   final Map<String, Object> _meta;
-  final void Function(String key, Object? value, Type targetType, Object? error)? onConversionError;
+  final void Function(
+    String key,
+    Object? value,
+    Type targetType,
+    Object? error,
+  )?
+  onConversionError;
 
- TypedMetadata(this._meta, {this.onConversionError});
-  
+  TypedMetadata(this._meta, {this.onConversionError});
+
   /// Checks if metadata contains a key
   bool containsKey(String key) => _meta.containsKey(key);
 
@@ -99,30 +105,30 @@ class TypedMetadata {
   Object? _getValueTyped<T>(String key) {
     if (_cache.containsKey(key)) return _cache[key] as T?;
     if (!_meta.containsKey(key)) return null;
-    
+
     final value = _convertSafely<T>(_meta[key]);
     _cache[key] = value;
     return value;
   }
 
   /// Gets string value from metadata
-  Object? getString(String key, {String defaultValue = ''}) => 
-      _getValueTyped<String>(key) ?? defaultValue;
+  Object? getString(String key, {String defaultValue = ''}) =>
+      (_getValueTyped<String>(key) ?? defaultValue) as String;
 
   /// Gets integer value from metadata
-  Object? getInt(String key, {int defaultValue = 0}) => 
+  Object? getInt(String key, {int defaultValue = 0}) =>
       _getValueTyped<int>(key) ?? defaultValue;
 
   /// Gets double value from metadata
-  Object? getDouble(String key, {double? defaultValue}) => 
+  Object? getDouble(String key, {double? defaultValue}) =>
       _getValueTyped<double>(key) ?? defaultValue;
 
   /// Gets boolean value from metadata
-  Object? getBool(String key, {bool? defaultValue}) => 
+  Object? getBool(String key, {bool? defaultValue}) =>
       _getValueTyped<bool>(key) ?? defaultValue;
 
   /// Gets DateTime value from metadata
-  Object? getDateTime(String key, {DateTime? defaultValue}) => 
+  Object? getDateTime(String key, {DateTime? defaultValue}) =>
       _getValueTyped<DateTime>(key) ?? defaultValue;
 
   /// Gets typed list from metadata
