@@ -49,9 +49,10 @@ DateTime? _tryParseDateTime(Object value) {
 /// Provides type-safe access to metadata values
 class TypedMetadata {
   final Map<String, Object> _meta;
+  final void Function(String key, Object? value, Type targetType, Object? error)? onConversionError;
 
-  const TypedMetadata(this._meta);
-
+  const TypedMetadata(this._meta, {this.onConversionError});
+  
   /// Checks if metadata contains a key
   bool containsKey(String key) => _meta.containsKey(key);
 
