@@ -51,7 +51,7 @@ class TypedMetadata {
   final Map<String, Object> _meta;
   final void Function(String key, Object? value, Type targetType, Object? error)? onConversionError;
 
-  const TypedMetadata(this._meta, {this.onConversionError});
+ TypedMetadata(this._meta, {this.onConversionError});
   
   /// Checks if metadata contains a key
   bool containsKey(String key) => _meta.containsKey(key);
@@ -97,8 +97,12 @@ class TypedMetadata {
 
   /// Gets typed value from metadata
   Object? _getValueTyped<T>(String key) {
+    if (_cache.containsKey(key)) return _cache[key] as T?;
     if (!_meta.containsKey(key)) return null;
-    return _convertSafely<T>(_meta[key]);
+    
+    final value = _convertSafely<T>(_meta[key]);
+    _cache[key] = value;
+    return value;
   }
 
   /// Gets string value from metadata
@@ -187,6 +191,8 @@ class TypedMetadata {
     }
     return null;
   }
+
+  final Map<String, Object?> _cache = {};
 }
 
 @Freezed(genericArgumentFactories: true)
