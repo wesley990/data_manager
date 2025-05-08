@@ -156,6 +156,24 @@ class TypedMetadata {
     }
     return null;
   }
+
+  // Get nested metadata as another TypedMetadata
+  TypedMetadata? getNestedMetadata(String key) {
+    final value = _meta[key];
+    if (value is Map<String, Object>) {
+      return TypedMetadata(value);
+    }
+    return null;
+  }
+
+  // Try multiple keys in order until finding a value
+  Object? getFirstMatching<T>(List<String> keys) {
+    for (final key in keys) {
+      final value = _getValueTyped<T>(key);
+      if (value != null) return value;
+    }
+    return null;
+  }
 }
 
 @Freezed(genericArgumentFactories: true)
