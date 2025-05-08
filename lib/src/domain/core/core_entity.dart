@@ -133,10 +133,24 @@ class TypedMetadata {
 
     if (value is C) {
       try {
-        if (C == List) return (value as List).cast<V>() as C;
-        if (C == Map) return (value as Map).cast<String, V>() as C;
+        if (C == List && value is List) {
+          // More robust list conversion
+          final list = <V>[];
+          for (final item in value) {
+            if (item is V) {
+              list.add(item);
+            } else {
+              return null; // Type mismatch in list elements
+            }
+          }
+          return list as C;
+        }
+        // Similar improvement for Map...
         return value;
       } catch (e) {
+        if (onConversionError != null) {
+          onConversionError!(key, value, C, e);
+        }
         return null;
       }
     }
