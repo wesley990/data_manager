@@ -120,14 +120,14 @@ class TypedMetadata {
 
   /// Gets typed list from metadata
   List<R>? getListAs<R>(String key) =>
-      _getCollectionTyped<List, R>(key) as List<R>?;
+      _getCollectionTyped<List, R, Object>(key) as List<R>?;
 
   /// Gets typed map from metadata
-  Map<K, V>? getMapAs<K, V>(String key) =>
-      _getCollectionTyped<Map, V>(key) as Map<K, V>?;
+  Map<K, V>? getMapAs<K extends Object, V>(String key) =>
+      _getCollectionTyped<Map, V, K>(key) as Map<K, V>?;
 
   /// Handles collection types with error handling
-  Object? _getCollectionTyped<C, V>(String key) {
+  Object? _getCollectionTyped<C, V, K extends Object>(String key) {
     final value = _meta[key];
     if (!_meta.containsKey(key) || value == null) return null;
 
@@ -145,7 +145,17 @@ class TypedMetadata {
           }
           return list as C;
         }
-        // Similar improvement for Map...
+        if (C == Map && value is Map) {
+          final map = <K, V>{};
+          for (final entry in value.entries) {
+            if (entry.key is K && entry.value is V) {
+              map[entry.key as K] = entry.value as V;
+            } else {
+              return null; // Type mismatch in map elements
+            }
+          }
+          return map as C;
+        }
         return value;
       } catch (e) {
         if (onConversionError != null) {
