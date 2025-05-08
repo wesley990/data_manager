@@ -110,13 +110,16 @@ class TypedMetadata {
       _getValueTyped<int>(key) ?? defaultValue;
 
   /// Gets double value from metadata
-  Object? getDouble(String key) => _getValueTyped<double?>(key);
+  Object? getDouble(String key, {double? defaultValue}) => 
+      _getValueTyped<double>(key) ?? defaultValue;
 
   /// Gets boolean value from metadata
-  Object? getBool(String key) => _getValueTyped<bool?>(key);
+  Object? getBool(String key, {bool? defaultValue}) => 
+      _getValueTyped<bool>(key) ?? defaultValue;
 
   /// Gets DateTime value from metadata
-  Object? getDateTime(String key) => _getValueTyped<DateTime?>(key);
+  Object? getDateTime(String key, {DateTime? defaultValue}) => 
+      _getValueTyped<DateTime>(key) ?? defaultValue;
 
   /// Gets typed list from metadata
   List<R>? getListAs<R>(String key) =>
