@@ -199,6 +199,10 @@ class TypedMetadata {
   }
 
   final Map<String, Object?> _cache = {};
+
+  // Add to TypedMetadata
+  void clearCache() => _cache.clear();
+  void clearCacheEntry(String key) => _cache.remove(key);
 }
 
 @Freezed(genericArgumentFactories: true)
