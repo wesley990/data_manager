@@ -56,49 +56,57 @@ class TypedMetadata {
 
   /// Converts value to specified type with error handling
   /// Returns null if conversion fails
-  T? _convertSafely<T>(Object? value) {
-    try {
-      if (value == null) {
-        return null;
-      }
+  Object? _convertSafely<T>(Object? value, {String? key}) {
+    if (value == null) return null;
 
+    try {
       // Special handling for DateTime
       if (T == DateTime) {
         final dateTime = _tryParseDateTime(value);
-        if (dateTime != null) return dateTime as T;
-        throw FormatException('Invalid DateTime string: $value');
+        return dateTime as T?;
       }
 
       if (value is T) {
-        return value as T;
+        return value;
       }
 
-      throw TypeError();
+      // For debugging in development
+      assert(() {
+        print(
+            'TypedMetadata: Failed to convert ${value.runtimeType} to $T${key != null ? ' for key "$key"' : ''}');
+        return true;
+      }());
+
+      return null;
     } catch (e) {
+      assert(() {
+        print('TypedMetadata: Exception during conversion to $T: $e');
+        return true;
+      }());
       return null;
     }
   }
 
   /// Gets typed value from metadata
-  T? _getValueTyped<T>(String key) {
+  Object? _getValueTyped<T>(String key) {
     if (!_meta.containsKey(key)) return null;
     return _convertSafely<T>(_meta[key]);
   }
 
   /// Gets string value from metadata
-  String? getString(String key) => _getValueTyped<String?>(key);
+  Object? getString(String key) => _getValueTyped<String?>(key);
 
   /// Gets integer value from metadata
-  int? getInt(String key) => _getValueTyped<int?>(key);
+  Object? getInt(String key) => _getValueTyped<int?>(key);
 
   /// Gets double value from metadata
-  double? getDouble(String key) => _getValueTyped<double?>(key);
+  Object? getDouble(String key) => _getValueTyped<double?>(key);
 
   /// Gets boolean value from metadata
-  bool? getBool(String key) => _getValueTyped<bool?>(key);
+  Object? getBool(String key) => _getValueTyped<bool?>(key);
 
   /// Gets DateTime value from metadata
-  DateTime? getDateTime(String key) => _getValueTyped<DateTime?>(key);
+  Object? getDateTime(String key) => _getValueTyped<DateTime?>(key);
 
   /// Gets typed list from metadata
   List<R>? getListAs<R>(String key) =>
@@ -166,10 +174,10 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   TypedMetadata get typedMeta => TypedMetadata(meta);
 
   /// Gets typed value from metadata
-  R? getMetadataAs<R>(String key) => getMetadata<R>(key);
+  Object? getMetadataAs<R>(String key) => getMetadata<R>(key);
 
   /// Gets typed value from metadata
-  R? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
+  Object? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
 
   /// Gets raw value from metadata
   Object? getMetadataValue(String key) => meta[key];
@@ -180,7 +188,7 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   /// Gets typed metadata with default fallback
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
-  R getMetadataOrDefault<R>(String key, R defaultValue) {
+  Object? getMetadataOrDefault<R>(String key, R defaultValue) {
     return _getMetadataTyped<R>(key) ?? defaultValue;
   }
 
@@ -214,7 +222,7 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   }
 
   /// Gets typed value from metadata safely
-  R? _getMetadataTyped<R>(String key) {
+  Object? _getMetadataTyped<R>(String key) {
     if (!meta.containsKey(key)) return null;
     return typedMeta._convertSafely<R>(meta[key]);
   }
