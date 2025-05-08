@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../value_objects/enum_objects.dart';
 import '../value_objects/identity_value_objects.dart';
 import '../value_objects/user_action.dart';
+import 'dart:developer' as developer;
 
 part 'core_entity.freezed.dart';
 part 'core_entity.g.dart';
@@ -72,15 +73,21 @@ class TypedMetadata {
 
       // For debugging in development
       assert(() {
-        print(
-            'TypedMetadata: Failed to convert ${value.runtimeType} to $T${key != null ? ' for key "$key"' : ''}');
+        developer.log(
+          'Failed to convert ${value.runtimeType} to $T${key != null ? ' for key "$key"' : ''}',
+          name: 'TypedMetadata',
+        );
         return true;
       }());
 
       return null;
     } catch (e) {
       assert(() {
-        print('TypedMetadata: Exception during conversion to $T: $e');
+        developer.log(
+          'Exception during conversion to $T: $e',
+          name: 'TypedMetadata',
+          error: e,
+        );
         return true;
       }());
       return null;
