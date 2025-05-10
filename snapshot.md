@@ -29,7 +29,7 @@ Total Classes: 52
 Total Interfaces: 6
 Total Enums: 12
 Total Typedefs: 8
-Total Functions: 72
+Total Functions: 71
 
 Domain Components:
   Entities: 19
@@ -776,12 +776,6 @@ sealed class UserAction with _$UserActi...
   /// [key] - The metadata key to retrieve
   /// [R] - The target type to convert the value to
   /// Returns the value converted to type R or null if conversion fails
-  Object? getMetadataAs<R>(String key) => getMetadata<R>(key);
-
-  /// Gets typed value from metadata
-  /// [key] - The metadata key to retrieve
-  /// [R] - The target type to convert the value to
-  /// Returns the value converted to type R or null if conversion fails
   Object? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
 
   /// Gets raw value from metadata without type conversion
@@ -841,8 +835,6 @@ sealed class UserAction with _$UserActi...
 - `return null`
 - `final propertyValue` - Provides unified access to properties and metadata
   /// Properties take precedence over metadata with same key
-  /// Provides unified access to properties and metadata
-  /// Properties take precedence over metadata with same key
   operator [](String key) {
 - `return propertyValue`
 
@@ -879,12 +871,6 @@ sealed class UserAction with _$UserActi...
 
   /// Type-safe metadata accessor
   TypedMetadata get typedMeta => TypedMetadata(meta);
-
-  /// Gets typed value from metadata
-  /// [key] - The metadata key to retrieve
-  /// [R] - The target type to convert the value to
-  /// Returns the value converted to type R or null if conversion fails
-  Object? getMetadataAs<R>(String key) => getMetadata<R>(key);
 
   /// Gets typed value from metadata
   /// [key] - The metadata key to retrieve
@@ -929,8 +915,6 @@ sealed class UserAction with _$UserActi...
   Object? getProperty(String key)`
 - `switch(key)`
 - `if(propertyValue != null)` - Provides unified access to properties and metadata
-  /// Properties take precedence over metadata with same key
-  /// Provides unified access to properties and metadata
   /// Properties take precedence over metadata with same key
   operator [](String key) {
     final propertyValue = getProperty(key);
@@ -2883,19 +2867,19 @@ sealed class UserAction with _$UserActi...
       // Special handling for DateTime
       if (T == DateTime) {
 - `return value`
-- `return true`
+- `final lowered`
 - `return null`
-- `return true`
 - `return null`
-- `final value` - Gets typed value from metadata
+- `final cachedValue` - Gets typed value from metadata
   /// [key] - The metadata key to retrieve
   /// [T] - The target type to convert the value to
   /// Returns the value converted to type T or null if key doesn't exist or conversion fails
   Object? _getValueTyped<T>(String key) {
-    if (_cache.containsKey(key)) return _cache[key] as T?;
-    if (!_meta.containsKey(key)) return null;
+    // Check cache with type safety
+    if (_cache.containsKey(key)) {
+- `final value`
 - `return value`
-- `final value` - Gets string value from metadata 
+- `final value` - Gets string value from metadata
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
   /// Returns typed String value or the default value
@@ -2991,25 +2975,44 @@ sealed class UserAction with _$UserActi...
   /// Returns the converted value or null if conversion fails
   Object? _convertSafely<T>(Object? value, {String? key}) {
 - `if(value is T)`
-- `assert(()`
-- `assert(()`
-- `if(_cache.containsKey(key)) return _cache[key] as T?;
-    if (!_meta.containsKey(key)) return null;
+- `if(T == int && value is num)`
+- `if(T == double && value is num)`
+- `if(T == String)`
+- `if(T == bool && value is String)`
+- `if(lowered == 'true' || lowered == '1' || lowered == 'yes')`
+- `if(lowered == 'false' || lowered == '0' || lowered == 'no')`
+- `if(T == bool && value is num)`
+- `return(value != 0) as T;
+      }
+
+      // Log error in development and production
+      developer.log(
+        'Failed to convert ${value.runtimeType} to $T${key != null ? ' for key "$key"' : ''}',
+        name: 'TypedMetadata',
+      );
+
+      // Report error through callback if provided
+      if (onConversionError != null)`
+- `if(onConversionError != null)`
+- `if(_cache.containsKey(key))` - Gets typed value from metadata
+  /// [key] - The metadata key to retrieve
+  /// [T] - The target type to convert the value to
+  /// Returns the value converted to type T or null if key doesn't exist or conversion fails
+  Object? _getValueTyped<T>(String key) {
+    // Check cache with type safety
+- `if(cachedValue == null || cachedValue is T)`
+- `if(!_meta.containsKey(key)) return null;
 
     final value = _convertSafely<T>(_meta[key], key: key);
     _cache[key] = value;
     return value;
   }
 
-  /// Gets string value from metadata 
+  /// Gets string value from metadata
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
   /// Returns typed String value or the default value
-  String getString(String key, {String defaultValue = ''})` - Gets typed value from metadata
-  /// [key] - The metadata key to retrieve
-  /// [T] - The target type to convert the value to
-  /// Returns the value converted to type T or null if key doesn't exist or conversion fails
-  Object? _getValueTyped<T>(String key) {
+  String getString(String key, {String defaultValue = ''})`
 - `getInt(String key, {int defaultValue = 0})` - Gets integer value from metadata
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
@@ -4107,12 +4110,6 @@ sealed class OwnerData with _$OwnerData {
 
 **Signature:** `applyEvent(DomainEventModel event)`
 
-### `assert`
-
-**File:** `lib/src/domain/core/core_entity.dart`
-
-**Signature:** `assert(()`
-
 ### `build`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
@@ -4279,12 +4276,6 @@ enum EntityStage {
 
   /// Type-safe metadata accessor
   TypedMetadata get typedMeta => TypedMetadata(meta);
-
-  /// Gets typed value from metadata
-  /// [key] - The metadata key to retrieve
-  /// [R] - The target type to convert the value to
-  /// Returns the value converted to type R or null if conversion fails
-  Object? getMetadataAs<R>(String key) => getMetadata<R>(key);
 
   /// Gets typed value from metadata
   /// [key] - The metadata key to retrieve
@@ -7216,7 +7207,6 @@ No imports.
 - `UnimplementedError` - `lib/src/domain/events/domain_event.dart`
 - `UserAction` - `lib/src/domain/value_objects/user_action.dart`
 - `applyEvent` - `lib/src/domain/entities/entity_types.dart`
-- `assert` - `lib/src/domain/core/core_entity.dart`
 - `build` - `lib/src/domain/entities/entity_factory.dart`
 - `clearCacheEntry` - `lib/src/domain/core/core_entity.dart`
 - `constrainLockDuration` - `lib/src/domain/core/entity_config.dart`
