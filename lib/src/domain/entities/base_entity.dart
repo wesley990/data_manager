@@ -562,6 +562,8 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   /// Adds a child to a parent and updates both entities' hierarchy fields for consistency.
   ///
   /// Returns a Dart 3 record (updatedParent, updatedChild).
+  ///
+  /// Type parameter [T] must extend Object and represents the entity's data type.
   static (BaseEntityModel<T>, BaseEntityModel<T>) addChildAndUpdateChild<
     T extends Object
   >(BaseEntityModel<T> parent, BaseEntityModel<T> child) {
@@ -584,6 +586,8 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   /// Removes a child from a parent and updates both entities' hierarchy fields for consistency.
   ///
   /// Returns a Dart 3 record (updatedParent, updatedChild).
+  ///
+  /// Type parameter [T] must extend Object and represents the entity's data type.
   static (BaseEntityModel<T>, BaseEntityModel<T>) removeChildAndUpdateChild<
     T extends Object
   >(BaseEntityModel<T> parent, BaseEntityModel<T> child) {
