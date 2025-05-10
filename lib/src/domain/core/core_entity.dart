@@ -66,7 +66,7 @@ class TypedMetadata {
   /// [value] - The value to be converted to type T
   /// [key] - Optional key name for better error reporting
   /// Returns the converted value or null if conversion fails
-  Object? _convertSafely<T>(Object? value, {String? key}) {
+  T? _convertSafely<T>(Object? value, {String? key}) {
     if (value == null) return null;
 
     try {
@@ -78,7 +78,7 @@ class TypedMetadata {
 
       // Direct match
       if (value is T) {
-        return value;
+        return value as T;
       }
 
       // Basic type conversions
@@ -136,7 +136,7 @@ class TypedMetadata {
   /// [key] - The metadata key to retrieve
   /// [T] - The target type to convert the value to
   /// Returns the value converted to type T or null if key doesn't exist or conversion fails
-  Object? _getValueTyped<T>(String key) {
+  T? _getValueTyped<T>(String key) {
     // Check cache with type safety
     if (_cache.containsKey(key)) {
       final cachedValue = _cache[key];
@@ -159,28 +159,28 @@ class TypedMetadata {
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
   /// Returns typed String value or the default value
   String getString(String key, {String defaultValue = ''}) =>
-      (_getValueTyped<String>(key) ?? defaultValue) as String;
+      _getValueTyped<String>(key) ?? defaultValue;
 
   /// Gets integer value from metadata
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
   /// Returns typed int value or the default value
   int getInt(String key, {int defaultValue = 0}) =>
-      (_getValueTyped<int>(key) ?? defaultValue) as int;
+      _getValueTyped<int>(key) ?? defaultValue;
 
   /// Gets double value from metadata
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
   /// Returns typed double value or the default value
   double getDouble(String key, {double defaultValue = 0.0}) =>
-      (_getValueTyped<double>(key) ?? defaultValue) as double;
+      _getValueTyped<double>(key) ?? defaultValue;
 
   /// Gets boolean value from metadata
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
   /// Returns typed boolean value or the default value
   bool getBool(String key, {bool defaultValue = false}) =>
-      (_getValueTyped<bool>(key) ?? defaultValue) as bool;
+      _getValueTyped<bool>(key) ?? defaultValue;
 
   /// Gets DateTime value from metadata
   /// [key] - The metadata key to retrieve
@@ -188,7 +188,7 @@ class TypedMetadata {
   /// Returns typed DateTime value or the default value
   DateTime? getDateTime(String key, {DateTime? defaultValue}) {
     final value = _getValueTyped<DateTime>(key);
-    return (value != null) ? value as DateTime : defaultValue;
+    return value ?? defaultValue;
   }
 
   /// Gets typed list from metadata
@@ -210,7 +210,7 @@ class TypedMetadata {
   /// [C] - The collection type (List or Map)
   /// [V] - The value type (list elements or map values)
   /// [K] - The key type for maps
-  Object? _getCollectionTyped<C, V, K extends Object>(String key) {
+  C? _getCollectionTyped<C, V, K extends Object>(String key) {
     final value = _meta[key];
     if (!_meta.containsKey(key) || value == null) return null;
 
@@ -239,7 +239,7 @@ class TypedMetadata {
           }
           return map as C;
         }
-        return value;
+        return value as C;
       } catch (e) {
         if (onConversionError != null) {
           onConversionError!(key, value, C, e);
@@ -264,7 +264,7 @@ class TypedMetadata {
   /// Tries multiple keys in sequence until finding a non-null value
   /// [keys] - List of keys to try in order
   /// Returns the first matching value or null if no matches
-  Object? getFirstMatching<T>(List<String> keys) {
+  T? getFirstMatching<T>(List<String> keys) {
     for (final key in keys) {
       final value = _getValueTyped<T>(key);
       if (value != null) return value;
@@ -326,7 +326,7 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   /// [key] - The metadata key to retrieve
   /// [R] - The target type to convert the value to
   /// Returns the value converted to type R or null if conversion fails
-  Object? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
+  R? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
 
   /// Gets raw value from metadata without type conversion
   /// [key] - The metadata key to retrieve
@@ -341,7 +341,7 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   /// Gets typed metadata with default fallback
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
-  Object? getMetadataOrDefault<R>(String key, R defaultValue) {
+  R getMetadataOrDefault<R>(String key, R defaultValue) {
     return _getMetadataTyped<R>(key) ?? defaultValue;
   }
 
@@ -375,13 +375,13 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   }
 
   /// Gets typed value from metadata safely
-  Object? _getMetadataTyped<R>(String key) {
+  R? _getMetadataTyped<R>(String key) {
     if (!meta.containsKey(key)) return null;
     return typedMeta._convertSafely<R>(meta[key]);
   }
 
   /// Gets a core property by name
-  Object? getProperty(String key) {
+  dynamic getProperty(String key) {
     switch (key) {
       case 'id':
         return id;
@@ -412,7 +412,7 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
 
   /// Provides unified access to properties and metadata
   /// Properties take precedence over metadata with same key
-  operator [](String key) {
+  dynamic operator [](String key) {
     final propertyValue = getProperty(key);
     if (propertyValue != null) {
       return propertyValue;
