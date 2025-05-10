@@ -595,7 +595,7 @@ mixin _$EntityVersioning {
 ///   - 'keywords': `List<String>`
 ///   - 'category': String
 ///   - Add more as needed for your application
- Map<String, Object> get searchIndex;/// Event version counter
+ EntitySearchIndex get searchIndex;/// Event version counter
  int get eventVer;/// List of event IDs that haven't been processed
  List<String> get pendingEvents;/// Additional event-related metadata
 ///
@@ -603,7 +603,7 @@ mixin _$EntityVersioning {
 ///   - 'eventType': String
 ///   - 'eventSource': String
 ///   - Add more as needed for your application
- Map<String, Object> get eventMeta;/// Maximum number of history entries to maintain
+ EntityEventMeta get eventMeta;/// Maximum number of history entries to maintain
  int get historyLimit;/// Data format version
  int get dataVer;/// Structure version
  int get structVer;/// Last version identifier
@@ -640,7 +640,7 @@ abstract mixin class $EntityVersioningCopyWith<$Res>  {
   factory $EntityVersioningCopyWith(EntityVersioning value, $Res Function(EntityVersioning) _then) = _$EntityVersioningCopyWithImpl;
 @useResult
 $Res call({
- EntityMeta syncMeta, String? syncVer, Map<String, Object> searchIndex, int eventVer, List<String> pendingEvents, Map<String, Object> eventMeta, int historyLimit, int dataVer, int structVer, String? lastVer, String schemaVer, Map<String, int> verVectors
+ EntityMeta syncMeta, String? syncVer, EntitySearchIndex searchIndex, int eventVer, List<String> pendingEvents, EntityEventMeta eventMeta, int historyLimit, int dataVer, int structVer, String? lastVer, String schemaVer, Map<String, int> verVectors
 });
 
 
@@ -662,10 +662,10 @@ class _$EntityVersioningCopyWithImpl<$Res>
 syncMeta: null == syncMeta ? _self.syncMeta : syncMeta // ignore: cast_nullable_to_non_nullable
 as EntityMeta,syncVer: freezed == syncVer ? _self.syncVer : syncVer // ignore: cast_nullable_to_non_nullable
 as String?,searchIndex: null == searchIndex ? _self.searchIndex : searchIndex // ignore: cast_nullable_to_non_nullable
-as Map<String, Object>,eventVer: null == eventVer ? _self.eventVer : eventVer // ignore: cast_nullable_to_non_nullable
+as EntitySearchIndex,eventVer: null == eventVer ? _self.eventVer : eventVer // ignore: cast_nullable_to_non_nullable
 as int,pendingEvents: null == pendingEvents ? _self.pendingEvents : pendingEvents // ignore: cast_nullable_to_non_nullable
 as List<String>,eventMeta: null == eventMeta ? _self.eventMeta : eventMeta // ignore: cast_nullable_to_non_nullable
-as Map<String, Object>,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
+as EntityEventMeta,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
 as int,dataVer: null == dataVer ? _self.dataVer : dataVer // ignore: cast_nullable_to_non_nullable
 as int,structVer: null == structVer ? _self.structVer : structVer // ignore: cast_nullable_to_non_nullable
 as int,lastVer: freezed == lastVer ? _self.lastVer : lastVer // ignore: cast_nullable_to_non_nullable
@@ -682,7 +682,7 @@ as Map<String, int>,
 
 
 class _EntityVersioning extends EntityVersioning {
-  const _EntityVersioning({final  EntityMeta syncMeta = const {}, this.syncVer, final  Map<String, Object> searchIndex = const {}, this.eventVer = 0, final  List<String> pendingEvents = const [], final  Map<String, Object> eventMeta = const {}, this.historyLimit = EntityLimits.historyDefault, this.dataVer = 1, this.structVer = 1, this.lastVer, this.schemaVer = EntityDefaults.version, final  Map<String, int> verVectors = const {}}): _syncMeta = syncMeta,_searchIndex = searchIndex,_pendingEvents = pendingEvents,_eventMeta = eventMeta,_verVectors = verVectors,super._();
+  const _EntityVersioning({final  EntityMeta syncMeta = const {}, this.syncVer, final  EntitySearchIndex searchIndex = const {}, this.eventVer = 0, final  List<String> pendingEvents = const [], final  EntityEventMeta eventMeta = const {}, this.historyLimit = EntityLimits.historyDefault, this.dataVer = 1, this.structVer = 1, this.lastVer, this.schemaVer = EntityDefaults.version, final  Map<String, int> verVectors = const {}}): _syncMeta = syncMeta,_searchIndex = searchIndex,_pendingEvents = pendingEvents,_eventMeta = eventMeta,_verVectors = verVectors,super._();
   
 
 /// Metadata for synchronization purposes
@@ -712,14 +712,14 @@ class _EntityVersioning extends EntityVersioning {
 ///   - 'keywords': `List<String>`
 ///   - 'category': String
 ///   - Add more as needed for your application
- final  Map<String, Object> _searchIndex;
+ final  EntitySearchIndex _searchIndex;
 /// Search index for efficient queries
 ///
 /// Expected keys:
 ///   - 'keywords': `List<String>`
 ///   - 'category': String
 ///   - Add more as needed for your application
-@override@JsonKey() Map<String, Object> get searchIndex {
+@override@JsonKey() EntitySearchIndex get searchIndex {
   if (_searchIndex is EqualUnmodifiableMapView) return _searchIndex;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_searchIndex);
@@ -742,14 +742,14 @@ class _EntityVersioning extends EntityVersioning {
 ///   - 'eventType': String
 ///   - 'eventSource': String
 ///   - Add more as needed for your application
- final  Map<String, Object> _eventMeta;
+ final  EntityEventMeta _eventMeta;
 /// Additional event-related metadata
 ///
 /// Expected keys:
 ///   - 'eventType': String
 ///   - 'eventSource': String
 ///   - Add more as needed for your application
-@override@JsonKey() Map<String, Object> get eventMeta {
+@override@JsonKey() EntityEventMeta get eventMeta {
   if (_eventMeta is EqualUnmodifiableMapView) return _eventMeta;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_eventMeta);
@@ -805,7 +805,7 @@ abstract mixin class _$EntityVersioningCopyWith<$Res> implements $EntityVersioni
   factory _$EntityVersioningCopyWith(_EntityVersioning value, $Res Function(_EntityVersioning) _then) = __$EntityVersioningCopyWithImpl;
 @override @useResult
 $Res call({
- EntityMeta syncMeta, String? syncVer, Map<String, Object> searchIndex, int eventVer, List<String> pendingEvents, Map<String, Object> eventMeta, int historyLimit, int dataVer, int structVer, String? lastVer, String schemaVer, Map<String, int> verVectors
+ EntityMeta syncMeta, String? syncVer, EntitySearchIndex searchIndex, int eventVer, List<String> pendingEvents, EntityEventMeta eventMeta, int historyLimit, int dataVer, int structVer, String? lastVer, String schemaVer, Map<String, int> verVectors
 });
 
 
@@ -827,10 +827,10 @@ class __$EntityVersioningCopyWithImpl<$Res>
 syncMeta: null == syncMeta ? _self._syncMeta : syncMeta // ignore: cast_nullable_to_non_nullable
 as EntityMeta,syncVer: freezed == syncVer ? _self.syncVer : syncVer // ignore: cast_nullable_to_non_nullable
 as String?,searchIndex: null == searchIndex ? _self._searchIndex : searchIndex // ignore: cast_nullable_to_non_nullable
-as Map<String, Object>,eventVer: null == eventVer ? _self.eventVer : eventVer // ignore: cast_nullable_to_non_nullable
+as EntitySearchIndex,eventVer: null == eventVer ? _self.eventVer : eventVer // ignore: cast_nullable_to_non_nullable
 as int,pendingEvents: null == pendingEvents ? _self._pendingEvents : pendingEvents // ignore: cast_nullable_to_non_nullable
 as List<String>,eventMeta: null == eventMeta ? _self._eventMeta : eventMeta // ignore: cast_nullable_to_non_nullable
-as Map<String, Object>,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
+as EntityEventMeta,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
 as int,dataVer: null == dataVer ? _self.dataVer : dataVer // ignore: cast_nullable_to_non_nullable
 as int,structVer: null == structVer ? _self.structVer : structVer // ignore: cast_nullable_to_non_nullable
 as int,lastVer: freezed == lastVer ? _self.lastVer : lastVer // ignore: cast_nullable_to_non_nullable

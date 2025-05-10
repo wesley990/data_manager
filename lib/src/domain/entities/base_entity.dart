@@ -345,7 +345,7 @@ sealed class EntityVersioning with _$EntityVersioning {
     ///   - 'keywords': `List<String>`
     ///   - 'category': String
     ///   - Add more as needed for your application
-    @Default({}) Map<String, Object> searchIndex,
+    @Default({}) EntitySearchIndex searchIndex,
 
     /// Event version counter
     @Default(0) int eventVer,
@@ -359,7 +359,7 @@ sealed class EntityVersioning with _$EntityVersioning {
     ///   - 'eventType': String
     ///   - 'eventSource': String
     ///   - Add more as needed for your application
-    @Default({}) Map<String, Object> eventMeta,
+    @Default({}) EntityEventMeta eventMeta,
 
     /// Maximum number of history entries to maintain
     @Default(EntityLimits.historyDefault) int historyLimit,
@@ -693,6 +693,40 @@ extension TypeSafeEntityAccess<T extends Object> on BaseEntityModel<T> {
         hierarchyMeta: {...hierarchy.hierarchyMeta, key: value},
       ),
     );
+  }
+}
+
+/// Extension for type-safe access to EntityVersioning metadata
+extension TypeSafeVersioningAccess on EntityVersioning {
+  /// Gets a typed value from sync metadata
+  T? getSyncMeta<T>(String key) {
+    final value = syncMeta[key];
+    if (value is T) return value;
+    return null;
+  }
+
+  /// Gets a typed value from search index
+  T? getSearchIndex<T>(String key) {
+    final value = searchIndex[key];
+    if (value is T) return value;
+    return null;
+  }
+
+  /// Gets a typed value from event metadata
+  T? getEventMeta<T>(String key) {
+    final value = eventMeta[key];
+    if (value is T) return value;
+    return null;
+  }
+
+  /// Gets a version vector value
+  int? getVersionVector(String key) {
+    return verVectors[key];
+  }
+
+  /// Checks if a particular event ID is pending
+  bool isEventPending(String eventId) {
+    return pendingEvents.contains(eventId);
   }
 }
 
