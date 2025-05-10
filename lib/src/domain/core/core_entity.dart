@@ -76,29 +76,58 @@ class TypedMetadata {
         return dateTime as T?;
       }
 
+      // Direct match
       if (value is T) {
         return value;
       }
 
-      // For debugging in development
-      assert(() {
-        developer.log(
-          'Failed to convert ${value.runtimeType} to $T${key != null ? ' for key "$key"' : ''}',
-          name: 'TypedMetadata',
-        );
-        return true;
-      }());
+      // Basic type conversions
+      if (T == int && value is num) {
+        return value.toInt() as T;
+      }
+      if (T == double && value is num) {
+        return value.toDouble() as T;
+      }
+      if (T == String) {
+        return value.toString() as T;
+      }
+      if (T == bool && value is String) {
+        final lowered = value.toLowerCase();
+        if (lowered == 'true' || lowered == '1' || lowered == 'yes') {
+          return true as T;
+        }
+        if (lowered == 'false' || lowered == '0' || lowered == 'no') {
+          return false as T;
+        }
+      }
+      if (T == bool && value is num) {
+        return (value != 0) as T;
+      }
+
+      // Log error in development and production
+      developer.log(
+        'Failed to convert ${value.runtimeType} to $T${key != null ? ' for key "$key"' : ''}',
+        name: 'TypedMetadata',
+      );
+
+      // Report error through callback if provided
+      if (onConversionError != null) {
+        onConversionError!(key ?? '', value, T, null);
+      }
 
       return null;
     } catch (e) {
-      assert(() {
-        developer.log(
-          'Exception during conversion to $T: $e',
-          name: 'TypedMetadata',
-          error: e,
-        );
-        return true;
-      }());
+      developer.log(
+        'Exception during conversion to $T: $e',
+        name: 'TypedMetadata',
+        error: e,
+      );
+
+      // Report exception through callback if provided
+      if (onConversionError != null) {
+        onConversionError!(key ?? '', value, T, e);
+      }
+
       return null;
     }
   }
@@ -108,7 +137,16 @@ class TypedMetadata {
   /// [T] - The target type to convert the value to
   /// Returns the value converted to type T or null if key doesn't exist or conversion fails
   Object? _getValueTyped<T>(String key) {
-    if (_cache.containsKey(key)) return _cache[key] as T?;
+    // Check cache with type safety
+    if (_cache.containsKey(key)) {
+      final cachedValue = _cache[key];
+      if (cachedValue == null || cachedValue is T) {
+        return cachedValue as T?;
+      }
+      // Value exists but wrong type - clear cache and reconvert
+      _cache.remove(key);
+    }
+
     if (!_meta.containsKey(key)) return null;
 
     final value = _convertSafely<T>(_meta[key], key: key);
@@ -116,7 +154,7 @@ class TypedMetadata {
     return value;
   }
 
-  /// Gets string value from metadata 
+  /// Gets string value from metadata
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
   /// Returns typed String value or the default value
@@ -239,7 +277,7 @@ class TypedMetadata {
 
   /// Clears the entire type conversion cache
   void clearCache() => _cache.clear();
-  
+
   /// Clears a specific entry from the type conversion cache
   /// [key] - The metadata key whose cached value should be removed
   void clearCacheEntry(String key) => _cache.remove(key);
@@ -283,12 +321,6 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
 
   /// Type-safe metadata accessor
   TypedMetadata get typedMeta => TypedMetadata(meta);
-
-  /// Gets typed value from metadata
-  /// [key] - The metadata key to retrieve
-  /// [R] - The target type to convert the value to
-  /// Returns the value converted to type R or null if conversion fails
-  Object? getMetadataAs<R>(String key) => getMetadata<R>(key);
 
   /// Gets typed value from metadata
   /// [key] - The metadata key to retrieve
@@ -378,8 +410,6 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
     }
   }
 
-  /// Provides unified access to properties and metadata
-  /// Properties take precedence over metadata with same key
   /// Provides unified access to properties and metadata
   /// Properties take precedence over metadata with same key
   operator [](String key) {
