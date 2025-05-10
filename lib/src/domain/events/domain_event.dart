@@ -1,3 +1,12 @@
+// ========================================================================
+// FUTURE IMPLEMENTATION - DO NOT USE YET
+// ========================================================================
+// This domain event system is planned for phase 2 of development.
+// Current focus is on core entity model implementation.
+// This file is preserved for reference but should not be imported
+// by other code until formal implementation begins.
+// ========================================================================
+
 import 'package:data_manager/src/domain/value_objects/identity_value_objects.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -185,30 +194,6 @@ sealed class DomainEventModel with _$DomainEventModel {
       },
     );
   }
-
-  // TODO: Temporarily disabled validation events
-  /* 
-  factory DomainEventModel.validationPerformed({
-    required EventId id,
-    required EntityId entityId,
-    required String entityType,
-    required UserAction action,
-    required ValidationResult result,
-  }) {
-    return DomainEventModel(
-      id: id,
-      entityId: entityId,
-      entityType: entityType,
-      eventType: EventType.validated.name,
-      timestamp: action.timestamp,
-      initiator: action,
-      changes: {
-        'isValid': result.isValid,
-        'issues': result.issues,
-      },
-    );
-  }
-  */
 
   /// Schema validation
   bool hasValidSchema() {
