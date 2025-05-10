@@ -453,12 +453,13 @@ sealed class EntityConfig with _$EntityConfig {
   ///
   /// Returns a Map with property names as keys and a sub-map with 'this' and 'other' values
   /// for each property that differs. Returns an empty map if the configurations are identical.
-  Map<String, Map<String, Object>> compareWith(EntityConfig other) {
-    final differences = <String, Map<String, Object>>{};
+  /// The value types can be String, int, bool, or EntityPriority/EntityStage (as int indices).
+  Map<String, Map<String, dynamic>> compareWith(EntityConfig other) {
+    final differences = <String, Map<String, dynamic>>{};
 
     // Compare versions
     if (defaultVersion != other.defaultVersion) {
-      differences['version'] = {
+      differences['version'] = <String, String>{
         'this': defaultVersion,
         'other': other.defaultVersion,
       };
@@ -466,19 +467,19 @@ sealed class EntityConfig with _$EntityConfig {
 
     // Compare path limits
     if (maxPathLength != other.maxPathLength) {
-      differences['maxPathLength'] = {
+      differences['maxPathLength'] = <String, int>{
         'this': maxPathLength,
         'other': other.maxPathLength,
       };
     }
     if (maxPathSegment != other.maxPathSegment) {
-      differences['maxPathSegment'] = {
+      differences['maxPathSegment'] = <String, int>{
         'this': maxPathSegment,
         'other': other.maxPathSegment,
       };
     }
     if (maxHierarchyDepth != other.maxHierarchyDepth) {
-      differences['maxHierarchyDepth'] = {
+      differences['maxHierarchyDepth'] = <String, int>{
         'this': maxHierarchyDepth,
         'other': other.maxHierarchyDepth,
       };
@@ -486,13 +487,13 @@ sealed class EntityConfig with _$EntityConfig {
 
     // Compare history limits
     if (maxHistorySize != other.maxHistorySize) {
-      differences['maxHistorySize'] = {
+      differences['maxHistorySize'] = <String, int>{
         'this': maxHistorySize,
         'other': other.maxHistorySize,
       };
     }
     if (defaultHistorySize != other.defaultHistorySize) {
-      differences['defaultHistorySize'] = {
+      differences['defaultHistorySize'] = <String, int>{
         'this': defaultHistorySize,
         'other': other.defaultHistorySize,
       };
@@ -500,25 +501,25 @@ sealed class EntityConfig with _$EntityConfig {
 
     // Compare lock settings
     if (defaultLockTimeout != other.defaultLockTimeout) {
-      differences['defaultLockTimeout'] = {
+      differences['defaultLockTimeout'] = <String, int>{
         'this': defaultLockTimeout.inMilliseconds,
         'other': other.defaultLockTimeout.inMilliseconds,
       };
     }
     if (lockExtensionPeriod != other.lockExtensionPeriod) {
-      differences['lockExtensionPeriod'] = {
+      differences['lockExtensionPeriod'] = <String, int>{
         'this': lockExtensionPeriod.inMilliseconds,
         'other': other.lockExtensionPeriod.inMilliseconds,
       };
     }
     if (minLockDuration != other.minLockDuration) {
-      differences['minLockDuration'] = {
+      differences['minLockDuration'] = <String, int>{
         'this': minLockDuration.inMilliseconds,
         'other': other.minLockDuration.inMilliseconds,
       };
     }
     if (maxLockDuration != other.maxLockDuration) {
-      differences['maxLockDuration'] = {
+      differences['maxLockDuration'] = <String, int>{
         'this': maxLockDuration.inMilliseconds,
         'other': other.maxLockDuration.inMilliseconds,
       };
@@ -526,25 +527,25 @@ sealed class EntityConfig with _$EntityConfig {
 
     // Compare entity defaults
     if (defaultVersion != other.defaultVersion) {
-      differences['defaultVersion'] = {
+      differences['defaultVersion'] = <String, String>{
         'this': defaultVersion,
         'other': other.defaultVersion,
       };
     }
     if (defaultIsPublic != other.defaultIsPublic) {
-      differences['defaultIsPublic'] = {
+      differences['defaultIsPublic'] = <String, bool>{
         'this': defaultIsPublic,
         'other': other.defaultIsPublic,
       };
     }
     if (defaultPriority != other.defaultPriority) {
-      differences['defaultPriority'] = {
+      differences['defaultPriority'] = <String, int>{
         'this': defaultPriority.index,
         'other': other.defaultPriority.index,
       };
     }
     if (defaultStage != other.defaultStage) {
-      differences['defaultStage'] = {
+      differences['defaultStage'] = <String, int>{
         'this': defaultStage.index,
         'other': other.defaultStage.index,
       };
@@ -552,13 +553,13 @@ sealed class EntityConfig with _$EntityConfig {
 
     // Compare path settings
     if (pathSeparator != other.pathSeparator) {
-      differences['pathSeparator'] = {
+      differences['pathSeparator'] = <String, String>{
         'this': pathSeparator,
         'other': other.pathSeparator,
       };
     }
     if (invalidPathChars != other.invalidPathChars) {
-      differences['invalidPathChars'] = {
+      differences['invalidPathChars'] = <String, String>{
         'this': invalidPathChars,
         'other': other.invalidPathChars,
       };
