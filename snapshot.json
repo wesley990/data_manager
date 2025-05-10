@@ -1,764 +1,126 @@
 {
   "stats": {
-    "total_files": 22,
-    "total_classes": 75,
-    "total_interfaces": 10,
+    "total_files": 14,
+    "total_classes": 52,
+    "total_interfaces": 6,
     "total_enums": 12,
     "total_typedefs": 8,
-    "total_functions": 78,
-    "entities_count": 34,
-    "repositories_count": 6,
-    "services_count": 1,
+    "total_functions": 72,
+    "entities_count": 19,
+    "repositories_count": 0,
+    "services_count": 0,
     "value_objects_count": 14
   },
   "classes": {
-    "EventServiceProvider": {
-      "file": "lib/src/application/providers/event_service_provider.dart",
-      "methods": [
-        {
-          "name": "EventServiceProvider",
-          "params": "{EventMigrationService? migrationService})\n    : _migrationService = migrationService ?? EventMigrationService();\n\n  /// Extension method to allow DomainEventModel to use the migration service\n  /// without violating clean architecture principles\n  DomainEventModel migrateEventSchema(\n    DomainEventModel event,\n    String targetVersion,",
-          "doc": ""
-        }
-      ],
-      "properties": [
-        {
-          "name": "_migrationService",
-          "type": "EventMigrationService",
-          "doc": ""
-        }
-      ]
-    },
-    "EventMigrationService": {
-      "file": "lib/src/application/services/event_migration_service.dart",
-      "methods": [
-        {
-          "name": "migrateEventSchema",
-          "params": "DomainEventModel event,\n    String targetVersion,",
-          "doc": "Migrates a domain event to the target schema version\n  ///\n  /// This method implements the migration logic that was previously in the domain layer,\n  /// following Clean Architecture principles by keeping the implementation details\n  /// out of the domain layer."
-        },
-        {
-          "name": "if",
-          "params": "event.schemaVersion == targetVersion",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "!EventSchemaConfig.supportedVersions.contains(targetVersion)",
-          "doc": ""
-        },
-        {
-          "name": "UnsupportedError",
-          "params": "'Target schema version $targetVersion is not supported',\n      );\n    }\n\n    final migrationPath = event.getMigrationPath(targetVersion);\n    if (migrationPath == null",
-          "doc": ""
-        },
-        {
-          "name": "UnsupportedError",
-          "params": "'No migration path from ${event.schemaVersion} to $targetVersion',\n      );\n    }\n\n    // Track schema changes during migration\n    final schemaChanges = Map<String, Object>.from(event.schemaChanges ?? {});\n    schemaChanges['migratedFrom'] = event.schemaVersion;\n    schemaChanges['migratedTo'] = targetVersion;\n    schemaChanges['migratedAt'] = DateTime.now().toIso8601String();\n\n    // Apply version-specific migrations\n    var migratedEvent = _applyMigration(event, targetVersion);\n\n    // Update schema metadata\n    return migratedEvent.copyWith(\n      schemaVersion: targetVersion,\n      previousSchemaVersion: event.schemaVersion,\n      schemaChanges: schemaChanges,\n    );\n  }\n\n  /// Applies version-specific migration transformations\n  DomainEventModel _applyMigration(\n    DomainEventModel event,\n    String targetVersion,",
-          "doc": ""
-        },
-        {
-          "name": "switch",
-          "params": "'${event.schemaVersion}-$targetVersion'",
-          "doc": ""
-        },
-        {
-          "name": "_migrateFrom100To110",
-          "params": "event);\n\n      // Add more migration paths as needed\n\n      default:\n        // For now, if there's no specific migration needed, return as-is\n        return event;\n    }\n  }\n\n  /// Example migration implementation from v1.0.0 to v1.1.0\n  DomainEventModel _migrateFrom100To110(DomainEventModel event",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "migratedChanges.containsKey('oldFieldName')",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "migratedChanges.containsKey('dateField') &&\n        migratedChanges['dateField'] is String",
-          "doc": ""
-        }
-      ],
-      "properties": [
-        {
-          "name": "event",
-          "type": "return",
-          "doc": "Migrates a domain event to the target schema version\n  ///\n  /// This method implements the migration logic that was previously in the domain layer,\n  /// following Clean Architecture principles by keeping the implementation details\n  /// out of the domain layer.\n  DomainEventModel migrateEventSchema(\n    DomainEventModel event,\n    String targetVersion,\n  ) {\n    // Return the event as is if it's already at the target version\n    if (event.schemaVersion == targetVersion) {"
-        },
-        {
-          "name": "migrationPath",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "schemaChanges",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "migratedEvent",
-          "type": "var",
-          "doc": ""
-        },
-        {
-          "name": "event",
-          "type": "return",
-          "doc": "Applies version-specific migration transformations\n  DomainEventModel _applyMigration(\n    DomainEventModel event,\n    String targetVersion,\n  ) {\n    // Implementation of migration logic for different versions\n    switch ('${event.schemaVersion}-$targetVersion') {\n      // Example: Migrating from v1.0.0 to v1.1.0\n      case '1.0.0-1.1.0':\n        return _migrateFrom100To110(event);\n\n      // Add more migration paths as needed\n\n      default:\n        // For now, if there's no specific migration needed, return as-is"
-        },
-        {
-          "name": "migratedChanges",
-          "type": "final",
-          "doc": "Example migration implementation from v1.0.0 to v1.1.0\n  DomainEventModel _migrateFrom100To110(DomainEventModel event) {\n    // Deep copy the changes map to avoid mutation"
-        },
-        {
-          "name": "dateStr",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "date",
-          "type": "final",
-          "doc": ""
-        }
-      ]
-    },
-    "EventAwareRepository": {
-      "file": "lib/src/domain/repositories/event_aware_repository.dart",
-      "methods": [
-        {
-          "name": "EventAwareRepository",
-          "params": "this.eventStore);\n\n  @override\n  Future<BaseEntity<T>> operate(\n    OperationType type,\n    EntityId id, [\n    Map<String, Object>? params,\n  ]) async {\n    if (type == OperationType.read",
-          "doc": ""
-        },
-        {
-          "name": "_executeOperation",
-          "params": "type, id, params);\n    }\n\n    final action = UserAction(uid: 'system', timestamp: DateTime.now());\n    final event = _createEvent(type, id, params, action);\n    final result = await _executeOperation(type, id, params);\n    await eventStore.store(event);\n    return result;\n  }\n\n  Future<BaseEntity<T>> _executeOperation(\n    OperationType type,\n    EntityId id, [\n    Map<String, Object>? params,\n  ]) async {\n    // Implement concrete operation logic in subclasses\n    throw UnimplementedError();\n  }\n\n  // Protected methods to be implemented\n  Future<T> loadEntity(EntityId id);\n\n  // Event management methods\n  Stream<DomainEvent> watchEntityEvents(EntityId id",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "events.isEmpty",
-          "doc": ""
-        },
-        {
-          "name": "StateError",
-          "params": "'No events found for entity');\n    }\n\n    BaseEntity<T>? result;\n    for (final event in events",
-          "doc": ""
-        },
-        {
-          "name": "_createEvent",
-          "params": "OperationType type,\n    EntityId id,\n    Map<String, Object>? params,\n    UserAction initiator,",
-          "doc": ""
-        },
-        {
-          "name": "DomainEvent",
-          "params": "id: EventId(const Uuid().v4()),\n      entityId: id,\n      eventType: type.name,\n      timestamp: DateTime.now(),\n      initiator: initiator,\n      changes: params ?? {},\n      entityType: T.toString(),\n    );\n  }\n\n  @override\n  Future<List<BaseEntity<T>>> batchOperate(\n    OperationType type,\n    List<EntityId> ids, [\n    Map<String, Object>? params,\n  ]) async {\n    final action = UserAction(uid: 'system', timestamp: DateTime.now());\n    final events =\n        ids.map((id",
-          "doc": ""
-        },
-        {
-          "name": "replayEvents",
-          "params": "EntityId id, DateTime from, DateTime to) async {\n    final events = await eventStore.queryEvents(EventQuery(\n      entityId: id,\n      fromDate: from,\n      toDate: to,\n    ));\n\n    for (final event in events",
-          "doc": ""
-        }
-      ],
-      "properties": [
-        {
-          "name": "eventStore",
-          "type": "IEventStore",
-          "doc": ""
-        },
-        {
-          "name": "action",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "event",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "result",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "result",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "events",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "action",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "events",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "results",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "results",
-          "type": "return",
-          "doc": ""
-        },
-        {
-          "name": "events",
-          "type": "final",
-          "doc": ""
-        }
-      ]
-    },
-    "IEventStore": {
-      "file": "lib/src/domain/repositories/event/i_event_store.dart",
-      "methods": [],
-      "properties": []
-    },
-    "EventQuery": {
-      "file": "lib/src/domain/repositories/event/i_event_store.dart",
-      "methods": [
-        {
-          "name": "EventQuery",
-          "params": "{\n    this.entityId,\n    this.fromDate,\n    this.toDate,\n    this.eventType,\n    this.includeSystemEvents = false,\n    this.limit,\n    this.filters,\n    this.ascending = true,\n  });\n\n  EventQuery copyWith({\n    EntityId? entityId,\n    DateTime? fromDate,\n    DateTime? toDate,\n    String? eventType,\n    bool? includeSystemEvents,\n    int? limit,\n    Map<String, Object>? filters,\n    bool? ascending,\n  }",
-          "doc": ""
-        }
-      ],
-      "properties": [
-        {
-          "name": "includeSystemEvents",
-          "type": "bool",
-          "doc": ""
-        },
-        {
-          "name": "ascending",
-          "type": "bool",
-          "doc": ""
-        }
-      ]
-    },
-    "EventMetadata": {
-      "file": "lib/src/domain/repositories/event/i_event_store.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "versionVectors",
-          "type": "Map<String, int>",
-          "doc": ""
-        },
-        {
-          "name": "customData",
-          "type": "Map<String, Object>",
-          "doc": ""
-        },
-        {
-          "name": "timestamp",
-          "type": "DateTime",
-          "doc": ""
-        },
-        {
-          "name": "isSnapshot",
-          "type": "bool",
-          "doc": ""
-        }
-      ]
-    },
-    "IEntityRepository": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "includeRoot",
-          "type": "bool",
-          "doc": ""
-        },
-        {
-          "name": "recursive",
-          "type": "bool",
-          "doc": ""
-        },
-        {
-          "name": "includeDeleted",
-          "type": "bool",
-          "doc": ""
-        }
-      ]
-    },
-    "QueryParams": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "filters",
-          "type": "Map<String, Object>",
-          "doc": ""
-        },
-        {
-          "name": "sort",
-          "type": "Map<String, SortOrder>",
-          "doc": ""
-        },
-        {
-          "name": "include",
-          "type": "List<String>",
-          "doc": ""
-        },
-        {
-          "name": "withDeleted",
-          "type": "bool",
-          "doc": ""
-        }
-      ]
-    },
-    "SearchParams": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "query",
-          "type": "String",
-          "doc": ""
-        },
-        {
-          "name": "filters",
-          "type": "Map<String, Object>",
-          "doc": ""
-        },
-        {
-          "name": "limit",
-          "type": "int",
-          "doc": ""
-        },
-        {
-          "name": "fields",
-          "type": "List<String>",
-          "doc": ""
-        }
-      ]
-    },
-    "SyncParams": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "timeout",
-          "type": "Duration",
-          "doc": ""
-        },
-        {
-          "name": "force",
-          "type": "bool",
-          "doc": ""
-        },
-        {
-          "name": "collections",
-          "type": "List<String>",
-          "doc": ""
-        }
-      ]
-    },
-    "HierarchyParams": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "direction",
-          "type": "HierarchyDirection",
-          "doc": ""
-        },
-        {
-          "name": "includeDeleted",
-          "type": "bool",
-          "doc": ""
-        }
-      ]
-    },
-    "WatchParams": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "debounceTime",
-          "type": "Duration",
-          "doc": ""
-        }
-      ]
-    },
-    "HierarchyQueryParams": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "filter",
-          "type": "List<String>",
-          "doc": ""
-        },
-        {
-          "name": "metadata",
-          "type": "Map<String, Object>",
-          "doc": ""
-        }
-      ]
-    },
-    "VersionQuery": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "entityId",
-          "type": "EntityId",
-          "doc": ""
-        },
-        {
-          "name": "includeMetadata",
-          "type": "bool",
-          "doc": ""
-        }
-      ]
-    },
-    "PagedResult": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "items",
-          "type": "List<T>",
-          "doc": ""
-        },
-        {
-          "name": "total",
-          "type": "int",
-          "doc": ""
-        },
-        {
-          "name": "page",
-          "type": "int",
-          "doc": ""
-        },
-        {
-          "name": "pageSize",
-          "type": "int",
-          "doc": ""
-        }
-      ]
-    },
-    "SearchResult": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "items",
-          "type": "List<T>",
-          "doc": ""
-        },
-        {
-          "name": "totalCount",
-          "type": "int",
-          "doc": ""
-        },
-        {
-          "name": "searchTime",
-          "type": "double",
-          "doc": ""
-        },
-        {
-          "name": "facets",
-          "type": "Map<String, Object>",
-          "doc": ""
-        }
-      ]
-    },
-    "SyncResult": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "stats",
-          "type": "Map<String, Object>",
-          "doc": ""
-        },
-        {
-          "name": "errors",
-          "type": "List<String>",
-          "doc": ""
-        }
-      ]
-    },
-    "SyncProgress": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "total",
-          "type": "int",
-          "doc": ""
-        },
-        {
-          "name": "current",
-          "type": "int",
-          "doc": ""
-        },
-        {
-          "name": "status",
-          "type": "String",
-          "doc": ""
-        },
-        {
-          "name": "percentage",
-          "type": "double",
-          "doc": ""
-        }
-      ]
-    },
-    "LockState": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "isLocked",
-          "type": "bool",
-          "doc": ""
-        },
-        {
-          "name": "attemptCount",
-          "type": "int",
-          "doc": ""
-        },
-        {
-          "name": "metadata",
-          "type": "Map<String, dynamic>",
-          "doc": ""
-        }
-      ]
-    },
-    "EntityAuditReport": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "modifications",
-          "type": "List<UserAction>",
-          "doc": ""
-        },
-        {
-          "name": "accesses",
-          "type": "List<UserAction>",
-          "doc": ""
-        },
-        {
-          "name": "operationCounts",
-          "type": "Map<String, int>",
-          "doc": ""
-        },
-        {
-          "name": "generatedAt",
-          "type": "DateTime",
-          "doc": ""
-        }
-      ]
-    },
-    "EntityRelation": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [],
-      "properties": [
-        {
-          "name": "type",
-          "type": "String",
-          "doc": ""
-        },
-        {
-          "name": "sourceId",
-          "type": "EntityId",
-          "doc": ""
-        },
-        {
-          "name": "targetId",
-          "type": "EntityId",
-          "doc": ""
-        },
-        {
-          "name": "createdAt",
-          "type": "DateTime",
-          "doc": ""
-        },
-        {
-          "name": "createdBy",
-          "type": "UserAction",
-          "doc": ""
-        },
-        {
-          "name": "metadata",
-          "type": "Map<String, Object>",
-          "doc": ""
-        }
-      ]
-    },
-    "AggregateRepositoryBase": {
-      "file": "lib/src/domain/repositories/aggregate/aggregate_repository_base.dart",
-      "methods": [
-        {
-          "name": "AggregateRepositoryBase",
-          "params": "this._eventStore);\n\n  Future<T> getById(EntityId id) async {\n    final events = await _eventStore.getEvents(id);\n    if (events.isEmpty) throw EntityNotFoundException(id);\n\n    return reconstituteFromEvents(events);\n  }\n\n  Future<void> save(T aggregate) async {\n    await _saveAggregate(aggregate);\n    await _publishPendingEvents(aggregate.pendingEvents);\n  }\n\n  // Template methods\n  Future<T> reconstituteFromEvents(List<DomainEvent> events);\n  Future<void> _saveAggregate(T aggregate);\n  Future<Map<String, BaseEntity>> loadRelatedEntities(T aggregate);\n\n  Future<void> _publishPendingEvents(List<String> eventIds) async {\n    for (final eventId in eventIds",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "event.isNotEmpty",
-          "doc": ""
-        }
-      ],
-      "properties": [
-        {
-          "name": "_eventStore",
-          "type": "IEventStore",
-          "doc": ""
-        },
-        {
-          "name": "events",
-          "type": "final",
-          "doc": ""
-        },
-        {
-          "name": "event",
-          "type": "final",
-          "doc": ""
-        }
-      ]
-    },
-    "EntityNotFoundException": {
-      "file": "lib/src/domain/repositories/aggregate/aggregate_repository_base.dart",
-      "methods": [
-        {
-          "name": "EntityNotFoundException",
-          "params": "this.id);\n\n  @override\n  String toString(",
-          "doc": ""
-        }
-      ],
-      "properties": [
-        {
-          "name": "id",
-          "type": "EntityId",
-          "doc": ""
-        }
-      ]
-    },
-    "EntityCreateConfig": {
+    "EntityCreationConfig": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "methods": [],
       "properties": [
         {
           "name": "name",
           "type": "String",
-          "doc": ""
+          "doc": "User-provided name for the entity"
         },
         {
           "name": "user",
           "type": "AuthUser",
-          "doc": ""
+          "doc": "User creating the entity"
         },
         {
           "name": "data",
           "type": "T",
-          "doc": ""
+          "doc": "Type-specific payload data"
         }
       ]
     },
-    "EntityCloneConfig": {
+    "EntityCloningConfig": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "methods": [],
       "properties": [
         {
           "name": "source",
           "type": "BaseEntityModel<T>",
-          "doc": ""
+          "doc": "Source entity to clone"
         },
         {
           "name": "user",
           "type": "AuthUser",
-          "doc": ""
+          "doc": "User performing the cloning operation"
         }
       ]
     },
-    "EntityBuilder": {
+    "EntityCreationBuilder": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "methods": [
         {
           "name": "withName",
           "params": "String name",
-          "doc": ""
+          "doc": "Sets the name for the entity"
         },
         {
           "name": "withUser",
           "params": "AuthUser user",
-          "doc": ""
+          "doc": "Sets the user creating the entity"
         },
         {
           "name": "withData",
           "params": "T data",
-          "doc": ""
+          "doc": "Sets the type-specific payload data"
         },
         {
           "name": "withDescription",
           "params": "String description",
-          "doc": ""
+          "doc": "Sets the description for the entity"
         },
         {
           "name": "withParentPath",
           "params": "String parentPath",
-          "doc": ""
+          "doc": "Sets the parent path in the entity hierarchy"
         },
         {
           "name": "withParentId",
           "params": "EntityId parentId",
-          "doc": ""
+          "doc": "Sets the direct parent entity ID"
         },
         {
           "name": "withAncestors",
           "params": "List<EntityId> ancestors",
-          "doc": ""
+          "doc": "Sets the list of ancestor entity IDs"
         },
         {
           "name": "withMeta",
           "params": "Map<String, Object> meta",
-          "doc": ""
+          "doc": "Sets custom metadata key-value pairs"
         },
         {
           "name": "withTags",
           "params": "List<String> tags",
-          "doc": ""
+          "doc": "Sets searchable tags"
         },
         {
           "name": "withLabels",
           "params": "Map<String, String> labels",
-          "doc": ""
+          "doc": "Sets categorization labels"
         },
         {
           "name": "withPriority",
           "params": "EntityPriority priority",
-          "doc": ""
+          "doc": "Sets the entity importance level"
         },
         {
           "name": "withStage",
           "params": "EntityStage stage",
-          "doc": ""
+          "doc": "Sets the workflow stage"
         },
         {
           "name": "withExpiryDate",
           "params": "DateTime expiryDate",
-          "doc": ""
+          "doc": "Sets the expiry date for the entity"
         },
         {
           "name": "isPublic",
           "params": "bool isPublic",
-          "doc": ""
+          "doc": "Sets whether the entity is publicly accessible"
         },
         {
           "name": "build",
@@ -785,72 +147,72 @@
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets the name for the entity\n  EntityCreationBuilder<T> withName(String name) {\n    _name = name;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets the user creating the entity\n  EntityCreationBuilder<T> withUser(AuthUser user) {\n    _user = user;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets the type-specific payload data\n  EntityCreationBuilder<T> withData(T data) {\n    _data = data;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets the description for the entity\n  EntityCreationBuilder<T> withDescription(String description) {\n    _description = description;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets the parent path in the entity hierarchy\n  EntityCreationBuilder<T> withParentPath(String parentPath) {\n    _parentPath = parentPath;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets the direct parent entity ID\n  EntityCreationBuilder<T> withParentId(EntityId parentId) {\n    _parentId = parentId;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets the list of ancestor entity IDs\n  EntityCreationBuilder<T> withAncestors(List<EntityId> ancestors) {\n    _ancestors = ancestors;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets custom metadata key-value pairs\n  EntityCreationBuilder<T> withMeta(Map<String, Object> meta) {\n    _meta = meta;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets searchable tags\n  EntityCreationBuilder<T> withTags(List<String> tags) {\n    _tags = tags;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets categorization labels\n  EntityCreationBuilder<T> withLabels(Map<String, String> labels) {\n    _labels = labels;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets the entity importance level\n  EntityCreationBuilder<T> withPriority(EntityPriority priority) {\n    _priority = priority;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets the workflow stage\n  EntityCreationBuilder<T> withStage(EntityStage stage) {\n    _stage = stage;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets the expiry date for the entity\n  EntityCreationBuilder<T> withExpiryDate(DateTime expiryDate) {\n    _expiryDate = expiryDate;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets whether the entity is publicly accessible\n  EntityCreationBuilder<T> isPublic(bool isPublic) {\n    _isPublic = isPublic;"
         },
         {
           "name": "config",
@@ -859,43 +221,43 @@
         }
       ]
     },
-    "EntityCloneBuilder": {
+    "EntityCloningBuilder": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "methods": [
         {
           "name": "fromSource",
           "params": "BaseEntityModel<T> source",
-          "doc": ""
+          "doc": "Sets the source entity to clone"
         },
         {
           "name": "withUser",
           "params": "AuthUser user",
-          "doc": ""
+          "doc": "Sets the user performing the clone operation"
         },
         {
           "name": "withName",
           "params": "String newName",
-          "doc": ""
+          "doc": "Sets the name for the cloned entity"
         },
         {
           "name": "withPath",
           "params": "String newPath",
-          "doc": ""
+          "doc": "Sets the path for the cloned entity"
         },
         {
           "name": "withMeta",
           "params": "Map<String, Object> newMeta",
-          "doc": ""
+          "doc": "Sets custom metadata for the cloned entity"
         },
         {
           "name": "withLabels",
           "params": "Map<String, String> newLabels",
-          "doc": ""
+          "doc": "Sets labels for the cloned entity"
         },
         {
           "name": "withTags",
           "params": "List<String> newTags",
-          "doc": ""
+          "doc": "Sets tags for the cloned entity"
         },
         {
           "name": "build",
@@ -917,37 +279,37 @@
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets the source entity to clone\n  EntityCloningBuilder<T> fromSource(BaseEntityModel<T> source) {\n    _source = source;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets the user performing the clone operation\n  EntityCloningBuilder<T> withUser(AuthUser user) {\n    _user = user;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets the name for the cloned entity\n  EntityCloningBuilder<T> withName(String newName) {\n    _newName = newName;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets the path for the cloned entity\n  EntityCloningBuilder<T> withPath(String newPath) {\n    _newPath = newPath;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets custom metadata for the cloned entity\n  EntityCloningBuilder<T> withMeta(Map<String, Object> newMeta) {\n    _newMeta = newMeta;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets labels for the cloned entity\n  EntityCloningBuilder<T> withLabels(Map<String, String> newLabels) {\n    _newLabels = newLabels;"
         },
         {
           "name": "this",
           "type": "return",
-          "doc": ""
+          "doc": "Sets tags for the cloned entity\n  EntityCloningBuilder<T> withTags(List<String> newTags) {\n    _newTags = newTags;"
         },
         {
           "name": "config",
@@ -962,7 +324,7 @@
         {
           "name": "if",
           "params": "!_validTypes.contains(T)",
-          "doc": "Valid entity types that can be created with this factory\n  static final _validTypes = <Type>{\n    OwnerModel,\n    SiteModel,\n    EquipmentModel,\n    VendorModel,\n    PersonnelModel,\n  };\n\n  /// Creates a new entity from the provided configuration.\n  ///\n  /// For a more fluent API, consider using [EntityBuilder] instead.\n  ///\n  /// Example with builder pattern:\n  /// ```dart\n  /// final entity = EntityBuilder<SiteModel>()\n  ///   .withName('Site Name')\n  ///   .withUser(currentUser)\n  ///   .withData(siteData)\n  ///   // ... more properties ...\n  ///   .build();\n  /// ```\n  ///\n  /// @param config The configuration containing all entity parameters\n  /// @return A new entity with the specified configuration\n  /// @throws ArgumentError if an invalid type is provided\n  /// @throws PathValidationException if the provided path is invalid\n  /// @throws HierarchyValidationException if a circular reference is detected\n  static BaseEntityModel<T> create<T extends Object>(\n    EntityCreateConfig<T> config,\n  ) {"
+          "doc": "Valid entity types that can be created with this factory\n  static final _validTypes = <Type>{\n    OwnerData,\n    SiteData,\n    EquipmentData,\n    VendorData,\n    PersonnelData,\n  };\n\n  /// Creates a new entity from the provided configuration.\n  ///\n  /// For a more fluent API, consider using [EntityCreationBuilder] instead.\n  ///\n  /// Example with builder pattern:\n  /// ```dart\n  /// final entity = EntityCreationBuilder<SiteModel>()\n  ///   .withName('Site Name')\n  ///   .withUser(currentUser)\n  ///   .withData(siteData)\n  ///   // ... more properties ...\n  ///   .build();\n  /// ```\n  ///\n  /// @param config The configuration containing all entity parameters\n  /// @return A new entity with the specified configuration\n  /// @throws ArgumentError if an invalid type is provided\n  /// @throws PathValidationException if the provided path is invalid\n  /// @throws HierarchyValidationException if a circular reference is detected\n  static BaseEntityModel<T> create<T extends Object>(\n    EntityCreationConfig<T> config,\n  ) {"
         },
         {
           "name": "ArgumentError",
@@ -989,7 +351,7 @@
         {
           "name": "now",
           "type": "final",
-          "doc": "Creates a new entity from the provided configuration.\n  ///\n  /// For a more fluent API, consider using [EntityBuilder] instead.\n  ///\n  /// Example with builder pattern:\n  /// ```dart\n  /// final entity = EntityBuilder<SiteModel>()\n  ///   .withName('Site Name')\n  ///   .withUser(currentUser)\n  ///   .withData(siteData)\n  ///   // ... more properties ...\n  ///   .build();\n  /// ```\n  ///\n  /// @param config The configuration containing all entity parameters\n  /// @return A new entity with the specified configuration\n  /// @throws ArgumentError if an invalid type is provided\n  /// @throws PathValidationException if the provided path is invalid\n  /// @throws HierarchyValidationException if a circular reference is detected\n  static BaseEntityModel<T> create<T extends Object>(\n    EntityCreateConfig<T> config,\n  ) {\n    if (!_validTypes.contains(T)) {\n      throw ArgumentError('Invalid type: ${T.toString()}');\n    }"
+          "doc": "Creates a new entity from the provided configuration.\n  ///\n  /// For a more fluent API, consider using [EntityCreationBuilder] instead.\n  ///\n  /// Example with builder pattern:\n  /// ```dart\n  /// final entity = EntityCreationBuilder<SiteModel>()\n  ///   .withName('Site Name')\n  ///   .withUser(currentUser)\n  ///   .withData(siteData)\n  ///   // ... more properties ...\n  ///   .build();\n  /// ```\n  ///\n  /// @param config The configuration containing all entity parameters\n  /// @return A new entity with the specified configuration\n  /// @throws ArgumentError if an invalid type is provided\n  /// @throws PathValidationException if the provided path is invalid\n  /// @throws HierarchyValidationException if a circular reference is detected\n  static BaseEntityModel<T> create<T extends Object>(\n    EntityCreationConfig<T> config,\n  ) {\n    if (!_validTypes.contains(T)) {\n      throw ArgumentError('Invalid type: ${T.toString()}');\n    }"
         },
         {
           "name": "userAction",
@@ -1019,7 +381,7 @@
         {
           "name": "now",
           "type": "final",
-          "doc": "Creates a clone of an existing entity with optional modifications.\n  ///\n  /// For a more fluent API, consider using [EntityCloneBuilder] instead.\n  ///\n  /// Example with builder pattern:\n  /// ```dart\n  /// final clonedEntity = EntityCloneBuilder<SiteModel>()\n  ///   .fromSource(existingEntity)\n  ///   .withUser(currentUser)\n  ///   .withName('New Name')\n  ///   .build();\n  /// ```\n  ///\n  /// @param config The configuration for cloning, including source entity and overrides\n  /// @return A new entity based on the source with applied modifications\n  static BaseEntityModel<T> clone<T extends Object>(\n    EntityCloneConfig<T> config,\n  ) {"
+          "doc": "Creates a clone of an existing entity with optional modifications.\n  ///\n  /// For a more fluent API, consider using [EntityCloningBuilder] instead.\n  ///\n  /// Example with builder pattern:\n  /// ```dart\n  /// final clonedEntity = EntityCloningBuilder<SiteModel>()\n  ///   .fromSource(existingEntity)\n  ///   .withUser(currentUser)\n  ///   .withName('New Name')\n  ///   .build();\n  /// ```\n  ///\n  /// @param config The configuration for cloning, including source entity and overrides\n  /// @return A new entity based on the source with applied modifications\n  static BaseEntityModel<T> clone<T extends Object>(\n    EntityCloningConfig<T> config,\n  ) {"
         },
         {
           "name": "userAction",
@@ -1437,12 +799,7 @@
         },
         {
           "name": "DomainEventModel",
-          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.hierarchyChanged.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: {\n        'oldParentId': oldParentId?.value ?? '',\n        'newParentId': newParentId?.value ?? '',\n      },\n    );\n  }\n\n  // TODO: Temporarily disabled validation events\n  /* \n  factory DomainEventModel.validationPerformed({\n    required EventId id,\n    required EntityId entityId,\n    required String entityType,\n    required UserAction action,\n    required ValidationResult result,\n  }",
-          "doc": ""
-        },
-        {
-          "name": "DomainEventModel",
-          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.validated.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: {\n        'isValid': result.isValid,\n        'issues': result.issues,\n      },\n    );\n  }\n  */\n\n  /// Schema validation\n  bool hasValidSchema(",
+          "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.hierarchyChanged.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: {\n        'oldParentId': oldParentId?.value ?? '',\n        'newParentId': newParentId?.value ?? '',\n      },\n    );\n  }\n\n  /// Schema validation\n  bool hasValidSchema(",
           "doc": ""
         },
         {
@@ -1752,44 +1109,119 @@
       "file": "lib/src/domain/core/core_entity.dart",
       "methods": [
         {
-          "name": "TypedMetadata",
-          "params": "this._meta);\n\n  /// Checks if metadata contains a key\n  bool containsKey(String key",
+          "name": "Function",
+          "params": "String key,\n    Object? value,\n    Type targetType,\n    Object? error,\n  )?\n  onConversionError;\n\n  TypedMetadata(this._meta, {this.onConversionError});\n\n  /// Checks if metadata contains a key\n  bool containsKey(String key",
           "doc": ""
         },
         {
           "name": "if",
-          "params": "value == null",
-          "doc": "Converts value to specified type with error handling\n  /// Returns null if conversion fails\n  T? _convertSafely<T>(Object? value) {\n    try {"
+          "params": "value == null) return null;\n\n    try {\n      // Special handling for DateTime\n      if (T == DateTime",
+          "doc": "Converts value to specified type with error handling\n  /// [value] - The value to be converted to type T\n  /// [key] - Optional key name for better error reporting\n  /// Returns the converted value or null if conversion fails\n  Object? _convertSafely<T>(Object? value, {String? key}) {"
         },
         {
           "name": "if",
-          "params": "T == DateTime",
+          "params": "value is T",
+          "doc": ""
+        },
+        {
+          "name": "assert",
+          "params": "(",
+          "doc": ""
+        },
+        {
+          "name": "assert",
+          "params": "(",
           "doc": ""
         },
         {
           "name": "if",
-          "params": "dateTime != null) return dateTime as T;\n        throw FormatException('Invalid DateTime string: $value');\n      }\n\n      if (value is T",
-          "doc": ""
+          "params": "_cache.containsKey(key)) return _cache[key] as T?;\n    if (!_meta.containsKey(key)) return null;\n\n    final value = _convertSafely<T>(_meta[key], key: key);\n    _cache[key] = value;\n    return value;\n  }\n\n  /// Gets string value from metadata \n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  /// Returns typed String value or the default value\n  String getString(String key, {String defaultValue = ''}",
+          "doc": "Gets typed value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [T] - The target type to convert the value to\n  /// Returns the value converted to type T or null if key doesn't exist or conversion fails\n  Object? _getValueTyped<T>(String key) {"
         },
         {
-          "name": "TypeError",
-          "params": ");\n    } catch (e",
-          "doc": ""
+          "name": "getInt",
+          "params": "String key, {int defaultValue = 0}",
+          "doc": "Gets integer value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  /// Returns typed int value or the default value"
         },
         {
-          "name": "if",
-          "params": "!_meta.containsKey(key)) return null;\n    return _convertSafely<T>(_meta[key]);\n  }\n\n  /// Gets string value from metadata\n  String? getString(String key",
-          "doc": "Gets typed value from metadata\n  T? _getValueTyped<T>(String key) {"
+          "name": "getDouble",
+          "params": "String key, {double defaultValue = 0.0}",
+          "doc": "Gets double value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  /// Returns typed double value or the default value"
+        },
+        {
+          "name": "getBool",
+          "params": "String key, {bool defaultValue = false}",
+          "doc": "Gets boolean value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  /// Returns typed boolean value or the default value"
+        },
+        {
+          "name": "return",
+          "params": "value != null) ? value as DateTime : defaultValue;\n  }\n\n  /// Gets typed list from metadata\n  /// [key] - The metadata key containing a List to be converted\n  /// Returns a strongly-typed list or null if conversion fails\n  List<R>? getListAs<R>(String key",
+          "doc": "Gets DateTime value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  /// Returns typed DateTime value or the default value\n  DateTime? getDateTime(String key, {DateTime? defaultValue}) {\n    final value = _getValueTyped<DateTime>(key);"
         },
         {
           "name": "if",
           "params": "!_meta.containsKey(key) || value == null) return null;\n\n    if (value is C",
-          "doc": "Gets integer value from metadata\n  int? getInt(String key) => _getValueTyped<int?>(key);\n\n  /// Gets double value from metadata\n  double? getDouble(String key) => _getValueTyped<double?>(key);\n\n  /// Gets boolean value from metadata\n  bool? getBool(String key) => _getValueTyped<bool?>(key);\n\n  /// Gets DateTime value from metadata\n  DateTime? getDateTime(String key) => _getValueTyped<DateTime?>(key);\n\n  /// Gets typed list from metadata\n  List<R>? getListAs<R>(String key) =>\n      _getCollectionTyped<List, R>(key) as List<R>?;\n\n  /// Gets typed map from metadata\n  Map<K, V>? getMapAs<K, V>(String key) =>\n      _getCollectionTyped<Map, V>(key) as Map<K, V>?;\n\n  /// Handles collection types with error handling\n  Object? _getCollectionTyped<C, V>(String key) {\n    final value = _meta[key];"
+          "doc": "Gets typed map from metadata\n  /// [key] - The metadata key containing a Map to be converted\n  /// [K] - The key type for the map (must be an Object)\n  /// [V] - The value type for the map\n  /// Returns a strongly-typed map or null if conversion fails\n  Map<K, V>? getMapAs<K extends Object, V>(String key) =>\n      _getCollectionTyped<Map, V, K>(key) as Map<K, V>?;\n\n  /// Handles collection types with error handling\n  /// Ensures all elements match the expected type\n  /// [C] - The collection type (List or Map)\n  /// [V] - The value type (list elements or map values)\n  /// [K] - The key type for maps\n  Object? _getCollectionTyped<C, V, K extends Object>(String key) {\n    final value = _meta[key];"
         },
         {
           "name": "if",
-          "params": "C == List) return (value as List).cast<V>() as C;\n        if (C == Map) return (value as Map).cast<String, V>() as C;\n        return value;\n      } catch (e",
+          "params": "C == List && value is List",
           "doc": ""
+        },
+        {
+          "name": "for",
+          "params": "final item in value",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "item is V",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "C == Map && value is Map",
+          "doc": ""
+        },
+        {
+          "name": "for",
+          "params": "final entry in value.entries",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "entry.key is K && entry.value is V",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "onConversionError != null",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "value is Map<String, Object>",
+          "doc": "Gets nested metadata as another TypedMetadata instance\n  /// [key] - The key containing a Map that should be wrapped in TypedMetadata\n  /// Returns null if the value is not a Map`<String, Object>`\n  TypedMetadata? getNestedMetadata(String key) {\n    final value = _meta[key];"
+        },
+        {
+          "name": "TypedMetadata",
+          "params": "value);\n    }\n    return null;\n  }\n\n  /// Tries multiple keys in sequence until finding a non-null value\n  /// [keys] - List of keys to try in order\n  /// Returns the first matching value or null if no matches\n  Object? getFirstMatching<T>(List<String> keys",
+          "doc": ""
+        },
+        {
+          "name": "for",
+          "params": "final key in keys",
+          "doc": ""
+        },
+        {
+          "name": "if",
+          "params": "value != null) return value;\n    }\n    return null;\n  }\n\n  /// Internal cache for previously converted values\n  final Map<String, Object?> _cache = {};\n\n  /// Clears the entire type conversion cache\n  void clearCache(",
+          "doc": ""
+        },
+        {
+          "name": "clearCacheEntry",
+          "params": "String key",
+          "doc": "Clears a specific entry from the type conversion cache\n  /// [key] - The metadata key whose cached value should be removed"
         }
       ],
       "properties": [
@@ -1799,13 +1231,28 @@
           "doc": ""
         },
         {
-          "name": "null",
-          "type": "return",
-          "doc": "Checks if metadata contains a key\n  bool containsKey(String key) => _meta.containsKey(key);\n\n  /// Converts value to specified type with error handling\n  /// Returns null if conversion fails\n  T? _convertSafely<T>(Object? value) {\n    try {\n      if (value == null) {"
-        },
-        {
           "name": "dateTime",
           "type": "final",
+          "doc": "Checks if metadata contains a key\n  bool containsKey(String key) => _meta.containsKey(key);\n\n  /// Converts value to specified type with error handling\n  /// [value] - The value to be converted to type T\n  /// [key] - Optional key name for better error reporting\n  /// Returns the converted value or null if conversion fails\n  Object? _convertSafely<T>(Object? value, {String? key}) {\n    if (value == null) return null;\n\n    try {\n      // Special handling for DateTime\n      if (T == DateTime) {"
+        },
+        {
+          "name": "value",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "true",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "null",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "true",
+          "type": "return",
           "doc": ""
         },
         {
@@ -1816,7 +1263,42 @@
         {
           "name": "value",
           "type": "final",
-          "doc": "Gets typed value from metadata\n  T? _getValueTyped<T>(String key) {\n    if (!_meta.containsKey(key)) return null;\n    return _convertSafely<T>(_meta[key]);\n  }\n\n  /// Gets string value from metadata\n  String? getString(String key) => _getValueTyped<String?>(key);\n\n  /// Gets integer value from metadata\n  int? getInt(String key) => _getValueTyped<int?>(key);\n\n  /// Gets double value from metadata\n  double? getDouble(String key) => _getValueTyped<double?>(key);\n\n  /// Gets boolean value from metadata\n  bool? getBool(String key) => _getValueTyped<bool?>(key);\n\n  /// Gets DateTime value from metadata\n  DateTime? getDateTime(String key) => _getValueTyped<DateTime?>(key);\n\n  /// Gets typed list from metadata\n  List<R>? getListAs<R>(String key) =>\n      _getCollectionTyped<List, R>(key) as List<R>?;\n\n  /// Gets typed map from metadata\n  Map<K, V>? getMapAs<K, V>(String key) =>\n      _getCollectionTyped<Map, V>(key) as Map<K, V>?;\n\n  /// Handles collection types with error handling\n  Object? _getCollectionTyped<C, V>(String key) {"
+          "doc": "Gets typed value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [T] - The target type to convert the value to\n  /// Returns the value converted to type T or null if key doesn't exist or conversion fails\n  Object? _getValueTyped<T>(String key) {\n    if (_cache.containsKey(key)) return _cache[key] as T?;\n    if (!_meta.containsKey(key)) return null;"
+        },
+        {
+          "name": "value",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "value",
+          "type": "final",
+          "doc": "Gets string value from metadata \n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  /// Returns typed String value or the default value\n  String getString(String key, {String defaultValue = ''}) =>\n      (_getValueTyped<String>(key) ?? defaultValue) as String;\n\n  /// Gets integer value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  /// Returns typed int value or the default value\n  int getInt(String key, {int defaultValue = 0}) =>\n      (_getValueTyped<int>(key) ?? defaultValue) as int;\n\n  /// Gets double value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  /// Returns typed double value or the default value\n  double getDouble(String key, {double defaultValue = 0.0}) =>\n      (_getValueTyped<double>(key) ?? defaultValue) as double;\n\n  /// Gets boolean value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  /// Returns typed boolean value or the default value\n  bool getBool(String key, {bool defaultValue = false}) =>\n      (_getValueTyped<bool>(key) ?? defaultValue) as bool;\n\n  /// Gets DateTime value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  /// Returns typed DateTime value or the default value\n  DateTime? getDateTime(String key, {DateTime? defaultValue}) {"
+        },
+        {
+          "name": "value",
+          "type": "final",
+          "doc": "Gets typed list from metadata\n  /// [key] - The metadata key containing a List to be converted\n  /// Returns a strongly-typed list or null if conversion fails\n  List<R>? getListAs<R>(String key) =>\n      _getCollectionTyped<List, R, Object>(key) as List<R>?;\n\n  /// Gets typed map from metadata\n  /// [key] - The metadata key containing a Map to be converted\n  /// [K] - The key type for the map (must be an Object)\n  /// [V] - The value type for the map\n  /// Returns a strongly-typed map or null if conversion fails\n  Map<K, V>? getMapAs<K extends Object, V>(String key) =>\n      _getCollectionTyped<Map, V, K>(key) as Map<K, V>?;\n\n  /// Handles collection types with error handling\n  /// Ensures all elements match the expected type\n  /// [C] - The collection type (List or Map)\n  /// [V] - The value type (list elements or map values)\n  /// [K] - The key type for maps\n  Object? _getCollectionTyped<C, V, K extends Object>(String key) {"
+        },
+        {
+          "name": "list",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "null",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "map",
+          "type": "final",
+          "doc": ""
+        },
+        {
+          "name": "null",
+          "type": "return",
+          "doc": ""
         },
         {
           "name": "value",
@@ -1832,6 +1314,31 @@
           "name": "null",
           "type": "return",
           "doc": ""
+        },
+        {
+          "name": "value",
+          "type": "final",
+          "doc": "Gets nested metadata as another TypedMetadata instance\n  /// [key] - The key containing a Map that should be wrapped in TypedMetadata\n  /// Returns null if the value is not a Map`<String, Object>`\n  TypedMetadata? getNestedMetadata(String key) {"
+        },
+        {
+          "name": "null",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "value",
+          "type": "final",
+          "doc": "Tries multiple keys in sequence until finding a non-null value\n  /// [keys] - List of keys to try in order\n  /// Returns the first matching value or null if no matches\n  Object? getFirstMatching<T>(List<String> keys) {\n    for (final key in keys) {"
+        },
+        {
+          "name": "null",
+          "type": "return",
+          "doc": ""
+        },
+        {
+          "name": "_cache",
+          "type": "Map<String, Object?>",
+          "doc": "Internal cache for previously converted values"
         }
       ]
     },
@@ -1846,12 +1353,12 @@
         {
           "name": "hasMetadata",
           "params": "String key",
-          "doc": "Unique identifier string from entity ID\n  String get uid => id.value;\n\n  /// Runtime type of entity data\n  String get type => data?.runtimeType.toString() ?? T.toString();\n\n  /// Type-safe metadata accessor\n  TypedMetadata get typedMeta => TypedMetadata(meta);\n\n  /// Gets typed value from metadata\n  R? getMetadataAs<R>(String key) => getMetadata<R>(key);\n\n  /// Gets typed value from metadata\n  R? getMetadata<R>(String key) => _getMetadataTyped<R>(key);\n\n  /// Gets raw value from metadata\n  Object? getMetadataValue(String key) => meta[key];\n\n  /// Checks if metadata contains a key"
+          "doc": "Unique identifier string from entity ID\n  String get uid => id.value;\n\n  /// Runtime type of entity data\n  String get type => data?.runtimeType.toString() ?? T.toString();\n\n  /// Type-safe metadata accessor\n  TypedMetadata get typedMeta => TypedMetadata(meta);\n\n  /// Gets typed value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [R] - The target type to convert the value to\n  /// Returns the value converted to type R or null if conversion fails\n  Object? getMetadataAs<R>(String key) => getMetadata<R>(key);\n\n  /// Gets typed value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [R] - The target type to convert the value to\n  /// Returns the value converted to type R or null if conversion fails\n  Object? getMetadata<R>(String key) => _getMetadataTyped<R>(key);\n\n  /// Gets raw value from metadata without type conversion\n  /// [key] - The metadata key to retrieve\n  /// Returns the raw Object value or null if key doesn't exist\n  Object? getMetadataValue(String key) => meta[key];\n\n  /// Checks if metadata contains a key\n  /// [key] - The metadata key to check\n  /// Returns true if the key exists in metadata, false otherwise"
         },
         {
           "name": "filterMetadata",
           "params": "bool Function(String key, Object value) predicate,",
-          "doc": "Gets typed metadata with default fallback\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  R getMetadataOrDefault<R>(String key, R defaultValue) {\n    return _getMetadataTyped<R>(key) ?? defaultValue;\n  }\n\n  /// Returns filtered metadata based on predicate\n  /// [predicate] - Function that tests each key and value"
+          "doc": "Gets typed metadata with default fallback\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  Object? getMetadataOrDefault<R>(String key, R defaultValue) {\n    return _getMetadataTyped<R>(key) ?? defaultValue;\n  }\n\n  /// Returns filtered metadata based on predicate\n  /// [predicate] - Function that tests each key and value"
         },
         {
           "name": "updateMetadata",
@@ -1870,7 +1377,7 @@
         },
         {
           "name": "copyWith",
-          "params": "meta: updatedMeta);\n  }\n\n  /// Gets typed value from metadata safely\n  R? _getMetadataTyped<R>(String key",
+          "params": "meta: updatedMeta);\n  }\n\n  /// Gets typed value from metadata safely\n  Object? _getMetadataTyped<R>(String key",
           "doc": ""
         },
         {
@@ -1886,19 +1393,19 @@
         {
           "name": "if",
           "params": "propertyValue != null",
-          "doc": "Provides unified access to properties and metadata\n  /// Properties take precedence over metadata with same key\n  operator [](String key) {\n    final propertyValue = getProperty(key);"
+          "doc": "Provides unified access to properties and metadata\n  /// Properties take precedence over metadata with same key\n  /// Provides unified access to properties and metadata\n  /// Properties take precedence over metadata with same key\n  operator [](String key) {\n    final propertyValue = getProperty(key);"
         }
       ],
       "properties": [
         {
           "name": "updatedMeta",
           "type": "final",
-          "doc": "Base entity class containing core properties and metadata\n  /// [id] - Unique identifier for this entity\n  /// [name] - Human-readable name for this entity\n  /// [createdAt] - Timestamp of entity creation\n  /// [updatedAt] - Timestamp of last update\n  /// [data] - Optional typed payload data\n  const factory CoreEntity({\n    required EntityId id,\n    required String name,\n    String? description,\n    required DateTime createdAt,\n    required DateTime updatedAt,\n    @Default(EntityDefaults.version) String schemaVer,\n    @Default(EntityDefaults.status) EntityStatus status,\n    @Default({}) Map<String, Object> meta,\n    required UserAction owner,\n    required UserAction creator,\n    required UserAction modifier,\n    T? data,\n  }) = _CoreEntity<T>;\n\n  factory CoreEntity.fromJson(\n    Map<String, Object> json,\n    T Function(Object? json) fromJsonT,\n  ) => _$CoreEntityFromJson(json, fromJsonT);\n\n  /// Unique identifier string from entity ID\n  String get uid => id.value;\n\n  /// Runtime type of entity data\n  String get type => data?.runtimeType.toString() ?? T.toString();\n\n  /// Type-safe metadata accessor\n  TypedMetadata get typedMeta => TypedMetadata(meta);\n\n  /// Gets typed value from metadata\n  R? getMetadataAs<R>(String key) => getMetadata<R>(key);\n\n  /// Gets typed value from metadata\n  R? getMetadata<R>(String key) => _getMetadataTyped<R>(key);\n\n  /// Gets raw value from metadata\n  Object? getMetadataValue(String key) => meta[key];\n\n  /// Checks if metadata contains a key\n  bool hasMetadata(String key) => meta.containsKey(key);\n\n  /// Gets typed metadata with default fallback\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  R getMetadataOrDefault<R>(String key, R defaultValue) {\n    return _getMetadataTyped<R>(key) ?? defaultValue;\n  }\n\n  /// Returns filtered metadata based on predicate\n  /// [predicate] - Function that tests each key and value\n  Map<String, Object> filterMetadata(\n    bool Function(String key, Object value) predicate,\n  ) {\n    return Map.fromEntries(\n      meta.entries.where((entry) => predicate(entry.key, entry.value)),\n    );\n  }\n\n  /// Creates new instance with updated metadata\n  /// [updates] - Map of key-value pairs to add or update in metadata\n  /// [removeKeys] - Optional list of keys to remove from metadata\n  CoreEntity<T> updateMetadata(\n    Map<String, Object> updates, {\n    List<String>? removeKeys,\n  }) {"
+          "doc": "Base entity class containing core properties and metadata\n  /// [id] - Unique identifier for this entity\n  /// [name] - Human-readable name for this entity\n  /// [createdAt] - Timestamp of entity creation\n  /// [updatedAt] - Timestamp of last update\n  /// [data] - Optional typed payload data\n  const factory CoreEntity({\n    required EntityId id,\n    required String name,\n    String? description,\n    required DateTime createdAt,\n    required DateTime updatedAt,\n    @Default(EntityDefaults.version) String schemaVer,\n    @Default(EntityDefaults.status) EntityStatus status,\n    @Default({}) Map<String, Object> meta,\n    required UserAction owner,\n    required UserAction creator,\n    required UserAction modifier,\n    T? data,\n  }) = _CoreEntity<T>;\n\n  factory CoreEntity.fromJson(\n    Map<String, Object> json,\n    T Function(Object? json) fromJsonT,\n  ) => _$CoreEntityFromJson(json, fromJsonT);\n\n  /// Unique identifier string from entity ID\n  String get uid => id.value;\n\n  /// Runtime type of entity data\n  String get type => data?.runtimeType.toString() ?? T.toString();\n\n  /// Type-safe metadata accessor\n  TypedMetadata get typedMeta => TypedMetadata(meta);\n\n  /// Gets typed value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [R] - The target type to convert the value to\n  /// Returns the value converted to type R or null if conversion fails\n  Object? getMetadataAs<R>(String key) => getMetadata<R>(key);\n\n  /// Gets typed value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [R] - The target type to convert the value to\n  /// Returns the value converted to type R or null if conversion fails\n  Object? getMetadata<R>(String key) => _getMetadataTyped<R>(key);\n\n  /// Gets raw value from metadata without type conversion\n  /// [key] - The metadata key to retrieve\n  /// Returns the raw Object value or null if key doesn't exist\n  Object? getMetadataValue(String key) => meta[key];\n\n  /// Checks if metadata contains a key\n  /// [key] - The metadata key to check\n  /// Returns true if the key exists in metadata, false otherwise\n  bool hasMetadata(String key) => meta.containsKey(key);\n\n  /// Gets typed metadata with default fallback\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  Object? getMetadataOrDefault<R>(String key, R defaultValue) {\n    return _getMetadataTyped<R>(key) ?? defaultValue;\n  }\n\n  /// Returns filtered metadata based on predicate\n  /// [predicate] - Function that tests each key and value\n  Map<String, Object> filterMetadata(\n    bool Function(String key, Object value) predicate,\n  ) {\n    return Map.fromEntries(\n      meta.entries.where((entry) => predicate(entry.key, entry.value)),\n    );\n  }\n\n  /// Creates new instance with updated metadata\n  /// [updates] - Map of key-value pairs to add or update in metadata\n  /// [removeKeys] - Optional list of keys to remove from metadata\n  CoreEntity<T> updateMetadata(\n    Map<String, Object> updates, {\n    List<String>? removeKeys,\n  }) {"
         },
         {
           "name": "id",
           "type": "return",
-          "doc": "Gets typed value from metadata safely\n  R? _getMetadataTyped<R>(String key) {\n    if (!meta.containsKey(key)) return null;\n    return typedMeta._convertSafely<R>(meta[key]);\n  }\n\n  /// Gets a core property by name\n  Object? getProperty(String key) {\n    switch (key) {\n      case 'id':"
+          "doc": "Gets typed value from metadata safely\n  Object? _getMetadataTyped<R>(String key) {\n    if (!meta.containsKey(key)) return null;\n    return typedMeta._convertSafely<R>(meta[key]);\n  }\n\n  /// Gets a core property by name\n  Object? getProperty(String key) {\n    switch (key) {\n      case 'id':"
         },
         {
           "name": "name",
@@ -1958,7 +1465,7 @@
         {
           "name": "propertyValue",
           "type": "final",
-          "doc": "Provides unified access to properties and metadata\n  /// Properties take precedence over metadata with same key\n  operator [](String key) {"
+          "doc": "Provides unified access to properties and metadata\n  /// Properties take precedence over metadata with same key\n  /// Provides unified access to properties and metadata\n  /// Properties take precedence over metadata with same key\n  operator [](String key) {"
         },
         {
           "name": "propertyValue",
@@ -2711,236 +2218,6 @@
     }
   },
   "interfaces": {
-    "EventAwareRepository": {
-      "file": "lib/src/domain/repositories/event_aware_repository.dart",
-      "methods": [
-        {
-          "name": "EventAwareRepository",
-          "params": "this.eventStore",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "type == OperationType.read",
-          "doc": ""
-        },
-        {
-          "name": "_executeOperation",
-          "params": "type, id, params",
-          "doc": ""
-        },
-        {
-          "name": "UnimplementedError",
-          "params": "",
-          "doc": ""
-        },
-        {
-          "name": "loadEntity",
-          "params": "EntityId id",
-          "doc": ""
-        },
-        {
-          "name": "watchEntityEvents",
-          "params": "EntityId id) =>\n      eventStore.watchEvents(id",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "events.isEmpty",
-          "doc": ""
-        },
-        {
-          "name": "StateError",
-          "params": "'No events found for entity'",
-          "doc": ""
-        },
-        {
-          "name": "for",
-          "params": "final event in events",
-          "doc": ""
-        },
-        {
-          "name": "_createEvent",
-          "params": "OperationType type,\n    EntityId id,\n    Map<String, Object>? params,\n    UserAction initiator,",
-          "doc": ""
-        },
-        {
-          "name": "DomainEvent",
-          "params": "id: EventId(const Uuid().v4()),\n      entityId: id,\n      eventType: type.name,\n      timestamp: DateTime.now(),\n      initiator: initiator,\n      changes: params ?? {},\n      entityType: T.toString(),",
-          "doc": ""
-        },
-        {
-          "name": "replayEvents",
-          "params": "EntityId id, DateTime from, DateTime to) async {\n    final events = await eventStore.queryEvents(EventQuery(\n      entityId: id,\n      fromDate: from,\n      toDate: to,\n    )",
-          "doc": ""
-        },
-        {
-          "name": "createSnapshot",
-          "params": "DateTime timestamp) async {\n    await eventStore.createSnapshot(timestamp",
-          "doc": ""
-        },
-        {
-          "name": "restoreFromSnapshot",
-          "params": "DateTime timestamp) async {\n    await eventStore.restoreFromSnapshot(timestamp",
-          "doc": ""
-        }
-      ]
-    },
-    "IEventStore": {
-      "file": "lib/src/domain/repositories/event/i_event_store.dart",
-      "methods": [
-        {
-          "name": "store",
-          "params": "DomainEventModel event",
-          "doc": ""
-        },
-        {
-          "name": "watchEvents",
-          "params": "EntityId entityId",
-          "doc": ""
-        },
-        {
-          "name": "createSnapshot",
-          "params": "DateTime timestamp",
-          "doc": ""
-        },
-        {
-          "name": "pruneEvents",
-          "params": "DateTime olderThan",
-          "doc": ""
-        },
-        {
-          "name": "updateVersionVectors",
-          "params": "EntityId entityId,\n    Map<String, int> vectors,",
-          "doc": ""
-        },
-        {
-          "name": "getVersionEvent",
-          "params": "EntityId entityId, int version",
-          "doc": ""
-        },
-        {
-          "name": "rebaseEvents",
-          "params": "EntityId entityId,\n    List<DomainEventModel> newBaseEvents,",
-          "doc": ""
-        },
-        {
-          "name": "getLatestSnapshot",
-          "params": "EntityId entityId",
-          "doc": ""
-        },
-        {
-          "name": "hasVersionConflict",
-          "params": "EntityId entityId,\n    Map<String, int> versionVectors,",
-          "doc": ""
-        }
-      ]
-    },
-    "IEntityRepository": {
-      "file": "lib/src/domain/repositories/entity/i_entity_repository.dart",
-      "methods": [
-        {
-          "name": "delete",
-          "params": "EntityId id, {bool permanent = false}",
-          "doc": ""
-        },
-        {
-          "name": "addRelation",
-          "params": "EntityId sourceId, String type, EntityId targetId",
-          "doc": ""
-        },
-        {
-          "name": "getCanonicalPath",
-          "params": "EntityId id",
-          "doc": ""
-        },
-        {
-          "name": "moveEntity",
-          "params": "EntityId id,\n    EntityId newParentId,",
-          "doc": ""
-        },
-        {
-          "name": "detachFromParent",
-          "params": "EntityId id",
-          "doc": ""
-        },
-        {
-          "name": "acquireLock",
-          "params": "EntityId id, UserAction user, {Duration? timeout}",
-          "doc": ""
-        },
-        {
-          "name": "extendLock",
-          "params": "EntityId id, UserAction user, Duration extension",
-          "doc": ""
-        },
-        {
-          "name": "watchLockState",
-          "params": "EntityId id",
-          "doc": ""
-        },
-        {
-          "name": "invalidateCache",
-          "params": "EntityId id",
-          "doc": ""
-        },
-        {
-          "name": "applyEvent",
-          "params": "DomainEventModel event",
-          "doc": ""
-        },
-        {
-          "name": "watchEvents",
-          "params": "EntityId id",
-          "doc": ""
-        },
-        {
-          "name": "hasVersionConflict",
-          "params": "EntityId id, Map<String, int> versionVectors",
-          "doc": ""
-        },
-        {
-          "name": "updateVersionVectors",
-          "params": "EntityId id, \n    Map<String, int> vectors,",
-          "doc": ""
-        }
-      ]
-    },
-    "AggregateRepositoryBase": {
-      "file": "lib/src/domain/repositories/aggregate/aggregate_repository_base.dart",
-      "methods": [
-        {
-          "name": "AggregateRepositoryBase",
-          "params": "this._eventStore",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "events.isEmpty) throw EntityNotFoundException(id",
-          "doc": ""
-        },
-        {
-          "name": "save",
-          "params": "T aggregate) async {\n    await _saveAggregate(aggregate",
-          "doc": ""
-        },
-        {
-          "name": "reconstituteFromEvents",
-          "params": "List<DomainEvent> events",
-          "doc": ""
-        },
-        {
-          "name": "_publishPendingEvents",
-          "params": "List<String> eventIds) async {\n    for (final eventId in eventIds",
-          "doc": ""
-        },
-        {
-          "name": "if",
-          "params": "event.isNotEmpty",
-          "doc": ""
-        }
-      ]
-    },
     "EntityLimits": {
       "file": "lib/src/domain/entities/base_entity.dart",
       "methods": []
@@ -3154,139 +2431,84 @@
     }
   },
   "functions": {
-    "migrate": {
-      "file": "lib/src/application/extensions/domain_event_extensions.dart",
-      "params": "String targetVersion,\n    EventServiceProvider serviceProvider,",
-      "doc": "Extension methods for working with domain events in the application layer\nextension DomainEventModelExtensions on DomainEventModel {\n  /// Migrates the event schema to the target version using the provided service provider\n  ///\n  /// Usage example:\n  /// ```dart\n  /// final serviceProvider = EventServiceProvider();\n  /// final migratedEvent = event.migrate('1.1.0', serviceProvider);\n  /// ```"
-    },
-    "EventServiceProvider": {
-      "file": "lib/src/application/providers/event_service_provider.dart",
-      "params": "{EventMigrationService? migrationService})\n    : _migrationService = migrationService ?? EventMigrationService();\n\n  /// Extension method to allow DomainEventModel to use the migration service\n  /// without violating clean architecture principles\n  DomainEventModel migrateEventSchema(\n    DomainEventModel event,\n    String targetVersion,",
-      "doc": "Provider class that connects domain model with the application services\nclass EventServiceProvider {\n  final EventMigrationService _migrationService;"
-    },
-    "migrateEventSchema": {
-      "file": "lib/src/application/services/event_migration_service.dart",
-      "params": "DomainEventModel event,\n    String targetVersion,",
-      "doc": "Service responsible for handling domain event schema migrations\nclass EventMigrationService {\n  /// Migrates a domain event to the target schema version\n  ///\n  /// This method implements the migration logic that was previously in the domain layer,\n  /// following Clean Architecture principles by keeping the implementation details\n  /// out of the domain layer."
-    },
-    "if": {
-      "file": "lib/src/domain/core/entity_config.dart",
-      "params": "parts.length != 3",
-      "doc": ""
-    },
-    "UnsupportedError": {
-      "file": "lib/src/application/services/event_migration_service.dart",
-      "params": "'No migration path from ${event.schemaVersion} to $targetVersion',\n      );\n    }\n\n    // Track schema changes during migration\n    final schemaChanges = Map<String, Object>.from(event.schemaChanges ?? {});\n    schemaChanges['migratedFrom'] = event.schemaVersion;\n    schemaChanges['migratedTo'] = targetVersion;\n    schemaChanges['migratedAt'] = DateTime.now().toIso8601String();\n\n    // Apply version-specific migrations\n    var migratedEvent = _applyMigration(event, targetVersion);\n\n    // Update schema metadata\n    return migratedEvent.copyWith(\n      schemaVersion: targetVersion,\n      previousSchemaVersion: event.schemaVersion,\n      schemaChanges: schemaChanges,\n    );\n  }\n\n  /// Applies version-specific migration transformations\n  DomainEventModel _applyMigration(\n    DomainEventModel event,\n    String targetVersion,",
-      "doc": ""
-    },
-    "switch": {
-      "file": "lib/src/domain/core/entity_config.dart",
-      "params": "increment.toLowerCase()",
-      "doc": ""
-    },
-    "_migrateFrom100To110": {
-      "file": "lib/src/application/services/event_migration_service.dart",
-      "params": "event);\n\n      // Add more migration paths as needed\n\n      default:\n        // For now, if there's no specific migration needed, return as-is\n        return event;\n    }\n  }\n\n  /// Example migration implementation from v1.0.0 to v1.1.0\n  DomainEventModel _migrateFrom100To110(DomainEventModel event",
-      "doc": ""
-    },
-    "StateError": {
-      "file": "lib/src/domain/repositories/event_aware_repository.dart",
-      "params": "'No events found for entity');\n    }\n\n    BaseEntity<T>? result;\n    for (final event in events",
-      "doc": ""
-    },
-    "_createEvent": {
-      "file": "lib/src/domain/repositories/event_aware_repository.dart",
-      "params": "OperationType type,\n    EntityId id,\n    Map<String, Object>? params,\n    UserAction initiator,",
-      "doc": ""
-    },
-    "DomainEvent": {
-      "file": "lib/src/domain/repositories/event_aware_repository.dart",
-      "params": "id: EventId(const Uuid().v4()),\n      entityId: id,\n      eventType: type.name,\n      timestamp: DateTime.now(),\n      initiator: initiator,\n      changes: params ?? {},\n      entityType: T.toString(),\n    );\n  }\n\n  @override\n  Future<List<BaseEntity<T>>> batchOperate(\n    OperationType type,\n    List<EntityId> ids, [\n    Map<String, Object>? params,\n  ]) async {\n    final action = UserAction(uid: 'system', timestamp: DateTime.now());\n    final events =\n        ids.map((id",
-      "doc": ""
-    },
-    "replayEvents": {
-      "file": "lib/src/domain/repositories/event_aware_repository.dart",
-      "params": "EntityId id, DateTime from, DateTime to) async {\n    final events = await eventStore.queryEvents(EventQuery(\n      entityId: id,\n      fromDate: from,\n      toDate: to,\n    ));\n\n    for (final event in events",
-      "doc": ""
-    },
-    "store": {
-      "file": "lib/src/domain/repositories/event/i_event_store.dart",
-      "params": "DomainEventModel event);\n  Future<void> storeBatch(List<DomainEventModel> events);\n  Future<List<DomainEventModel>> getEvents(EntityId entityId);\n  Future<List<DomainEventModel>> queryEvents(EventQuery query);\n  Stream<DomainEventModel> watchEvents(EntityId entityId);\n\n  // Snapshot management\n  Future<void> createSnapshot(DateTime timestamp);\n  Future<void> restoreFromSnapshot(DateTime timestamp);\n  Future<void> pruneEvents(DateTime olderThan);\n  Future<void> compactEvents(DateTime upTo);\n\n  // Enhanced event queries\n  Future<List<DomainEventModel>> getEventsByType(\n    String eventType, {\n    DateTime? since,\n    int? limit,\n  });\n  Future<List<DomainEventModel>> getEventsByCorrelation(String correlationId);\n  Future<List<DomainEventModel>> getEventChain(String causationId);\n\n  // Version control\n  Future<Map<String, int>> getVersionVectors(EntityId entityId);\n  Future<void> updateVersionVectors(\n    EntityId entityId,\n    Map<String, int> vectors,\n  );\n  Future<List<DomainEventModel>> getEventsForVersion(\n    EntityId entityId,\n    int version,\n  );\n  Future<DomainEventModel?> getVersionEvent(EntityId entityId, int version);\n\n  // Event replay and recovery\n  Future<List<DomainEventModel>> replayEvents(\n    EntityId entityId,\n    DateTime fromTimestamp,\n    DateTime toTimestamp,\n  );\n  Future<void> rebaseEvents(\n    EntityId entityId,\n    List<DomainEventModel> newBaseEvents,\n  );\n\n  // Enhanced snapshot management\n  Future<DomainEventModel?> getLatestSnapshot(EntityId entityId);\n  Future<void> createVersionSnapshot(EntityId entityId, int version);\n  Future<bool> hasVersionConflict(\n    EntityId entityId,\n    Map<String, int> versionVectors,\n  );\n}\n\n/// Event query parameters\nclass EventQuery {\n  final EntityId? entityId;\n  final DateTime? fromDate;\n  final DateTime? toDate;\n  final String? eventType;\n  final bool includeSystemEvents;\n  final int? limit;\n  final Map<String, Object>? filters;\n  final bool ascending;\n\n  const EventQuery({\n    this.entityId,\n    this.fromDate,\n    this.toDate,\n    this.eventType,\n    this.includeSystemEvents = false,\n    this.limit,\n    this.filters,\n    this.ascending = true,\n  });\n\n  EventQuery copyWith({\n    EntityId? entityId,\n    DateTime? fromDate,\n    DateTime? toDate,\n    String? eventType,\n    bool? includeSystemEvents,\n    int? limit,\n    Map<String, Object>? filters,\n    bool? ascending,\n  }",
-      "doc": "Core event store interface for domain event persistence\nabstract class IEventStore {\n  // Event operations"
-    },
-    "EntityCreateConfig": {
+    "EntityCreationConfig": {
       "file": "lib/src/domain/entities/entity_factory.dart",
-      "params": "{\n    required this.name,\n    required this.user,\n    required this.data,\n    this.description,\n    this.parentPath,\n    this.parentId,\n    this.ancestors,\n    this.meta,\n    this.tags,\n    this.labels,\n    this.priority,\n    this.stage,\n    this.expiryDate,\n    this.isPublic,\n  });\n}\n\n/// Configuration object for cloning existing entities.\n/// Contains the source entity and optional overrides for the clone.\nclass EntityCloneConfig<T extends Object> {\n  final BaseEntityModel<T> source;\n  final AuthUser user;\n  final String? newName;\n  final String? newPath;\n  final Map<String, Object>? newMeta;\n  final Map<String, String>? newLabels;\n  final List<String>? newTags;\n\n  EntityCloneConfig({\n    required this.source,\n    required this.user,\n    this.newName,\n    this.newPath,\n    this.newMeta,\n    this.newLabels,\n    this.newTags,\n  });\n}\n\n/// A fluent builder for creating entities.\n///\n/// The builder pattern provides a cleaner, more readable API for creating complex entities\n/// with many optional parameters. It uses method chaining for a fluent interface.\n///\n/// Example:\n/// ```dart\n/// final site = EntityBuilder<SiteModel>()\n///   .withName('Main Office')\n///   .withUser(currentUser)\n///   .withData(siteModel)\n///   .withDescription('Corporate headquarters')\n///   .withParentId(organizationId)\n///   .withTags(['headquarters', 'office'])\n///   .isPublic(true)\n///   .build();\n/// ```\nclass EntityBuilder<T extends Object> {\n  // Required fields\n  String? _name;\n  AuthUser? _user;\n  T? _data;\n\n  // Optional fields\n  String? _description;\n  String? _parentPath;\n  EntityId? _parentId;\n  List<EntityId>? _ancestors;\n  Map<String, Object>? _meta;\n  List<String>? _tags;\n  Map<String, String>? _labels;\n  EntityPriority? _priority;\n  EntityStage? _stage;\n  DateTime? _expiryDate;\n  bool? _isPublic;\n\n  // Required field methods\n  EntityBuilder<T> withName(String name",
-      "doc": "Configuration object for creating new entities.\n/// Contains all parameters needed to construct a complete entity.\nclass EntityCreateConfig<T extends Object> {\n  // Core info\n  final String name;\n  final AuthUser user;\n  final T data;\n  final String? description;\n\n  // Tree structure\n  final String? parentPath;\n  final EntityId? parentId;\n  final List<EntityId>? ancestors;\n\n  // Metadata & Classification\n  final Map<String, Object>? meta;\n  final List<String>? tags;\n  final Map<String, String>? labels;\n  final EntityPriority? priority;\n  final EntityStage? stage;\n  final DateTime? expiryDate;\n  final bool? isPublic;"
+      "params": "{\n    required this.name,\n    required this.user,\n    required this.data,\n    this.description,\n    this.parentPath,\n    this.parentId,\n    this.ancestors,\n    this.meta,\n    this.tags,\n    this.labels,\n    this.priority,\n    this.stage,\n    this.expiryDate,\n    this.isPublic,\n  });\n}\n\n/// Configuration object for cloning existing entities.\n/// Contains the source entity and optional overrides for the clone.\nclass EntityCloningConfig<T extends Object> {\n  /// Source entity to clone\n  final BaseEntityModel<T> source;\n\n  /// User performing the cloning operation\n  final AuthUser user;\n\n  /// New name for the cloned entity (defaults to source name + \" (Copy)\")\n  final String? newName;\n\n  /// New path for the cloned entity\n  final String? newPath;\n\n  /// Custom metadata overrides for the clone\n  final Map<String, Object>? newMeta;\n\n  /// Label overrides for the clone\n  final Map<String, String>? newLabels;\n\n  /// Tag overrides for the clone\n  final List<String>? newTags;\n\n  EntityCloningConfig({\n    required this.source,\n    required this.user,\n    this.newName,\n    this.newPath,\n    this.newMeta,\n    this.newLabels,\n    this.newTags,\n  });\n}\n\n/// A fluent builder for creating entities\n///\n/// Provides method chaining for a cleaner API when creating complex entities\n/// with many optional parameters\n///\n/// Example:\n/// ```dart\n/// final site = EntityCreationBuilder<SiteModel>()\n///   .withName('Main Office')\n///   .withUser(currentUser)\n///   .withData(siteModel)\n///   .withParentId(organizationId)\n///   .withTags(['headquarters', 'office'])\n///   .build();\n/// ```\nclass EntityCreationBuilder<T extends Object> {\n  // Required fields\n  String? _name;\n  AuthUser? _user;\n  T? _data;\n\n  // Optional fields\n  String? _description;\n  String? _parentPath;\n  EntityId? _parentId;\n  List<EntityId>? _ancestors;\n  Map<String, Object>? _meta;\n  List<String>? _tags;\n  Map<String, String>? _labels;\n  EntityPriority? _priority;\n  EntityStage? _stage;\n  DateTime? _expiryDate;\n  bool? _isPublic;\n\n  // Required field methods\n  /// Sets the name for the entity\n  EntityCreationBuilder<T> withName(String name",
+      "doc": "Configuration data for new entity creation\n///\n/// Contains core entity information, hierarchy data, and classification parameters\nclass EntityCreationConfig<T extends Object> {\n  // Core info\n  /// User-provided name for the entity\n  final String name;\n\n  /// User creating the entity\n  final AuthUser user;\n\n  /// Type-specific payload data\n  final T data;\n\n  /// Optional description of the entity\n  final String? description;\n\n  // Tree structure\n  /// Path in the entity hierarchy\n  final String? parentPath;\n\n  /// Direct parent entity ID\n  final EntityId? parentId;\n\n  /// List of ancestor entity IDs\n  final List<EntityId>? ancestors;\n\n  // Metadata & Classification\n  /// Custom metadata key-value pairs\n  final Map<String, Object>? meta;\n\n  /// Searchable tags\n  final List<String>? tags;\n\n  /// Categorization labels\n  final Map<String, String>? labels;\n\n  /// Entity importance level\n  final EntityPriority? priority;\n\n  /// Current workflow stage\n  final EntityStage? stage;\n\n  /// Optional date when entity expires\n  final DateTime? expiryDate;\n\n  /// Whether entity is publicly accessible\n  final bool? isPublic;"
     },
     "withUser": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "AuthUser user",
-      "doc": ""
+      "doc": "Sets the user performing the clone operation"
     },
     "withData": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "T data",
-      "doc": ""
+      "doc": "Sets the type-specific payload data"
     },
     "withDescription": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "String description",
-      "doc": ""
+      "doc": "Sets the description for the entity"
     },
     "withParentPath": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "String parentPath",
-      "doc": ""
+      "doc": "Sets the parent path in the entity hierarchy"
     },
     "withParentId": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "EntityId parentId",
-      "doc": ""
+      "doc": "Sets the direct parent entity ID"
     },
     "withAncestors": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "List<EntityId> ancestors",
-      "doc": ""
+      "doc": "Sets the list of ancestor entity IDs"
     },
     "withMeta": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "Map<String, Object> newMeta",
-      "doc": ""
+      "doc": "Sets custom metadata for the cloned entity"
     },
     "withTags": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "List<String> newTags",
-      "doc": ""
+      "doc": "Sets tags for the cloned entity"
     },
     "withLabels": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "Map<String, String> newLabels",
-      "doc": ""
+      "doc": "Sets labels for the cloned entity"
     },
     "withPriority": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "EntityPriority priority",
-      "doc": ""
+      "doc": "Sets the entity importance level"
     },
     "withStage": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "EntityStage stage",
-      "doc": ""
+      "doc": "Sets the workflow stage"
     },
     "withExpiryDate": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "DateTime expiryDate",
-      "doc": ""
+      "doc": "Sets the expiry date for the entity"
     },
     "isPublic": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "bool isPublic",
-      "doc": ""
+      "doc": "Sets whether the entity is publicly accessible"
     },
     "build": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "",
+      "doc": ""
+    },
+    "if": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "parts.length != 3",
       "doc": ""
     },
     "ArgumentError": {
@@ -3297,12 +2519,12 @@
     "withName": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "String newName",
-      "doc": ""
+      "doc": "Sets the name for the cloned entity"
     },
     "withPath": {
       "file": "lib/src/domain/entities/entity_factory.dart",
       "params": "String newPath",
-      "doc": ""
+      "doc": "Sets the path for the cloned entity"
     },
     "PathValidationException": {
       "file": "lib/src/domain/entities/entity_factory.dart",
@@ -3319,6 +2541,11 @@
       "params": "DomainEventModel event",
       "doc": "Domain-specific data models for business entities\n@freezed\nsealed class OwnerData with _$OwnerData {\n  const OwnerData._(); // Private constructor for methods\n\n  /// Entity owner data model representing an organization or individual\n  ///\n  /// Stores contact information and site references\n  const factory OwnerData({\n    // Core info\n    required ContactInfo contact,\n    @Default([]) List<EntityId> siteIds,\n\n    // Metadata\n    @Default({}) Map<String, Object> meta,\n    Map<String, Object>? customData,\n  }) = _OwnerData;\n\n  factory OwnerData.fromJson(Map<String, Object> json) =>\n      _$OwnerDataFromJson(json);\n\n  // Computed properties\n  /// Whether this owner has associated sites\n  bool get hasSites => siteIds.isNotEmpty;\n\n  /// Whether owner has multiple sites\n  bool get hasMultipleSites => siteIds.length > 1;\n\n  /// Whether valid contact information exists\n  bool get hasValidContact => contact.email != null || contact.phone != null;\n\n  /// Human-readable name for display\n  String get displayName => contact.displayName;\n\n  /// Applies domain event and returns updated state\n  ///\n  /// Processes event data to create new entity state without mutation"
     },
+    "switch": {
+      "file": "lib/src/domain/core/entity_config.dart",
+      "params": "increment.toLowerCase()",
+      "doc": ""
+    },
     "EntityHierarchy": {
       "file": "lib/src/domain/entities/base_entity.dart",
       "params": "treePath: '/$entityId',\n      treeDepth: 0,\n      ancestors: const [],\n      parentId: null,\n      childIds: const [],\n      isHierarchyRoot: true,\n      isHierarchyLeaf: true,\n      hierarchyMeta: {'created': now.toIso8601String(), 'pathType': 'root'},\n    );\n  }\n}\n\n/// Extension methods for EntityHierarchy operations\nextension EntityHierarchyOperations on EntityHierarchy {\n  /// Adds a child entity ID, updating leaf status and metadata\n  EntityHierarchy addChild(EntityId childId",
@@ -3326,7 +2553,7 @@
     },
     "copyWith": {
       "file": "lib/src/domain/core/core_entity.dart",
-      "params": "meta: updatedMeta);\n  }\n\n  /// Gets typed value from metadata safely\n  R? _getMetadataTyped<R>(String key",
+      "params": "meta: updatedMeta);\n  }\n\n  /// Gets typed value from metadata safely\n  Object? _getMetadataTyped<R>(String key",
       "doc": ""
     },
     "isValidPath": {
@@ -3375,9 +2602,9 @@
       "doc": ""
     },
     "return": {
-      "file": "lib/src/domain/entities/base_entity.dart",
-      "params": "updatedParent, updatedChild);\n  }\n\n  /// Records a user action in the entity's history efficiently.\n  ///\n  /// [action] - The user action to record.\n  /// [isAccessAction] - Whether this is an access action (vs. modification).\n  /// Returns an updated entity with the action recorded in history.\n  BaseEntityModel<T> recordAction(\n    UserAction action, {\n    bool isAccessAction = false,\n  }",
-      "doc": ""
+      "file": "lib/src/domain/core/core_entity.dart",
+      "params": "value != null) ? value as DateTime : defaultValue;\n  }\n\n  /// Gets typed list from metadata\n  /// [key] - The metadata key containing a List to be converted\n  /// Returns a strongly-typed list or null if conversion fails\n  List<R>? getListAs<R>(String key",
+      "doc": "Gets DateTime value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  /// Returns typed DateTime value or the default value\n  DateTime? getDateTime(String key, {DateTime? defaultValue}) {\n    final value = _getValueTyped<DateTime>(key);"
     },
     "while": {
       "file": "lib/src/domain/entities/base_entity.dart",
@@ -3386,7 +2613,7 @@
     },
     "DomainEventModel": {
       "file": "lib/src/domain/events/domain_event.dart",
-      "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.validated.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: {\n        'isValid': result.isValid,\n        'issues': result.issues,\n      },\n    );\n  }\n  */\n\n  /// Schema validation\n  bool hasValidSchema(",
+      "params": "id: id,\n      entityId: entityId,\n      entityType: entityType,\n      eventType: EventType.hierarchyChanged.name,\n      timestamp: action.timestamp,\n      initiator: action,\n      changes: {\n        'oldParentId': oldParentId?.value ?? '',\n        'newParentId': newParentId?.value ?? '',\n      },\n    );\n  }\n\n  /// Schema validation\n  bool hasValidSchema(",
       "doc": ""
     },
     "isBackwardsCompatible": {
@@ -3461,23 +2688,43 @@
     },
     "TypedMetadata": {
       "file": "lib/src/domain/core/core_entity.dart",
-      "params": "this._meta);\n\n  /// Checks if metadata contains a key\n  bool containsKey(String key",
-      "doc": "Provides type-safe access to metadata values\nclass TypedMetadata {\n  final Map<String, Object> _meta;"
-    },
-    "TypeError": {
-      "file": "lib/src/domain/core/core_entity.dart",
-      "params": ");\n    } catch (e",
+      "params": "value);\n    }\n    return null;\n  }\n\n  /// Tries multiple keys in sequence until finding a non-null value\n  /// [keys] - List of keys to try in order\n  /// Returns the first matching value or null if no matches\n  Object? getFirstMatching<T>(List<String> keys",
       "doc": ""
+    },
+    "assert": {
+      "file": "lib/src/domain/core/core_entity.dart",
+      "params": "(",
+      "doc": ""
+    },
+    "getInt": {
+      "file": "lib/src/domain/core/core_entity.dart",
+      "params": "String key, {int defaultValue = 0}",
+      "doc": "Gets integer value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  /// Returns typed int value or the default value"
+    },
+    "getDouble": {
+      "file": "lib/src/domain/core/core_entity.dart",
+      "params": "String key, {double defaultValue = 0.0}",
+      "doc": "Gets double value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  /// Returns typed double value or the default value"
+    },
+    "getBool": {
+      "file": "lib/src/domain/core/core_entity.dart",
+      "params": "String key, {bool defaultValue = false}",
+      "doc": "Gets boolean value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  /// Returns typed boolean value or the default value"
+    },
+    "clearCacheEntry": {
+      "file": "lib/src/domain/core/core_entity.dart",
+      "params": "String key",
+      "doc": "Clears a specific entry from the type conversion cache\n  /// [key] - The metadata key whose cached value should be removed"
     },
     "hasMetadata": {
       "file": "lib/src/domain/core/core_entity.dart",
       "params": "String key",
-      "doc": "Unique identifier string from entity ID\n  String get uid => id.value;\n\n  /// Runtime type of entity data\n  String get type => data?.runtimeType.toString() ?? T.toString();\n\n  /// Type-safe metadata accessor\n  TypedMetadata get typedMeta => TypedMetadata(meta);\n\n  /// Gets typed value from metadata\n  R? getMetadataAs<R>(String key) => getMetadata<R>(key);\n\n  /// Gets typed value from metadata\n  R? getMetadata<R>(String key) => _getMetadataTyped<R>(key);\n\n  /// Gets raw value from metadata\n  Object? getMetadataValue(String key) => meta[key];\n\n  /// Checks if metadata contains a key"
+      "doc": "Unique identifier string from entity ID\n  String get uid => id.value;\n\n  /// Runtime type of entity data\n  String get type => data?.runtimeType.toString() ?? T.toString();\n\n  /// Type-safe metadata accessor\n  TypedMetadata get typedMeta => TypedMetadata(meta);\n\n  /// Gets typed value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [R] - The target type to convert the value to\n  /// Returns the value converted to type R or null if conversion fails\n  Object? getMetadataAs<R>(String key) => getMetadata<R>(key);\n\n  /// Gets typed value from metadata\n  /// [key] - The metadata key to retrieve\n  /// [R] - The target type to convert the value to\n  /// Returns the value converted to type R or null if conversion fails\n  Object? getMetadata<R>(String key) => _getMetadataTyped<R>(key);\n\n  /// Gets raw value from metadata without type conversion\n  /// [key] - The metadata key to retrieve\n  /// Returns the raw Object value or null if key doesn't exist\n  Object? getMetadataValue(String key) => meta[key];\n\n  /// Checks if metadata contains a key\n  /// [key] - The metadata key to check\n  /// Returns true if the key exists in metadata, false otherwise"
     },
     "filterMetadata": {
       "file": "lib/src/domain/core/core_entity.dart",
       "params": "bool Function(String key, Object value) predicate,",
-      "doc": "Gets typed metadata with default fallback\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  R getMetadataOrDefault<R>(String key, R defaultValue) {\n    return _getMetadataTyped<R>(key) ?? defaultValue;\n  }\n\n  /// Returns filtered metadata based on predicate\n  /// [predicate] - Function that tests each key and value"
+      "doc": "Gets typed metadata with default fallback\n  /// [key] - The metadata key to retrieve\n  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted\n  Object? getMetadataOrDefault<R>(String key, R defaultValue) {\n    return _getMetadataTyped<R>(key) ?? defaultValue;\n  }\n\n  /// Returns filtered metadata based on predicate\n  /// [predicate] - Function that tests each key and value"
     },
     "updateMetadata": {
       "file": "lib/src/domain/core/core_entity.dart",
@@ -3547,25 +2794,10 @@
   },
   "categories": {
     "entities": [
-      "IEntityRepository",
-      "QueryParams",
-      "SearchParams",
-      "SyncParams",
-      "HierarchyParams",
-      "WatchParams",
-      "HierarchyQueryParams",
-      "VersionQuery",
-      "PagedResult",
-      "SearchResult",
-      "SyncResult",
-      "SyncProgress",
-      "LockState",
-      "EntityAuditReport",
-      "EntityRelation",
-      "EntityCreateConfig",
-      "EntityCloneConfig",
-      "EntityBuilder",
-      "EntityCloneBuilder",
+      "EntityCreationConfig",
+      "EntityCloningConfig",
+      "EntityCreationBuilder",
+      "EntityCloningBuilder",
       "EntityFactory",
       "OwnerData",
       "SiteData",
@@ -3582,17 +2814,8 @@
       "EntityConfigDefaults",
       "EntityConfig"
     ],
-    "repositories": [
-      "EventAwareRepository",
-      "IEventStore",
-      "EventQuery",
-      "EventMetadata",
-      "AggregateRepositoryBase",
-      "EntityNotFoundException"
-    ],
-    "services": [
-      "EventMigrationService"
-    ],
+    "repositories": [],
+    "services": [],
     "value_objects": [
       "EmailAddress",
       "PhoneNumber",

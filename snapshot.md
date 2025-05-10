@@ -24,17 +24,17 @@
 ## Codebase Statistics
 
 ```
-Total Dart Files: 22
-Total Classes: 75
-Total Interfaces: 10
+Total Dart Files: 14
+Total Classes: 52
+Total Interfaces: 6
 Total Enums: 12
 Total Typedefs: 8
-Total Functions: 78
+Total Functions: 72
 
 Domain Components:
-  Entities: 34
-  Repositories: 6
-  Services: 1
+  Entities: 19
+  Repositories: 0
+  Services: 0
   Value Objects: 14
 ```
 
@@ -256,13 +256,6 @@ try {
 
 ## Project Structure
 
-- `lib/data_manager.dart` - Component of the data manager system
-- `lib/src/application/extensions/domain_event_extensions.dart` - Extension methods for domain event
-- `lib/src/application/providers/event_service_provider.dart` - Provider class that connects domain model with the application services
-class EventServiceProvider {...
-- `lib/src/application/services/event_migration_service.dart` - Service responsible for handling domain event schema migrations
-class EventMigrationService {
-  /// ...
 - `lib/src/domain/core/core_entity.dart` - Default values and configurations for entities
 abstract class EntityDefaults {
   /// Schema version ...
@@ -274,17 +267,14 @@ abstract class DataManagerException implements Exce...
 - `lib/src/domain/entities/base_entity.dart` - Type aliases for improved code readability
 typedef EntityVersionVector = Map<String, int>;
 typedef E...
-- `lib/src/domain/entities/entity_factory.dart` - Configuration object for creating new entities.
+- `lib/src/domain/entities/entity_factory.dart` - Configuration data for new entity creation   Contains core entity information, hierarchy data, and c...
 - `lib/src/domain/entities/entity_types.dart` - Domain-specific data models for business entities
 @freezed
 sealed class OwnerData with _$OwnerData {...
-- `lib/src/domain/events/domain_event.dart` - Domain Event System  ===================   This module provides a structured approach to domain events in a clean architecture.
-- `lib/src/domain/repositories/aggregate/aggregate_repository_base.dart` - Repository for managing aggregate repository base data
-- `lib/src/domain/repositories/entity/i_entity_repository.dart` - Repository for managing i entity data
-- `lib/src/domain/repositories/event/i_event_store.dart` - Core event store interface for domain event persistence
-abstract class IEventStore {
-  // Event oper...
-- `lib/src/domain/repositories/event_aware_repository.dart` - Repository for managing event aware data
+- `lib/src/domain/events/domain_event.dart` - System-wide event defaults
+abstract class EventDefaults {
+  static const version = 0;
+  static const...
 - `lib/src/domain/value_objects/contact_value_objects.dart` - Value objects related to contact
 - `lib/src/domain/value_objects/enum_objects.dart` - Defines priority levels for entities in the data manager.
 - `lib/src/domain/value_objects/identity_value_objects.dart` - Entity definition for identity value objects
@@ -338,41 +328,6 @@ sealed class UserAction with _$UserActi...
       '$street, $city${state != null ? ', $state' : ''}, $country';
 
   factory Address.fromJson(Map<String, Object> json)`
-
-### `AggregateRepositoryBase`
-
-**File:** `lib/src/domain/repositories/aggregate/aggregate_repository_base.dart`
-
-**Properties:**
-
-- `IEventStore _eventStore`
-- `final events`
-- `final event`
-
-**Methods:**
-
-- `AggregateRepositoryBase(this._eventStore);
-
-  Future<T> getById(EntityId id) async {
-    final events = await _eventStore.getEvents(id);
-    if (events.isEmpty) throw EntityNotFoundException(id);
-
-    return reconstituteFromEvents(events);
-  }
-
-  Future<void> save(T aggregate) async {
-    await _saveAggregate(aggregate);
-    await _publishPendingEvents(aggregate.pendingEvents);
-  }
-
-  // Template methods
-  Future<T> reconstituteFromEvents(List<DomainEvent> events);
-  Future<void> _saveAggregate(T aggregate);
-  Future<Map<String, BaseEntity>> loadRelatedEntities(T aggregate);
-
-  Future<void> _publishPendingEvents(List<String> eventIds) async {
-    for (final eventId in eventIds)`
-- `if(event.isNotEmpty)`
 
 ### `BaseEntityModel`
 
@@ -818,21 +773,31 @@ sealed class UserAction with _$UserActi...
   TypedMetadata get typedMeta => TypedMetadata(meta);
 
   /// Gets typed value from metadata
-  R? getMetadataAs<R>(String key) => getMetadata<R>(key);
+  /// [key] - The metadata key to retrieve
+  /// [R] - The target type to convert the value to
+  /// Returns the value converted to type R or null if conversion fails
+  Object? getMetadataAs<R>(String key) => getMetadata<R>(key);
 
   /// Gets typed value from metadata
-  R? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
+  /// [key] - The metadata key to retrieve
+  /// [R] - The target type to convert the value to
+  /// Returns the value converted to type R or null if conversion fails
+  Object? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
 
-  /// Gets raw value from metadata
+  /// Gets raw value from metadata without type conversion
+  /// [key] - The metadata key to retrieve
+  /// Returns the raw Object value or null if key doesn't exist
   Object? getMetadataValue(String key) => meta[key];
 
   /// Checks if metadata contains a key
+  /// [key] - The metadata key to check
+  /// Returns true if the key exists in metadata, false otherwise
   bool hasMetadata(String key) => meta.containsKey(key);
 
   /// Gets typed metadata with default fallback
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
-  R getMetadataOrDefault<R>(String key, R defaultValue) {
+  Object? getMetadataOrDefault<R>(String key, R defaultValue) {
     return _getMetadataTyped<R>(key) ?? defaultValue;
   }
 
@@ -854,7 +819,7 @@ sealed class UserAction with _$UserActi...
     List<String>? removeKeys,
   }) {
 - `return id` - Gets typed value from metadata safely
-  R? _getMetadataTyped<R>(String key) {
+  Object? _getMetadataTyped<R>(String key) {
     if (!meta.containsKey(key)) return null;
     return typedMeta._convertSafely<R>(meta[key]);
   }
@@ -875,6 +840,8 @@ sealed class UserAction with _$UserActi...
 - `return data`
 - `return null`
 - `final propertyValue` - Provides unified access to properties and metadata
+  /// Properties take precedence over metadata with same key
+  /// Provides unified access to properties and metadata
   /// Properties take precedence over metadata with same key
   operator [](String key) {
 - `return propertyValue`
@@ -914,19 +881,29 @@ sealed class UserAction with _$UserActi...
   TypedMetadata get typedMeta => TypedMetadata(meta);
 
   /// Gets typed value from metadata
-  R? getMetadataAs<R>(String key) => getMetadata<R>(key);
+  /// [key] - The metadata key to retrieve
+  /// [R] - The target type to convert the value to
+  /// Returns the value converted to type R or null if conversion fails
+  Object? getMetadataAs<R>(String key) => getMetadata<R>(key);
 
   /// Gets typed value from metadata
-  R? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
+  /// [key] - The metadata key to retrieve
+  /// [R] - The target type to convert the value to
+  /// Returns the value converted to type R or null if conversion fails
+  Object? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
 
-  /// Gets raw value from metadata
+  /// Gets raw value from metadata without type conversion
+  /// [key] - The metadata key to retrieve
+  /// Returns the raw Object value or null if key doesn't exist
   Object? getMetadataValue(String key) => meta[key];
 
   /// Checks if metadata contains a key
+  /// [key] - The metadata key to check
+  /// Returns true if the key exists in metadata, false otherwise
 - `filterMetadata(bool Function(String key, Object value) predicate,)` - Gets typed metadata with default fallback
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
-  R getMetadataOrDefault<R>(String key, R defaultValue) {
+  Object? getMetadataOrDefault<R>(String key, R defaultValue) {
     return _getMetadataTyped<R>(key) ?? defaultValue;
   }
 
@@ -943,7 +920,7 @@ sealed class UserAction with _$UserActi...
   }
 
   /// Gets typed value from metadata safely
-  R? _getMetadataTyped<R>(String key)`
+  Object? _getMetadataTyped<R>(String key)`
 - `if(!meta.containsKey(key)) return null;
     return typedMeta._convertSafely<R>(meta[key]);
   }
@@ -952,6 +929,8 @@ sealed class UserAction with _$UserActi...
   Object? getProperty(String key)`
 - `switch(key)`
 - `if(propertyValue != null)` - Provides unified access to properties and metadata
+  /// Properties take precedence over metadata with same key
+  /// Provides unified access to properties and metadata
   /// Properties take precedence over metadata with same key
   operator [](String key) {
     final propertyValue = getProperty(key);
@@ -1137,29 +1116,6 @@ sealed class UserAction with _$UserActi...
     );
   }
 
-  // TODO: Temporarily disabled validation events
-  /* 
-  factory DomainEventModel.validationPerformed({
-    required EventId id,
-    required EntityId entityId,
-    required String entityType,
-    required UserAction action,
-    required ValidationResult result,
-  })`
-- `DomainEventModel(id: id,
-      entityId: entityId,
-      entityType: entityType,
-      eventType: EventType.validated.name,
-      timestamp: action.timestamp,
-      initiator: action,
-      changes: {
-        'isValid': result.isValid,
-        'issues': result.issues,
-      },
-    );
-  }
-  */
-
   /// Schema validation
   bool hasValidSchema()`
 - `isBackwardsCompatible()`
@@ -1191,106 +1147,62 @@ sealed class UserAction with _$UserActi...
 
   bool isValid()`
 
-### `EntityAuditReport`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `List<UserAction> modifications`
-- `List<UserAction> accesses`
-- `Map<String, int> operationCounts`
-- `DateTime generatedAt`
-
-### `EntityBuilder`
-
-**File:** `lib/src/domain/entities/entity_factory.dart`
-
-**Properties:**
-
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `final config`
-
-**Methods:**
-
-- `withName(String name)`
-- `withUser(AuthUser user)`
-- `withData(T data)`
-- `withDescription(String description)`
-- `withParentPath(String parentPath)`
-- `withParentId(EntityId parentId)`
-- `withAncestors(List<EntityId> ancestors)`
-- `withMeta(Map<String, Object> meta)`
-- `withTags(List<String> tags)`
-- `withLabels(Map<String, String> labels)`
-- `withPriority(EntityPriority priority)`
-- `withStage(EntityStage stage)`
-- `withExpiryDate(DateTime expiryDate)`
-- `isPublic(bool isPublic)`
-- `build()`
-- `if(_name == null)`
-- `ArgumentError('Entity name is required');
-    }
-    if (_user == null)`
-- `ArgumentError('User is required');
-    }
-    if (_data == null)`
-
 ### `EntityClassification`
 
 **File:** `lib/src/domain/entities/base_entity.dart`
 
-### `EntityCloneBuilder`
+### `EntityCloningBuilder`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
 **Properties:**
 
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
+- `return this` - Sets the source entity to clone
+  EntityCloningBuilder<T> fromSource(BaseEntityModel<T> source) {
+    _source = source;
+- `return this` - Sets the user performing the clone operation
+  EntityCloningBuilder<T> withUser(AuthUser user) {
+    _user = user;
+- `return this` - Sets the name for the cloned entity
+  EntityCloningBuilder<T> withName(String newName) {
+    _newName = newName;
+- `return this` - Sets the path for the cloned entity
+  EntityCloningBuilder<T> withPath(String newPath) {
+    _newPath = newPath;
+- `return this` - Sets custom metadata for the cloned entity
+  EntityCloningBuilder<T> withMeta(Map<String, Object> newMeta) {
+    _newMeta = newMeta;
+- `return this` - Sets labels for the cloned entity
+  EntityCloningBuilder<T> withLabels(Map<String, String> newLabels) {
+    _newLabels = newLabels;
+- `return this` - Sets tags for the cloned entity
+  EntityCloningBuilder<T> withTags(List<String> newTags) {
+    _newTags = newTags;
 - `final config`
 
 **Methods:**
 
-- `fromSource(BaseEntityModel<T> source)`
-- `withUser(AuthUser user)`
-- `withName(String newName)`
-- `withPath(String newPath)`
-- `withMeta(Map<String, Object> newMeta)`
-- `withLabels(Map<String, String> newLabels)`
-- `withTags(List<String> newTags)`
+- `fromSource(BaseEntityModel<T> source)` - Sets the source entity to clone
+- `withUser(AuthUser user)` - Sets the user performing the clone operation
+- `withName(String newName)` - Sets the name for the cloned entity
+- `withPath(String newPath)` - Sets the path for the cloned entity
+- `withMeta(Map<String, Object> newMeta)` - Sets custom metadata for the cloned entity
+- `withLabels(Map<String, String> newLabels)` - Sets labels for the cloned entity
+- `withTags(List<String> newTags)` - Sets tags for the cloned entity
 - `build()`
 - `if(_source == null)`
 - `ArgumentError('Source entity is required');
     }
     if (_user == null)`
 
-### `EntityCloneConfig`
+### `EntityCloningConfig`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
 **Properties:**
 
-- `BaseEntityModel<T> source`
-- `AuthUser user`
+- `BaseEntityModel<T> source` - Source entity to clone
+- `AuthUser user` - User performing the cloning operation
 
 ### `EntityConfig`
 
@@ -2134,15 +2046,90 @@ sealed class UserAction with _$UserActi...
 - `String pathSeparator` - Character used to separate path segments
 - `String invalidPathChars` - Regular expression pattern for invalid path characters
 
-### `EntityCreateConfig`
+### `EntityCreationBuilder`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
 **Properties:**
 
-- `String name`
-- `AuthUser user`
-- `T data`
+- `return this` - Sets the name for the entity
+  EntityCreationBuilder<T> withName(String name) {
+    _name = name;
+- `return this` - Sets the user creating the entity
+  EntityCreationBuilder<T> withUser(AuthUser user) {
+    _user = user;
+- `return this` - Sets the type-specific payload data
+  EntityCreationBuilder<T> withData(T data) {
+    _data = data;
+- `return this` - Sets the description for the entity
+  EntityCreationBuilder<T> withDescription(String description) {
+    _description = description;
+- `return this` - Sets the parent path in the entity hierarchy
+  EntityCreationBuilder<T> withParentPath(String parentPath) {
+    _parentPath = parentPath;
+- `return this` - Sets the direct parent entity ID
+  EntityCreationBuilder<T> withParentId(EntityId parentId) {
+    _parentId = parentId;
+- `return this` - Sets the list of ancestor entity IDs
+  EntityCreationBuilder<T> withAncestors(List<EntityId> ancestors) {
+    _ancestors = ancestors;
+- `return this` - Sets custom metadata key-value pairs
+  EntityCreationBuilder<T> withMeta(Map<String, Object> meta) {
+    _meta = meta;
+- `return this` - Sets searchable tags
+  EntityCreationBuilder<T> withTags(List<String> tags) {
+    _tags = tags;
+- `return this` - Sets categorization labels
+  EntityCreationBuilder<T> withLabels(Map<String, String> labels) {
+    _labels = labels;
+- `return this` - Sets the entity importance level
+  EntityCreationBuilder<T> withPriority(EntityPriority priority) {
+    _priority = priority;
+- `return this` - Sets the workflow stage
+  EntityCreationBuilder<T> withStage(EntityStage stage) {
+    _stage = stage;
+- `return this` - Sets the expiry date for the entity
+  EntityCreationBuilder<T> withExpiryDate(DateTime expiryDate) {
+    _expiryDate = expiryDate;
+- `return this` - Sets whether the entity is publicly accessible
+  EntityCreationBuilder<T> isPublic(bool isPublic) {
+    _isPublic = isPublic;
+- `final config`
+
+**Methods:**
+
+- `withName(String name)` - Sets the name for the entity
+- `withUser(AuthUser user)` - Sets the user creating the entity
+- `withData(T data)` - Sets the type-specific payload data
+- `withDescription(String description)` - Sets the description for the entity
+- `withParentPath(String parentPath)` - Sets the parent path in the entity hierarchy
+- `withParentId(EntityId parentId)` - Sets the direct parent entity ID
+- `withAncestors(List<EntityId> ancestors)` - Sets the list of ancestor entity IDs
+- `withMeta(Map<String, Object> meta)` - Sets custom metadata key-value pairs
+- `withTags(List<String> tags)` - Sets searchable tags
+- `withLabels(Map<String, String> labels)` - Sets categorization labels
+- `withPriority(EntityPriority priority)` - Sets the entity importance level
+- `withStage(EntityStage stage)` - Sets the workflow stage
+- `withExpiryDate(DateTime expiryDate)` - Sets the expiry date for the entity
+- `isPublic(bool isPublic)` - Sets whether the entity is publicly accessible
+- `build()`
+- `if(_name == null)`
+- `ArgumentError('Entity name is required');
+    }
+    if (_user == null)`
+- `ArgumentError('User is required');
+    }
+    if (_data == null)`
+
+### `EntityCreationConfig`
+
+**File:** `lib/src/domain/entities/entity_factory.dart`
+
+**Properties:**
+
+- `String name` - User-provided name for the entity
+- `AuthUser user` - User creating the entity
+- `T data` - Type-specific payload data
 
 ### `EntityDefaults`
 
@@ -2169,11 +2156,11 @@ sealed class UserAction with _$UserActi...
 - `final _validTypes` - Valid entity types that can be created with this factory
 - `final now` - Creates a new entity from the provided configuration.
   ///
-  /// For a more fluent API, consider using [EntityBuilder] instead.
+  /// For a more fluent API, consider using [EntityCreationBuilder] instead.
   ///
   /// Example with builder pattern:
   /// ```dart
-  /// final entity = EntityBuilder<SiteModel>()
+  /// final entity = EntityCreationBuilder<SiteModel>()
   ///   .withName('Site Name')
   ///   .withUser(currentUser)
   ///   .withData(siteData)
@@ -2187,7 +2174,7 @@ sealed class UserAction with _$UserActi...
   /// @throws PathValidationException if the provided path is invalid
   /// @throws HierarchyValidationException if a circular reference is detected
   static BaseEntityModel<T> create<T extends Object>(
-    EntityCreateConfig<T> config,
+    EntityCreationConfig<T> config,
   ) {
     if (!_validTypes.contains(T)) {
       throw ArgumentError('Invalid type: ${T.toString()}');
@@ -2199,11 +2186,11 @@ sealed class UserAction with _$UserActi...
 - `final searchIndex`
 - `final now` - Creates a clone of an existing entity with optional modifications.
   ///
-  /// For a more fluent API, consider using [EntityCloneBuilder] instead.
+  /// For a more fluent API, consider using [EntityCloningBuilder] instead.
   ///
   /// Example with builder pattern:
   /// ```dart
-  /// final clonedEntity = EntityCloneBuilder<SiteModel>()
+  /// final clonedEntity = EntityCloningBuilder<SiteModel>()
   ///   .fromSource(existingEntity)
   ///   .withUser(currentUser)
   ///   .withName('New Name')
@@ -2213,7 +2200,7 @@ sealed class UserAction with _$UserActi...
   /// @param config The configuration for cloning, including source entity and overrides
   /// @return A new entity based on the source with applied modifications
   static BaseEntityModel<T> clone<T extends Object>(
-    EntityCloneConfig<T> config,
+    EntityCloningConfig<T> config,
   ) {
 - `final userAction`
 - `final id`
@@ -2226,20 +2213,20 @@ sealed class UserAction with _$UserActi...
 
 - `if(!_validTypes.contains(T))` - Valid entity types that can be created with this factory
   static final _validTypes = <Type>{
-    OwnerModel,
-    SiteModel,
-    EquipmentModel,
-    VendorModel,
-    PersonnelModel,
+    OwnerData,
+    SiteData,
+    EquipmentData,
+    VendorData,
+    PersonnelData,
   };
 
   /// Creates a new entity from the provided configuration.
   ///
-  /// For a more fluent API, consider using [EntityBuilder] instead.
+  /// For a more fluent API, consider using [EntityCreationBuilder] instead.
   ///
   /// Example with builder pattern:
   /// ```dart
-  /// final entity = EntityBuilder<SiteModel>()
+  /// final entity = EntityCreationBuilder<SiteModel>()
   ///   .withName('Site Name')
   ///   .withUser(currentUser)
   ///   .withData(siteData)
@@ -2253,7 +2240,7 @@ sealed class UserAction with _$UserActi...
   /// @throws PathValidationException if the provided path is invalid
   /// @throws HierarchyValidationException if a circular reference is detected
   static BaseEntityModel<T> create<T extends Object>(
-    EntityCreateConfig<T> config,
+    EntityCreationConfig<T> config,
   ) {
 - `ArgumentError('Invalid type: ${T.toString()}');
     }
@@ -2435,34 +2422,6 @@ sealed class UserAction with _$UserActi...
   /// [lastNameUpdate] - When the name was last changed
   /// [searchTerms] - Key-value pairs for enhanced searching
 
-### `EntityNotFoundException`
-
-**File:** `lib/src/domain/repositories/aggregate/aggregate_repository_base.dart`
-
-**Properties:**
-
-- `EntityId id`
-
-**Methods:**
-
-- `EntityNotFoundException(this.id);
-
-  @override
-  String toString()`
-
-### `EntityRelation`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `String type`
-- `EntityId sourceId`
-- `EntityId targetId`
-- `DateTime createdAt`
-- `UserAction createdBy`
-- `Map<String, Object> metadata`
-
 ### `EntitySecurity`
 
 **File:** `lib/src/domain/entities/base_entity.dart`
@@ -2542,97 +2501,6 @@ sealed class UserAction with _$UserActi...
   /// Returns updated EquipmentData reflecting the applied event
 - `switch(event.eventType)`
 
-### `EventAwareRepository`
-
-**File:** `lib/src/domain/repositories/event_aware_repository.dart`
-
-**Properties:**
-
-- `IEventStore eventStore`
-- `final action`
-- `final event`
-- `final result`
-- `return result`
-- `final events`
-- `final action`
-- `final events`
-- `final results`
-- `return results`
-- `final events`
-
-**Methods:**
-
-- `EventAwareRepository(this.eventStore);
-
-  @override
-  Future<BaseEntity<T>> operate(
-    OperationType type,
-    EntityId id, [
-    Map<String, Object>? params,
-  ]) async {
-    if (type == OperationType.read)`
-- `_executeOperation(type, id, params);
-    }
-
-    final action = UserAction(uid: 'system', timestamp: DateTime.now());
-    final event = _createEvent(type, id, params, action);
-    final result = await _executeOperation(type, id, params);
-    await eventStore.store(event);
-    return result;
-  }
-
-  Future<BaseEntity<T>> _executeOperation(
-    OperationType type,
-    EntityId id, [
-    Map<String, Object>? params,
-  ]) async {
-    // Implement concrete operation logic in subclasses
-    throw UnimplementedError();
-  }
-
-  // Protected methods to be implemented
-  Future<T> loadEntity(EntityId id);
-
-  // Event management methods
-  Stream<DomainEvent> watchEntityEvents(EntityId id)`
-- `if(events.isEmpty)`
-- `StateError('No events found for entity');
-    }
-
-    BaseEntity<T>? result;
-    for (final event in events)`
-- `_createEvent(OperationType type,
-    EntityId id,
-    Map<String, Object>? params,
-    UserAction initiator,)`
-- `DomainEvent(id: EventId(const Uuid().v4()),
-      entityId: id,
-      eventType: type.name,
-      timestamp: DateTime.now(),
-      initiator: initiator,
-      changes: params ?? {},
-      entityType: T.toString(),
-    );
-  }
-
-  @override
-  Future<List<BaseEntity<T>>> batchOperate(
-    OperationType type,
-    List<EntityId> ids, [
-    Map<String, Object>? params,
-  ]) async {
-    final action = UserAction(uid: 'system', timestamp: DateTime.now());
-    final events =
-        ids.map((id)`
-- `replayEvents(EntityId id, DateTime from, DateTime to) async {
-    final events = await eventStore.queryEvents(EventQuery(
-      entityId: id,
-      fromDate: from,
-      toDate: to,
-    ));
-
-    for (final event in events)`
-
 ### `EventDefaults`
 
 **File:** `lib/src/domain/events/domain_event.dart`
@@ -2653,149 +2521,6 @@ sealed class UserAction with _$UserActi...
 
   factory EventId.generate()`
 - `toString()`
-
-### `EventMetadata`
-
-**File:** `lib/src/domain/repositories/event/i_event_store.dart`
-
-**Properties:**
-
-- `Map<String, int> versionVectors`
-- `Map<String, Object> customData`
-- `DateTime timestamp`
-- `bool isSnapshot`
-
-### `EventMigrationService`
-
-**File:** `lib/src/application/services/event_migration_service.dart`
-
-**Properties:**
-
-- `return event` - Migrates a domain event to the target schema version
-  ///
-  /// This method implements the migration logic that was previously in the domain layer,
-  /// following Clean Architecture principles by keeping the implementation details
-  /// out of the domain layer.
-  DomainEventModel migrateEventSchema(
-    DomainEventModel event,
-    String targetVersion,
-  ) {
-    // Return the event as is if it's already at the target version
-    if (event.schemaVersion == targetVersion) {
-- `final migrationPath`
-- `final schemaChanges`
-- `var migratedEvent`
-- `return event` - Applies version-specific migration transformations
-  DomainEventModel _applyMigration(
-    DomainEventModel event,
-    String targetVersion,
-  ) {
-    // Implementation of migration logic for different versions
-    switch ('${event.schemaVersion}-$targetVersion') {
-      // Example: Migrating from v1.0.0 to v1.1.0
-      case '1.0.0-1.1.0':
-        return _migrateFrom100To110(event);
-
-      // Add more migration paths as needed
-
-      default:
-        // For now, if there's no specific migration needed, return as-is
-- `final migratedChanges` - Example migration implementation from v1.0.0 to v1.1.0
-  DomainEventModel _migrateFrom100To110(DomainEventModel event) {
-    // Deep copy the changes map to avoid mutation
-- `final dateStr`
-- `final date`
-
-**Methods:**
-
-- `migrateEventSchema(DomainEventModel event,
-    String targetVersion,)` - Migrates a domain event to the target schema version
-  ///
-  /// This method implements the migration logic that was previously in the domain layer,
-  /// following Clean Architecture principles by keeping the implementation details
-  /// out of the domain layer.
-- `if(event.schemaVersion == targetVersion)`
-- `if(!EventSchemaConfig.supportedVersions.contains(targetVersion))`
-- `UnsupportedError('Target schema version $targetVersion is not supported',
-      );
-    }
-
-    final migrationPath = event.getMigrationPath(targetVersion);
-    if (migrationPath == null)`
-- `UnsupportedError('No migration path from ${event.schemaVersion} to $targetVersion',
-      );
-    }
-
-    // Track schema changes during migration
-    final schemaChanges = Map<String, Object>.from(event.schemaChanges ?? {});
-    schemaChanges['migratedFrom'] = event.schemaVersion;
-    schemaChanges['migratedTo'] = targetVersion;
-    schemaChanges['migratedAt'] = DateTime.now().toIso8601String();
-
-    // Apply version-specific migrations
-    var migratedEvent = _applyMigration(event, targetVersion);
-
-    // Update schema metadata
-    return migratedEvent.copyWith(
-      schemaVersion: targetVersion,
-      previousSchemaVersion: event.schemaVersion,
-      schemaChanges: schemaChanges,
-    );
-  }
-
-  /// Applies version-specific migration transformations
-  DomainEventModel _applyMigration(
-    DomainEventModel event,
-    String targetVersion,)`
-- `switch('${event.schemaVersion}-$targetVersion')`
-- `_migrateFrom100To110(event);
-
-      // Add more migration paths as needed
-
-      default:
-        // For now, if there's no specific migration needed, return as-is
-        return event;
-    }
-  }
-
-  /// Example migration implementation from v1.0.0 to v1.1.0
-  DomainEventModel _migrateFrom100To110(DomainEventModel event)`
-- `if(migratedChanges.containsKey('oldFieldName'))`
-- `if(migratedChanges.containsKey('dateField') &&
-        migratedChanges['dateField'] is String)`
-
-### `EventQuery`
-
-**File:** `lib/src/domain/repositories/event/i_event_store.dart`
-
-**Properties:**
-
-- `bool includeSystemEvents`
-- `bool ascending`
-
-**Methods:**
-
-- `EventQuery({
-    this.entityId,
-    this.fromDate,
-    this.toDate,
-    this.eventType,
-    this.includeSystemEvents = false,
-    this.limit,
-    this.filters,
-    this.ascending = true,
-  });
-
-  EventQuery copyWith({
-    EntityId? entityId,
-    DateTime? fromDate,
-    DateTime? toDate,
-    String? eventType,
-    bool? includeSystemEvents,
-    int? limit,
-    Map<String, Object>? filters,
-    bool? ascending,
-  })`
 
 ### `EventSchema`
 
@@ -2826,25 +2551,6 @@ sealed class UserAction with _$UserActi...
 - `final supportedVersions`
 - `final migrationPaths`
 
-### `EventServiceProvider`
-
-**File:** `lib/src/application/providers/event_service_provider.dart`
-
-**Properties:**
-
-- `EventMigrationService _migrationService`
-
-**Methods:**
-
-- `EventServiceProvider({EventMigrationService? migrationService})
-    : _migrationService = migrationService ?? EventMigrationService();
-
-  /// Extension method to allow DomainEventModel to use the migration service
-  /// without violating clean architecture principles
-  DomainEventModel migrateEventSchema(
-    DomainEventModel event,
-    String targetVersion,)`
-
 ### `FieldValidationException`
 
 **File:** `lib/src/domain/core/exceptions.dart`
@@ -2852,24 +2558,6 @@ sealed class UserAction with _$UserActi...
 ### `HierarchyException`
 
 **File:** `lib/src/domain/core/exceptions.dart`
-
-### `HierarchyParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `HierarchyDirection direction`
-- `bool includeDeleted`
-
-### `HierarchyQueryParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `List<String> filter`
-- `Map<String, Object> metadata`
 
 ### `HierarchyValidationException`
 
@@ -2879,20 +2567,6 @@ sealed class UserAction with _$UserActi...
 
 - `int depth`
 - `List<String> path`
-
-### `IEntityRepository`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `bool includeRoot`
-- `bool recursive`
-- `bool includeDeleted`
-
-### `IEventStore`
-
-**File:** `lib/src/domain/repositories/event/i_event_store.dart`
 
 ### `IntegrityException`
 
@@ -2906,16 +2580,6 @@ sealed class UserAction with _$UserActi...
 ### `LockException`
 
 **File:** `lib/src/domain/core/exceptions.dart`
-
-### `LockState`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `bool isLocked`
-- `int attemptCount`
-- `Map<String, dynamic> metadata`
 
 ### `Measurement`
 
@@ -2978,17 +2642,6 @@ sealed class UserAction with _$UserActi...
   ///
   /// Processes event data to create new entity state without mutation
 - `switch(event.eventType)`
-
-### `PagedResult`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `List<T> items`
-- `int total`
-- `int page`
-- `int pageSize`
 
 ### `PathValidationException`
 
@@ -3076,17 +2729,6 @@ sealed class UserAction with _$UserActi...
 
 **File:** `lib/src/domain/value_objects/status_value_objects.dart`
 
-### `QueryParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `Map<String, Object> filters`
-- `Map<String, SortOrder> sort`
-- `List<String> include`
-- `bool withDeleted`
-
 ### `Range`
 
 **File:** `lib/src/domain/value_objects/measurement_value_objects.dart`
@@ -3151,28 +2793,6 @@ sealed class UserAction with _$UserActi...
 - `if(!window.contains(time)) return false;
     return !breakTimes.any((break_)`
 
-### `SearchParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `String query`
-- `Map<String, Object> filters`
-- `int limit`
-- `List<String> fields`
-
-### `SearchResult`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `List<T> items`
-- `int totalCount`
-- `double searchTime`
-- `Map<String, Object> facets`
-
 ### `SiteData`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
@@ -3221,36 +2841,6 @@ sealed class UserAction with _$UserActi...
   /// Returns updated SiteData reflecting the applied event
 - `switch(event.eventType)`
 
-### `SyncParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `Duration timeout`
-- `bool force`
-- `List<String> collections`
-
-### `SyncProgress`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `int total`
-- `int current`
-- `String status`
-- `double percentage`
-
-### `SyncResult`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `Map<String, Object> stats`
-- `List<String> errors`
-
 ### `TaskStatus`
 
 **File:** `lib/src/domain/value_objects/status_value_objects.dart`
@@ -3279,105 +2869,222 @@ sealed class UserAction with _$UserActi...
 **Properties:**
 
 - `Map<String, Object> _meta`
-- `return null` - Checks if metadata contains a key
+- `final dateTime` - Checks if metadata contains a key
   bool containsKey(String key) => _meta.containsKey(key);
 
   /// Converts value to specified type with error handling
-  /// Returns null if conversion fails
-  T? _convertSafely<T>(Object? value) {
+  /// [value] - The value to be converted to type T
+  /// [key] - Optional key name for better error reporting
+  /// Returns the converted value or null if conversion fails
+  Object? _convertSafely<T>(Object? value, {String? key}) {
+    if (value == null) return null;
+
     try {
-      if (value == null) {
-- `final dateTime`
+      // Special handling for DateTime
+      if (T == DateTime) {
+- `return value`
+- `return true`
+- `return null`
+- `return true`
 - `return null`
 - `final value` - Gets typed value from metadata
-  T? _getValueTyped<T>(String key) {
+  /// [key] - The metadata key to retrieve
+  /// [T] - The target type to convert the value to
+  /// Returns the value converted to type T or null if key doesn't exist or conversion fails
+  Object? _getValueTyped<T>(String key) {
+    if (_cache.containsKey(key)) return _cache[key] as T?;
     if (!_meta.containsKey(key)) return null;
-    return _convertSafely<T>(_meta[key]);
-  }
-
-  /// Gets string value from metadata
-  String? getString(String key) => _getValueTyped<String?>(key);
+- `return value`
+- `final value` - Gets string value from metadata 
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  /// Returns typed String value or the default value
+  String getString(String key, {String defaultValue = ''}) =>
+      (_getValueTyped<String>(key) ?? defaultValue) as String;
 
   /// Gets integer value from metadata
-  int? getInt(String key) => _getValueTyped<int?>(key);
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  /// Returns typed int value or the default value
+  int getInt(String key, {int defaultValue = 0}) =>
+      (_getValueTyped<int>(key) ?? defaultValue) as int;
 
   /// Gets double value from metadata
-  double? getDouble(String key) => _getValueTyped<double?>(key);
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  /// Returns typed double value or the default value
+  double getDouble(String key, {double defaultValue = 0.0}) =>
+      (_getValueTyped<double>(key) ?? defaultValue) as double;
 
   /// Gets boolean value from metadata
-  bool? getBool(String key) => _getValueTyped<bool?>(key);
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  /// Returns typed boolean value or the default value
+  bool getBool(String key, {bool defaultValue = false}) =>
+      (_getValueTyped<bool>(key) ?? defaultValue) as bool;
 
   /// Gets DateTime value from metadata
-  DateTime? getDateTime(String key) => _getValueTyped<DateTime?>(key);
-
-  /// Gets typed list from metadata
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  /// Returns typed DateTime value or the default value
+  DateTime? getDateTime(String key, {DateTime? defaultValue}) {
+- `final value` - Gets typed list from metadata
+  /// [key] - The metadata key containing a List to be converted
+  /// Returns a strongly-typed list or null if conversion fails
   List<R>? getListAs<R>(String key) =>
-      _getCollectionTyped<List, R>(key) as List<R>?;
+      _getCollectionTyped<List, R, Object>(key) as List<R>?;
 
   /// Gets typed map from metadata
-  Map<K, V>? getMapAs<K, V>(String key) =>
-      _getCollectionTyped<Map, V>(key) as Map<K, V>?;
+  /// [key] - The metadata key containing a Map to be converted
+  /// [K] - The key type for the map (must be an Object)
+  /// [V] - The value type for the map
+  /// Returns a strongly-typed map or null if conversion fails
+  Map<K, V>? getMapAs<K extends Object, V>(String key) =>
+      _getCollectionTyped<Map, V, K>(key) as Map<K, V>?;
 
   /// Handles collection types with error handling
-  Object? _getCollectionTyped<C, V>(String key) {
+  /// Ensures all elements match the expected type
+  /// [C] - The collection type (List or Map)
+  /// [V] - The value type (list elements or map values)
+  /// [K] - The key type for maps
+  Object? _getCollectionTyped<C, V, K extends Object>(String key) {
+- `final list`
+- `return null`
+- `final map`
+- `return null`
 - `return value`
 - `return null`
 - `return null`
+- `final value` - Gets nested metadata as another TypedMetadata instance
+  /// [key] - The key containing a Map that should be wrapped in TypedMetadata
+  /// Returns null if the value is not a Map`<String, Object>`
+  TypedMetadata? getNestedMetadata(String key) {
+- `return null`
+- `final value` - Tries multiple keys in sequence until finding a non-null value
+  /// [keys] - List of keys to try in order
+  /// Returns the first matching value or null if no matches
+  Object? getFirstMatching<T>(List<String> keys) {
+    for (final key in keys) {
+- `return null`
+- `Map<String, Object?> _cache` - Internal cache for previously converted values
 
 **Methods:**
 
-- `TypedMetadata(this._meta);
+- `Function(String key,
+    Object? value,
+    Type targetType,
+    Object? error,
+  )?
+  onConversionError;
+
+  TypedMetadata(this._meta, {this.onConversionError});
 
   /// Checks if metadata contains a key
   bool containsKey(String key)`
-- `if(value == null)` - Converts value to specified type with error handling
-  /// Returns null if conversion fails
-  T? _convertSafely<T>(Object? value) {
-    try {
-- `if(T == DateTime)`
-- `if(dateTime != null) return dateTime as T;
-        throw FormatException('Invalid DateTime string: $value');
-      }
+- `if(value == null) return null;
 
-      if (value is T)`
-- `TypeError();
-    } catch (e)`
-- `if(!_meta.containsKey(key)) return null;
-    return _convertSafely<T>(_meta[key]);
+    try {
+      // Special handling for DateTime
+      if (T == DateTime)` - Converts value to specified type with error handling
+  /// [value] - The value to be converted to type T
+  /// [key] - Optional key name for better error reporting
+  /// Returns the converted value or null if conversion fails
+  Object? _convertSafely<T>(Object? value, {String? key}) {
+- `if(value is T)`
+- `assert(()`
+- `assert(()`
+- `if(_cache.containsKey(key)) return _cache[key] as T?;
+    if (!_meta.containsKey(key)) return null;
+
+    final value = _convertSafely<T>(_meta[key], key: key);
+    _cache[key] = value;
+    return value;
   }
 
-  /// Gets string value from metadata
-  String? getString(String key)` - Gets typed value from metadata
-  T? _getValueTyped<T>(String key) {
-- `if(!_meta.containsKey(key) || value == null) return null;
-
-    if (value is C)` - Gets integer value from metadata
-  int? getInt(String key) => _getValueTyped<int?>(key);
-
-  /// Gets double value from metadata
-  double? getDouble(String key) => _getValueTyped<double?>(key);
-
-  /// Gets boolean value from metadata
-  bool? getBool(String key) => _getValueTyped<bool?>(key);
-
-  /// Gets DateTime value from metadata
-  DateTime? getDateTime(String key) => _getValueTyped<DateTime?>(key);
+  /// Gets string value from metadata 
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  /// Returns typed String value or the default value
+  String getString(String key, {String defaultValue = ''})` - Gets typed value from metadata
+  /// [key] - The metadata key to retrieve
+  /// [T] - The target type to convert the value to
+  /// Returns the value converted to type T or null if key doesn't exist or conversion fails
+  Object? _getValueTyped<T>(String key) {
+- `getInt(String key, {int defaultValue = 0})` - Gets integer value from metadata
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  /// Returns typed int value or the default value
+- `getDouble(String key, {double defaultValue = 0.0})` - Gets double value from metadata
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  /// Returns typed double value or the default value
+- `getBool(String key, {bool defaultValue = false})` - Gets boolean value from metadata
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  /// Returns typed boolean value or the default value
+- `return(value != null) ? value as DateTime : defaultValue;
+  }
 
   /// Gets typed list from metadata
-  List<R>? getListAs<R>(String key) =>
-      _getCollectionTyped<List, R>(key) as List<R>?;
+  /// [key] - The metadata key containing a List to be converted
+  /// Returns a strongly-typed list or null if conversion fails
+  List<R>? getListAs<R>(String key)` - Gets DateTime value from metadata
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  /// Returns typed DateTime value or the default value
+  DateTime? getDateTime(String key, {DateTime? defaultValue}) {
+    final value = _getValueTyped<DateTime>(key);
+- `if(!_meta.containsKey(key) || value == null) return null;
 
-  /// Gets typed map from metadata
-  Map<K, V>? getMapAs<K, V>(String key) =>
-      _getCollectionTyped<Map, V>(key) as Map<K, V>?;
+    if (value is C)` - Gets typed map from metadata
+  /// [key] - The metadata key containing a Map to be converted
+  /// [K] - The key type for the map (must be an Object)
+  /// [V] - The value type for the map
+  /// Returns a strongly-typed map or null if conversion fails
+  Map<K, V>? getMapAs<K extends Object, V>(String key) =>
+      _getCollectionTyped<Map, V, K>(key) as Map<K, V>?;
 
   /// Handles collection types with error handling
-  Object? _getCollectionTyped<C, V>(String key) {
+  /// Ensures all elements match the expected type
+  /// [C] - The collection type (List or Map)
+  /// [V] - The value type (list elements or map values)
+  /// [K] - The key type for maps
+  Object? _getCollectionTyped<C, V, K extends Object>(String key) {
     final value = _meta[key];
-- `if(C == List) return (value as List).cast<V>() as C;
-        if (C == Map) return (value as Map).cast<String, V>() as C;
-        return value;
-      } catch (e)`
+- `if(C == List && value is List)`
+- `for(final item in value)`
+- `if(item is V)`
+- `if(C == Map && value is Map)`
+- `for(final entry in value.entries)`
+- `if(entry.key is K && entry.value is V)`
+- `if(onConversionError != null)`
+- `if(value is Map<String, Object>)` - Gets nested metadata as another TypedMetadata instance
+  /// [key] - The key containing a Map that should be wrapped in TypedMetadata
+  /// Returns null if the value is not a Map`<String, Object>`
+  TypedMetadata? getNestedMetadata(String key) {
+    final value = _meta[key];
+- `TypedMetadata(value);
+    }
+    return null;
+  }
+
+  /// Tries multiple keys in sequence until finding a non-null value
+  /// [keys] - List of keys to try in order
+  /// Returns the first matching value or null if no matches
+  Object? getFirstMatching<T>(List<String> keys)`
+- `for(final key in keys)`
+- `if(value != null) return value;
+    }
+    return null;
+  }
+
+  /// Internal cache for previously converted values
+  final Map<String, Object?> _cache = {};
+
+  /// Clears the entire type conversion cache
+  void clearCache()`
+- `clearCacheEntry(String key)` - Clears a specific entry from the type conversion cache
+  /// [key] - The metadata key whose cached value should be removed
 
 ### `UserAction`
 
@@ -3514,39 +3221,7 @@ sealed class UserAction with _$UserActi...
 - `String currentVersion`
 - `String conflictingVersion`
 
-### `VersionQuery`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `EntityId entityId`
-- `bool includeMetadata`
-
-### `WatchParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `Duration debounceTime`
-
 ## Interfaces
-
-### `AggregateRepositoryBase`
-
-**File:** `lib/src/domain/repositories/aggregate/aggregate_repository_base.dart`
-
-**Methods:**
-
-- `AggregateRepositoryBase(this._eventStore)`
-- `if(events.isEmpty) throw EntityNotFoundException(id)`
-- `save(T aggregate) async {
-    await _saveAggregate(aggregate)`
-- `reconstituteFromEvents(List<DomainEvent> events)`
-- `_publishPendingEvents(List<String> eventIds) async {
-    for (final eventId in eventIds)`
-- `if(event.isNotEmpty)`
 
 ### `DataManagerException`
 
@@ -3574,44 +3249,6 @@ sealed class UserAction with _$UserActi...
 
 **File:** `lib/src/domain/entities/base_entity.dart`
 
-### `EventAwareRepository`
-
-**File:** `lib/src/domain/repositories/event_aware_repository.dart`
-
-**Methods:**
-
-- `EventAwareRepository(this.eventStore)`
-- `if(type == OperationType.read)`
-- `_executeOperation(type, id, params)`
-- `UnimplementedError()`
-- `loadEntity(EntityId id)`
-- `watchEntityEvents(EntityId id) =>
-      eventStore.watchEvents(id)`
-- `if(events.isEmpty)`
-- `StateError('No events found for entity')`
-- `for(final event in events)`
-- `_createEvent(OperationType type,
-    EntityId id,
-    Map<String, Object>? params,
-    UserAction initiator,)`
-- `DomainEvent(id: EventId(const Uuid().v4()),
-      entityId: id,
-      eventType: type.name,
-      timestamp: DateTime.now(),
-      initiator: initiator,
-      changes: params ?? {},
-      entityType: T.toString(),)`
-- `replayEvents(EntityId id, DateTime from, DateTime to) async {
-    final events = await eventStore.queryEvents(EventQuery(
-      entityId: id,
-      fromDate: from,
-      toDate: to,
-    ))`
-- `createSnapshot(DateTime timestamp) async {
-    await eventStore.createSnapshot(timestamp)`
-- `restoreFromSnapshot(DateTime timestamp) async {
-    await eventStore.restoreFromSnapshot(timestamp)`
-
 ### `EventDefaults`
 
 **File:** `lib/src/domain/events/domain_event.dart`
@@ -3619,47 +3256,6 @@ sealed class UserAction with _$UserActi...
 ### `EventSchemaConfig`
 
 **File:** `lib/src/domain/events/domain_event.dart`
-
-### `IEntityRepository`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Methods:**
-
-- `delete(EntityId id, {bool permanent = false})`
-- `addRelation(EntityId sourceId, String type, EntityId targetId)`
-- `getCanonicalPath(EntityId id)`
-- `moveEntity(EntityId id,
-    EntityId newParentId,)`
-- `detachFromParent(EntityId id)`
-- `acquireLock(EntityId id, UserAction user, {Duration? timeout})`
-- `extendLock(EntityId id, UserAction user, Duration extension)`
-- `watchLockState(EntityId id)`
-- `invalidateCache(EntityId id)`
-- `applyEvent(DomainEventModel event)`
-- `watchEvents(EntityId id)`
-- `hasVersionConflict(EntityId id, Map<String, int> versionVectors)`
-- `updateVersionVectors(EntityId id, 
-    Map<String, int> vectors,)`
-
-### `IEventStore`
-
-**File:** `lib/src/domain/repositories/event/i_event_store.dart`
-
-**Methods:**
-
-- `store(DomainEventModel event)`
-- `watchEvents(EntityId entityId)`
-- `createSnapshot(DateTime timestamp)`
-- `pruneEvents(DateTime olderThan)`
-- `updateVersionVectors(EntityId entityId,
-    Map<String, int> vectors,)`
-- `getVersionEvent(EntityId entityId, int version)`
-- `rebaseEvents(EntityId entityId,
-    List<DomainEventModel> newBaseEvents,)`
-- `getLatestSnapshot(EntityId entityId)`
-- `hasVersionConflict(EntityId entityId,
-    Map<String, int> versionVectors,)`
 
 ## Enums
 
@@ -4028,30 +3624,6 @@ abstract class DataManagerException implements Exception {
   @override
   String toString()`
 
-### `DomainEvent`
-
-**File:** `lib/src/domain/repositories/event_aware_repository.dart`
-
-**Signature:** `DomainEvent(id: EventId(const Uuid().v4()),
-      entityId: id,
-      eventType: type.name,
-      timestamp: DateTime.now(),
-      initiator: initiator,
-      changes: params ?? {},
-      entityType: T.toString(),
-    );
-  }
-
-  @override
-  Future<List<BaseEntity<T>>> batchOperate(
-    OperationType type,
-    List<EntityId> ids, [
-    Map<String, Object>? params,
-  ]) async {
-    final action = UserAction(uid: 'system', timestamp: DateTime.now());
-    final events =
-        ids.map((id)`
-
 ### `DomainEventModel`
 
 **File:** `lib/src/domain/events/domain_event.dart`
@@ -4059,16 +3631,15 @@ abstract class DataManagerException implements Exception {
 **Signature:** `DomainEventModel(id: id,
       entityId: entityId,
       entityType: entityType,
-      eventType: EventType.validated.name,
+      eventType: EventType.hierarchyChanged.name,
       timestamp: action.timestamp,
       initiator: action,
       changes: {
-        'isValid': result.isValid,
-        'issues': result.issues,
+        'oldParentId': oldParentId?.value ?? '',
+        'newParentId': newParentId?.value ?? '',
       },
     );
   }
-  */
 
   /// Schema validation
   bool hasValidSchema()`
@@ -4142,34 +3713,60 @@ abstract class DataManagerException implements Exception {
   /// creating a more permissive pattern that allows characters valid in either pattern.
   static String _mergeInvalidCharsPatterns(String pattern1, String pattern2)`
 
-### `EntityCreateConfig`
+### `EntityCreationConfig`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
-**Description:** Configuration object for creating new entities.
-/// Contains all parameters needed to construct a complete entity.
-class EntityCreateConfig<T extends Object> {
+**Description:** Configuration data for new entity creation
+///
+/// Contains core entity information, hierarchy data, and classification parameters
+class EntityCreationConfig<T extends Object> {
   // Core info
+  /// User-provided name for the entity
   final String name;
+
+  /// User creating the entity
   final AuthUser user;
+
+  /// Type-specific payload data
   final T data;
+
+  /// Optional description of the entity
   final String? description;
 
   // Tree structure
+  /// Path in the entity hierarchy
   final String? parentPath;
+
+  /// Direct parent entity ID
   final EntityId? parentId;
+
+  /// List of ancestor entity IDs
   final List<EntityId>? ancestors;
 
   // Metadata & Classification
+  /// Custom metadata key-value pairs
   final Map<String, Object>? meta;
+
+  /// Searchable tags
   final List<String>? tags;
+
+  /// Categorization labels
   final Map<String, String>? labels;
+
+  /// Entity importance level
   final EntityPriority? priority;
+
+  /// Current workflow stage
   final EntityStage? stage;
+
+  /// Optional date when entity expires
   final DateTime? expiryDate;
+
+  /// Whether entity is publicly accessible
   final bool? isPublic;
 
-**Signature:** `EntityCreateConfig({
+**Signature:** `EntityCreationConfig({
     required this.name,
     required this.user,
     required this.data,
@@ -4189,16 +3786,29 @@ class EntityCreateConfig<T extends Object> {
 
 /// Configuration object for cloning existing entities.
 /// Contains the source entity and optional overrides for the clone.
-class EntityCloneConfig<T extends Object> {
+class EntityCloningConfig<T extends Object> {
+  /// Source entity to clone
   final BaseEntityModel<T> source;
+
+  /// User performing the cloning operation
   final AuthUser user;
+
+  /// New name for the cloned entity (defaults to source name + " (Copy)")
   final String? newName;
+
+  /// New path for the cloned entity
   final String? newPath;
+
+  /// Custom metadata overrides for the clone
   final Map<String, Object>? newMeta;
+
+  /// Label overrides for the clone
   final Map<String, String>? newLabels;
+
+  /// Tag overrides for the clone
   final List<String>? newTags;
 
-  EntityCloneConfig({
+  EntityCloningConfig({
     required this.source,
     required this.user,
     this.newName,
@@ -4209,24 +3819,22 @@ class EntityCloneConfig<T extends Object> {
   });
 }
 
-/// A fluent builder for creating entities.
+/// A fluent builder for creating entities
 ///
-/// The builder pattern provides a cleaner, more readable API for creating complex entities
-/// with many optional parameters. It uses method chaining for a fluent interface.
+/// Provides method chaining for a cleaner API when creating complex entities
+/// with many optional parameters
 ///
 /// Example:
 /// ```dart
-/// final site = EntityBuilder<SiteModel>()
+/// final site = EntityCreationBuilder<SiteModel>()
 ///   .withName('Main Office')
 ///   .withUser(currentUser)
 ///   .withData(siteModel)
-///   .withDescription('Corporate headquarters')
 ///   .withParentId(organizationId)
 ///   .withTags(['headquarters', 'office'])
-///   .isPublic(true)
 ///   .build();
 /// ```
-class EntityBuilder<T extends Object> {
+class EntityCreationBuilder<T extends Object> {
   // Required fields
   String? _name;
   AuthUser? _user;
@@ -4246,7 +3854,8 @@ class EntityBuilder<T extends Object> {
   bool? _isPublic;
 
   // Required field methods
-  EntityBuilder<T> withName(String name)`
+  /// Sets the name for the entity
+  EntityCreationBuilder<T> withName(String name)`
 
 ### `EntityHierarchy`
 
@@ -4332,23 +3941,6 @@ extension EntityHierarchyOperations on EntityHierarchy {
   /// Adds a child entity ID, updating leaf status and metadata
   EntityHierarchy addChild(EntityId childId)`
 
-### `EventServiceProvider`
-
-**File:** `lib/src/application/providers/event_service_provider.dart`
-
-**Description:** Provider class that connects domain model with the application services
-class EventServiceProvider {
-  final EventMigrationService _migrationService;
-
-**Signature:** `EventServiceProvider({EventMigrationService? migrationService})
-    : _migrationService = migrationService ?? EventMigrationService();
-
-  /// Extension method to allow DomainEventModel to use the migration service
-  /// without violating clean architecture principles
-  DomainEventModel migrateEventSchema(
-    DomainEventModel event,
-    String targetVersion,)`
-
 ### `Exception`
 
 **File:** `lib/src/domain/entities/base_entity.dart`
@@ -4411,35 +4003,19 @@ class EventServiceProvider {
 
   factory ReferenceNumber.fromJson(Map<String, Object?> json)`
 
-### `StateError`
-
-**File:** `lib/src/domain/repositories/event_aware_repository.dart`
-
-**Signature:** `StateError('No events found for entity');
-    }
-
-    BaseEntity<T>? result;
-    for (final event in events)`
-
-### `TypeError`
-
-**File:** `lib/src/domain/core/core_entity.dart`
-
-**Signature:** `TypeError();
-    } catch (e)`
-
 ### `TypedMetadata`
 
 **File:** `lib/src/domain/core/core_entity.dart`
 
-**Description:** Provides type-safe access to metadata values
-class TypedMetadata {
-  final Map<String, Object> _meta;
+**Signature:** `TypedMetadata(value);
+    }
+    return null;
+  }
 
-**Signature:** `TypedMetadata(this._meta);
-
-  /// Checks if metadata contains a key
-  bool containsKey(String key)`
+  /// Tries multiple keys in sequence until finding a non-null value
+  /// [keys] - List of keys to try in order
+  /// Returns the first matching value or null if no matches
+  Object? getFirstMatching<T>(List<String> keys)`
 
 ### `UnimplementedError`
 
@@ -4451,36 +4027,6 @@ class TypedMetadata {
 
   /// Schema version vector operations
   bool hasVectorConflict(Map<String, int> otherVectors)`
-
-### `UnsupportedError`
-
-**File:** `lib/src/application/services/event_migration_service.dart`
-
-**Signature:** `UnsupportedError('No migration path from ${event.schemaVersion} to $targetVersion',
-      );
-    }
-
-    // Track schema changes during migration
-    final schemaChanges = Map<String, Object>.from(event.schemaChanges ?? {});
-    schemaChanges['migratedFrom'] = event.schemaVersion;
-    schemaChanges['migratedTo'] = targetVersion;
-    schemaChanges['migratedAt'] = DateTime.now().toIso8601String();
-
-    // Apply version-specific migrations
-    var migratedEvent = _applyMigration(event, targetVersion);
-
-    // Update schema metadata
-    return migratedEvent.copyWith(
-      schemaVersion: targetVersion,
-      previousSchemaVersion: event.schemaVersion,
-      schemaChanges: schemaChanges,
-    );
-  }
-
-  /// Applies version-specific migration transformations
-  DomainEventModel _applyMigration(
-    DomainEventModel event,
-    String targetVersion,)`
 
 ### `UserAction`
 
@@ -4516,32 +4062,6 @@ extension UserActionX on UserAction {
     required String newValue,
     required String reason,
   })`
-
-### `_createEvent`
-
-**File:** `lib/src/domain/repositories/event_aware_repository.dart`
-
-**Signature:** `_createEvent(OperationType type,
-    EntityId id,
-    Map<String, Object>? params,
-    UserAction initiator,)`
-
-### `_migrateFrom100To110`
-
-**File:** `lib/src/application/services/event_migration_service.dart`
-
-**Signature:** `_migrateFrom100To110(event);
-
-      // Add more migration paths as needed
-
-      default:
-        // For now, if there's no specific migration needed, return as-is
-        return event;
-    }
-  }
-
-  /// Example migration implementation from v1.0.0 to v1.1.0
-  DomainEventModel _migrateFrom100To110(DomainEventModel event)`
 
 ### `applyEvent`
 
@@ -4587,11 +4107,26 @@ sealed class OwnerData with _$OwnerData {
 
 **Signature:** `applyEvent(DomainEventModel event)`
 
+### `assert`
+
+**File:** `lib/src/domain/core/core_entity.dart`
+
+**Signature:** `assert(()`
+
 ### `build`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
 **Signature:** `build()`
+
+### `clearCacheEntry`
+
+**File:** `lib/src/domain/core/core_entity.dart`
+
+**Description:** Clears a specific entry from the type conversion cache
+  /// [key] - The metadata key whose cached value should be removed
+
+**Signature:** `clearCacheEntry(String key)`
 
 ### `constrainLockDuration`
 
@@ -4619,7 +4154,7 @@ sealed class OwnerData with _$OwnerData {
   }
 
   /// Gets typed value from metadata safely
-  R? _getMetadataTyped<R>(String key)`
+  Object? _getMetadataTyped<R>(String key)`
 
 ### `draft`
 
@@ -4661,7 +4196,7 @@ enum EntityStage {
 **Description:** Gets typed metadata with default fallback
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
-  R getMetadataOrDefault<R>(String key, R defaultValue) {
+  Object? getMetadataOrDefault<R>(String key, R defaultValue) {
     return _getMetadataTyped<R>(key) ?? defaultValue;
   }
 
@@ -4683,11 +4218,44 @@ enum EntityStage {
 
 **Signature:** `for(var i = 0; i < math.min(v1Parts.length, v2Parts.length); i++)`
 
+### `getBool`
+
+**File:** `lib/src/domain/core/core_entity.dart`
+
+**Description:** Gets boolean value from metadata
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  /// Returns typed boolean value or the default value
+
+**Signature:** `getBool(String key, {bool defaultValue = false})`
+
 ### `getDepthTo`
 
 **File:** `lib/src/domain/entities/base_entity.dart`
 
 **Signature:** `getDepthTo(BaseEntityModel<T> ancestor)`
+
+### `getDouble`
+
+**File:** `lib/src/domain/core/core_entity.dart`
+
+**Description:** Gets double value from metadata
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  /// Returns typed double value or the default value
+
+**Signature:** `getDouble(String key, {double defaultValue = 0.0})`
+
+### `getInt`
+
+**File:** `lib/src/domain/core/core_entity.dart`
+
+**Description:** Gets integer value from metadata
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  /// Returns typed int value or the default value
+
+**Signature:** `getInt(String key, {int defaultValue = 0})`
 
 ### `getNameFromPath`
 
@@ -4713,15 +4281,25 @@ enum EntityStage {
   TypedMetadata get typedMeta => TypedMetadata(meta);
 
   /// Gets typed value from metadata
-  R? getMetadataAs<R>(String key) => getMetadata<R>(key);
+  /// [key] - The metadata key to retrieve
+  /// [R] - The target type to convert the value to
+  /// Returns the value converted to type R or null if conversion fails
+  Object? getMetadataAs<R>(String key) => getMetadata<R>(key);
 
   /// Gets typed value from metadata
-  R? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
+  /// [key] - The metadata key to retrieve
+  /// [R] - The target type to convert the value to
+  /// Returns the value converted to type R or null if conversion fails
+  Object? getMetadata<R>(String key) => _getMetadataTyped<R>(key);
 
-  /// Gets raw value from metadata
+  /// Gets raw value from metadata without type conversion
+  /// [key] - The metadata key to retrieve
+  /// Returns the raw Object value or null if key doesn't exist
   Object? getMetadataValue(String key) => meta[key];
 
   /// Checks if metadata contains a key
+  /// [key] - The metadata key to check
+  /// Returns true if the key exists in metadata, false otherwise
 
 **Signature:** `hasMetadata(String key)`
 
@@ -4817,6 +4395,8 @@ enum EntityStage {
 ### `isPublic`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
+
+**Description:** Sets whether the entity is publicly accessible
 
 **Signature:** `isPublic(bool isPublic)`
 
@@ -4916,38 +4496,6 @@ enum EntityPriority {
   /// Returns [EntityPriority.medium] if the string doesn't match any priority.
   static EntityPriority fromString(String value)`
 
-### `migrate`
-
-**File:** `lib/src/application/extensions/domain_event_extensions.dart`
-
-**Description:** Extension methods for working with domain events in the application layer
-extension DomainEventModelExtensions on DomainEventModel {
-  /// Migrates the event schema to the target version using the provided service provider
-  ///
-  /// Usage example:
-  /// ```dart
-  /// final serviceProvider = EventServiceProvider();
-  /// final migratedEvent = event.migrate('1.1.0', serviceProvider);
-  /// ```
-
-**Signature:** `migrate(String targetVersion,
-    EventServiceProvider serviceProvider,)`
-
-### `migrateEventSchema`
-
-**File:** `lib/src/application/services/event_migration_service.dart`
-
-**Description:** Service responsible for handling domain event schema migrations
-class EventMigrationService {
-  /// Migrates a domain event to the target schema version
-  ///
-  /// This method implements the migration logic that was previously in the domain layer,
-  /// following Clean Architecture principles by keeping the implementation details
-  /// out of the domain layer.
-
-**Signature:** `migrateEventSchema(DomainEventModel event,
-    String targetVersion,)`
-
 ### `migrateSchema`
 
 **File:** `lib/src/domain/events/domain_event.dart`
@@ -4963,35 +4511,24 @@ class EventMigrationService {
 
 **Signature:** `overlaps(Range<T> other)`
 
-### `replayEvents`
-
-**File:** `lib/src/domain/repositories/event_aware_repository.dart`
-
-**Signature:** `replayEvents(EntityId id, DateTime from, DateTime to) async {
-    final events = await eventStore.queryEvents(EventQuery(
-      entityId: id,
-      fromDate: from,
-      toDate: to,
-    ));
-
-    for (final event in events)`
-
 ### `return`
 
-**File:** `lib/src/domain/entities/base_entity.dart`
+**File:** `lib/src/domain/core/core_entity.dart`
 
-**Signature:** `return(updatedParent, updatedChild);
+**Description:** Gets DateTime value from metadata
+  /// [key] - The metadata key to retrieve
+  /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
+  /// Returns typed DateTime value or the default value
+  DateTime? getDateTime(String key, {DateTime? defaultValue}) {
+    final value = _getValueTyped<DateTime>(key);
+
+**Signature:** `return(value != null) ? value as DateTime : defaultValue;
   }
 
-  /// Records a user action in the entity's history efficiently.
-  ///
-  /// [action] - The user action to record.
-  /// [isAccessAction] - Whether this is an access action (vs. modification).
-  /// Returns an updated entity with the action recorded in history.
-  BaseEntityModel<T> recordAction(
-    UserAction action, {
-    bool isAccessAction = false,
-  })`
+  /// Gets typed list from metadata
+  /// [key] - The metadata key containing a List to be converted
+  /// Returns a strongly-typed list or null if conversion fails
+  List<R>? getListAs<R>(String key)`
 
 ### `sanitizePath`
 
@@ -5010,100 +4547,6 @@ class EventMigrationService {
 **File:** `lib/src/domain/entities/base_entity.dart`
 
 **Signature:** `splitPath(String? path, {EntityConfig? config})`
-
-### `store`
-
-**File:** `lib/src/domain/repositories/event/i_event_store.dart`
-
-**Description:** Core event store interface for domain event persistence
-abstract class IEventStore {
-  // Event operations
-
-**Signature:** `store(DomainEventModel event);
-  Future<void> storeBatch(List<DomainEventModel> events);
-  Future<List<DomainEventModel>> getEvents(EntityId entityId);
-  Future<List<DomainEventModel>> queryEvents(EventQuery query);
-  Stream<DomainEventModel> watchEvents(EntityId entityId);
-
-  // Snapshot management
-  Future<void> createSnapshot(DateTime timestamp);
-  Future<void> restoreFromSnapshot(DateTime timestamp);
-  Future<void> pruneEvents(DateTime olderThan);
-  Future<void> compactEvents(DateTime upTo);
-
-  // Enhanced event queries
-  Future<List<DomainEventModel>> getEventsByType(
-    String eventType, {
-    DateTime? since,
-    int? limit,
-  });
-  Future<List<DomainEventModel>> getEventsByCorrelation(String correlationId);
-  Future<List<DomainEventModel>> getEventChain(String causationId);
-
-  // Version control
-  Future<Map<String, int>> getVersionVectors(EntityId entityId);
-  Future<void> updateVersionVectors(
-    EntityId entityId,
-    Map<String, int> vectors,
-  );
-  Future<List<DomainEventModel>> getEventsForVersion(
-    EntityId entityId,
-    int version,
-  );
-  Future<DomainEventModel?> getVersionEvent(EntityId entityId, int version);
-
-  // Event replay and recovery
-  Future<List<DomainEventModel>> replayEvents(
-    EntityId entityId,
-    DateTime fromTimestamp,
-    DateTime toTimestamp,
-  );
-  Future<void> rebaseEvents(
-    EntityId entityId,
-    List<DomainEventModel> newBaseEvents,
-  );
-
-  // Enhanced snapshot management
-  Future<DomainEventModel?> getLatestSnapshot(EntityId entityId);
-  Future<void> createVersionSnapshot(EntityId entityId, int version);
-  Future<bool> hasVersionConflict(
-    EntityId entityId,
-    Map<String, int> versionVectors,
-  );
-}
-
-/// Event query parameters
-class EventQuery {
-  final EntityId? entityId;
-  final DateTime? fromDate;
-  final DateTime? toDate;
-  final String? eventType;
-  final bool includeSystemEvents;
-  final int? limit;
-  final Map<String, Object>? filters;
-  final bool ascending;
-
-  const EventQuery({
-    this.entityId,
-    this.fromDate,
-    this.toDate,
-    this.eventType,
-    this.includeSystemEvents = false,
-    this.limit,
-    this.filters,
-    this.ascending = true,
-  });
-
-  EventQuery copyWith({
-    EntityId? entityId,
-    DateTime? fromDate,
-    DateTime? toDate,
-    String? eventType,
-    bool? includeSystemEvents,
-    int? limit,
-    Map<String, Object>? filters,
-    bool? ascending,
-  })`
 
 ### `switch`
 
@@ -5144,11 +4587,15 @@ class EventQuery {
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
+**Description:** Sets the list of ancestor entity IDs
+
 **Signature:** `withAncestors(List<EntityId> ancestors)`
 
 ### `withData`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
+
+**Description:** Sets the type-specific payload data
 
 **Signature:** `withData(T data)`
 
@@ -5156,11 +4603,15 @@ class EventQuery {
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
+**Description:** Sets the description for the entity
+
 **Signature:** `withDescription(String description)`
 
 ### `withExpiryDate`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
+
+**Description:** Sets the expiry date for the entity
 
 **Signature:** `withExpiryDate(DateTime expiryDate)`
 
@@ -5183,11 +4634,15 @@ class EventQuery {
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
+**Description:** Sets labels for the cloned entity
+
 **Signature:** `withLabels(Map<String, String> newLabels)`
 
 ### `withMeta`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
+
+**Description:** Sets custom metadata for the cloned entity
 
 **Signature:** `withMeta(Map<String, Object> newMeta)`
 
@@ -5195,11 +4650,15 @@ class EventQuery {
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
+**Description:** Sets the name for the cloned entity
+
 **Signature:** `withName(String newName)`
 
 ### `withParentId`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
+
+**Description:** Sets the direct parent entity ID
 
 **Signature:** `withParentId(EntityId parentId)`
 
@@ -5207,11 +4666,15 @@ class EventQuery {
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
+**Description:** Sets the parent path in the entity hierarchy
+
 **Signature:** `withParentPath(String parentPath)`
 
 ### `withPath`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
+
+**Description:** Sets the path for the cloned entity
 
 **Signature:** `withPath(String newPath)`
 
@@ -5219,11 +4682,15 @@ class EventQuery {
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
+**Description:** Sets the entity importance level
+
 **Signature:** `withPriority(EntityPriority priority)`
 
 ### `withStage`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
+
+**Description:** Sets the workflow stage
 
 **Signature:** `withStage(EntityStage stage)`
 
@@ -5231,11 +4698,15 @@ class EventQuery {
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
+**Description:** Sets tags for the cloned entity
+
 **Signature:** `withTags(List<String> newTags)`
 
 ### `withUser`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
+
+**Description:** Sets the user performing the clone operation
 
 **Signature:** `withUser(AuthUser user)`
 
@@ -5312,10 +4783,6 @@ classDiagram
     
     IEntityRepository <|.. EntityRepository
     EntityRepository --> IDataSource
-
-    % Repository implementations
-    EntityRepository <|-- EventAwareRepository
-    EntityRepository <|-- AggregateRepositoryBase
 ```
 
 ### Event Sourcing
@@ -5386,30 +4853,6 @@ classDiagram
 ```
 ## File Dependencies
 
-### `lib/data_manager.dart`
-
-No imports.
-
-### `lib/src/application/extensions/domain_event_extensions.dart`
-
-**Imports:**
-
-- `../../domain/events/domain_event.dart`
-- `../providers/event_service_provider.dart`
-
-### `lib/src/application/providers/event_service_provider.dart`
-
-**Imports:**
-
-- `../../domain/events/domain_event.dart`
-- `../services/event_migration_service.dart`
-
-### `lib/src/application/services/event_migration_service.dart`
-
-**Imports:**
-
-- `../../domain/events/domain_event.dart`
-
 ### `lib/src/domain/core/core_entity.dart`
 
 **Imports:**
@@ -5418,6 +4861,7 @@ No imports.
 - `../value_objects/enum_objects.dart`
 - `../value_objects/identity_value_objects.dart`
 - `../value_objects/user_action.dart`
+- `dart:developer`
 
 ### `lib/src/domain/core/entity_config.dart`
 
@@ -5436,22 +4880,36 @@ No imports.
 **Imports:**
 
 - `dart:collection`
-- `package:data_manager/data_manager.dart`
+- `package:data_manager/src/domain/core/core_entity.dart`
+- `package:data_manager/src/domain/core/entity_config.dart`
+- `package:data_manager/src/domain/value_objects/enum_objects.dart`
+- `package:data_manager/src/domain/value_objects/identity_value_objects.dart`
+- `package:data_manager/src/domain/value_objects/user_action.dart`
 - `package:freezed_annotation/freezed_annotation.dart`
 
 ### `lib/src/domain/entities/entity_factory.dart`
 
 **Imports:**
 
+- `package:data_manager/src/domain/core/core_entity.dart`
+- `package:data_manager/src/domain/core/exceptions.dart`
+- `package:data_manager/src/domain/entities/base_entity.dart`
+- `package:data_manager/src/domain/entities/entity_types.dart`
+- `package:data_manager/src/domain/value_objects/enum_objects.dart`
+- `package:data_manager/src/domain/value_objects/identity_value_objects.dart`
+- `package:data_manager/src/domain/value_objects/user_action.dart`
 - `package:uuid/uuid.dart`
 - `package:authentication/authentication.dart`
-- `package:data_manager/data_manager.dart`
 
 ### `lib/src/domain/entities/entity_types.dart`
 
 **Imports:**
 
-- `package:data_manager/data_manager.dart`
+- `package:data_manager/src/domain/entities/base_entity.dart`
+- `package:data_manager/src/domain/events/domain_event.dart`
+- `package:data_manager/src/domain/value_objects/contact_value_objects.dart`
+- `package:data_manager/src/domain/value_objects/enum_objects.dart`
+- `package:data_manager/src/domain/value_objects/identity_value_objects.dart`
 - `package:freezed_annotation/freezed_annotation.dart`
 
 ### `lib/src/domain/events/domain_event.dart`
@@ -5461,35 +4919,6 @@ No imports.
 - `package:data_manager/src/domain/value_objects/identity_value_objects.dart`
 - `package:freezed_annotation/freezed_annotation.dart`
 - `../value_objects/user_action.dart`
-- `package:data_manager/src/application/providers/event_service_provider.dart`
-- `package:data_manager/src/application/extensions/domain_event_extensions.dart`
-- `package:data_manager/src/infrastructure/repositories/event_repository.dart`
-
-### `lib/src/domain/repositories/aggregate/aggregate_repository_base.dart`
-
-**Imports:**
-
-- `package:data_manager/data_manager.dart`
-
-### `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Imports:**
-
-- `dart:async`
-- `package:data_manager/data_manager.dart`
-
-### `lib/src/domain/repositories/event/i_event_store.dart`
-
-**Imports:**
-
-- `package:data_manager/data_manager.dart`
-
-### `lib/src/domain/repositories/event_aware_repository.dart`
-
-**Imports:**
-
-- `package:data_manager/data_manager.dart`
-- `package:uuid/uuid.dart`
 
 ### `lib/src/domain/value_objects/contact_value_objects.dart`
 
@@ -5916,106 +5345,62 @@ No imports.
   /// Returns an updated entity with incremented version numbers.
   BaseEntityModel<T> incrementVersion({bool isStructural = false})`
 
-### `EntityAuditReport`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `List<UserAction> modifications`
-- `List<UserAction> accesses`
-- `Map<String, int> operationCounts`
-- `DateTime generatedAt`
-
-### `EntityBuilder`
-
-**File:** `lib/src/domain/entities/entity_factory.dart`
-
-**Properties:**
-
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `final config`
-
-**Methods:**
-
-- `withName(String name)`
-- `withUser(AuthUser user)`
-- `withData(T data)`
-- `withDescription(String description)`
-- `withParentPath(String parentPath)`
-- `withParentId(EntityId parentId)`
-- `withAncestors(List<EntityId> ancestors)`
-- `withMeta(Map<String, Object> meta)`
-- `withTags(List<String> tags)`
-- `withLabels(Map<String, String> labels)`
-- `withPriority(EntityPriority priority)`
-- `withStage(EntityStage stage)`
-- `withExpiryDate(DateTime expiryDate)`
-- `isPublic(bool isPublic)`
-- `build()`
-- `if(_name == null)`
-- `ArgumentError('Entity name is required');
-    }
-    if (_user == null)`
-- `ArgumentError('User is required');
-    }
-    if (_data == null)`
-
 ### `EntityClassification`
 
 **File:** `lib/src/domain/entities/base_entity.dart`
 
-### `EntityCloneBuilder`
+### `EntityCloningBuilder`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
 **Properties:**
 
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
-- `return this`
+- `return this` - Sets the source entity to clone
+  EntityCloningBuilder<T> fromSource(BaseEntityModel<T> source) {
+    _source = source;
+- `return this` - Sets the user performing the clone operation
+  EntityCloningBuilder<T> withUser(AuthUser user) {
+    _user = user;
+- `return this` - Sets the name for the cloned entity
+  EntityCloningBuilder<T> withName(String newName) {
+    _newName = newName;
+- `return this` - Sets the path for the cloned entity
+  EntityCloningBuilder<T> withPath(String newPath) {
+    _newPath = newPath;
+- `return this` - Sets custom metadata for the cloned entity
+  EntityCloningBuilder<T> withMeta(Map<String, Object> newMeta) {
+    _newMeta = newMeta;
+- `return this` - Sets labels for the cloned entity
+  EntityCloningBuilder<T> withLabels(Map<String, String> newLabels) {
+    _newLabels = newLabels;
+- `return this` - Sets tags for the cloned entity
+  EntityCloningBuilder<T> withTags(List<String> newTags) {
+    _newTags = newTags;
 - `final config`
 
 **Methods:**
 
-- `fromSource(BaseEntityModel<T> source)`
-- `withUser(AuthUser user)`
-- `withName(String newName)`
-- `withPath(String newPath)`
-- `withMeta(Map<String, Object> newMeta)`
-- `withLabels(Map<String, String> newLabels)`
-- `withTags(List<String> newTags)`
+- `fromSource(BaseEntityModel<T> source)` - Sets the source entity to clone
+- `withUser(AuthUser user)` - Sets the user performing the clone operation
+- `withName(String newName)` - Sets the name for the cloned entity
+- `withPath(String newPath)` - Sets the path for the cloned entity
+- `withMeta(Map<String, Object> newMeta)` - Sets custom metadata for the cloned entity
+- `withLabels(Map<String, String> newLabels)` - Sets labels for the cloned entity
+- `withTags(List<String> newTags)` - Sets tags for the cloned entity
 - `build()`
 - `if(_source == null)`
 - `ArgumentError('Source entity is required');
     }
     if (_user == null)`
 
-### `EntityCloneConfig`
+### `EntityCloningConfig`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
 **Properties:**
 
-- `BaseEntityModel<T> source`
-- `AuthUser user`
+- `BaseEntityModel<T> source` - Source entity to clone
+- `AuthUser user` - User performing the cloning operation
 
 ### `EntityConfig`
 
@@ -6859,15 +6244,90 @@ No imports.
 - `String pathSeparator` - Character used to separate path segments
 - `String invalidPathChars` - Regular expression pattern for invalid path characters
 
-### `EntityCreateConfig`
+### `EntityCreationBuilder`
 
 **File:** `lib/src/domain/entities/entity_factory.dart`
 
 **Properties:**
 
-- `String name`
-- `AuthUser user`
-- `T data`
+- `return this` - Sets the name for the entity
+  EntityCreationBuilder<T> withName(String name) {
+    _name = name;
+- `return this` - Sets the user creating the entity
+  EntityCreationBuilder<T> withUser(AuthUser user) {
+    _user = user;
+- `return this` - Sets the type-specific payload data
+  EntityCreationBuilder<T> withData(T data) {
+    _data = data;
+- `return this` - Sets the description for the entity
+  EntityCreationBuilder<T> withDescription(String description) {
+    _description = description;
+- `return this` - Sets the parent path in the entity hierarchy
+  EntityCreationBuilder<T> withParentPath(String parentPath) {
+    _parentPath = parentPath;
+- `return this` - Sets the direct parent entity ID
+  EntityCreationBuilder<T> withParentId(EntityId parentId) {
+    _parentId = parentId;
+- `return this` - Sets the list of ancestor entity IDs
+  EntityCreationBuilder<T> withAncestors(List<EntityId> ancestors) {
+    _ancestors = ancestors;
+- `return this` - Sets custom metadata key-value pairs
+  EntityCreationBuilder<T> withMeta(Map<String, Object> meta) {
+    _meta = meta;
+- `return this` - Sets searchable tags
+  EntityCreationBuilder<T> withTags(List<String> tags) {
+    _tags = tags;
+- `return this` - Sets categorization labels
+  EntityCreationBuilder<T> withLabels(Map<String, String> labels) {
+    _labels = labels;
+- `return this` - Sets the entity importance level
+  EntityCreationBuilder<T> withPriority(EntityPriority priority) {
+    _priority = priority;
+- `return this` - Sets the workflow stage
+  EntityCreationBuilder<T> withStage(EntityStage stage) {
+    _stage = stage;
+- `return this` - Sets the expiry date for the entity
+  EntityCreationBuilder<T> withExpiryDate(DateTime expiryDate) {
+    _expiryDate = expiryDate;
+- `return this` - Sets whether the entity is publicly accessible
+  EntityCreationBuilder<T> isPublic(bool isPublic) {
+    _isPublic = isPublic;
+- `final config`
+
+**Methods:**
+
+- `withName(String name)` - Sets the name for the entity
+- `withUser(AuthUser user)` - Sets the user creating the entity
+- `withData(T data)` - Sets the type-specific payload data
+- `withDescription(String description)` - Sets the description for the entity
+- `withParentPath(String parentPath)` - Sets the parent path in the entity hierarchy
+- `withParentId(EntityId parentId)` - Sets the direct parent entity ID
+- `withAncestors(List<EntityId> ancestors)` - Sets the list of ancestor entity IDs
+- `withMeta(Map<String, Object> meta)` - Sets custom metadata key-value pairs
+- `withTags(List<String> tags)` - Sets searchable tags
+- `withLabels(Map<String, String> labels)` - Sets categorization labels
+- `withPriority(EntityPriority priority)` - Sets the entity importance level
+- `withStage(EntityStage stage)` - Sets the workflow stage
+- `withExpiryDate(DateTime expiryDate)` - Sets the expiry date for the entity
+- `isPublic(bool isPublic)` - Sets whether the entity is publicly accessible
+- `build()`
+- `if(_name == null)`
+- `ArgumentError('Entity name is required');
+    }
+    if (_user == null)`
+- `ArgumentError('User is required');
+    }
+    if (_data == null)`
+
+### `EntityCreationConfig`
+
+**File:** `lib/src/domain/entities/entity_factory.dart`
+
+**Properties:**
+
+- `String name` - User-provided name for the entity
+- `AuthUser user` - User creating the entity
+- `T data` - Type-specific payload data
 
 ### `EntityFactory`
 
@@ -6878,11 +6338,11 @@ No imports.
 - `final _validTypes` - Valid entity types that can be created with this factory
 - `final now` - Creates a new entity from the provided configuration.
   ///
-  /// For a more fluent API, consider using [EntityBuilder] instead.
+  /// For a more fluent API, consider using [EntityCreationBuilder] instead.
   ///
   /// Example with builder pattern:
   /// ```dart
-  /// final entity = EntityBuilder<SiteModel>()
+  /// final entity = EntityCreationBuilder<SiteModel>()
   ///   .withName('Site Name')
   ///   .withUser(currentUser)
   ///   .withData(siteData)
@@ -6896,7 +6356,7 @@ No imports.
   /// @throws PathValidationException if the provided path is invalid
   /// @throws HierarchyValidationException if a circular reference is detected
   static BaseEntityModel<T> create<T extends Object>(
-    EntityCreateConfig<T> config,
+    EntityCreationConfig<T> config,
   ) {
     if (!_validTypes.contains(T)) {
       throw ArgumentError('Invalid type: ${T.toString()}');
@@ -6908,11 +6368,11 @@ No imports.
 - `final searchIndex`
 - `final now` - Creates a clone of an existing entity with optional modifications.
   ///
-  /// For a more fluent API, consider using [EntityCloneBuilder] instead.
+  /// For a more fluent API, consider using [EntityCloningBuilder] instead.
   ///
   /// Example with builder pattern:
   /// ```dart
-  /// final clonedEntity = EntityCloneBuilder<SiteModel>()
+  /// final clonedEntity = EntityCloningBuilder<SiteModel>()
   ///   .fromSource(existingEntity)
   ///   .withUser(currentUser)
   ///   .withName('New Name')
@@ -6922,7 +6382,7 @@ No imports.
   /// @param config The configuration for cloning, including source entity and overrides
   /// @return A new entity based on the source with applied modifications
   static BaseEntityModel<T> clone<T extends Object>(
-    EntityCloneConfig<T> config,
+    EntityCloningConfig<T> config,
   ) {
 - `final userAction`
 - `final id`
@@ -6935,20 +6395,20 @@ No imports.
 
 - `if(!_validTypes.contains(T))` - Valid entity types that can be created with this factory
   static final _validTypes = <Type>{
-    OwnerModel,
-    SiteModel,
-    EquipmentModel,
-    VendorModel,
-    PersonnelModel,
+    OwnerData,
+    SiteData,
+    EquipmentData,
+    VendorData,
+    PersonnelData,
   };
 
   /// Creates a new entity from the provided configuration.
   ///
-  /// For a more fluent API, consider using [EntityBuilder] instead.
+  /// For a more fluent API, consider using [EntityCreationBuilder] instead.
   ///
   /// Example with builder pattern:
   /// ```dart
-  /// final entity = EntityBuilder<SiteModel>()
+  /// final entity = EntityCreationBuilder<SiteModel>()
   ///   .withName('Site Name')
   ///   .withUser(currentUser)
   ///   .withData(siteData)
@@ -6962,7 +6422,7 @@ No imports.
   /// @throws PathValidationException if the provided path is invalid
   /// @throws HierarchyValidationException if a circular reference is detected
   static BaseEntityModel<T> create<T extends Object>(
-    EntityCreateConfig<T> config,
+    EntityCreationConfig<T> config,
   ) {
 - `ArgumentError('Invalid type: ${T.toString()}');
     }
@@ -7133,19 +6593,6 @@ No imports.
   /// [lastNameUpdate] - When the name was last changed
   /// [searchTerms] - Key-value pairs for enhanced searching
 
-### `EntityRelation`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `String type`
-- `EntityId sourceId`
-- `EntityId targetId`
-- `DateTime createdAt`
-- `UserAction createdBy`
-- `Map<String, Object> metadata`
-
 ### `EntitySecurity`
 
 **File:** `lib/src/domain/entities/base_entity.dart`
@@ -7225,44 +6672,6 @@ No imports.
   /// Returns updated EquipmentData reflecting the applied event
 - `switch(event.eventType)`
 
-### `HierarchyParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `HierarchyDirection direction`
-- `bool includeDeleted`
-
-### `HierarchyQueryParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `List<String> filter`
-- `Map<String, Object> metadata`
-
-### `IEntityRepository`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `bool includeRoot`
-- `bool recursive`
-- `bool includeDeleted`
-
-### `LockState`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `bool isLocked`
-- `int attemptCount`
-- `Map<String, dynamic> metadata`
-
 ### `OwnerData`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
@@ -7298,17 +6707,6 @@ No imports.
   ///
   /// Processes event data to create new entity state without mutation
 - `switch(event.eventType)`
-
-### `PagedResult`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `List<T> items`
-- `int total`
-- `int page`
-- `int pageSize`
 
 ### `PersonnelData`
 
@@ -7369,39 +6767,6 @@ No imports.
   /// Returns updated PersonnelData reflecting the applied event
 - `switch(event.eventType)`
 
-### `QueryParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `Map<String, Object> filters`
-- `Map<String, SortOrder> sort`
-- `List<String> include`
-- `bool withDeleted`
-
-### `SearchParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `String query`
-- `Map<String, Object> filters`
-- `int limit`
-- `List<String> fields`
-
-### `SearchResult`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `List<T> items`
-- `int totalCount`
-- `double searchTime`
-- `Map<String, Object> facets`
-
 ### `SiteData`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
@@ -7450,36 +6815,6 @@ No imports.
   /// Returns updated SiteData reflecting the applied event
 - `switch(event.eventType)`
 
-### `SyncParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `Duration timeout`
-- `bool force`
-- `List<String> collections`
-
-### `SyncProgress`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `int total`
-- `int current`
-- `String status`
-- `double percentage`
-
-### `SyncResult`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `Map<String, Object> stats`
-- `List<String> errors`
-
 ### `VendorData`
 
 **File:** `lib/src/domain/entities/entity_types.dart`
@@ -7520,23 +6855,6 @@ No imports.
   ///
   /// Returns updated VendorData reflecting the applied event
 - `switch(event.eventType)`
-
-### `VersionQuery`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `EntityId entityId`
-- `bool includeMetadata`
-
-### `WatchParams`
-
-**File:** `lib/src/domain/repositories/entity/i_entity_repository.dart`
-
-**Properties:**
-
-- `Duration debounceTime`
 
 ## Value Objects
 
@@ -7822,295 +7140,7 @@ No imports.
 
 ## Repositories
 
-### `AggregateRepositoryBase`
-
-**File:** `lib/src/domain/repositories/aggregate/aggregate_repository_base.dart`
-
-**Properties:**
-
-- `IEventStore _eventStore`
-- `final events`
-- `final event`
-
-**Methods:**
-
-- `AggregateRepositoryBase(this._eventStore);
-
-  Future<T> getById(EntityId id) async {
-    final events = await _eventStore.getEvents(id);
-    if (events.isEmpty) throw EntityNotFoundException(id);
-
-    return reconstituteFromEvents(events);
-  }
-
-  Future<void> save(T aggregate) async {
-    await _saveAggregate(aggregate);
-    await _publishPendingEvents(aggregate.pendingEvents);
-  }
-
-  // Template methods
-  Future<T> reconstituteFromEvents(List<DomainEvent> events);
-  Future<void> _saveAggregate(T aggregate);
-  Future<Map<String, BaseEntity>> loadRelatedEntities(T aggregate);
-
-  Future<void> _publishPendingEvents(List<String> eventIds) async {
-    for (final eventId in eventIds)`
-- `if(event.isNotEmpty)`
-
-### `EntityNotFoundException`
-
-**File:** `lib/src/domain/repositories/aggregate/aggregate_repository_base.dart`
-
-**Properties:**
-
-- `EntityId id`
-
-**Methods:**
-
-- `EntityNotFoundException(this.id);
-
-  @override
-  String toString()`
-
-### `EventAwareRepository`
-
-**File:** `lib/src/domain/repositories/event_aware_repository.dart`
-
-**Properties:**
-
-- `IEventStore eventStore`
-- `final action`
-- `final event`
-- `final result`
-- `return result`
-- `final events`
-- `final action`
-- `final events`
-- `final results`
-- `return results`
-- `final events`
-
-**Methods:**
-
-- `EventAwareRepository(this.eventStore);
-
-  @override
-  Future<BaseEntity<T>> operate(
-    OperationType type,
-    EntityId id, [
-    Map<String, Object>? params,
-  ]) async {
-    if (type == OperationType.read)`
-- `_executeOperation(type, id, params);
-    }
-
-    final action = UserAction(uid: 'system', timestamp: DateTime.now());
-    final event = _createEvent(type, id, params, action);
-    final result = await _executeOperation(type, id, params);
-    await eventStore.store(event);
-    return result;
-  }
-
-  Future<BaseEntity<T>> _executeOperation(
-    OperationType type,
-    EntityId id, [
-    Map<String, Object>? params,
-  ]) async {
-    // Implement concrete operation logic in subclasses
-    throw UnimplementedError();
-  }
-
-  // Protected methods to be implemented
-  Future<T> loadEntity(EntityId id);
-
-  // Event management methods
-  Stream<DomainEvent> watchEntityEvents(EntityId id)`
-- `if(events.isEmpty)`
-- `StateError('No events found for entity');
-    }
-
-    BaseEntity<T>? result;
-    for (final event in events)`
-- `_createEvent(OperationType type,
-    EntityId id,
-    Map<String, Object>? params,
-    UserAction initiator,)`
-- `DomainEvent(id: EventId(const Uuid().v4()),
-      entityId: id,
-      eventType: type.name,
-      timestamp: DateTime.now(),
-      initiator: initiator,
-      changes: params ?? {},
-      entityType: T.toString(),
-    );
-  }
-
-  @override
-  Future<List<BaseEntity<T>>> batchOperate(
-    OperationType type,
-    List<EntityId> ids, [
-    Map<String, Object>? params,
-  ]) async {
-    final action = UserAction(uid: 'system', timestamp: DateTime.now());
-    final events =
-        ids.map((id)`
-- `replayEvents(EntityId id, DateTime from, DateTime to) async {
-    final events = await eventStore.queryEvents(EventQuery(
-      entityId: id,
-      fromDate: from,
-      toDate: to,
-    ));
-
-    for (final event in events)`
-
-### `EventMetadata`
-
-**File:** `lib/src/domain/repositories/event/i_event_store.dart`
-
-**Properties:**
-
-- `Map<String, int> versionVectors`
-- `Map<String, Object> customData`
-- `DateTime timestamp`
-- `bool isSnapshot`
-
-### `EventQuery`
-
-**File:** `lib/src/domain/repositories/event/i_event_store.dart`
-
-**Properties:**
-
-- `bool includeSystemEvents`
-- `bool ascending`
-
-**Methods:**
-
-- `EventQuery({
-    this.entityId,
-    this.fromDate,
-    this.toDate,
-    this.eventType,
-    this.includeSystemEvents = false,
-    this.limit,
-    this.filters,
-    this.ascending = true,
-  });
-
-  EventQuery copyWith({
-    EntityId? entityId,
-    DateTime? fromDate,
-    DateTime? toDate,
-    String? eventType,
-    bool? includeSystemEvents,
-    int? limit,
-    Map<String, Object>? filters,
-    bool? ascending,
-  })`
-
-### `IEventStore`
-
-**File:** `lib/src/domain/repositories/event/i_event_store.dart`
-
 ## Services
-
-### `EventMigrationService`
-
-**File:** `lib/src/application/services/event_migration_service.dart`
-
-**Properties:**
-
-- `return event` - Migrates a domain event to the target schema version
-  ///
-  /// This method implements the migration logic that was previously in the domain layer,
-  /// following Clean Architecture principles by keeping the implementation details
-  /// out of the domain layer.
-  DomainEventModel migrateEventSchema(
-    DomainEventModel event,
-    String targetVersion,
-  ) {
-    // Return the event as is if it's already at the target version
-    if (event.schemaVersion == targetVersion) {
-- `final migrationPath`
-- `final schemaChanges`
-- `var migratedEvent`
-- `return event` - Applies version-specific migration transformations
-  DomainEventModel _applyMigration(
-    DomainEventModel event,
-    String targetVersion,
-  ) {
-    // Implementation of migration logic for different versions
-    switch ('${event.schemaVersion}-$targetVersion') {
-      // Example: Migrating from v1.0.0 to v1.1.0
-      case '1.0.0-1.1.0':
-        return _migrateFrom100To110(event);
-
-      // Add more migration paths as needed
-
-      default:
-        // For now, if there's no specific migration needed, return as-is
-- `final migratedChanges` - Example migration implementation from v1.0.0 to v1.1.0
-  DomainEventModel _migrateFrom100To110(DomainEventModel event) {
-    // Deep copy the changes map to avoid mutation
-- `final dateStr`
-- `final date`
-
-**Methods:**
-
-- `migrateEventSchema(DomainEventModel event,
-    String targetVersion,)` - Migrates a domain event to the target schema version
-  ///
-  /// This method implements the migration logic that was previously in the domain layer,
-  /// following Clean Architecture principles by keeping the implementation details
-  /// out of the domain layer.
-- `if(event.schemaVersion == targetVersion)`
-- `if(!EventSchemaConfig.supportedVersions.contains(targetVersion))`
-- `UnsupportedError('Target schema version $targetVersion is not supported',
-      );
-    }
-
-    final migrationPath = event.getMigrationPath(targetVersion);
-    if (migrationPath == null)`
-- `UnsupportedError('No migration path from ${event.schemaVersion} to $targetVersion',
-      );
-    }
-
-    // Track schema changes during migration
-    final schemaChanges = Map<String, Object>.from(event.schemaChanges ?? {});
-    schemaChanges['migratedFrom'] = event.schemaVersion;
-    schemaChanges['migratedTo'] = targetVersion;
-    schemaChanges['migratedAt'] = DateTime.now().toIso8601String();
-
-    // Apply version-specific migrations
-    var migratedEvent = _applyMigration(event, targetVersion);
-
-    // Update schema metadata
-    return migratedEvent.copyWith(
-      schemaVersion: targetVersion,
-      previousSchemaVersion: event.schemaVersion,
-      schemaChanges: schemaChanges,
-    );
-  }
-
-  /// Applies version-specific migration transformations
-  DomainEventModel _applyMigration(
-    DomainEventModel event,
-    String targetVersion,)`
-- `switch('${event.schemaVersion}-$targetVersion')`
-- `_migrateFrom100To110(event);
-
-      // Add more migration paths as needed
-
-      default:
-        // For now, if there's no specific migration needed, return as-is
-        return event;
-    }
-  }
-
-  /// Example migration implementation from v1.0.0 to v1.1.0
-  DomainEventModel _migrateFrom100To110(DomainEventModel event)`
-- `if(migratedChanges.containsKey('oldFieldName'))`
-- `if(migratedChanges.containsKey('dateField') &&
-        migratedChanges['dateField'] is String)`
 
 ## Alphabetical Index
 
@@ -8119,69 +7149,48 @@ No imports.
 - `AIProcessingException` - `lib/src/domain/core/exceptions.dart`
 - `AccessException` - `lib/src/domain/core/exceptions.dart`
 - `Address` - `lib/src/domain/value_objects/contact_value_objects.dart`
-- `AggregateRepositoryBase` - `lib/src/domain/repositories/aggregate/aggregate_repository_base.dart`
 - `BaseEntityModel` - `lib/src/domain/entities/base_entity.dart`
 - `ContactInfo` - `lib/src/domain/value_objects/contact_value_objects.dart`
 - `CoreEntity` - `lib/src/domain/core/core_entity.dart`
 - `DataManagerException` - `lib/src/domain/core/exceptions.dart`
 - `DomainEventModel` - `lib/src/domain/events/domain_event.dart`
 - `EmailAddress` - `lib/src/domain/value_objects/contact_value_objects.dart`
-- `EntityAuditReport` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
-- `EntityBuilder` - `lib/src/domain/entities/entity_factory.dart`
 - `EntityClassification` - `lib/src/domain/entities/base_entity.dart`
-- `EntityCloneBuilder` - `lib/src/domain/entities/entity_factory.dart`
-- `EntityCloneConfig` - `lib/src/domain/entities/entity_factory.dart`
+- `EntityCloningBuilder` - `lib/src/domain/entities/entity_factory.dart`
+- `EntityCloningConfig` - `lib/src/domain/entities/entity_factory.dart`
 - `EntityConfig` - `lib/src/domain/core/entity_config.dart`
 - `EntityConfigDefaults` - `lib/src/domain/core/entity_config.dart`
-- `EntityCreateConfig` - `lib/src/domain/entities/entity_factory.dart`
+- `EntityCreationBuilder` - `lib/src/domain/entities/entity_factory.dart`
+- `EntityCreationConfig` - `lib/src/domain/entities/entity_factory.dart`
 - `EntityDefaults` - `lib/src/domain/core/core_entity.dart`
 - `EntityFactory` - `lib/src/domain/entities/entity_factory.dart`
 - `EntityHierarchy` - `lib/src/domain/entities/base_entity.dart`
 - `EntityId` - `lib/src/domain/value_objects/identity_value_objects.dart`
 - `EntityLimits` - `lib/src/domain/entities/base_entity.dart`
 - `EntityMetadata` - `lib/src/domain/entities/base_entity.dart`
-- `EntityNotFoundException` - `lib/src/domain/repositories/aggregate/aggregate_repository_base.dart`
-- `EntityRelation` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 - `EntitySecurity` - `lib/src/domain/entities/base_entity.dart`
 - `EntityVersioning` - `lib/src/domain/entities/base_entity.dart`
 - `EquipmentData` - `lib/src/domain/entities/entity_types.dart`
-- `EventAwareRepository` - `lib/src/domain/repositories/event_aware_repository.dart`
 - `EventDefaults` - `lib/src/domain/events/domain_event.dart`
 - `EventId` - `lib/src/domain/value_objects/identity_value_objects.dart`
-- `EventMetadata` - `lib/src/domain/repositories/event/i_event_store.dart`
-- `EventMigrationService` - `lib/src/application/services/event_migration_service.dart`
-- `EventQuery` - `lib/src/domain/repositories/event/i_event_store.dart`
 - `EventSchema` - `lib/src/domain/events/domain_event.dart`
 - `EventSchemaConfig` - `lib/src/domain/events/domain_event.dart`
-- `EventServiceProvider` - `lib/src/application/providers/event_service_provider.dart`
 - `FieldValidationException` - `lib/src/domain/core/exceptions.dart`
 - `HierarchyException` - `lib/src/domain/core/exceptions.dart`
-- `HierarchyParams` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
-- `HierarchyQueryParams` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 - `HierarchyValidationException` - `lib/src/domain/core/exceptions.dart`
-- `IEntityRepository` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
-- `IEventStore` - `lib/src/domain/repositories/event/i_event_store.dart`
 - `IntegrityException` - `lib/src/domain/core/exceptions.dart`
 - `LockException` - `lib/src/domain/core/exceptions.dart`
-- `LockState` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 - `Measurement` - `lib/src/domain/value_objects/measurement_value_objects.dart`
 - `OperationException` - `lib/src/domain/core/exceptions.dart`
 - `OwnerData` - `lib/src/domain/entities/entity_types.dart`
-- `PagedResult` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 - `PathValidationException` - `lib/src/domain/core/exceptions.dart`
 - `PersonnelData` - `lib/src/domain/entities/entity_types.dart`
 - `PhoneNumber` - `lib/src/domain/value_objects/contact_value_objects.dart`
 - `Progress` - `lib/src/domain/value_objects/status_value_objects.dart`
-- `QueryParams` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 - `Range` - `lib/src/domain/value_objects/measurement_value_objects.dart`
 - `ReferenceNumber` - `lib/src/domain/value_objects/identity_value_objects.dart`
 - `Schedule` - `lib/src/domain/value_objects/time_value_objects.dart`
-- `SearchParams` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
-- `SearchResult` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 - `SiteData` - `lib/src/domain/entities/entity_types.dart`
-- `SyncParams` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
-- `SyncProgress` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
-- `SyncResult` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 - `TaskStatus` - `lib/src/domain/value_objects/status_value_objects.dart`
 - `TimeWindow` - `lib/src/domain/value_objects/time_value_objects.dart`
 - `TypedMetadata` - `lib/src/domain/core/core_entity.dart`
@@ -8189,41 +7198,37 @@ No imports.
 - `ValidationException` - `lib/src/domain/core/exceptions.dart`
 - `VendorData` - `lib/src/domain/entities/entity_types.dart`
 - `VersionConflictException` - `lib/src/domain/core/exceptions.dart`
-- `VersionQuery` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
-- `WatchParams` - `lib/src/domain/repositories/entity/i_entity_repository.dart`
 
 ### Functions
 
 - `ArgumentError` - `lib/src/domain/entities/entity_factory.dart`
 - `BaseEntityModel` - `lib/src/domain/entities/base_entity.dart`
 - `DataManagerException` - `lib/src/domain/core/exceptions.dart`
-- `DomainEvent` - `lib/src/domain/repositories/event_aware_repository.dart`
 - `DomainEventModel` - `lib/src/domain/events/domain_event.dart`
 - `EntityConfig` - `lib/src/domain/core/entity_config.dart`
-- `EntityCreateConfig` - `lib/src/domain/entities/entity_factory.dart`
+- `EntityCreationConfig` - `lib/src/domain/entities/entity_factory.dart`
 - `EntityHierarchy` - `lib/src/domain/entities/base_entity.dart`
-- `EventServiceProvider` - `lib/src/application/providers/event_service_provider.dart`
 - `Exception` - `lib/src/domain/entities/base_entity.dart`
 - `HierarchyValidationException` - `lib/src/domain/entities/entity_factory.dart`
 - `PathValidationException` - `lib/src/domain/entities/entity_factory.dart`
 - `ReferenceNumber` - `lib/src/domain/value_objects/identity_value_objects.dart`
-- `StateError` - `lib/src/domain/repositories/event_aware_repository.dart`
-- `TypeError` - `lib/src/domain/core/core_entity.dart`
 - `TypedMetadata` - `lib/src/domain/core/core_entity.dart`
 - `UnimplementedError` - `lib/src/domain/events/domain_event.dart`
-- `UnsupportedError` - `lib/src/application/services/event_migration_service.dart`
 - `UserAction` - `lib/src/domain/value_objects/user_action.dart`
-- `_createEvent` - `lib/src/domain/repositories/event_aware_repository.dart`
-- `_migrateFrom100To110` - `lib/src/application/services/event_migration_service.dart`
 - `applyEvent` - `lib/src/domain/entities/entity_types.dart`
+- `assert` - `lib/src/domain/core/core_entity.dart`
 - `build` - `lib/src/domain/entities/entity_factory.dart`
+- `clearCacheEntry` - `lib/src/domain/core/core_entity.dart`
 - `constrainLockDuration` - `lib/src/domain/core/entity_config.dart`
 - `contains` - `lib/src/domain/value_objects/time_value_objects.dart`
 - `copyWith` - `lib/src/domain/core/core_entity.dart`
 - `draft` - `lib/src/domain/value_objects/enum_objects.dart`
 - `filterMetadata` - `lib/src/domain/core/core_entity.dart`
 - `for` - `lib/src/domain/core/entity_config.dart`
+- `getBool` - `lib/src/domain/core/core_entity.dart`
 - `getDepthTo` - `lib/src/domain/entities/base_entity.dart`
+- `getDouble` - `lib/src/domain/core/core_entity.dart`
+- `getInt` - `lib/src/domain/core/core_entity.dart`
 - `getNameFromPath` - `lib/src/domain/core/entity_config.dart`
 - `hasMetadata` - `lib/src/domain/core/core_entity.dart`
 - `if` - `lib/src/domain/core/entity_config.dart`
@@ -8244,15 +7249,11 @@ No imports.
 - `isWithinTolerance` - `lib/src/domain/value_objects/measurement_value_objects.dart`
 - `joinPath` - `lib/src/domain/core/entity_config.dart`
 - `low` - `lib/src/domain/value_objects/enum_objects.dart`
-- `migrate` - `lib/src/application/extensions/domain_event_extensions.dart`
-- `migrateEventSchema` - `lib/src/application/services/event_migration_service.dart`
 - `migrateSchema` - `lib/src/domain/events/domain_event.dart`
 - `overlaps` - `lib/src/domain/value_objects/measurement_value_objects.dart`
-- `replayEvents` - `lib/src/domain/repositories/event_aware_repository.dart`
-- `return` - `lib/src/domain/entities/base_entity.dart`
+- `return` - `lib/src/domain/core/core_entity.dart`
 - `sanitizePath` - `lib/src/domain/core/entity_config.dart`
 - `splitPath` - `lib/src/domain/entities/base_entity.dart`
-- `store` - `lib/src/domain/repositories/event/i_event_store.dart`
 - `switch` - `lib/src/domain/core/entity_config.dart`
 - `updateHierarchy` - `lib/src/domain/entities/base_entity.dart`
 - `updateMetadata` - `lib/src/domain/core/core_entity.dart`
