@@ -27,7 +27,7 @@ mixin _$EntityHierarchy {
  List<EntityId> get childIds;/// Indicates if this entity is a root node in a hierarchy
  bool get isHierarchyRoot;/// Indicates if this entity is a leaf node (has no children)
  bool get isHierarchyLeaf;/// Additional hierarchy-related metadata
- Map<String, Object> get hierarchyMeta;
+ HierarchyMetadata get hierarchyMeta;
 /// Create a copy of EntityHierarchy
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -58,7 +58,7 @@ abstract mixin class $EntityHierarchyCopyWith<$Res>  {
   factory $EntityHierarchyCopyWith(EntityHierarchy value, $Res Function(EntityHierarchy) _then) = _$EntityHierarchyCopyWithImpl;
 @useResult
 $Res call({
- String? treePath, int treeDepth, List<EntityId> ancestors, EntityId? parentId, List<EntityId> childIds, bool isHierarchyRoot, bool isHierarchyLeaf, Map<String, Object> hierarchyMeta
+ String? treePath, int treeDepth, List<EntityId> ancestors, EntityId? parentId, List<EntityId> childIds, bool isHierarchyRoot, bool isHierarchyLeaf, HierarchyMetadata hierarchyMeta
 });
 
 
@@ -85,7 +85,7 @@ as EntityId?,childIds: null == childIds ? _self.childIds : childIds // ignore: c
 as List<EntityId>,isHierarchyRoot: null == isHierarchyRoot ? _self.isHierarchyRoot : isHierarchyRoot // ignore: cast_nullable_to_non_nullable
 as bool,isHierarchyLeaf: null == isHierarchyLeaf ? _self.isHierarchyLeaf : isHierarchyLeaf // ignore: cast_nullable_to_non_nullable
 as bool,hierarchyMeta: null == hierarchyMeta ? _self.hierarchyMeta : hierarchyMeta // ignore: cast_nullable_to_non_nullable
-as Map<String, Object>,
+as HierarchyMetadata,
   ));
 }
 /// Create a copy of EntityHierarchy
@@ -108,7 +108,7 @@ $EntityIdCopyWith<$Res>? get parentId {
 
 
 class _EntityHierarchy extends EntityHierarchy {
-  const _EntityHierarchy({this.treePath, this.treeDepth = 0, final  List<EntityId> ancestors = const <EntityId>[], this.parentId, final  List<EntityId> childIds = const <EntityId>[], this.isHierarchyRoot = true, this.isHierarchyLeaf = true, final  Map<String, Object> hierarchyMeta = const {}}): _ancestors = ancestors,_childIds = childIds,_hierarchyMeta = hierarchyMeta,super._();
+  const _EntityHierarchy({this.treePath, this.treeDepth = 0, final  List<EntityId> ancestors = const <EntityId>[], this.parentId, final  List<EntityId> childIds = const <EntityId>[], this.isHierarchyRoot = true, this.isHierarchyLeaf = true, final  HierarchyMetadata hierarchyMeta = const {}}): _ancestors = ancestors,_childIds = childIds,_hierarchyMeta = hierarchyMeta,super._();
   
 
 /// Full path in the entity tree
@@ -144,9 +144,9 @@ class _EntityHierarchy extends EntityHierarchy {
 /// Indicates if this entity is a leaf node (has no children)
 @override@JsonKey() final  bool isHierarchyLeaf;
 /// Additional hierarchy-related metadata
- final  Map<String, Object> _hierarchyMeta;
+ final  HierarchyMetadata _hierarchyMeta;
 /// Additional hierarchy-related metadata
-@override@JsonKey() Map<String, Object> get hierarchyMeta {
+@override@JsonKey() HierarchyMetadata get hierarchyMeta {
   if (_hierarchyMeta is EqualUnmodifiableMapView) return _hierarchyMeta;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_hierarchyMeta);
@@ -183,7 +183,7 @@ abstract mixin class _$EntityHierarchyCopyWith<$Res> implements $EntityHierarchy
   factory _$EntityHierarchyCopyWith(_EntityHierarchy value, $Res Function(_EntityHierarchy) _then) = __$EntityHierarchyCopyWithImpl;
 @override @useResult
 $Res call({
- String? treePath, int treeDepth, List<EntityId> ancestors, EntityId? parentId, List<EntityId> childIds, bool isHierarchyRoot, bool isHierarchyLeaf, Map<String, Object> hierarchyMeta
+ String? treePath, int treeDepth, List<EntityId> ancestors, EntityId? parentId, List<EntityId> childIds, bool isHierarchyRoot, bool isHierarchyLeaf, HierarchyMetadata hierarchyMeta
 });
 
 
@@ -210,7 +210,7 @@ as EntityId?,childIds: null == childIds ? _self._childIds : childIds // ignore: 
 as List<EntityId>,isHierarchyRoot: null == isHierarchyRoot ? _self.isHierarchyRoot : isHierarchyRoot // ignore: cast_nullable_to_non_nullable
 as bool,isHierarchyLeaf: null == isHierarchyLeaf ? _self.isHierarchyLeaf : isHierarchyLeaf // ignore: cast_nullable_to_non_nullable
 as bool,hierarchyMeta: null == hierarchyMeta ? _self._hierarchyMeta : hierarchyMeta // ignore: cast_nullable_to_non_nullable
-as Map<String, Object>,
+as HierarchyMetadata,
   ));
 }
 
@@ -588,7 +588,7 @@ mixin _$EntityVersioning {
 ///   - 'lastSync': DateTime or String (ISO8601)
 ///   - 'syncSource': String
 ///   - Add more as needed for your application
- Map<String, Object> get syncMeta;/// Synchronization version identifier
+ EntityMeta get syncMeta;/// Synchronization version identifier
  String? get syncVer;/// Search index for efficient queries
 ///
 /// Expected keys:
@@ -640,7 +640,7 @@ abstract mixin class $EntityVersioningCopyWith<$Res>  {
   factory $EntityVersioningCopyWith(EntityVersioning value, $Res Function(EntityVersioning) _then) = _$EntityVersioningCopyWithImpl;
 @useResult
 $Res call({
- Map<String, Object> syncMeta, String? syncVer, Map<String, Object> searchIndex, int eventVer, List<String> pendingEvents, Map<String, Object> eventMeta, int historyLimit, int dataVer, int structVer, String? lastVer, String schemaVer, Map<String, int> verVectors
+ EntityMeta syncMeta, String? syncVer, Map<String, Object> searchIndex, int eventVer, List<String> pendingEvents, Map<String, Object> eventMeta, int historyLimit, int dataVer, int structVer, String? lastVer, String schemaVer, Map<String, int> verVectors
 });
 
 
@@ -660,7 +660,7 @@ class _$EntityVersioningCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? syncMeta = null,Object? syncVer = freezed,Object? searchIndex = null,Object? eventVer = null,Object? pendingEvents = null,Object? eventMeta = null,Object? historyLimit = null,Object? dataVer = null,Object? structVer = null,Object? lastVer = freezed,Object? schemaVer = null,Object? verVectors = null,}) {
   return _then(_self.copyWith(
 syncMeta: null == syncMeta ? _self.syncMeta : syncMeta // ignore: cast_nullable_to_non_nullable
-as Map<String, Object>,syncVer: freezed == syncVer ? _self.syncVer : syncVer // ignore: cast_nullable_to_non_nullable
+as EntityMeta,syncVer: freezed == syncVer ? _self.syncVer : syncVer // ignore: cast_nullable_to_non_nullable
 as String?,searchIndex: null == searchIndex ? _self.searchIndex : searchIndex // ignore: cast_nullable_to_non_nullable
 as Map<String, Object>,eventVer: null == eventVer ? _self.eventVer : eventVer // ignore: cast_nullable_to_non_nullable
 as int,pendingEvents: null == pendingEvents ? _self.pendingEvents : pendingEvents // ignore: cast_nullable_to_non_nullable
@@ -682,7 +682,7 @@ as Map<String, int>,
 
 
 class _EntityVersioning extends EntityVersioning {
-  const _EntityVersioning({final  Map<String, Object> syncMeta = const {}, this.syncVer, final  Map<String, Object> searchIndex = const {}, this.eventVer = 0, final  List<String> pendingEvents = const [], final  Map<String, Object> eventMeta = const {}, this.historyLimit = EntityLimits.historyDefault, this.dataVer = 1, this.structVer = 1, this.lastVer, this.schemaVer = EntityDefaults.version, final  Map<String, int> verVectors = const {}}): _syncMeta = syncMeta,_searchIndex = searchIndex,_pendingEvents = pendingEvents,_eventMeta = eventMeta,_verVectors = verVectors,super._();
+  const _EntityVersioning({final  EntityMeta syncMeta = const {}, this.syncVer, final  Map<String, Object> searchIndex = const {}, this.eventVer = 0, final  List<String> pendingEvents = const [], final  Map<String, Object> eventMeta = const {}, this.historyLimit = EntityLimits.historyDefault, this.dataVer = 1, this.structVer = 1, this.lastVer, this.schemaVer = EntityDefaults.version, final  Map<String, int> verVectors = const {}}): _syncMeta = syncMeta,_searchIndex = searchIndex,_pendingEvents = pendingEvents,_eventMeta = eventMeta,_verVectors = verVectors,super._();
   
 
 /// Metadata for synchronization purposes
@@ -691,14 +691,14 @@ class _EntityVersioning extends EntityVersioning {
 ///   - 'lastSync': DateTime or String (ISO8601)
 ///   - 'syncSource': String
 ///   - Add more as needed for your application
- final  Map<String, Object> _syncMeta;
+ final  EntityMeta _syncMeta;
 /// Metadata for synchronization purposes
 ///
 /// Expected keys:
 ///   - 'lastSync': DateTime or String (ISO8601)
 ///   - 'syncSource': String
 ///   - Add more as needed for your application
-@override@JsonKey() Map<String, Object> get syncMeta {
+@override@JsonKey() EntityMeta get syncMeta {
   if (_syncMeta is EqualUnmodifiableMapView) return _syncMeta;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_syncMeta);
@@ -805,7 +805,7 @@ abstract mixin class _$EntityVersioningCopyWith<$Res> implements $EntityVersioni
   factory _$EntityVersioningCopyWith(_EntityVersioning value, $Res Function(_EntityVersioning) _then) = __$EntityVersioningCopyWithImpl;
 @override @useResult
 $Res call({
- Map<String, Object> syncMeta, String? syncVer, Map<String, Object> searchIndex, int eventVer, List<String> pendingEvents, Map<String, Object> eventMeta, int historyLimit, int dataVer, int structVer, String? lastVer, String schemaVer, Map<String, int> verVectors
+ EntityMeta syncMeta, String? syncVer, Map<String, Object> searchIndex, int eventVer, List<String> pendingEvents, Map<String, Object> eventMeta, int historyLimit, int dataVer, int structVer, String? lastVer, String schemaVer, Map<String, int> verVectors
 });
 
 
@@ -825,7 +825,7 @@ class __$EntityVersioningCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? syncMeta = null,Object? syncVer = freezed,Object? searchIndex = null,Object? eventVer = null,Object? pendingEvents = null,Object? eventMeta = null,Object? historyLimit = null,Object? dataVer = null,Object? structVer = null,Object? lastVer = freezed,Object? schemaVer = null,Object? verVectors = null,}) {
   return _then(_EntityVersioning(
 syncMeta: null == syncMeta ? _self._syncMeta : syncMeta // ignore: cast_nullable_to_non_nullable
-as Map<String, Object>,syncVer: freezed == syncVer ? _self.syncVer : syncVer // ignore: cast_nullable_to_non_nullable
+as EntityMeta,syncVer: freezed == syncVer ? _self.syncVer : syncVer // ignore: cast_nullable_to_non_nullable
 as String?,searchIndex: null == searchIndex ? _self._searchIndex : searchIndex // ignore: cast_nullable_to_non_nullable
 as Map<String, Object>,eventVer: null == eventVer ? _self.eventVer : eventVer // ignore: cast_nullable_to_non_nullable
 as int,pendingEvents: null == pendingEvents ? _self._pendingEvents : pendingEvents // ignore: cast_nullable_to_non_nullable

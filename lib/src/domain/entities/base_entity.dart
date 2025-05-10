@@ -11,8 +11,11 @@ part 'base_entity.g.dart';
 
 /// Type aliases for improved code readability
 typedef EntityVersionVector = Map<String, int>;
-typedef EntityEventMeta = Map<String, Object>;
-typedef EntitySearchIndex = Map<String, Object>;
+typedef EntityEventMeta = Map<String, dynamic>;
+typedef EntitySearchIndex = Map<String, dynamic>;
+typedef HierarchyMetadata = Map<String, dynamic>;
+typedef SecurityMetadata = Map<String, dynamic>;
+typedef EntityMeta = Map<String, dynamic>;
 
 /// Constants defining entity system boundaries and limitations
 abstract class EntityLimits {
@@ -65,7 +68,7 @@ sealed class EntityHierarchy with _$EntityHierarchy {
     @Default(true) bool isHierarchyLeaf,
 
     /// Additional hierarchy-related metadata
-    @Default({}) Map<String, Object> hierarchyMeta,
+    @Default({}) HierarchyMetadata hierarchyMeta,
   }) = _EntityHierarchy;
 
   /// Creates a new root EntityHierarchy instance
@@ -257,7 +260,7 @@ extension BaseEntityModelPathAndHierarchy<T extends Object>
     );
   }
 
-  Map<String, Object> buildHierarchyIndex() {
+  EntitySearchIndex buildHierarchyIndex() {
     return {
       'depth_level': hierarchy.treeDepth,
       'parent_type': hierarchy.parentId?.value ?? 'root',
@@ -331,7 +334,7 @@ sealed class EntityVersioning with _$EntityVersioning {
     ///   - 'lastSync': DateTime or String (ISO8601)
     ///   - 'syncSource': String
     ///   - Add more as needed for your application
-    @Default({}) Map<String, Object> syncMeta,
+    @Default({}) EntityMeta syncMeta,
 
     /// Synchronization version identifier
     String? syncVer,
@@ -434,7 +437,7 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
   EntityStatus get status => core.status;
 
   /// Custom metadata for the entity
-  Map<String, Object> get meta => core.meta;
+  EntityMeta get meta => core.meta;
 
   /// User who owns the entity
   UserAction get owner => core.owner;
@@ -633,6 +636,61 @@ sealed class BaseEntityModel<T extends Object> with _$BaseEntityModel<T> {
         dataVer: versioning.dataVer + 1,
         structVer:
             isStructural ? versioning.structVer + 1 : versioning.structVer,
+      ),
+    );
+  }
+}
+
+/// Extension for type-safe metadata access on BaseEntityModel
+extension TypeSafeEntityAccess<T extends Object> on BaseEntityModel<T> {
+  /// Gets a typed value from core metadata
+  R? getMetadata<R>(String key) {
+    final value = meta[key];
+    if (value is R) return value;
+    return null;
+  }
+
+  /// Gets a typed value from hierarchy metadata
+  R? getHierarchyMeta<R>(String key) {
+    final value = hierarchy.hierarchyMeta[key];
+    if (value is R) return value;
+    return null;
+  }
+
+  /// Gets a typed value from versioning sync metadata
+  R? getSyncMeta<R>(String key) {
+    final value = versioning.syncMeta[key];
+    if (value is R) return value;
+    return null;
+  }
+
+  /// Gets a typed value from versioning event metadata
+  R? getEventMeta<R>(String key) {
+    final value = versioning.eventMeta[key];
+    if (value is R) return value;
+    return null;
+  }
+
+  /// Gets a typed value from search index
+  R? getSearchIndex<R>(String key) {
+    final value = versioning.searchIndex[key];
+    if (value is R) return value;
+    return null;
+  }
+
+  /// Sets a typed value in core metadata and returns updated entity
+  BaseEntityModel<T> setMetadata<R extends Object>(String key, R value) {
+    return copyWith(core: core.copyWith(meta: {...meta, key: value}));
+  }
+
+  /// Updates hierarchy metadata with a typed value and returns updated entity
+  BaseEntityModel<T> updateHierarchyMeta<R extends Object>(
+    String key,
+    R value,
+  ) {
+    return copyWith(
+      hierarchy: hierarchy.copyWith(
+        hierarchyMeta: {...hierarchy.hierarchyMeta, key: value},
       ),
     );
   }
