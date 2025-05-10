@@ -1,6 +1,12 @@
+import 'package:data_manager/src/domain/core/core_entity.dart';
+import 'package:data_manager/src/domain/core/exceptions.dart';
+import 'package:data_manager/src/domain/entities/base_entity.dart';
+import 'package:data_manager/src/domain/entities/entity_types.dart';
+import 'package:data_manager/src/domain/value_objects/enum_objects.dart';
+import 'package:data_manager/src/domain/value_objects/identity_value_objects.dart';
+import 'package:data_manager/src/domain/value_objects/user_action.dart';
 import 'package:uuid/uuid.dart';
 import 'package:authentication/authentication.dart';
-import 'package:data_manager/data_manager.dart';
 
 /// Configuration data for new entity creation
 ///

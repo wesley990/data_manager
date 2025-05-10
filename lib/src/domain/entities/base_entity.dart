@@ -1,5 +1,9 @@
 import 'dart:collection';
-import 'package:data_manager/data_manager.dart';
+import 'package:data_manager/src/domain/core/core_entity.dart';
+import 'package:data_manager/src/domain/core/entity_config.dart';
+import 'package:data_manager/src/domain/value_objects/enum_objects.dart';
+import 'package:data_manager/src/domain/value_objects/identity_value_objects.dart';
+import 'package:data_manager/src/domain/value_objects/user_action.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'base_entity.freezed.dart';

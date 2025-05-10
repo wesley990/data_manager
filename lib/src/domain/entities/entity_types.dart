@@ -1,4 +1,8 @@
-import 'package:data_manager/data_manager.dart';
+import 'package:data_manager/src/domain/entities/base_entity.dart';
+import 'package:data_manager/src/domain/events/domain_event.dart';
+import 'package:data_manager/src/domain/value_objects/contact_value_objects.dart';
+import 'package:data_manager/src/domain/value_objects/enum_objects.dart';
+import 'package:data_manager/src/domain/value_objects/identity_value_objects.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'entity_types.freezed.dart';
