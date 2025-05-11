@@ -11,7 +11,7 @@ import 'package:authentication/authentication.dart';
 /// Configuration data for new entity creation
 ///
 /// Contains core entity information, hierarchy data, and classification parameters
-class EntityCreationConfig<T extends Object> {
+class EntityInitConfig<T extends Object> {
   // Core info
   /// User-provided name for the entity
   final String name;
@@ -57,7 +57,7 @@ class EntityCreationConfig<T extends Object> {
   /// Whether entity is publicly accessible
   final bool? isPublic;
 
-  EntityCreationConfig({
+  EntityInitConfig({
     required this.name,
     required this.user,
     required this.data,
@@ -117,7 +117,7 @@ class EntityCloningConfig<T extends Object> {
 ///
 /// Example:
 /// ```dart
-/// final site = EntityCreationBuilder<SiteModel>()
+/// final site = EntityBuilder<SiteModel>()
 ///   .withName('Main Office')
 ///   .withUser(currentUser)
 ///   .withData(siteModel)
@@ -125,7 +125,7 @@ class EntityCloningConfig<T extends Object> {
 ///   .withTags(['headquarters', 'office'])
 ///   .build();
 /// ```
-class EntityCreationBuilder<T extends Object> {
+class EntityBuilder<T extends Object> {
   // Required fields
   String? _name;
   AuthUser? _user;
@@ -146,86 +146,86 @@ class EntityCreationBuilder<T extends Object> {
 
   // Required field methods
   /// Sets the name for the entity
-  EntityCreationBuilder<T> withName(String name) {
+  EntityBuilder<T> withName(String name) {
     _name = name;
     return this;
   }
 
   /// Sets the user creating the entity
-  EntityCreationBuilder<T> withUser(AuthUser user) {
+  EntityBuilder<T> withUser(AuthUser user) {
     _user = user;
     return this;
   }
 
   /// Sets the type-specific payload data
-  EntityCreationBuilder<T> withData(T data) {
+  EntityBuilder<T> withData(T data) {
     _data = data;
     return this;
   }
 
   // Optional field methods
   /// Sets the description for the entity
-  EntityCreationBuilder<T> withDescription(String description) {
+  EntityBuilder<T> withDescription(String description) {
     _description = description;
     return this;
   }
 
   /// Sets the parent path in the entity hierarchy
-  EntityCreationBuilder<T> withParentPath(String parentPath) {
+  EntityBuilder<T> withParentPath(String parentPath) {
     _parentPath = parentPath;
     return this;
   }
 
   /// Sets the direct parent entity ID
-  EntityCreationBuilder<T> withParentId(EntityId parentId) {
+  EntityBuilder<T> withParentId(EntityId parentId) {
     _parentId = parentId;
     return this;
   }
 
   /// Sets the list of ancestor entity IDs
-  EntityCreationBuilder<T> withAncestors(List<EntityId> ancestors) {
+  EntityBuilder<T> withAncestors(List<EntityId> ancestors) {
     _ancestors = ancestors;
     return this;
   }
 
   /// Sets custom metadata key-value pairs
-  EntityCreationBuilder<T> withMeta(Map<String, Object> meta) {
+  EntityBuilder<T> withMeta(Map<String, Object> meta) {
     _meta = meta;
     return this;
   }
 
   /// Sets searchable tags
-  EntityCreationBuilder<T> withTags(List<String> tags) {
+  EntityBuilder<T> withTags(List<String> tags) {
     _tags = tags;
     return this;
   }
 
   /// Sets categorization labels
-  EntityCreationBuilder<T> withLabels(Map<String, String> labels) {
+  EntityBuilder<T> withLabels(Map<String, String> labels) {
     _labels = labels;
     return this;
   }
 
   /// Sets the entity importance level
-  EntityCreationBuilder<T> withPriority(EntityPriority priority) {
+  EntityBuilder<T> withPriority(EntityPriority priority) {
     _priority = priority;
     return this;
   }
 
   /// Sets the workflow stage
-  EntityCreationBuilder<T> withStage(EntityStage stage) {
+  EntityBuilder<T> withStage(EntityStage stage) {
     _stage = stage;
     return this;
   }
 
   /// Sets the expiry date for the entity
-  EntityCreationBuilder<T> withExpiryDate(DateTime expiryDate) {
+  EntityBuilder<T> withExpiryDate(DateTime expiryDate) {
     _expiryDate = expiryDate;
     return this;
   }
 
   /// Sets whether the entity is publicly accessible
-  EntityCreationBuilder<T> isPublic(bool isPublic) {
+  EntityBuilder<T> isPublic(bool isPublic) {
     _isPublic = isPublic;
     return this;
   }
@@ -244,7 +244,7 @@ class EntityCreationBuilder<T extends Object> {
     }
 
     // Create config
-    final config = EntityCreationConfig<T>(
+    final config = EntityInitConfig<T>(
       name: _name!,
       user: _user!,
       data: _data!,
@@ -365,7 +365,7 @@ class EntityCloningBuilder<T extends Object> {
 ///
 /// This factory handles the construction of entity objects, applying validation
 /// and ensuring structural integrity. It's recommended to use the builder pattern
-/// through [EntityCreationBuilder] and [EntityCloningBuilder] for a more fluent API.
+/// through [EntityBuilder] and [EntityCloningBuilder] for a more fluent API.
 class EntityFactory {
   /// Valid entity types that can be created with this factory
   static final _validTypes = <Type>{
@@ -378,11 +378,11 @@ class EntityFactory {
 
   /// Creates a new entity from the provided configuration.
   ///
-  /// For a more fluent API, consider using [EntityCreationBuilder] instead.
+  /// For a more fluent API, consider using [EntityBuilder] instead.
   ///
   /// Example with builder pattern:
   /// ```dart
-  /// final entity = EntityCreationBuilder<SiteModel>()
+  /// final entity = EntityBuilder<SiteModel>()
   ///   .withName('Site Name')
   ///   .withUser(currentUser)
   ///   .withData(siteData)
@@ -396,7 +396,7 @@ class EntityFactory {
   /// @throws PathValidationException if the provided path is invalid
   /// @throws HierarchyValidationException if a circular reference is detected
   static BaseEntityModel<T> create<T extends Object>(
-    EntityCreationConfig<T> config,
+    EntityInitConfig<T> config,
   ) {
     if (!_validTypes.contains(T)) {
       throw ArgumentError('Invalid type: ${T.toString()}');
