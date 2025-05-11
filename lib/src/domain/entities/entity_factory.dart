@@ -8,9 +8,9 @@ import 'package:data_manager/src/domain/value_objects/user_action.dart';
 import 'package:uuid/uuid.dart';
 import 'package:authentication/authentication.dart';
 
-/// Configuration data for new entity creation
+/// Data container for entity creation parameters
 ///
-/// Contains core entity information, hierarchy data, and classification parameters
+/// Groups all required and optional attributes needed to create an entity
 class EntityInitConfig<T extends Object> {
   // Core info
   /// User-provided name for the entity
@@ -75,8 +75,9 @@ class EntityInitConfig<T extends Object> {
   });
 }
 
-/// Configuration object for cloning existing entities.
-/// Contains the source entity and optional overrides for the clone.
+/// Configuration for creating entity clones
+///
+/// Includes source entity and property overrides for the cloned entity
 class EntityCloningConfig<T extends Object> {
   /// Source entity to clone
   final BaseEntityModel<T> source;
@@ -266,9 +267,9 @@ class EntityBuilder<T extends Object> {
   }
 }
 
-/// A fluent builder for cloning entities.
+/// A fluent builder for cloning entities
 ///
-/// Simplifies the process of creating copies of existing entities with optional modifications.
+/// Simplifies the process of creating copies of existing entities with optional modifications
 ///
 /// Example:
 /// ```dart
@@ -361,11 +362,10 @@ class EntityCloningBuilder<T extends Object> {
   }
 }
 
-/// Factory for creating and cloning entities.
+/// Factory for creating and cloning entities
 ///
-/// This factory handles the construction of entity objects, applying validation
-/// and ensuring structural integrity. It's recommended to use the builder pattern
-/// through [EntityBuilder] and [EntityCloningBuilder] for a more fluent API.
+/// Handles entity construction with validation and structural integrity checks
+/// Use builder patterns [EntityBuilder] and [EntityCloningBuilder] for fluent API
 class EntityFactory {
   /// Valid entity types that can be created with this factory
   static final _validTypes = <Type>{
@@ -376,25 +376,21 @@ class EntityFactory {
     PersonnelData,
   };
 
-  /// Creates a new entity from the provided configuration.
+  /// Creates a new entity from initialization configuration
   ///
-  /// For a more fluent API, consider using [EntityBuilder] instead.
-  ///
-  /// Example with builder pattern:
+  /// For fluent creation, use [EntityBuilder] pattern instead:
   /// ```dart
   /// final entity = EntityBuilder<SiteModel>()
   ///   .withName('Site Name')
   ///   .withUser(currentUser)
   ///   .withData(siteData)
-  ///   // ... more properties ...
   ///   .build();
   /// ```
   ///
-  /// @param config The configuration containing all entity parameters
-  /// @return A new entity with the specified configuration
-  /// @throws ArgumentError if an invalid type is provided
-  /// @throws PathValidationException if the provided path is invalid
-  /// @throws HierarchyValidationException if a circular reference is detected
+  /// @param config Entity configuration with all attributes
+  /// @throws ArgumentError for invalid entity type
+  /// @throws PathValidationException for invalid path format
+  /// @throws HierarchyValidationException for circular references
   static BaseEntityModel<T> create<T extends Object>(
     EntityInitConfig<T> config,
   ) {
