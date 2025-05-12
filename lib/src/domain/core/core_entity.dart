@@ -303,6 +303,7 @@ class TypedMetadata {
 
   /// Tries multiple keys in sequence until finding a non-null value
   /// [keys] - List of keys to try in order
+  /// [T] - The target type to convert the value to
   /// Returns the first matching value or null if no matches
   T? getFirstMatching<T>(List<String> keys) {
     for (final key in keys) {
