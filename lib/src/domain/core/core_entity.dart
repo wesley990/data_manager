@@ -296,7 +296,7 @@ class TypedMetadata {
   TypedMetadata? getNestedMetadata(String key) {
     final value = _meta[key];
     if (value is Map<String, Object>) {
-      return TypedMetadata(value);
+      return TypedMetadata(value, onConversionError: onConversionError);
     }
     return null;
   }
