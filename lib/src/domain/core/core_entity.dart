@@ -229,40 +229,65 @@ class TypedMetadata {
     final value = _meta[key];
     if (!_meta.containsKey(key) || value == null) return null;
 
-    if (value is C) {
-      try {
-        if (C == List && value is List) {
-          // More robust list conversion
-          final list = <V>[];
-          for (final item in value) {
-            if (item is V) {
-              list.add(item);
+    try {
+      if (C == List && value is List) {
+        // More robust list conversion
+        final list = <V>[];
+        for (final item in value) {
+          if (item is V) {
+            list.add(item);
+          } else {
+            final converted = _convertSafely<V>(item, key: '$key[element]');
+            if (converted != null) {
+              list.add(converted);
             } else {
               return null; // Type mismatch in list elements
             }
           }
-          return list as C;
         }
-        if (C == Map && value is Map) {
-          final map = <K, V>{};
-          for (final entry in value.entries) {
-            if (entry.key is K && entry.value is V) {
-              map[entry.key as K] = entry.value as V;
-            } else {
-              return null; // Type mismatch in map elements
-            }
-          }
-          return map as C;
-        }
-        return value as C;
-      } catch (e) {
-        if (onConversionError != null) {
-          onConversionError!(key, value, C, e);
-        }
-        return null;
+        return list as C;
       }
+      if (C == Map && value is Map) {
+        final map = <K, V>{};
+        for (final entry in value.entries) {
+          final keyIsValid = entry.key is K;
+          final valueIsValid = entry.value is V;
+          
+          if (keyIsValid && valueIsValid) {
+            map[entry.key as K] = entry.value as V;
+          } else if (keyIsValid) {
+            // Try to convert the value
+            final convertedValue = _convertSafely<V>(
+              entry.value, 
+              key: '$key.${entry.key}'
+            );
+            if (convertedValue != null) {
+              map[entry.key as K] = convertedValue;
+            } else {
+              return null; // Value type mismatch
+            }
+          } else {
+            return null; // Key type mismatch
+          }
+        }
+        return map as C;
+      }
+      // Return null for non-collection types
+      if (onConversionError != null) {
+        onConversionError!(
+          key, 
+          value, 
+          C, 
+          "Value is not of expected collection type"
+        );
+      }
+      return null;
+    } catch (e) {
+      if (onConversionError != null) {
+        onConversionError!(key, value, C, e);
+      }
+      return null;
     }
-    return null;
   }
 
   /// Gets nested metadata as another TypedMetadata instance
