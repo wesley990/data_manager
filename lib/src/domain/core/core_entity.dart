@@ -103,6 +103,21 @@ class TypedMetadata {
       if (T == bool && value is num) {
         return (value != 0) as T;
       }
+      
+      // Handle enum types when value is a string
+      if (T is Enum && value is String) {
+        try {
+          // Try to convert string to enum using standard values() lookup
+          final enumValues = (T as dynamic).values;
+          final enumValue = enumValues.firstWhere(
+            (e) => e.toString().split('.').last == value,
+            orElse: () => null,
+          );
+          return enumValue as T?;
+        } catch (_) {
+          // Enum conversion failed
+        }
+      }
 
       // Log error in development and production
       developer.log(
@@ -165,7 +180,7 @@ class TypedMetadata {
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
   /// Returns typed int value or the default value
-  int getInt(String key, {int defaultValue = 0}) =>
+  int   getInt(String key, {int defaultValue = 0}) =>
       _getValueTyped<int>(key) ?? defaultValue;
 
   /// Gets double value from metadata
