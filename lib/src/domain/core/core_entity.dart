@@ -57,6 +57,9 @@ class TypedMetadata {
   )?
   onConversionError;
 
+  /// Creates a TypedMetadata instance for type-safe access to metadata
+  /// [_meta] - The source metadata map
+  /// [onConversionError] - Optional callback for type conversion errors
   TypedMetadata(this._meta, {this.onConversionError});
 
   /// Checks if metadata contains a key
@@ -103,7 +106,7 @@ class TypedMetadata {
       if (T == bool && value is num) {
         return (value != 0) as T;
       }
-      
+
       // Handle enum types when value is a string
       if (T is Enum && value is String) {
         try {
@@ -147,7 +150,7 @@ class TypedMetadata {
     }
   }
 
-  /// Gets typed value from metadata
+  /// Gets typed value from metadata with caching
   /// [key] - The metadata key to retrieve
   /// [T] - The target type to convert the value to
   /// Returns the value converted to type T or null if key doesn't exist or conversion fails
@@ -180,7 +183,7 @@ class TypedMetadata {
   /// [key] - The metadata key to retrieve
   /// [defaultValue] - Value to return if the key doesn't exist or can't be converted
   /// Returns typed int value or the default value
-  int   getInt(String key, {int defaultValue = 0}) =>
+  int getInt(String key, {int defaultValue = 0}) =>
       _getValueTyped<int>(key) ?? defaultValue;
 
   /// Gets double value from metadata
@@ -220,11 +223,11 @@ class TypedMetadata {
   Map<K, V>? getMapAs<K extends Object, V>(String key) =>
       _getCollectionTyped<Map, V, K>(key) as Map<K, V>?;
 
-  /// Handles collection types with error handling
-  /// Ensures all elements match the expected type
+  /// Handles collection types with type-safe conversion and error handling
+  /// Ensures all elements in the collection match the expected type
   /// [C] - The collection type (List or Map)
   /// [V] - The value type (list elements or map values)
-  /// [K] - The key type for maps
+  /// [K] - The key type for maps (only used when C is Map)
   C? _getCollectionTyped<C, V, K extends Object>(String key) {
     final value = _meta[key];
     if (!_meta.containsKey(key) || value == null) return null;
@@ -252,14 +255,14 @@ class TypedMetadata {
         for (final entry in value.entries) {
           final keyIsValid = entry.key is K;
           final valueIsValid = entry.value is V;
-          
+
           if (keyIsValid && valueIsValid) {
             map[entry.key as K] = entry.value as V;
           } else if (keyIsValid) {
             // Try to convert the value
             final convertedValue = _convertSafely<V>(
-              entry.value, 
-              key: '$key.${entry.key}'
+              entry.value,
+              key: '$key.${entry.key}',
             );
             if (convertedValue != null) {
               map[entry.key as K] = convertedValue;
@@ -275,10 +278,10 @@ class TypedMetadata {
       // Return null for non-collection types
       if (onConversionError != null) {
         onConversionError!(
-          key, 
-          value, 
-          C, 
-          "Value is not of expected collection type"
+          key,
+          value,
+          C,
+          "Value is not of expected collection type",
         );
       }
       return null;
@@ -331,8 +334,15 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
   /// Base entity class containing core properties and metadata
   /// [id] - Unique identifier for this entity
   /// [name] - Human-readable name for this entity
+  /// [description] - Optional description for the entity
   /// [createdAt] - Timestamp of entity creation
   /// [updatedAt] - Timestamp of last update
+  /// [schemaVer] - Schema version of the entity
+  /// [status] - Current status of the entity
+  /// [meta] - Custom metadata as key-value pairs
+  /// [owner] - User who owns this entity
+  /// [creator] - User who created this entity
+  /// [modifier] - User who last modified this entity
   /// [data] - Optional typed payload data
   const factory CoreEntity({
     required EntityId id,
