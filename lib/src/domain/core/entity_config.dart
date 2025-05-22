@@ -265,14 +265,20 @@ sealed class EntityConfig with _$EntityConfig {
   ///
   /// Returns true if the path is valid according to all path constraints
   bool isValidPath(String path) {
+    // Check cache first
+    final cachedResult = _getCachedPathOperation<bool>('isValid', path);
+    if (cachedResult != null) {
+      return cachedResult;
+    }
+    
     // Check total path length
-    if (path.length > maxPathLength) return false;
+    if (path.length > maxPathLength) return _cachePathOperation('isValid', path, false);
 
     // Check path segments
     final segments = path.split(pathSeparator);
 
     // Check hierarchy depth
-    if (segments.length > maxHierarchyDepth) return false;
+    if (segments.length > maxHierarchyDepth) return _cachePathOperation('isValid', path, false);
 
     // Check each segment
     for (final segment in segments) {
@@ -280,13 +286,13 @@ sealed class EntityConfig with _$EntityConfig {
       if (segment.isEmpty) continue;
 
       // Check segment length
-      if (segment.length > maxPathSegment) return false;
+      if (segment.length > maxPathSegment) return _cachePathOperation('isValid', path, false);
 
       // Check for invalid characters
-      if (RegExp(invalidPathChars).hasMatch(segment)) return false;
+      if (RegExp(invalidPathChars).hasMatch(segment)) return _cachePathOperation('isValid', path, false);
     }
 
-    return true;
+    return _cachePathOperation('isValid', path, true);
   }
 
   /// Sanitizes a path to conform to configuration constraints.
@@ -296,6 +302,17 @@ sealed class EntityConfig with _$EntityConfig {
   ///
   /// Returns a sanitized path that conforms to configuration constraints.
   String sanitizePath(String path) {
+    // Check cache first
+    final cachedResult = _getCachedPathOperation<String>('sanitize', path);
+    if (cachedResult != null) {
+      return cachedResult;
+    }
+    
+    // If path is already valid, return it as is (optimization)
+    if (isValidPath(path)) {
+      return _cachePathOperation('sanitize', path, path);
+    }
+    
     // Start with the original path
     String result = path;
 
@@ -325,7 +342,7 @@ sealed class EntityConfig with _$EntityConfig {
       result = result.substring(0, maxPathLength);
     }
 
-    return result;
+    return _cachePathOperation('sanitize', path, result);
   }
 
   /// Joins path segments using the configured path separator.
@@ -407,15 +424,23 @@ sealed class EntityConfig with _$EntityConfig {
   ///
   /// Returns a normalized path string.
   String normalizePath(String path) {
+    // Check cache first
+    final cachedResult = _getCachedPathOperation<String>('normalize', path);
+    if (cachedResult != null) {
+      return cachedResult;
+    }
+    
     // Handle empty paths
-    if (path.isEmpty) return '';
+    if (path.isEmpty) return _cachePathOperation('normalize', path, '');
 
     // Trim whitespace from both ends
     final trimmed = path.trim();
-    if (trimmed.isEmpty) return '';
+    if (trimmed.isEmpty) return _cachePathOperation('normalize', path, '');
 
     // Handle case of just separators (e.g. "///")
-    if (trimmed.replaceAll(pathSeparator, '').isEmpty) return '';
+    if (trimmed.replaceAll(pathSeparator, '').isEmpty) {
+      return _cachePathOperation('normalize', path, '');
+    }
 
     // Split into segments and filter out empty ones (that come from consecutive separators)
     final segments =
@@ -425,10 +450,11 @@ sealed class EntityConfig with _$EntityConfig {
             .toList();
 
     // If all segments were empty, return an empty string
-    if (segments.isEmpty) return '';
+    if (segments.isEmpty) return _cachePathOperation('normalize', path, '');
 
     // Join with a single separator and sanitize
-    return sanitizePath(segments.join(pathSeparator));
+    final result = sanitizePath(segments.join(pathSeparator));
+    return _cachePathOperation('normalize', path, result);
   }
 
   /// Extracts the parent path from a given path.
@@ -1176,4 +1202,39 @@ sealed class EntityConfig with _$EntityConfig {
   /// This allows convenient access using the index operator
   /// Example: config['maxPathLength'] returns the maxPathLength property
   Object? operator [](String key) => getConfigProperty(key);
+
+  // Cache for expensive path operations
+  static final Map<String, Object> _pathOperationCache = {};
+  
+  // Maximum size for each type of cache
+  static const int _maxCacheSize = 100;
+  
+  /// Clears all path operation caches
+  static void clearPathCaches() {
+    _pathOperationCache.clear();
+  }
+  
+  /// Helper method to manage cache size and store results
+  static T _cachePathOperation<T extends Object>(String operation, String path, T result) {
+    final cacheKey = "$operation:$path";
+    
+    // Manage cache size
+    if (_pathOperationCache.length >= _maxCacheSize) {
+      // Simple eviction strategy: remove a random key (first in the map)
+      if (_pathOperationCache.isNotEmpty) {
+        _pathOperationCache.remove(_pathOperationCache.keys.first);
+      }
+    }
+    
+    _pathOperationCache[cacheKey] = result;
+    return result;
+  }
+  
+  /// Helper method to retrieve cached operation results
+  static T? _getCachedPathOperation<T extends Object>(String operation, String path) {
+    final cacheKey = "$operation:$path";
+    final cachedResult = _pathOperationCache[cacheKey];
+    
+    return (cachedResult is T) ? cachedResult : null;
+  }
 }
