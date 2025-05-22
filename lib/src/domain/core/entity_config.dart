@@ -159,6 +159,29 @@ sealed class EntityConfig with _$EntityConfig {
     );
   }
 
+  /// Creates a new instance of [EntityConfig] with configuration optimized for testing
+  ///
+  /// This configuration has relaxed constraints and smaller timeouts to facilitate testing
+  factory EntityConfig.testing() {
+    return const EntityConfig(
+      configVersion: '1.0.0',
+      maxPathLength: 256, // Smaller to catch path issues during tests
+      maxPathSegment: 64, // Smaller to catch segment issues during tests
+      maxHierarchyDepth: 5, // Reduced depth for simpler test structures
+      maxHistorySize: 10, // Smaller history for faster test execution
+      defaultHistorySize: 5,
+      defaultLockTimeout: Duration(
+        seconds: 30,
+      ), // Short timeouts for faster tests
+      lockExtensionPeriod: Duration(seconds: 10),
+      minLockDuration: Duration(
+        seconds: 1,
+      ), // Very short min duration for testing edge cases
+      maxLockDuration: Duration(minutes: 5), // Short max duration for testing
+      defaultIsPublic: true, // Public for easier test access
+    );
+  }
+
   /// Creates a new instance of [EntityConfig] with custom overrides.
   ///
   /// This factory allows you to define configuration settings for any environment (e.g., staging, testing, CI)
