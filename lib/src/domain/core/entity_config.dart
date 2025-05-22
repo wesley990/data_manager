@@ -575,8 +575,8 @@ sealed class EntityConfig with _$EntityConfig {
   /// Returns a Map with property names as keys and a sub-map with 'this' and 'other' values
   /// for each property that differs. Returns an empty map if the configurations are identical.
   /// The value types can be String, int, bool, or EntityPriority/EntityStage (as int indices).
-  Map<String, Map<String, dynamic>> compareWith(EntityConfig other) {
-    final differences = <String, Map<String, dynamic>>{};
+  Map<String, Map<String, Object>> compareWith(EntityConfig other) {
+    final differences = <String, Map<String, Object>>{};
 
     // Compare versions
     if (defaultVersion != other.defaultVersion) {
@@ -1120,4 +1120,60 @@ sealed class EntityConfig with _$EntityConfig {
     final newVersion = incrementVersion(increment);
     return copyWith(defaultVersion: newVersion);
   }
+
+  /// Gets a configuration property by name with proper type information
+  /// [key] - The property name to retrieve
+  /// Returns the property value or null if the property doesn't exist
+  Object? getConfigProperty(String key) {
+    switch (key) {
+      case 'configVersion':
+        return configVersion;
+      case 'maxPathLength':
+        return maxPathLength;
+      case 'maxPathSegment':
+        return maxPathSegment;
+      case 'maxHierarchyDepth':
+        return maxHierarchyDepth;
+      case 'maxHistorySize':
+        return maxHistorySize;
+      case 'defaultHistorySize':
+        return defaultHistorySize;
+      case 'defaultLockTimeout':
+        return defaultLockTimeout;
+      case 'lockExtensionPeriod':
+        return lockExtensionPeriod;
+      case 'minLockDuration':
+        return minLockDuration;
+      case 'maxLockDuration':
+        return maxLockDuration;
+      case 'defaultVersion':
+        return defaultVersion;
+      case 'defaultIsPublic':
+        return defaultIsPublic;
+      case 'defaultPriority':
+        return defaultPriority;
+      case 'defaultStage':
+        return defaultStage;
+      case 'pathSeparator':
+        return pathSeparator;
+      case 'invalidPathChars':
+        return invalidPathChars;
+      default:
+        return null;
+    }
+  }
+
+  /// Gets a configuration property by name with expected return type
+  /// [key] - The property name to retrieve
+  /// [R] - The expected return type
+  /// Returns the property value as type R, or null if property doesn't exist or type doesn't match
+  R? getConfigPropertyTyped<R>(String key) {
+    final value = getConfigProperty(key);
+    return (value is R) ? value : null;
+  }
+
+  /// Provides unified access to configuration properties
+  /// This allows convenient access using the index operator
+  /// Example: config['maxPathLength'] returns the maxPathLength property
+  Object? operator [](String key) => getConfigProperty(key);
 }
