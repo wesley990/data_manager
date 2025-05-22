@@ -332,15 +332,16 @@ sealed class EntityConfig with _$EntityConfig {
   ///
   /// This is a convenience method that ensures consistent path formatting.
   /// It handles empty segments and normalizes the result.
-  /// 
+  ///
   /// Returns the joined path, sanitized according to configuration constraints.
   String joinPath(List<String> segments) {
     // Filter out empty segments
-    final filteredSegments = segments.where((segment) => segment.trim().isNotEmpty).toList();
-    
+    final filteredSegments =
+        segments.where((segment) => segment.trim().isNotEmpty).toList();
+
     // If all segments were empty, return an empty string
     if (filteredSegments.isEmpty) return '';
-    
+
     // Join and normalize
     return normalizePath(filteredSegments.join(pathSeparator));
   }
@@ -408,22 +409,24 @@ sealed class EntityConfig with _$EntityConfig {
   String normalizePath(String path) {
     // Handle empty paths
     if (path.isEmpty) return '';
-    
+
     // Trim whitespace from both ends
     final trimmed = path.trim();
     if (trimmed.isEmpty) return '';
-    
+
     // Handle case of just separators (e.g. "///")
     if (trimmed.replaceAll(pathSeparator, '').isEmpty) return '';
 
     // Split into segments and filter out empty ones (that come from consecutive separators)
-    final segments = trimmed.split(pathSeparator)
-        .where((segment) => segment.isNotEmpty)
-        .toList();
-        
+    final segments =
+        trimmed
+            .split(pathSeparator)
+            .where((segment) => segment.isNotEmpty)
+            .toList();
+
     // If all segments were empty, return an empty string
     if (segments.isEmpty) return '';
-    
+
     // Join with a single separator and sanitize
     return sanitizePath(segments.join(pathSeparator));
   }
@@ -434,7 +437,7 @@ sealed class EntityConfig with _$EntityConfig {
   String getParentPath(String path) {
     final normalized = normalizePath(path);
     if (normalized.isEmpty) return '';
-    
+
     final lastSeparatorIndex = normalized.lastIndexOf(pathSeparator);
 
     if (lastSeparatorIndex <= 0) {
@@ -450,7 +453,7 @@ sealed class EntityConfig with _$EntityConfig {
   String getNameFromPath(String path) {
     final normalized = normalizePath(path);
     if (normalized.isEmpty) return '';
-    
+
     final lastSeparatorIndex = normalized.lastIndexOf(pathSeparator);
 
     if (lastSeparatorIndex < 0) {
@@ -471,12 +474,12 @@ sealed class EntityConfig with _$EntityConfig {
       // Empty parent is considered the root and is the parent of everything except empty path
       return normalizedChild.isNotEmpty;
     }
-    
+
     if (normalizedChild.isEmpty) {
       // Empty child can't have a parent
       return false;
     }
-    
+
     if (normalizedParent == normalizedChild) {
       // A path isn't its own parent
       return false;
