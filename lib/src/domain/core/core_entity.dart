@@ -281,63 +281,100 @@ class TypedMetadata {
     if (!_meta.containsKey(key) || value == null) return null;
 
     try {
+      // Handle List conversion
       if (C == List && value is List) {
-        // More robust list conversion
-        final list = <V>[];
-        for (final item in value) {
-          if (item is V) {
-            list.add(item);
-          } else {
-            final converted = _convertSafely<V>(item, key: '$key[element]');
-            if (converted != null) {
-              list.add(converted);
-            } else {
-              return null; // Type mismatch in list elements
-            }
-          }
-        }
-        return list as C;
+        return _convertToTypedList<V>(value, key) as C;
       }
+      
+      // Handle Map conversion
       if (C == Map && value is Map) {
-        final map = <K, V>{};
-        for (final entry in value.entries) {
-          final keyIsValid = entry.key is K;
-          final valueIsValid = entry.value is V;
-
-          if (keyIsValid && valueIsValid) {
-            map[entry.key as K] = entry.value as V;
-          } else if (keyIsValid) {
-            // Try to convert the value
-            final convertedValue = _convertSafely<V>(
-              entry.value,
-              key: '$key.${entry.key}',
-            );
-            if (convertedValue != null) {
-              map[entry.key as K] = convertedValue;
-            } else {
-              return null; // Value type mismatch
-            }
-          } else {
-            return null; // Key type mismatch
-          }
-        }
-        return map as C;
+        return _convertToTypedMap<K, V>(value, key) as C;
       }
-      // Return null for non-collection types
-      if (onConversionError != null) {
-        onConversionError!(
-          key,
-          value,
-          C,
-          "Value is not of expected collection type",
-        );
-      }
+      
+      // Report error for non-collection types
+      _reportConversionError(key, value, C, "Value is not of expected collection type");
       return null;
     } catch (e) {
-      if (onConversionError != null) {
-        onConversionError!(key, value, C, e);
-      }
+      _reportConversionError(key, value, C, e);
       return null;
+    }
+  }
+  
+  /// Converts a List to a type-safe List`<V>`
+  /// Returns null if any element can't be converted to type V
+  List<V>? _convertToTypedList<V>(List source, String key) {
+    // Fast path for empty lists
+    if (source.isEmpty) {
+      return <V>[];
+    }
+    
+    final result = <V>[];
+    
+    for (final item in source) {
+      // Direct type match
+      if (item is V) {
+        result.add(item);
+        continue;
+      }
+      
+      // Try conversion
+      final converted = _convertSafely<V>(item, key: '$key[element]');
+      if (converted != null) {
+        result.add(converted);
+      } else {
+        // Fail entire conversion if any element fails
+        return null;
+      }
+    }
+    
+    return result;
+  }
+  
+  /// Converts a Map to a type-safe Map`<K, V>`
+  /// Returns null if any key or value can't be converted to types K, V
+  Map<K, V>? _convertToTypedMap<K extends Object, V>(Map source, String key) {
+    // Fast path for empty maps
+    if (source.isEmpty) {
+      return <K, V>{};
+    }
+    
+    final result = <K, V>{};
+    
+    for (final entry in source.entries) {
+      final entryKey = entry.key;
+      final entryValue = entry.value;
+      
+      // Validate key type
+      if (entryKey is! K) {
+        return null; // Key type mismatch - fail fast
+      }
+      
+      // Direct value type match
+      if (entryValue is V) {
+        result[entryKey] = entryValue;
+        continue;
+      }
+      
+      // Try value conversion
+      final convertedValue = _convertSafely<V>(
+        entryValue,
+        key: '$key.$entryKey',
+      );
+      
+      if (convertedValue != null) {
+        result[entryKey] = convertedValue;
+      } else {
+        return null; // Value conversion failed
+      }
+    }
+    
+    return result;
+  }
+  
+  /// Helper method to report conversion errors
+  void _reportConversionError(String key, Object value, Type targetType, Object? error) {
+    if (onConversionError != null) {
+      onConversionError!(key, value, targetType, error);
     }
   }
 
