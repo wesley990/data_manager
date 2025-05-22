@@ -565,8 +565,10 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
     return typedMeta._convertSafely<R>(meta[key]);
   }
 
-  /// Gets a core property by name
-  dynamic getProperty(String key) {
+  /// Gets a core property by name with proper type information
+  /// [key] - The property name to retrieve
+  /// Returns the property value or null if the property doesn't exist
+  Object? getProperty(String key) {
     switch (key) {
       case 'id':
         return id;
@@ -595,9 +597,18 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
     }
   }
 
+  /// Gets a core property by name with expected return type
+  /// [key] - The property name to retrieve
+  /// [R] - The expected return type
+  /// Returns the property value as type R, or null if property doesn't exist or type doesn't match
+  R? getPropertyTyped<R>(String key) {
+    final value = getProperty(key);
+    return (value is R) ? value : null;
+  }
+
   /// Provides unified access to properties and metadata
   /// Properties take precedence over metadata with same key
-  dynamic operator [](String key) {
+  Object? operator [](String key) {
     final propertyValue = getProperty(key);
     if (propertyValue != null) {
       return propertyValue;
