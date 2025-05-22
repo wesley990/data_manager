@@ -110,13 +110,9 @@ class TypedMetadata {
       // Handle enum types when value is a string
       if (T is Enum && value is String) {
         try {
-          // Try to convert string to enum using standard values() lookup
-          final enumValues = (T as dynamic).values;
-          final enumValue = enumValues.firstWhere(
-            (e) => e.toString().split('.').last == value,
-            orElse: () => null,
-          );
-          return enumValue as T?;
+          // Use Dart's type system rather than dynamic reflection
+          // This is more reliable across different compilation modes
+          return _convertStringToEnum<T>(value);
         } catch (_) {
           // Enum conversion failed
         }
@@ -148,6 +144,58 @@ class TypedMetadata {
 
       return null;
     }
+  }
+
+  /// Converts a string to an enum value without using dynamic reflection
+  /// This approach is more reliable across different compilation modes
+  /// [value] - The string value to convert to an enum
+  /// Returns the enum value or null if conversion fails
+  T? _convertStringToEnum<T>(String value) {
+    // For EntityStatus enum
+    if (T == EntityStatus) {
+      try {
+        return EntityStatus.values.firstWhere(
+              (e) =>
+                  e.toString().split('.').last.toLowerCase() ==
+                  value.toLowerCase(),
+            )
+            as T;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    // For EntityPriority enum
+    if (T == EntityPriority) {
+      try {
+        return EntityPriority.values.firstWhere(
+              (e) =>
+                  e.toString().split('.').last.toLowerCase() ==
+                  value.toLowerCase(),
+            )
+            as T;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    // For EntityStage enum
+    if (T == EntityStage) {
+      try {
+        return EntityStage.values.firstWhere(
+              (e) =>
+                  e.toString().split('.').last.toLowerCase() ==
+                  value.toLowerCase(),
+            )
+            as T;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    // Add support for other enum types as needed
+
+    return null;
   }
 
   /// Gets typed value from metadata with caching
