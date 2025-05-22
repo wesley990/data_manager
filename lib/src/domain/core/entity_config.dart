@@ -635,10 +635,10 @@ sealed class EntityConfig with _$EntityConfig {
 
       // Take the wider ranges for durations
       defaultLockTimeout: Duration(
-        milliseconds:
-            (defaultLockTimeout.inMilliseconds +
-                other.defaultLockTimeout.inMilliseconds) ~/
-            2,
+        milliseconds: math.max(
+          defaultLockTimeout.inMilliseconds,
+          other.defaultLockTimeout.inMilliseconds,
+        ),
       ),
       lockExtensionPeriod: Duration(
         milliseconds: math.max(
