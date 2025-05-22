@@ -7,6 +7,28 @@ import '../../domain/value_objects/enum_objects.dart';
 part 'entity_config.freezed.dart';
 part 'entity_config.g.dart';
 
+/// Result of a validation operation that includes error details
+class ValidationResult {
+  /// Whether the validation passed successfully
+  final bool isValid;
+
+  /// Map of field names to error messages (empty if validation passed)
+  final Map<String, String> errors;
+
+  /// Creates a successful validation result with no errors
+  ValidationResult.success() : isValid = true, errors = const {};
+
+  /// Creates a failed validation result with specific errors
+  ValidationResult.failure(this.errors) : isValid = errors.isNotEmpty;
+
+  /// Returns a string representation of all errors, or "Valid" if no errors
+  @override
+  String toString() {
+    if (isValid) return "Valid";
+    return errors.entries.map((e) => "${e.key}: ${e.value}").join(", ");
+  }
+}
+
 /// Default values and configurations for entity configs
 abstract class EntityConfigDefaults {
   /// Schema version for config entities
@@ -446,30 +468,68 @@ sealed class EntityConfig with _$EntityConfig {
 
   /// Validates configuration values to ensure they are reasonable and consistent.
   ///
-  /// Returns true if the configuration is valid.
-  bool validate() {
-    if (maxPathLength <= 0) return false;
-    if (maxPathSegment <= 0) return false;
-    if (maxHierarchyDepth <= 0) return false;
-    if (maxHistorySize < 0) return false;
-    if (defaultHistorySize < 0 || defaultHistorySize > maxHistorySize) {
-      return false;
+  /// Returns a ValidationResult containing details of any validation failures.
+  ValidationResult validate() {
+    final errors = <String, String>{};
+
+    if (maxPathLength <= 0) {
+      errors['maxPathLength'] = 'Must be greater than 0';
     }
-    if (defaultLockTimeout.isNegative) return false;
-    if (lockExtensionPeriod.isNegative) return false;
-    if (minLockDuration.isNegative) return false;
-    if (maxLockDuration.isNegative) return false;
-    if (minLockDuration > maxLockDuration) return false;
-    if (pathSeparator.isEmpty) return false;
+
+    if (maxPathSegment <= 0) {
+      errors['maxPathSegment'] = 'Must be greater than 0';
+    }
+
+    if (maxHierarchyDepth <= 0) {
+      errors['maxHierarchyDepth'] = 'Must be greater than 0';
+    }
+
+    if (maxHistorySize < 0) {
+      errors['maxHistorySize'] = 'Must be non-negative';
+    }
+
+    if (defaultHistorySize < 0) {
+      errors['defaultHistorySize'] = 'Must be non-negative';
+    } else if (defaultHistorySize > maxHistorySize) {
+      errors['defaultHistorySize'] =
+          'Cannot exceed maxHistorySize ($maxHistorySize)';
+    }
+
+    if (defaultLockTimeout.isNegative) {
+      errors['defaultLockTimeout'] = 'Cannot be negative';
+    }
+
+    if (lockExtensionPeriod.isNegative) {
+      errors['lockExtensionPeriod'] = 'Cannot be negative';
+    }
+
+    if (minLockDuration.isNegative) {
+      errors['minLockDuration'] = 'Cannot be negative';
+    }
+
+    if (maxLockDuration.isNegative) {
+      errors['maxLockDuration'] = 'Cannot be negative';
+    }
+
+    if (minLockDuration > maxLockDuration) {
+      errors['lockDurationRange'] =
+          'minLockDuration cannot be greater than maxLockDuration';
+    }
+
+    if (pathSeparator.isEmpty) {
+      errors['pathSeparator'] = 'Cannot be empty';
+    }
 
     // Try to compile the regex pattern to check validity
     try {
       RegExp(invalidPathChars);
     } catch (e) {
-      return false;
+      errors['invalidPathChars'] = 'Invalid regex pattern: ${e.toString()}';
     }
 
-    return true;
+    return errors.isEmpty
+        ? ValidationResult.success()
+        : ValidationResult.failure(errors);
   }
 
   /// Compares this configuration with another to identify differences.
