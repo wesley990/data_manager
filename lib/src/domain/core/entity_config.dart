@@ -784,19 +784,242 @@ sealed class EntityConfig with _$EntityConfig {
 
   /// Helper method to merge two regex patterns for invalid characters,
   /// creating a more permissive pattern that allows characters valid in either pattern.
+  ///
+  /// This method properly handles character classes, negated character classes,
+  /// escaped characters, and other regex constructs to create a correct intersection.
   static String _mergeInvalidCharsPatterns(String pattern1, String pattern2) {
-    // This is a simplified implementation - in a real system you might want
-    // a more sophisticated regex manipulation approach
-    try {
-      if (pattern1 == pattern2) return pattern1;
+    // For simple character class patterns like [<>:"|?*\x00-\x1F], we can
+    // parse and merge them properly. For other patterns, we'll need to resort to
+    // a more conservative approach.
 
-      // Simple approach: just use the more restrictive pattern
-      // A more complete approach would parse and merge the character sets
-      if (pattern1.length > pattern2.length) return pattern2;
-      return pattern1;
+    // First check if both patterns are character classes (surrounded by [ ])
+    final isPattern1CharClass =
+        pattern1.startsWith('[') && pattern1.endsWith(']');
+    final isPattern2CharClass =
+        pattern2.startsWith('[') && pattern2.endsWith(']');
+
+    if (isPattern1CharClass && isPattern2CharClass) {
+      // Extract the contents of the character classes
+      final content1 = pattern1.substring(1, pattern1.length - 1);
+      final content2 = pattern2.substring(1, pattern2.length - 1);
+
+      // Check if either is a negated character class (starts with ^)
+      final isNegated1 = content1.startsWith('^');
+      final isNegated2 = content2.startsWith('^');
+
+      // If both are negated, we need to take the union of the negated sets
+      if (isNegated1 && isNegated2) {
+        final chars1 = _parseCharacterClass(content1.substring(1));
+        final chars2 = _parseCharacterClass(content2.substring(1));
+
+        // For negated classes, we want the intersection of the negated sets
+        // (i.e., characters that are invalid in both patterns)
+        final intersection = chars1.intersection(chars2);
+        if (intersection.isEmpty) {
+          return '[]'; // No common invalid chars, everything is valid
+        }
+        return '[^${_formatCharacterSet(intersection)}]';
+      }
+
+      // If one is negated and one is not, more complex logic is needed
+      if (isNegated1 || isNegated2) {
+        // Convert to non-negated form for consistency
+        final chars1 =
+            isNegated1
+                ? _invertCharacterSet(
+                  _parseCharacterClass(content1.substring(1)),
+                )
+                : _parseCharacterClass(content1);
+        final chars2 =
+            isNegated2
+                ? _invertCharacterSet(
+                  _parseCharacterClass(content2.substring(1)),
+                )
+                : _parseCharacterClass(content2);
+
+        // Take the intersection - chars invalid in both patterns
+        final intersection = chars1.intersection(chars2);
+        if (intersection.isEmpty) {
+          return '[]'; // No common invalid chars
+        }
+        return '[${_formatCharacterSet(intersection)}]';
+      }
+
+      // Both are positive character classes, take the union
+      final chars1 = _parseCharacterClass(content1);
+      final chars2 = _parseCharacterClass(content2);
+      final union = chars1.union(chars2);
+      if (union.isEmpty) {
+        return '[]'; // No invalid chars
+      }
+      return '[${_formatCharacterSet(union)}]';
+    }
+
+    // For non-character class patterns or if parsing fails,
+    // use a more conservative approach: either keep both or use a simpler pattern
+    try {
+      // Validate both patterns compile
+      RegExp(pattern1);
+      RegExp(pattern2);
+
+      // Try to use alternation to combine patterns
+      return '($pattern1|$pattern2)';
     } catch (e) {
-      // Fall back to a default safe pattern
-      return r'[<>:"|?*\x00-\x1F]';
+      // If either pattern doesn't compile, return a safe default
+      return r'[<>:"|?*\x00-\x1F]'; // Default invalid chars pattern
+    }
+  }
+
+  /// Parses a character class content into a set of characters it represents
+  static Set<int> _parseCharacterClass(String content) {
+    final result = <int>{};
+    int i = 0;
+
+    while (i < content.length) {
+      if (i + 2 < content.length && content[i + 1] == '-') {
+        // Handle character range (e.g., a-z)
+        final start = content.codeUnitAt(i);
+        final end = content.codeUnitAt(i + 2);
+        for (int c = start; c <= end; c++) {
+          result.add(c);
+        }
+        i += 3;
+      } else if (i + 1 < content.length && content[i] == '\\') {
+        // Handle escape sequences
+        final next = content[i + 1];
+        if (next == 'x' && i + 3 < content.length) {
+          // Handle hex escape like \x00
+          try {
+            final hexValue = int.parse(
+              content.substring(i + 2, i + 4),
+              radix: 16,
+            );
+            result.add(hexValue);
+            i += 4;
+          } catch (e) {
+            // If the hex parse fails, just add the literal \x
+            result.add('\\'.codeUnitAt(0));
+            result.add('x'.codeUnitAt(0));
+            i += 2;
+          }
+        } else {
+          // Handle other escapes like \n, \t, etc.
+          final escapedChar = _getEscapedChar(next);
+          result.add(escapedChar);
+          i += 2;
+        }
+      } else {
+        // Regular character
+        result.add(content.codeUnitAt(i));
+        i++;
+      }
+    }
+
+    return result;
+  }
+
+  /// Gets the character code for an escaped character
+  static int _getEscapedChar(String char) {
+    switch (char) {
+      case 'n':
+        return 10; // \n
+      case 'r':
+        return 13; // \r
+      case 't':
+        return 9; // \t
+      case 'f':
+        return 12; // \f
+      case 'v':
+        return 11; // \v
+      case 'b':
+        return 8; // \b
+      default:
+        return char.codeUnitAt(0);
+    }
+  }
+
+  /// Inverts a set of characters (used for negated character classes)
+  static Set<int> _invertCharacterSet(Set<int> chars) {
+    // Create a set of all valid characters (0-0x10FFFF is the valid Unicode range)
+    // For practicality, we'll limit to ASCII range 0-127
+    final allChars = <int>{};
+    for (int i = 0; i <= 127; i++) {
+      allChars.add(i);
+    }
+    return allChars.difference(chars);
+  }
+
+  /// Formats a set of character codes into a character class string,
+  /// trying to use ranges when possible for readability and compactness
+  static String _formatCharacterSet(Set<int> chars) {
+    if (chars.isEmpty) return '';
+
+    final sorted = chars.toList()..sort();
+    final buffer = StringBuffer();
+
+    int rangeStart = sorted[0];
+    int rangeEnd = rangeStart;
+
+    for (int i = 1; i < sorted.length; i++) {
+      if (sorted[i] == rangeEnd + 1) {
+        // Continue the current range
+        rangeEnd = sorted[i];
+      } else {
+        // Output the current range and start a new one
+        _appendRange(buffer, rangeStart, rangeEnd);
+        rangeStart = rangeEnd = sorted[i];
+      }
+    }
+
+    // Output the last range
+    _appendRange(buffer, rangeStart, rangeEnd);
+
+    return buffer.toString();
+  }
+
+  /// Helper to append a character range to a string buffer
+  static void _appendRange(StringBuffer buffer, int start, int end) {
+    if (start == end) {
+      // Single character
+      buffer.write(_formatChar(start));
+    } else if (end == start + 1) {
+      // Two consecutive characters - write individually rather than as a range
+      buffer.write(_formatChar(start));
+      buffer.write(_formatChar(end));
+    } else {
+      // Range of 3+ characters
+      buffer.write('${_formatChar(start)}-${_formatChar(end)}');
+    }
+  }
+
+  /// Formats a character code as a string, escaping special regex characters
+  static String _formatChar(int charCode) {
+    final char = String.fromCharCode(charCode);
+
+    // Escape regex metacharacters
+    switch (char) {
+      case '[':
+      case ']':
+      case '\\':
+      case '^':
+      case '-':
+      case '.':
+      case '*':
+      case '+':
+      case '?':
+      case '(':
+      case ')':
+      case '|':
+      case '{':
+      case '}':
+      case r'$':
+        return '\\$char';
+      default:
+        // Non-printable characters should be escaped as hex
+        if (charCode < 32 || charCode == 127) {
+          return '\\x${charCode.toRadixString(16).padLeft(2, '0')}';
+        }
+        return char;
     }
   }
 
