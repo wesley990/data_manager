@@ -216,6 +216,16 @@ class TypedMetadata {
     if (!_meta.containsKey(key)) return null;
 
     final value = _convertSafely<T>(_meta[key], key: key);
+    
+    // Manage cache size before adding new entry
+    if (_cache.length >= _maxCacheSize && !_cache.containsKey(key)) {
+      // Simple eviction strategy: remove a random key
+      // A more sophisticated approach would use LRU, but that requires more tracking
+      if (_cache.isNotEmpty) {
+        _cache.remove(_cache.keys.first);
+      }
+    }
+    
     _cache[key] = value;
     return value;
   }
@@ -413,6 +423,9 @@ class TypedMetadata {
 
   /// Internal cache for previously converted values
   final Map<String, Object?> _cache = {};
+  
+  /// Maximum number of entries in the cache
+  static const int _maxCacheSize = 100;
 
   /// Clears the entire type conversion cache
   void clearCache() => _cache.clear();
