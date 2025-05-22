@@ -331,12 +331,18 @@ sealed class EntityConfig with _$EntityConfig {
   /// Joins path segments using the configured path separator.
   ///
   /// This is a convenience method that ensures consistent path formatting.
-  /// It also sanitizes the result to ensure it conforms to all path constraints.
-  ///
+  /// It handles empty segments and normalizes the result.
+  /// 
   /// Returns the joined path, sanitized according to configuration constraints.
   String joinPath(List<String> segments) {
-    final joined = segments.join(pathSeparator);
-    return sanitizePath(joined);
+    // Filter out empty segments
+    final filteredSegments = segments.where((segment) => segment.trim().isNotEmpty).toList();
+    
+    // If all segments were empty, return an empty string
+    if (filteredSegments.isEmpty) return '';
+    
+    // Join and normalize
+    return normalizePath(filteredSegments.join(pathSeparator));
   }
 
   /// Resolves a child path relative to a parent path.
@@ -392,18 +398,32 @@ sealed class EntityConfig with _$EntityConfig {
 
   /// Normalizes a path by removing redundant separators and ensuring constraints
   ///
+  /// This method handles several edge cases:
+  /// - Empty paths return an empty string
+  /// - Leading/trailing separators are removed
+  /// - Consecutive separators are collapsed to a single separator
+  /// - Path is sanitized to meet length and character constraints
+  ///
   /// Returns a normalized path string.
   String normalizePath(String path) {
     // Handle empty paths
     if (path.isEmpty) return '';
+    
+    // Trim whitespace from both ends
+    final trimmed = path.trim();
+    if (trimmed.isEmpty) return '';
+    
+    // Handle case of just separators (e.g. "///")
+    if (trimmed.replaceAll(pathSeparator, '').isEmpty) return '';
 
     // Split into segments and filter out empty ones (that come from consecutive separators)
-    final segments =
-        path
-            .split(pathSeparator)
-            .where((segment) => segment.isNotEmpty)
-            .toList();
-
+    final segments = trimmed.split(pathSeparator)
+        .where((segment) => segment.isNotEmpty)
+        .toList();
+        
+    // If all segments were empty, return an empty string
+    if (segments.isEmpty) return '';
+    
     // Join with a single separator and sanitize
     return sanitizePath(segments.join(pathSeparator));
   }
@@ -413,10 +433,12 @@ sealed class EntityConfig with _$EntityConfig {
   /// Returns the parent path, or an empty string if the path has no parent.
   String getParentPath(String path) {
     final normalized = normalizePath(path);
+    if (normalized.isEmpty) return '';
+    
     final lastSeparatorIndex = normalized.lastIndexOf(pathSeparator);
 
     if (lastSeparatorIndex <= 0) {
-      return ''; // No parent or root path
+      return ''; // No parent (root level) or invalid path
     }
 
     return normalized.substring(0, lastSeparatorIndex);
@@ -427,10 +449,12 @@ sealed class EntityConfig with _$EntityConfig {
   /// Returns the name component, or the full path if there are no separators.
   String getNameFromPath(String path) {
     final normalized = normalizePath(path);
+    if (normalized.isEmpty) return '';
+    
     final lastSeparatorIndex = normalized.lastIndexOf(pathSeparator);
 
     if (lastSeparatorIndex < 0) {
-      return normalized; // No separators, the whole path is the name
+      return normalized; // No separators, return the whole path
     }
 
     return normalized.substring(lastSeparatorIndex + pathSeparator.length);
@@ -444,7 +468,18 @@ sealed class EntityConfig with _$EntityConfig {
     final normalizedChild = normalizePath(childPath);
 
     if (normalizedParent.isEmpty) {
-      return true; // Empty path is the root, parent of all paths
+      // Empty parent is considered the root and is the parent of everything except empty path
+      return normalizedChild.isNotEmpty;
+    }
+    
+    if (normalizedChild.isEmpty) {
+      // Empty child can't have a parent
+      return false;
+    }
+    
+    if (normalizedParent == normalizedChild) {
+      // A path isn't its own parent
+      return false;
     }
 
     // Check if childPath starts with parentPath followed by a separator
