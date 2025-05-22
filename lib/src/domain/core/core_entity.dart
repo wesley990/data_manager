@@ -285,21 +285,26 @@ class TypedMetadata {
       if (C == List && value is List) {
         return _convertToTypedList<V>(value, key) as C;
       }
-      
+
       // Handle Map conversion
       if (C == Map && value is Map) {
         return _convertToTypedMap<K, V>(value, key) as C;
       }
-      
+
       // Report error for non-collection types
-      _reportConversionError(key, value, C, "Value is not of expected collection type");
+      _reportConversionError(
+        key,
+        value,
+        C,
+        "Value is not of expected collection type",
+      );
       return null;
     } catch (e) {
       _reportConversionError(key, value, C, e);
       return null;
     }
   }
-  
+
   /// Converts a List to a type-safe List`<V>`
   /// Returns null if any element can't be converted to type V
   List<V>? _convertToTypedList<V>(List source, String key) {
@@ -307,16 +312,16 @@ class TypedMetadata {
     if (source.isEmpty) {
       return <V>[];
     }
-    
+
     final result = <V>[];
-    
+
     for (final item in source) {
       // Direct type match
       if (item is V) {
         result.add(item);
         continue;
       }
-      
+
       // Try conversion
       final converted = _convertSafely<V>(item, key: '$key[element]');
       if (converted != null) {
@@ -326,10 +331,10 @@ class TypedMetadata {
         return null;
       }
     }
-    
+
     return result;
   }
-  
+
   /// Converts a Map to a type-safe Map`<K, V>`
   /// Returns null if any key or value can't be converted to types K, V
   Map<K, V>? _convertToTypedMap<K extends Object, V>(Map source, String key) {
@@ -337,42 +342,47 @@ class TypedMetadata {
     if (source.isEmpty) {
       return <K, V>{};
     }
-    
+
     final result = <K, V>{};
-    
+
     for (final entry in source.entries) {
       final entryKey = entry.key;
       final entryValue = entry.value;
-      
+
       // Validate key type
       if (entryKey is! K) {
         return null; // Key type mismatch - fail fast
       }
-      
+
       // Direct value type match
       if (entryValue is V) {
         result[entryKey] = entryValue;
         continue;
       }
-      
+
       // Try value conversion
       final convertedValue = _convertSafely<V>(
         entryValue,
         key: '$key.$entryKey',
       );
-      
+
       if (convertedValue != null) {
         result[entryKey] = convertedValue;
       } else {
         return null; // Value conversion failed
       }
     }
-    
+
     return result;
   }
-  
+
   /// Helper method to report conversion errors
-  void _reportConversionError(String key, Object value, Type targetType, Object? error) {
+  void _reportConversionError(
+    String key,
+    Object value,
+    Type targetType,
+    Object? error,
+  ) {
     if (onConversionError != null) {
       onConversionError!(key, value, targetType, error);
     }
@@ -410,7 +420,27 @@ class TypedMetadata {
   /// Clears a specific entry from the type conversion cache
   /// [key] - The metadata key whose cached value should be removed
   void clearCacheEntry(String key) => _cache.remove(key);
+
+  /// Called when the underlying _meta map may have been modified externally
+  /// to ensure cache consistency. This should be called by any code that
+  /// modifies the source map directly.
+  void invalidateCache() => _cache.clear();
 }
+
+/// IMPORTANT: If you directly modify the metadata map that was passed to TypedMetadata,
+/// you MUST call invalidateCache() afterwards to ensure type conversion results remain consistent.
+/// Example:
+/// ```dart
+/// final meta = {'count': 10};
+/// final typedMeta = TypedMetadata(meta);
+/// print(typedMeta.getInt('count')); // Prints: 10
+///
+/// // Direct modification requires cache invalidation
+/// meta['count'] = 20;
+/// typedMeta.invalidateCache();
+/// print(typedMeta.getInt('count')); // Prints: 20
+/// ```
+/// Failing to invalidate the cache after direct modifications will result in stale data.
 
 @Freezed(genericArgumentFactories: true)
 sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
@@ -498,15 +528,21 @@ sealed class CoreEntity<T extends Object> with _$CoreEntity<T> {
     Map<String, Object> updates, {
     List<String>? removeKeys,
   }) {
+    // Create a new map with the current metadata
     final updatedMeta = Map<String, Object>.from(meta);
+
+    // Apply updates
     updatedMeta.addAll(updates);
 
+    // Apply removals if specified
     if (removeKeys != null) {
       for (final key in removeKeys) {
         updatedMeta.remove(key);
       }
     }
 
+    // Since we're creating a new entity with the modified metadata,
+    // the TypedMetadata instance will be recreated with a fresh cache
     return copyWith(meta: updatedMeta);
   }
 
