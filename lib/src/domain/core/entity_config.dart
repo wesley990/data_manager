@@ -748,20 +748,38 @@ sealed class EntityConfig with _$EntityConfig {
   EntityConfig mergeWith(EntityConfig other) {
     return EntityConfig(
       // Take the larger value for limits
-      maxPathLength: math.max(maxPathLength, other.maxPathLength),
-      maxPathSegment: math.max(maxPathSegment, other.maxPathSegment),
-      maxHierarchyDepth: math.max(maxHierarchyDepth, other.maxHierarchyDepth),
-      maxHistorySize: math.max(maxHistorySize, other.maxHistorySize),
+      maxPathLength: math.max(
+        getConfigInt('maxPathLength'),
+        other.getConfigInt('maxPathLength')
+      ),
+      maxPathSegment: math.max(
+        getConfigInt('maxPathSegment'),
+        other.getConfigInt('maxPathSegment')
+      ),
+      maxHierarchyDepth: math.max(
+        getConfigInt('maxHierarchyDepth'),
+        other.getConfigInt('maxHierarchyDepth')
+      ),
+      maxHistorySize: math.max(
+        getConfigInt('maxHistorySize'),
+        other.getConfigInt('maxHistorySize')
+      ),
       defaultHistorySize: math.min(
-        math.max(defaultHistorySize, other.defaultHistorySize),
-        math.max(maxHistorySize, other.maxHistorySize),
+        math.max(
+          getConfigInt('defaultHistorySize'),
+          other.getConfigInt('defaultHistorySize')
+        ),
+        math.max(
+          getConfigInt('maxHistorySize'),
+          other.getConfigInt('maxHistorySize')
+        ),
       ),
 
       // Take the wider ranges for durations
       defaultLockTimeout: Duration(
         milliseconds: math.max(
-          defaultLockTimeout.inMilliseconds,
-          other.defaultLockTimeout.inMilliseconds,
+          getConfigDuration('defaultLockTimeout').inMilliseconds,
+          other.getConfigDuration('defaultLockTimeout').inMilliseconds,
         ),
       ),
       lockExtensionPeriod: Duration(
@@ -1198,10 +1216,108 @@ sealed class EntityConfig with _$EntityConfig {
     return (value is R) ? value : null;
   }
 
+  /// Gets a configuration property as a String with a default value
+  /// [key] - The property name to retrieve
+  /// [defaultValue] - Value to return if the property doesn't exist or isn't a String
+  /// Returns the property value as a String or the defaultValue
+  String getConfigString(String key, {String defaultValue = ''}) {
+    return getConfigPropertyTyped<String>(key) ?? defaultValue;
+  }
+
+  /// Gets a configuration property as an int with a default value
+  /// [key] - The property name to retrieve
+  /// [defaultValue] - Value to return if the property doesn't exist or isn't an int
+  /// Returns the property value as an int or the defaultValue
+  int getConfigInt(String key, {int defaultValue = 0}) {
+    return getConfigPropertyTyped<int>(key) ?? defaultValue;
+  }
+
+  /// Gets a configuration property as a bool with a default value
+  /// [key] - The property name to retrieve
+  /// [defaultValue] - Value to return if the property doesn't exist or isn't a bool
+  /// Returns the property value as a bool or the defaultValue
+  bool getConfigBool(String key, {bool defaultValue = false}) {
+    return getConfigPropertyTyped<bool>(key) ?? defaultValue;
+  }
+
+  /// Gets a configuration property as a Duration with a default value
+  /// [key] - The property name to retrieve
+  /// [defaultValue] - Value to return if the property doesn't exist or isn't a Duration
+  /// Returns the property value as a Duration or the defaultValue
+  Duration getConfigDuration(String key, {Duration defaultValue = Duration.zero}) {
+    return getConfigPropertyTyped<Duration>(key) ?? defaultValue;
+  }
+
+  /// Gets a configuration property as an enum value with a default value
+  /// [key] - The property name to retrieve
+  /// [defaultValue] - Value to return if the property doesn't exist or isn't of type T
+  /// Returns the property value as type T or the defaultValue
+  T getConfigEnum<T extends Enum>(String key, T defaultValue) {
+    return getConfigPropertyTyped<T>(key) ?? defaultValue;
+  }
+  
   /// Provides unified access to configuration properties
   /// This allows convenient access using the index operator
   /// Example: config['maxPathLength'] returns the maxPathLength property
   Object? operator [](String key) => getConfigProperty(key);
+
+  /// Gets a configuration value with type safety
+  /// 
+  /// This method provides a type-safe way to access configuration values
+  /// with proper default value handling based on the type.
+  /// 
+  /// [key] - The configuration key to retrieve
+  /// [defaultValue] - The default value to use if the key doesn't exist
+  /// 
+  /// Returns the configuration value as type T, or defaultValue if not found
+  T getConfigValue<T>(String key, T defaultValue) {
+    // First try to get the value with the expected type
+    final typedValue = getConfigPropertyTyped<T>(key);
+    if (typedValue != null) {
+      return typedValue;
+    }
+    
+    // If not found or wrong type, return the default value
+    return defaultValue;
+  }
+  
+  /// Gets a list of configuration keys that match a pattern
+  /// 
+  /// [pattern] - Regular expression pattern to match against configuration keys
+  /// 
+  /// Returns a list of configuration keys that match the pattern
+  List<String> getConfigKeysByPattern(String pattern) {
+    final regex = RegExp(pattern);
+    final keys = <String>[];
+    
+    // Check all known configuration properties
+    final allProperties = [
+      'configVersion',
+      'maxPathLength',
+      'maxPathSegment',
+      'maxHierarchyDepth',
+      'maxHistorySize',
+      'defaultHistorySize',
+      'defaultLockTimeout',
+      'lockExtensionPeriod',
+      'minLockDuration',
+      'maxLockDuration',
+      'defaultVersion',
+      'defaultIsPublic',
+      'defaultPriority',
+      'defaultStage',
+      'pathSeparator',
+      'invalidPathChars',
+    ];
+    
+    for (final prop in allProperties) {
+      if (regex.hasMatch(prop)) {
+        keys.add(prop);
+      }
+    }
+    
+    return keys;
+  }
 
   // Cache for expensive path operations
   static final Map<String, Object> _pathOperationCache = {};
