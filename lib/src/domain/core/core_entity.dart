@@ -39,10 +39,29 @@ abstract class EntityDefaults {
 }
 
 /// Parses DateTime from a String safely
-DateTime? _tryParseDateTime(Object value) {
+DateTime? _tryParseDateTime(Object? value) {
+  if (value == null) return null;
+  
   if (value is String) {
+    // Handle empty/whitespace strings
+    if (value.trim().isEmpty) return null;
     return DateTime.tryParse(value);
   }
+  
+  // Handle numeric timestamps (common in JSON/APIs)
+  if (value is int) {
+    try {
+      return DateTime.fromMillisecondsSinceEpoch(value);
+    } catch (_) {
+      return null;
+    }
+  }
+  
+  // Handle DateTime objects passed through (defensive programming)
+  if (value is DateTime) {
+    return value;
+  }
+  
   return null;
 }
 
