@@ -48,30 +48,27 @@ Map<String, dynamic> _$AddressToJson(_Address instance) => <String, dynamic>{
 _ContactInfo _$ContactInfoFromJson(Map<String, dynamic> json) => _ContactInfo(
   contactName: json['contactName'] as String,
   companyName: json['companyName'] as String,
-  phone:
-      json['phone'] == null
-          ? null
-          : PhoneNumber.fromJson(
-            (json['phone'] as Map<String, dynamic>).map(
-              (k, e) => MapEntry(k, e as Object),
-            ),
+  phone: json['phone'] == null
+      ? null
+      : PhoneNumber.fromJson(
+          (json['phone'] as Map<String, dynamic>).map(
+            (k, e) => MapEntry(k, e as Object),
           ),
-  email:
-      json['email'] == null
-          ? null
-          : EmailAddress.fromJson(
-            (json['email'] as Map<String, dynamic>).map(
-              (k, e) => MapEntry(k, e as Object),
-            ),
+        ),
+  email: json['email'] == null
+      ? null
+      : EmailAddress.fromJson(
+          (json['email'] as Map<String, dynamic>).map(
+            (k, e) => MapEntry(k, e as Object),
           ),
-  address:
-      json['address'] == null
-          ? null
-          : Address.fromJson(
-            (json['address'] as Map<String, dynamic>).map(
-              (k, e) => MapEntry(k, e as Object),
-            ),
+        ),
+  address: json['address'] == null
+      ? null
+      : Address.fromJson(
+          (json['address'] as Map<String, dynamic>).map(
+            (k, e) => MapEntry(k, e as Object),
           ),
+        ),
 );
 
 Map<String, dynamic> _$ContactInfoToJson(_ContactInfo instance) =>

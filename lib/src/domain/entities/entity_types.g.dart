@@ -112,22 +112,19 @@ _EquipmentData _$EquipmentDataFromJson(Map<String, dynamic> json) =>
             (k, e) => MapEntry(k, e as Object),
           ) ??
           const {},
-      installDate:
-          json['installDate'] == null
-              ? null
-              : DateTime.parse(json['installDate'] as String),
-      lastMaintDate:
-          json['lastMaintDate'] == null
-              ? null
-              : DateTime.parse(json['lastMaintDate'] as String),
-      parentId:
-          json['parentId'] == null
-              ? null
-              : EntityId.fromJson(
-                (json['parentId'] as Map<String, dynamic>).map(
-                  (k, e) => MapEntry(k, e as Object),
-                ),
+      installDate: json['installDate'] == null
+          ? null
+          : DateTime.parse(json['installDate'] as String),
+      lastMaintDate: json['lastMaintDate'] == null
+          ? null
+          : DateTime.parse(json['lastMaintDate'] as String),
+      parentId: json['parentId'] == null
+          ? null
+          : EntityId.fromJson(
+              (json['parentId'] as Map<String, dynamic>).map(
+                (k, e) => MapEntry(k, e as Object),
               ),
+            ),
       childIds:
           (json['childIds'] as List<dynamic>?)
               ?.map(

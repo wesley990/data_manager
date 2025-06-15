@@ -11,10 +11,9 @@ _EntityMetadata _$EntityMetadataFromJson(Map<String, dynamic> json) =>
       displayName: json['displayName'] as String,
       entityType: json['entityType'] as String,
       description: json['description'] as String?,
-      lastNameUpdate:
-          json['lastNameUpdate'] == null
-              ? null
-              : DateTime.parse(json['lastNameUpdate'] as String),
+      lastNameUpdate: json['lastNameUpdate'] == null
+          ? null
+          : DateTime.parse(json['lastNameUpdate'] as String),
       searchTerms:
           (json['searchTerms'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as String),

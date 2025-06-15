@@ -26,24 +26,18 @@ _EntityConfig _$EntityConfigFromJson(
   defaultHistorySize:
       (json['defaultHistorySize'] as num?)?.toInt() ??
       EntityConfigDefaults.defaultHistorySize,
-  defaultLockTimeout:
-      json['defaultLockTimeout'] == null
-          ? EntityConfigDefaults.defaultLockTimeout
-          : Duration(microseconds: (json['defaultLockTimeout'] as num).toInt()),
-  lockExtensionPeriod:
-      json['lockExtensionPeriod'] == null
-          ? EntityConfigDefaults.lockExtensionPeriod
-          : Duration(
-            microseconds: (json['lockExtensionPeriod'] as num).toInt(),
-          ),
-  minLockDuration:
-      json['minLockDuration'] == null
-          ? EntityConfigDefaults.minLockDuration
-          : Duration(microseconds: (json['minLockDuration'] as num).toInt()),
-  maxLockDuration:
-      json['maxLockDuration'] == null
-          ? EntityConfigDefaults.maxLockDuration
-          : Duration(microseconds: (json['maxLockDuration'] as num).toInt()),
+  defaultLockTimeout: json['defaultLockTimeout'] == null
+      ? EntityConfigDefaults.defaultLockTimeout
+      : Duration(microseconds: (json['defaultLockTimeout'] as num).toInt()),
+  lockExtensionPeriod: json['lockExtensionPeriod'] == null
+      ? EntityConfigDefaults.lockExtensionPeriod
+      : Duration(microseconds: (json['lockExtensionPeriod'] as num).toInt()),
+  minLockDuration: json['minLockDuration'] == null
+      ? EntityConfigDefaults.minLockDuration
+      : Duration(microseconds: (json['minLockDuration'] as num).toInt()),
+  maxLockDuration: json['maxLockDuration'] == null
+      ? EntityConfigDefaults.maxLockDuration
+      : Duration(microseconds: (json['maxLockDuration'] as num).toInt()),
   defaultVersion:
       json['defaultVersion'] as String? ?? EntityConfigDefaults.defaultVersion,
   defaultIsPublic:

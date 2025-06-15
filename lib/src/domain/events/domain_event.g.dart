@@ -52,14 +52,13 @@ _DomainEventModel _$DomainEventModelFromJson(Map<String, dynamic> json) =>
         (k, e) => MapEntry(k, e as Object),
       ),
       entityType: json['entityType'] as String?,
-      aggregateId:
-          json['aggregateId'] == null
-              ? null
-              : EntityId.fromJson(
-                (json['aggregateId'] as Map<String, dynamic>).map(
-                  (k, e) => MapEntry(k, e as Object),
-                ),
+      aggregateId: json['aggregateId'] == null
+          ? null
+          : EntityId.fromJson(
+              (json['aggregateId'] as Map<String, dynamic>).map(
+                (k, e) => MapEntry(k, e as Object),
               ),
+            ),
       metadata: (json['metadata'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as Object),
       ),
@@ -67,22 +66,20 @@ _DomainEventModel _$DomainEventModelFromJson(Map<String, dynamic> json) =>
       tags:
           (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
           EventDefaults.tags,
-      correlationId:
-          json['correlationId'] == null
-              ? null
-              : EventId.fromJson(
-                (json['correlationId'] as Map<String, dynamic>).map(
-                  (k, e) => MapEntry(k, e as Object),
-                ),
+      correlationId: json['correlationId'] == null
+          ? null
+          : EventId.fromJson(
+              (json['correlationId'] as Map<String, dynamic>).map(
+                (k, e) => MapEntry(k, e as Object),
               ),
-      causationId:
-          json['causationId'] == null
-              ? null
-              : EventId.fromJson(
-                (json['causationId'] as Map<String, dynamic>).map(
-                  (k, e) => MapEntry(k, e as Object),
-                ),
+            ),
+      causationId: json['causationId'] == null
+          ? null
+          : EventId.fromJson(
+              (json['causationId'] as Map<String, dynamic>).map(
+                (k, e) => MapEntry(k, e as Object),
               ),
+            ),
       version: (json['version'] as num?)?.toInt() ?? EventDefaults.version,
       status: json['status'] as String?,
       schemaVersion:
