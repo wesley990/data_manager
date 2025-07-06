@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -80,6 +79,130 @@ as Map<String, String>?,
 
 }
 
+
+/// Adds pattern-matching-related methods to [EventSchema].
+extension EventSchemaPatterns on EventSchema {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _EventSchema value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _EventSchema() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _EventSchema value)  $default,){
+final _that = this;
+switch (_that) {
+case _EventSchema():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _EventSchema value)?  $default,){
+final _that = this;
+switch (_that) {
+case _EventSchema() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String version,  String eventType,  Map<String, String> fields,  Map<String, bool> required,  Map<String, Object>? defaults,  Map<String, String>? migrations)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _EventSchema() when $default != null:
+return $default(_that.version,_that.eventType,_that.fields,_that.required,_that.defaults,_that.migrations);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String version,  String eventType,  Map<String, String> fields,  Map<String, bool> required,  Map<String, Object>? defaults,  Map<String, String>? migrations)  $default,) {final _that = this;
+switch (_that) {
+case _EventSchema():
+return $default(_that.version,_that.eventType,_that.fields,_that.required,_that.defaults,_that.migrations);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String version,  String eventType,  Map<String, String> fields,  Map<String, bool> required,  Map<String, Object>? defaults,  Map<String, String>? migrations)?  $default,) {final _that = this;
+switch (_that) {
+case _EventSchema() when $default != null:
+return $default(_that.version,_that.eventType,_that.fields,_that.required,_that.defaults,_that.migrations);case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 @JsonSerializable()
@@ -339,6 +462,130 @@ $EventIdCopyWith<$Res>? get causationId {
 }
 }
 
+
+/// Adds pattern-matching-related methods to [DomainEventModel].
+extension DomainEventModelPatterns on DomainEventModel {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DomainEventModel value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DomainEventModel() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DomainEventModel value)  $default,){
+final _that = this;
+switch (_that) {
+case _DomainEventModel():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DomainEventModel value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DomainEventModel() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( EventId id,  EntityId entityId,  String eventType,  DateTime timestamp,  UserAction initiator,  Map<String, Object> changes,  String? entityType,  EntityId? aggregateId,  Map<String, Object>? metadata,  bool isAsync,  List<String> tags,  EventId? correlationId,  EventId? causationId,  int version,  String? status,  String schemaVersion,  Map<String, Object>? schemaChanges,  String? previousSchemaVersion,  Map<String, int> schemaVectors)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DomainEventModel() when $default != null:
+return $default(_that.id,_that.entityId,_that.eventType,_that.timestamp,_that.initiator,_that.changes,_that.entityType,_that.aggregateId,_that.metadata,_that.isAsync,_that.tags,_that.correlationId,_that.causationId,_that.version,_that.status,_that.schemaVersion,_that.schemaChanges,_that.previousSchemaVersion,_that.schemaVectors);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( EventId id,  EntityId entityId,  String eventType,  DateTime timestamp,  UserAction initiator,  Map<String, Object> changes,  String? entityType,  EntityId? aggregateId,  Map<String, Object>? metadata,  bool isAsync,  List<String> tags,  EventId? correlationId,  EventId? causationId,  int version,  String? status,  String schemaVersion,  Map<String, Object>? schemaChanges,  String? previousSchemaVersion,  Map<String, int> schemaVectors)  $default,) {final _that = this;
+switch (_that) {
+case _DomainEventModel():
+return $default(_that.id,_that.entityId,_that.eventType,_that.timestamp,_that.initiator,_that.changes,_that.entityType,_that.aggregateId,_that.metadata,_that.isAsync,_that.tags,_that.correlationId,_that.causationId,_that.version,_that.status,_that.schemaVersion,_that.schemaChanges,_that.previousSchemaVersion,_that.schemaVectors);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( EventId id,  EntityId entityId,  String eventType,  DateTime timestamp,  UserAction initiator,  Map<String, Object> changes,  String? entityType,  EntityId? aggregateId,  Map<String, Object>? metadata,  bool isAsync,  List<String> tags,  EventId? correlationId,  EventId? causationId,  int version,  String? status,  String schemaVersion,  Map<String, Object>? schemaChanges,  String? previousSchemaVersion,  Map<String, int> schemaVectors)?  $default,) {final _that = this;
+switch (_that) {
+case _DomainEventModel() when $default != null:
+return $default(_that.id,_that.entityId,_that.eventType,_that.timestamp,_that.initiator,_that.changes,_that.entityType,_that.aggregateId,_that.metadata,_that.isAsync,_that.tags,_that.correlationId,_that.causationId,_that.version,_that.status,_that.schemaVersion,_that.schemaChanges,_that.previousSchemaVersion,_that.schemaVectors);case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 @JsonSerializable()

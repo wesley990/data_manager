@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -89,6 +88,130 @@ $ContactInfoCopyWith<$Res> get contact {
 }
 }
 
+
+/// Adds pattern-matching-related methods to [OwnerData].
+extension OwnerDataPatterns on OwnerData {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _OwnerData value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _OwnerData() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _OwnerData value)  $default,){
+final _that = this;
+switch (_that) {
+case _OwnerData():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _OwnerData value)?  $default,){
+final _that = this;
+switch (_that) {
+case _OwnerData() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ContactInfo contact,  List<EntityId> siteIds,  Map<String, Object> meta,  Map<String, Object>? customData)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _OwnerData() when $default != null:
+return $default(_that.contact,_that.siteIds,_that.meta,_that.customData);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ContactInfo contact,  List<EntityId> siteIds,  Map<String, Object> meta,  Map<String, Object>? customData)  $default,) {final _that = this;
+switch (_that) {
+case _OwnerData():
+return $default(_that.contact,_that.siteIds,_that.meta,_that.customData);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ContactInfo contact,  List<EntityId> siteIds,  Map<String, Object> meta,  Map<String, Object>? customData)?  $default,) {final _that = this;
+switch (_that) {
+case _OwnerData() when $default != null:
+return $default(_that.contact,_that.siteIds,_that.meta,_that.customData);case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 @JsonSerializable()
@@ -283,6 +406,130 @@ $EntityIdCopyWith<$Res> get ownerId {
 }
 }
 
+
+/// Adds pattern-matching-related methods to [SiteData].
+extension SiteDataPatterns on SiteData {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SiteData value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SiteData() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SiteData value)  $default,){
+final _that = this;
+switch (_that) {
+case _SiteData():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SiteData value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SiteData() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  EntityId ownerId,  String? address,  double? latitude,  double? longitude,  List<EntityId> equipmentIds,  Map<String, Object> siteInfo,  Map<String, Object>? customData,  Map<String, Object> meta,  Map<String, String> contactInfo)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SiteData() when $default != null:
+return $default(_that.name,_that.ownerId,_that.address,_that.latitude,_that.longitude,_that.equipmentIds,_that.siteInfo,_that.customData,_that.meta,_that.contactInfo);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  EntityId ownerId,  String? address,  double? latitude,  double? longitude,  List<EntityId> equipmentIds,  Map<String, Object> siteInfo,  Map<String, Object>? customData,  Map<String, Object> meta,  Map<String, String> contactInfo)  $default,) {final _that = this;
+switch (_that) {
+case _SiteData():
+return $default(_that.name,_that.ownerId,_that.address,_that.latitude,_that.longitude,_that.equipmentIds,_that.siteInfo,_that.customData,_that.meta,_that.contactInfo);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  EntityId ownerId,  String? address,  double? latitude,  double? longitude,  List<EntityId> equipmentIds,  Map<String, Object> siteInfo,  Map<String, Object>? customData,  Map<String, Object> meta,  Map<String, String> contactInfo)?  $default,) {final _that = this;
+switch (_that) {
+case _SiteData() when $default != null:
+return $default(_that.name,_that.ownerId,_that.address,_that.latitude,_that.longitude,_that.equipmentIds,_that.siteInfo,_that.customData,_that.meta,_that.contactInfo);case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 @JsonSerializable()
@@ -524,6 +771,130 @@ $EntityIdCopyWith<$Res>? get parentId {
 }
 
 
+/// Adds pattern-matching-related methods to [EquipmentData].
+extension EquipmentDataPatterns on EquipmentData {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _EquipmentData value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _EquipmentData() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _EquipmentData value)  $default,){
+final _that = this;
+switch (_that) {
+case _EquipmentData():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _EquipmentData value)?  $default,){
+final _that = this;
+switch (_that) {
+case _EquipmentData() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  EntityId siteId,  EquipmentType type,  String? serialNum,  String? modelId,  String? manufacturer,  Map<String, Object> specs,  DateTime? installDate,  DateTime? lastMaintDate,  EntityId? parentId,  List<EntityId> childIds,  Map<String, Object>? customData,  Map<String, Object> meta,  Map<String, String> maintContacts)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _EquipmentData() when $default != null:
+return $default(_that.name,_that.siteId,_that.type,_that.serialNum,_that.modelId,_that.manufacturer,_that.specs,_that.installDate,_that.lastMaintDate,_that.parentId,_that.childIds,_that.customData,_that.meta,_that.maintContacts);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  EntityId siteId,  EquipmentType type,  String? serialNum,  String? modelId,  String? manufacturer,  Map<String, Object> specs,  DateTime? installDate,  DateTime? lastMaintDate,  EntityId? parentId,  List<EntityId> childIds,  Map<String, Object>? customData,  Map<String, Object> meta,  Map<String, String> maintContacts)  $default,) {final _that = this;
+switch (_that) {
+case _EquipmentData():
+return $default(_that.name,_that.siteId,_that.type,_that.serialNum,_that.modelId,_that.manufacturer,_that.specs,_that.installDate,_that.lastMaintDate,_that.parentId,_that.childIds,_that.customData,_that.meta,_that.maintContacts);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  EntityId siteId,  EquipmentType type,  String? serialNum,  String? modelId,  String? manufacturer,  Map<String, Object> specs,  DateTime? installDate,  DateTime? lastMaintDate,  EntityId? parentId,  List<EntityId> childIds,  Map<String, Object>? customData,  Map<String, Object> meta,  Map<String, String> maintContacts)?  $default,) {final _that = this;
+switch (_that) {
+case _EquipmentData() when $default != null:
+return $default(_that.name,_that.siteId,_that.type,_that.serialNum,_that.modelId,_that.manufacturer,_that.specs,_that.installDate,_that.lastMaintDate,_that.parentId,_that.childIds,_that.customData,_that.meta,_that.maintContacts);case _:
+  return null;
+
+}
+}
+
+}
+
 /// @nodoc
 @JsonSerializable()
 
@@ -760,6 +1131,130 @@ $ContactInfoCopyWith<$Res> get contact {
 }
 
 
+/// Adds pattern-matching-related methods to [VendorData].
+extension VendorDataPatterns on VendorData {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _VendorData value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _VendorData() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _VendorData value)  $default,){
+final _that = this;
+switch (_that) {
+case _VendorData():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _VendorData value)?  $default,){
+final _that = this;
+switch (_that) {
+case _VendorData() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ContactInfo contact,  List<EntityId> staffIds,  List<String> services,  Map<String, Object> meta,  Map<String, Object>? customData,  Map<String, Object> certifications)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _VendorData() when $default != null:
+return $default(_that.contact,_that.staffIds,_that.services,_that.meta,_that.customData,_that.certifications);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ContactInfo contact,  List<EntityId> staffIds,  List<String> services,  Map<String, Object> meta,  Map<String, Object>? customData,  Map<String, Object> certifications)  $default,) {final _that = this;
+switch (_that) {
+case _VendorData():
+return $default(_that.contact,_that.staffIds,_that.services,_that.meta,_that.customData,_that.certifications);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ContactInfo contact,  List<EntityId> staffIds,  List<String> services,  Map<String, Object> meta,  Map<String, Object>? customData,  Map<String, Object> certifications)?  $default,) {final _that = this;
+switch (_that) {
+case _VendorData() when $default != null:
+return $default(_that.contact,_that.staffIds,_that.services,_that.meta,_that.customData,_that.certifications);case _:
+  return null;
+
+}
+}
+
+}
+
 /// @nodoc
 @JsonSerializable()
 
@@ -970,6 +1465,130 @@ $EntityIdCopyWith<$Res> get vendorId {
 }
 }
 
+
+/// Adds pattern-matching-related methods to [PersonnelData].
+extension PersonnelDataPatterns on PersonnelData {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PersonnelData value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _PersonnelData() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PersonnelData value)  $default,){
+final _that = this;
+switch (_that) {
+case _PersonnelData():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PersonnelData value)?  $default,){
+final _that = this;
+switch (_that) {
+case _PersonnelData() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  EntityId vendorId,  int skillLevel,  String? role,  List<String> certs,  List<String> specs,  String? phone,  String? email,  Map<String, Object>? customData,  Map<String, Object> meta,  Map<String, Object> schedule,  Map<String, DateTime> certDates)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _PersonnelData() when $default != null:
+return $default(_that.name,_that.vendorId,_that.skillLevel,_that.role,_that.certs,_that.specs,_that.phone,_that.email,_that.customData,_that.meta,_that.schedule,_that.certDates);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  EntityId vendorId,  int skillLevel,  String? role,  List<String> certs,  List<String> specs,  String? phone,  String? email,  Map<String, Object>? customData,  Map<String, Object> meta,  Map<String, Object> schedule,  Map<String, DateTime> certDates)  $default,) {final _that = this;
+switch (_that) {
+case _PersonnelData():
+return $default(_that.name,_that.vendorId,_that.skillLevel,_that.role,_that.certs,_that.specs,_that.phone,_that.email,_that.customData,_that.meta,_that.schedule,_that.certDates);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  EntityId vendorId,  int skillLevel,  String? role,  List<String> certs,  List<String> specs,  String? phone,  String? email,  Map<String, Object>? customData,  Map<String, Object> meta,  Map<String, Object> schedule,  Map<String, DateTime> certDates)?  $default,) {final _that = this;
+switch (_that) {
+case _PersonnelData() when $default != null:
+return $default(_that.name,_that.vendorId,_that.skillLevel,_that.role,_that.certs,_that.specs,_that.phone,_that.email,_that.customData,_that.meta,_that.schedule,_that.certDates);case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 @JsonSerializable()
